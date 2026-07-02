@@ -135,7 +135,7 @@
       <div class="gv-card">
         <div class="gc-head">
           <div class="gc-title"><i class="fa-solid fa-puzzle-piece"></i> Modüller</div>
-          <span class="gtag mint">7 / 10 açık</span>
+          <span class="gtag mint">7 / 12 açık</span>
         </div>
         <div class="gc-body" style="padding-top:4px;padding-bottom:4px">
           <div class="mod-row">
@@ -181,6 +181,16 @@
           <div class="mod-row is-locked">
             <div class="mod-ico"><i class="fa-solid fa-warehouse"></i></div>
             <div class="mod-info"><b>Stok &amp; ERP <span class="gtag">Faz 2</span></b><span>Depo, stok hareketi, fatura entegrasyonu</span></div>
+            <label class="gv-toggle is-locked"><input type="checkbox" disabled><span class="tg-track"></span></label>
+          </div>
+          <div class="mod-row is-locked">
+            <div class="mod-ico"><i class="fa-solid fa-language"></i></div>
+            <div class="mod-info"><b>Çok Dil <span class="gtag">Faz 2</span></b><span>Arayüz için İngilizce ve ek dil paketleri</span></div>
+            <label class="gv-toggle is-locked"><input type="checkbox" disabled><span class="tg-track"></span></label>
+          </div>
+          <div class="mod-row is-locked">
+            <div class="mod-ico"><i class="fa-solid fa-shuffle"></i></div>
+            <div class="mod-info"><b>Çoklu Firma Yönetimi <span class="gtag">Faz 2</span></b><span>Tek hesaptan birden fazla firma (tenant) yönetimi</span></div>
             <label class="gv-toggle is-locked"><input type="checkbox" disabled><span class="tg-track"></span></label>
           </div>
           <div class="mod-row is-locked">
@@ -278,7 +288,7 @@
   document.querySelectorAll('.gv-toggle input[data-mod]').forEach(function(inp){
     inp.addEventListener('change', function(){
       var open = document.querySelectorAll('.gv-toggle input[data-mod]:checked').length;
-      if(counter) counter.textContent = open + ' / 10 açık';
+      if(counter) counter.textContent = open + ' / 12 açık';
       gvToast(inp.getAttribute('data-mod').replace(/&amp;/g,'&') + ' modülü ' + (inp.checked ? 'açıldı.' : 'kapatıldı.'), {type: inp.checked ? 'ok' : 'info'});
     });
   });
