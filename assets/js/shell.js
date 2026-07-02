@@ -68,7 +68,7 @@
     ]},
     santiye:{ ic:'fa-helmet-safety', eyebrow:'Saha', title:'Şantiyeler', menu:[
       {ic:'fa-helmet-safety',  lbl:'Şantiye Listesi',    href:'crm-santiye.html', screen:'liste'},
-      {ic:'fa-camera',         lbl:'Saha Bildirimleri',  wip:1, cnt:'4'},
+      {ic:'fa-camera',         lbl:'Saha Bildirimleri',  href:'crm-santiye-bildirimler.html', screen:'bildirimler', cnt:'4'},
       {ic:'fa-calendar-days',  lbl:'İş Programı',        wip:1},
       {ic:'fa-shield-halved',  lbl:'İSG Tutanakları',    wip:1}
     ]},
@@ -93,9 +93,9 @@
       {ic:'fa-utensils',       lbl:'Yemekhane',        wip:1}
     ]},
     satinalma:{ ic:'fa-cart-flatbed', eyebrow:'Tedarik', title:'Satın Alma', menu:[
-      {ic:'fa-boxes-stacked',  lbl:'Malzeme Talepleri',   wip:1, cnt:'9'},
-      {ic:'fa-file-invoice',   lbl:'Satın Alma Formları', wip:1},
-      {ic:'fa-truck-ramp-box', lbl:'Termin Takibi',       wip:1}
+      {ic:'fa-boxes-stacked',  lbl:'Malzeme Talepleri',   href:'crm-satinalma-talepler.html', screen:'talepler', cnt:'9'},
+      {ic:'fa-file-invoice',   lbl:'Satın Alma Formları', href:'crm-satinalma-formlar.html',  screen:'formlar'},
+      {ic:'fa-truck-ramp-box', lbl:'Termin Takibi',       href:'crm-satinalma-termin.html',   screen:'termin'}
     ]},
     cari:{ ic:'fa-address-book', eyebrow:'Rehber & Hesap', title:'Cariler', menu:[
       {ic:'fa-building',       lbl:'Firma Rehberi',   href:'crm-cari.html',       screen:'rehber'},
@@ -103,9 +103,9 @@
       {ic:'fa-scale-balanced', lbl:'Cari Durum',      href:'crm-cari-durum.html', screen:'durum'}
     ]},
     finans:{ ic:'fa-file-signature', eyebrow:'Finans', title:'Hakediş & Sözleşme', menu:[
-      {ic:'fa-building-columns',lbl:'Kurum Hakedişleri',   wip:1},
-      {ic:'fa-people-arrows',  lbl:'Taşeron Hakedişleri',  wip:1, cnt:'2'},
-      {ic:'fa-file-contract',  lbl:'Sözleşme Arşivi',      wip:1}
+      {ic:'fa-building-columns',lbl:'Kurum Hakedişleri',   href:'crm-finans-kurum.html',       screen:'kurum'},
+      {ic:'fa-people-arrows',  lbl:'Taşeron Hakedişleri',  href:'crm-finans-taseron.html',     screen:'taseron', cnt:'2'},
+      {ic:'fa-file-contract',  lbl:'Sözleşme Arşivi',      href:'crm-finans-sozlesmeler.html', screen:'sozlesmeler'}
     ]},
     ayarlar:{ ic:'fa-sliders', eyebrow:'Yönetim', title:'Ayarlar', menu:[
       {ic:'fa-building-user',  lbl:'Firma',            href:'crm-ayarlar-firma.html', screen:'firma'},
