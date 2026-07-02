@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Günlük Özet — Gavia CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+<link rel="stylesheet" href="assets/css/ui.css">
+<style>
+/* ============ SAYFAYA ÖZEL — Günlük Özet (rapor sütunu kompozisyonu) ============ */
+.rep-shell{max-width:760px}
+
+/* rapor başlığı — tarih + tek cümlelik gündem özeti */
+.rep-mast{
+  background:linear-gradient(155deg, var(--gv-deep) 0%, var(--gv-night) 100%);
+  border-radius:var(--r-lg); padding:26px 28px; margin-bottom:22px; position:relative; overflow:hidden;
+}
+.rep-mast::after{
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(420px 180px at 88% -20%, var(--gv-mint-glow), transparent 70%);
+  pointer-events:none;
+}
+.rep-mast-eyebrow{position:relative; font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--gv-mint);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.rep-mast-eyebrow i{font-size:11px}
+.rep-mast h1{position:relative; font-size:23px;font-weight:800;color:#fff;letter-spacing:-.01em;margin-bottom:8px}
+.rep-mast p{position:relative; font-size:13.5px;line-height:1.6;color:var(--on-dark);max-width:52ch}
+.rep-mast-foot{position:relative;margin-top:16px;padding-top:14px;border-top:1px solid var(--hair);display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.rep-mstat{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--on-dark)}
+.rep-mstat b{color:#fff;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+.rep-mstat i{color:var(--gv-mint);font-size:12px;width:14px;text-align:center}
+
+/* rapor maddesi — numaralı, sıralı okuma akışı (gerçek gün raporu sırası) */
+.rep-item{display:flex;gap:16px;padding:22px 0;border-bottom:1px solid var(--line)}
+.rep-item:last-child{border-bottom:none;padding-bottom:4px}
+.rep-num{flex:none;width:34px;font-size:12px;font-weight:800;color:var(--acc-ink);font-variant-numeric:tabular-nums;padding-top:2px}
+.rep-body{flex:1;min-width:0}
+.rep-head{display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap}
+.rep-head i{color:var(--acc-ink);font-size:13px}
+.rep-head h2{font-size:15.5px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.rep-head .gc-link{margin-left:auto;font-size:12px}
+.rep-lede{font-size:13px;color:var(--muted);margin-bottom:12px}
+
+/* mini istatistik satırı (sahada/kasa özeti) */
+.rep-stats{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:12px}
+.rep-stat{display:flex;flex-direction:column;gap:2px}
+.rep-stat b{font-size:19px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.rep-stat span{font-size:11.5px;color:var(--muted)}
+
+/* saha tablosu — kompakt satır listesi */
+.rep-tbl{border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.rep-trow{display:flex;align-items:center;gap:12px;padding:10px 14px;font-size:13px}
+.rep-trow+.rep-trow{border-top:1px solid var(--line)}
+.rep-trow .rt-site{flex:1;min-width:0;font-weight:700;color:var(--ink)}
+.rep-trow .rt-val{font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.rep-trow .rt-pct{width:44px;text-align:right;font-weight:800;color:var(--acc-ink);font-variant-numeric:tabular-nums}
+
+/* satır-içi bağlantı listesi (görev/onay/bildirim özet satırları) */
+.rep-list{display:flex;flex-direction:column;gap:2px}
+.rep-row{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:13px;color:var(--ink-2)}
+.rep-row a{color:var(--ink);font-weight:700;text-decoration:none}
+.rep-row a:hover{color:var(--acc-ink);text-decoration:underline}
+.rep-row .rr-tag{flex:none;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:var(--r-pill)}
+.rep-row .rr-meta{color:var(--muted);font-size:12px}
+
+.rep-note{margin-top:12px;padding:11px 14px;border-radius:var(--r-md);background:var(--bg);font-size:12.5px;color:var(--ink-2);display:flex;align-items:flex-start;gap:9px}
+.rep-note i{color:var(--acc-ink);font-size:12px;margin-top:2px}
+.rep-note.warn{background:var(--warn-tint);color:var(--ink-2)}
+.rep-note.warn i{color:var(--warn)}
+
+@media(max-width:640px){
+  .rep-mast{padding:20px 18px}
+  .rep-item{gap:11px}
+  .rep-num{width:24px}
+  .rep-stats{gap:16px}
+}
+</style>
+</head>
+<body data-sec="panel" data-screen="ozet">
+<div class="gv-app">
+  <aside class="gv-rail" id="gvRail"></aside>
+  <nav class="gv-menu" id="gvMenu"></nav>
+  <div class="gv-divider" id="gvDivider" role="separator" aria-label="Menüyü daralt/genişlet"><span class="gv-grip"></span></div>
+  <div class="gv-overlay" id="gvOverlay"></div>
+
+  <header class="gv-top">
+    <button class="gv-burger" id="gvBurger" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+    <div class="gv-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Ara"></div>
+    <div class="gv-top-tools">
+      <button class="gv-iconbtn" data-tip="Bildirimler" aria-label="Bildirimler"><i class="fa-regular fa-bell"></i><span class="gb-dot"></span></button>
+      <div class="gv-me">
+        <div class="me-ava" id="gvAva">·</div>
+        <div class="me-id"><div class="me-name" id="gvName">—</div><div class="me-role" id="gvRole">—</div></div>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="gv-main rep-shell">
+    <div class="gv-page-head">
+      <div>
+        <div class="ph-eyebrow">Gündem</div>
+        <h1>Günlük Özet</h1>
+        <div class="ph-sub">2 Temmuz 2026, Perşembe — gün sonu rapor taslağı</div>
+      </div>
+      <div class="ph-actions">
+        <button class="btn btn-ghost btn-sm" data-wip="1"><i class="fa-solid fa-print"></i> Yazdır / PDF</button>
+      </div>
+    </div>
+
+    <!-- ============ YÖNETİM RAPORU (superadmin·sahip·yonetim·teknik·muhasebe·satinalma·ik·personel) ============ -->
+    <section data-view="yonetim">
+      <div class="rep-mast">
+        <div class="rep-mast-eyebrow"><i class="fa-solid fa-sun"></i> Gün Raporu</div>
+        <h1>3 şantiyede sahada 142 kişi, 12 onay sırada.</h1>
+        <p>Liman Lojistik Merkezi'nde iş programı 6 gün geride; bunun dışında gün akışında kritik bir sapma yok. Vadi Konakları bugün de programın önünde.</p>
+        <div class="rep-mast-foot">
+          <div class="rep-mstat"><i class="fa-solid fa-users"></i> <b>142</b> sahada</div>
+          <div class="rep-mstat"><i class="fa-solid fa-stamp"></i> <b>12</b> onay bekliyor</div>
+          <div class="rep-mstat"><i class="fa-solid fa-camera"></i> <b>2</b> yeni saha bildirimi</div>
+        </div>
+      </div>
+
+      <div class="rep-item">
+        <div class="rep-num">01</div>
+        <div class="rep-body">
+          <div class="rep-head"><i class="fa-solid fa-user-clock"></i><h2>Sahada Bugün</h2></div>
+          <div class="rep-stats">
+            <div class="rep-stat"><b>142<span style="font-size:13px;color:var(--muted);font-weight:700">/148</span></b><span>puantaj girişi</span></div>
+            <div class="rep-stat"><b>%96</b><span>giriş oranı</span></div>
+            <div class="rep-stat"><b>6</b><span>kayıtsız / izinli</span></div>
+          </div>
+          <div class="rep-tbl">
+            <div class="rep-trow"><span class="rt-site">Vadi Konakları</span><span class="rt-val">46 / 48</span><span class="rt-pct">%96</span></div>
+            <div class="rep-trow"><span class="rt-site">Liman Lojistik Merkezi</span><span class="rt-val">50 / 52</span><span class="rt-pct">%96</span></div>
+            <div class="rep-trow"><span class="rt-site">Merkez Şantiye</span><span class="rt-val">46 / 48</span><span class="rt-pct">%96</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rep-item">
+        <div class="rep-num">02</div>
+        <div class="rep-body">
+          <div class="rep-head"><i class="fa-solid fa-cash-register"></i><h2>Kasa Hareketleri</h2><a class="gc-link" href="crm-operasyon-kasa.html">Kasa Raporu <i class="fa-solid fa-arrow-right"></i></a></div>
+          <p class="rep-lede">Bugün 2 kasa raporu oluşturuldu.</p>
+          <div class="rep-list">
+            <div class="rep-row"><span class="rr-tag" style="background:var(--warn-tint);color:var(--warn)">Onayda</span><a href="crm-operasyon-kasa-detay.html">KSA-2026-021</a><span class="rr-meta">Vadi Konakları · Hasan Demirci gönderdi</span></div>
+            <div class="rep-row"><span class="rr-tag" style="background:var(--bg);color:var(--muted)">Taslak</span><span style="color:var(--ink);font-weight:700">KSA-2026-022</span><span class="rr-meta">henüz onaya gönderilmedi</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rep-item">
+        <div class="rep-num">03</div>
+        <div class="rep-body">
+          <div class="rep-head"><i class="fa-solid fa-list-check"></i><h2>Görevler</h2><a class="gc-link" href="crm-gorev.html?f=bana">Görevler <i class="fa-solid fa-arrow-right"></i></a></div>
+          <div class="rep-stats">
+            <div class="rep-stat"><b>3</b><span>bugün açılan</span></div>
+            <div class="rep-stat"><b>2</b><span>bugün kapanan</span></div>
+            <div class="rep-stat" style="color:var(--danger)"><b style="color:var(--danger)">3</b><span>geciken</span></div>
+          </div>
+          <div class="rep-list">
+            <div class="rep-row"><span class="rr-tag" style="background:var(--danger-tint);color:var(--danger)">Gecikti</span><a href="crm-gorev-detay.html">Perde betonu kür takibini raporla</a><span class="rr-meta">Vadi Konakları · Hasan Demirci</span></div>
+            <div class="rep-row"><span class="rr-tag" style="background:var(--ok-tint);color:var(--ok)">Kapandı</span><a href="crm-gorev-detay.html">Çatı paneli sevkiyatı teslim alma kaydı</a><span class="rr-meta">Merkez Şantiye · Ömer Taşkın</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rep-item">
+        <div class="rep-num">04</div>
+        <div class="rep-body">
+          <div class="rep-head"><i class="fa-solid fa-stamp"></i><h2>Bekleyen Onaylar</h2><a class="gc-link" href="crm-panel-onaylar.html">Tümü (12) <i class="fa-solid fa-arrow-right"></i></a></div>
+          <div class="rep-stats">
+            <div class="rep-stat"><b>12</b><span>onay sırada</span></div>
+            <div class="rep-stat" style="color:var(--warn)"><b style="color:var(--warn)">4</b><span>iki günden eski</span></div>
+            <div class="rep-stat"><b>5</b><span>talep türü</span></div>
+          </div>
+          <div class="rep-note warn"><i class="fa-solid fa-triangle-exclamation"></i> KSA-2026-018, AVN-2026-014, TH-2026-014 ve MLZ-2026-042 üç gün ve üzeridir onay sırasında bekliyor.</div>
+        </div>
+      </div>
+
+      <div class="rep-item">
+        <div class="rep-num">05</div>
+        <div class="rep-body">
+          <div class="rep-head"><i class="fa-solid fa-camera"></i><h2>Saha Bildirimleri</h2><a class="gc-link" href="crm-santiye-bildirimler.html">Tümü <i class="fa-solid fa-arrow-right"></i></a></div>
+          <p class="rep-lede">Bugün 2 yeni saha bildirimi paylaşıldı.</p>
+          <div class="rep-list">
+            <div class="rep-row"><span class="rr-tag" style="background:var(--info-tint);color:var(--info)">09:40</span><span style="color:var(--ink);font-weight:700">Hasan Demirci</span><span class="rr-meta">Vadi Konakları · B Blok temel betonu tamamlandı</span></div>
+            <div class="rep-row"><span class="rr-tag" style="background:var(--info-tint);color:var(--info)">08:15</span><span style="color:var(--ink);font-weight:700">İbrahim Sönmez</span><span class="rr-meta">Vadi Konakları · zemin kat elektrik tesisatı</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rep-item">
+        <div class="rep-num">06</div>
+        <div class="rep-body">
+          <div class="rep-head"><i class="fa-solid fa-forward"></i><h2>Yarına Bakış — 3 Temmuz</h2></div>
+          <div class="rep-list">
+            <div class="rep-row"><span class="rr-tag" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">Termin</span><a href="crm-gorev-detay.html">A Blok elektrik şaft kontrolü — ElektroMek ile</a><span class="rr-meta">Vadi Konakları · Hasan Demirci</span></div>
+            <div class="rep-row"><span class="rr-tag" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">Termin</span><a href="crm-gorev-detay.html">Puantaj defterini güncelle</a><span class="rr-meta">Vadi Konakları · Ali Vural</span></div>
+          </div>
+          <div class="rep-note"><i class="fa-solid fa-circle-info"></i> Liman Lojistik Merkezi iş programı izlemede kalmalı — 6 gün gecikme sürüyor.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ŞEF RAPORU (sef — yalnız Vadi Konakları) ============ -->
+    <section data-view="sef" hidden>
+      <div class="rep-mast">
+        <div class="rep-mast-eyebrow"><i class="fa-solid fa-sun"></i> Gün Raporu — Vadi Konakları</div>
+        <h1>Bugün 46/48 kişi sahada, program %68'de.</h1>
+        <p>Ekip programın 2 gün önünde. Sizin onayınızda bekleyen 2 kayıt var; bugün 1 yeni saha bildirimi paylaştınız.</p>
+        <div class="rep-mast-foot">
+          <div class="rep-mstat"><i class="fa-solid fa-users"></i> <b>46</b> sahada</div>
+          <div class="rep-mstat"><i class="fa-solid fa-stamp"></i> <b>2</b> onayınızda</div>
+          <div class="rep-mstat"><i class="fa-solid fa-percent"></i> <b>%68</b> ilerleme</div>
+        </div>
+      </div>
+
+      <div class="rep-item">
+        <div class="rep-num">01</div>
+        <div class="rep-body">
+          <div class="rep-head"><i class="fa-solid fa-user-clock"></i><h2>Sahada Bugün</h2></div>
+          <div class="rep-stats">
+            <div class="rep-stat"><b>46<span style="font-size:13px;color:var(--muted);font-weight:700">/48</span></b><span>puantaj girişi</span></div>
+            <div class="rep-stat"><b>%96</b><span>giriş oranı</span></div>
+            <div class="rep-stat"><b>2</b><span>raporlu</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rep-item">
+        <div class="rep-num">02</div>
+        <div class="rep-body">
+          <div class="rep-head"><i class="fa-solid fa-cash-register"></i><h2>Kasa Hareketleri</h2><a class="gc-link" href="crm-operasyon-kasa.html">Kasa Raporu <i class="fa-solid fa-arrow-right"></i></a></div>
+          <div class="rep-list">
+            <div class="rep-row"><span class="rr-tag" style="background:var(--warn-tint);color:var(--warn)">Onayda</span><a href="crm-operasyon-kasa-detay.html">KSA-2026-021</a><span class="rr-meta">bugün oluşturdunuz, Teknik Müdür onayında</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rep-item">
+        <div class="rep-num">03</div>
+        <div class="rep-body">
+          <div class="rep-head"><i class="fa-solid fa-list-check"></i><h2>Görevleriniz</h2><a class="gc-link" href="crm-gorev.html?f=bana">Görevlerim <i class="fa-solid fa-arrow-right"></i></a></div>
+          <div class="rep-stats">
+            <div class="rep-stat"><b>7</b><span>açık görev</span></div>
+            <div class="rep-stat" style="color:var(--danger)"><b style="color:var(--danger)">2</b><span>gecikmede</span></div>
+          </div>
+          <div class="rep-list">
+            <div class="rep-row"><span class="rr-tag" style="background:var(--danger-tint);color:var(--danger)">Gecikti</span><a href="crm-gorev-detay.html">Perde betonu kür takibini raporla</a><span class="rr-meta">Murat Denizli verdi</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rep-item">
+        <div class="rep-num">04</div>
+        <div class="rep-body">
+          <div class="rep-head"><i class="fa-solid fa-stamp"></i><h2>Onayınızı Bekleyenler</h2><a class="gc-link" href="crm-panel-onaylar.html">Onay Kuyruğu <i class="fa-solid fa-arrow-right"></i></a></div>
+          <div class="rep-list">
+            <div class="rep-row"><span class="rr-tag" style="background:var(--warn-tint);color:var(--warn)">Bekliyor</span><a href="crm-personel-avans.html">AVN-2026-015</a><span class="rr-meta">Musa Erdem · ₺3.500 avans talebi</span></div>
+            <div class="rep-row"><span class="rr-tag" style="background:var(--warn-tint);color:var(--warn)">Bekliyor</span><a href="crm-personel-izin.html">İZN-2026-031</a><span class="rr-meta">Ali Vural · 6–10 Temmuz yıllık izin</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rep-item">
+        <div class="rep-num">05</div>
+        <div class="rep-body">
+          <div class="rep-head"><i class="fa-solid fa-camera"></i><h2>Şantiyenizden Bildirimler</h2><a class="gc-link" href="crm-santiye-bildirimler.html">Tümü <i class="fa-solid fa-arrow-right"></i></a></div>
+          <div class="rep-list">
+            <div class="rep-row"><span class="rr-tag" style="background:var(--info-tint);color:var(--info)">08:15</span><span style="color:var(--ink);font-weight:700">İbrahim Sönmez</span><span class="rr-meta">zemin kat elektrik tesisatı döşemesi başladı</span></div>
+          </div>
+          <p class="rep-lede" style="margin-top:8px;margin-bottom:0">09:40'ta paylaştığınız B Blok temel betonu bildirimi 6 kişi tarafından görüldü.</p>
+        </div>
+      </div>
+
+      <div class="rep-item">
+        <div class="rep-num">06</div>
+        <div class="rep-body">
+          <div class="rep-head"><i class="fa-solid fa-forward"></i><h2>Yarına Bakış — 3 Temmuz</h2></div>
+          <div class="rep-list">
+            <div class="rep-row"><span class="rr-tag" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">Termin</span><a href="crm-gorev-detay.html">A Blok elektrik şaft kontrolü — ElektroMek ile</a><span class="rr-meta">size atandı</span></div>
+            <div class="rep-row"><span class="rr-tag" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">Termin</span><a href="crm-gorev-detay.html">Puantaj defterini güncelle</a><span class="rr-meta">Ali Vural'a verdiniz</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/ui.js"></script>
+<script>
+(function(){
+  if(!window.GV) return;
+  var view = GV.role === 'sef' ? 'sef' : 'yonetim';
+  document.querySelectorAll('[data-view]').forEach(function(el){
+    el.hidden = el.getAttribute('data-view') !== view;
+  });
+})();
+</script>
+</body>
+</html>

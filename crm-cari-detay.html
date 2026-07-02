@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Demir-Beton İnş. Ltd. — Cari Kartı — Gavia CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+<link rel="stylesheet" href="assets/css/ui.css">
+<style>
+/* ============ SAYFAYA ÖZEL — Cari Kartı (sekmeli detay) ============ */
+.ph-back{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:10px;transition:.18s var(--ease)}
+.ph-back i{font-size:11px}
+.ph-back:hover{color:var(--acc-ink)}
+
+/* cari başlık kartı — santiye-hero ile aynı desen, bakiye vurgusu eklenmiş */
+.cari-hero{display:grid;grid-template-columns:1.7fr 1fr;gap:30px;padding:26px 26px 24px;margin-bottom:22px}
+.cari-hero-id{display:flex;gap:18px}
+.cari-hero-mark{width:58px;height:58px;flex:none;border-radius:var(--r-md);display:grid;place-items:center;font-size:19px;font-weight:800;background:var(--info-tint);color:var(--info)}
+.cari-hero-info{flex:1;min-width:0}
+.cari-hero-tags{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.cari-hero-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 22px}
+.cari-hero-meta dt{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.cari-hero-meta dd{font-size:13.5px;font-weight:700;color:var(--ink)}
+.cari-hero-meta dd a{color:var(--acc-ink)}
+.hero-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-content:start}
+.hstat{background:var(--bg);border-radius:var(--r-md);padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.hstat-num{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.hstat-lbl{font-size:11.5px;color:var(--muted);font-weight:600;line-height:1.3}
+.hstat.danger .hstat-num{color:var(--danger)}
+.hstat.ok .hstat-num{color:var(--ok)}
+a.hstat{border:1px solid transparent;transition:.2s var(--ease)}
+a.hstat:hover{border-color:var(--acc-ink);transform:translateY(-2px);box-shadow:var(--sh-sm)}
+a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
+@media(max-width:980px){.cari-hero{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:640px){
+  .cari-hero{padding:20px 18px}
+  .cari-hero-id{flex-direction:column}
+  .cari-hero-meta{grid-template-columns:1fr}
+}
+
+/* sekme çubuğu — santiye-detay ile birebir dil, kilitli sekme eklenmiş */
+.gv-tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:22px;overflow-x:auto;scrollbar-width:none}
+.gv-tabs::-webkit-scrollbar{display:none}
+.gv-tab{display:inline-flex;align-items:center;gap:8px;padding:13px 4px;margin-right:26px;flex:none;
+  font-family:inherit;font-size:13.5px;font-weight:700;color:var(--muted);background:none;border:none;
+  border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;transition:.18s var(--ease)}
+.gv-tab i{font-size:13px}
+.gv-tab:hover{color:var(--ink)}
+.gv-tab.is-active{color:var(--acc-ink);border-color:var(--acc-ink)}
+.gv-tab .tb-cnt{font-size:10.5px;font-weight:700;background:var(--bg);color:var(--ink-2);padding:1px 6px;border-radius:var(--r-pill)}
+.gv-tab.is-active .tb-cnt{background:rgba(var(--acc-rgb),.16);color:var(--acc-deep)}
+.gv-tab.is-locked{color:var(--muted);cursor:not-allowed;opacity:.6}
+.gv-tab.is-locked:hover{color:var(--muted)}
+.gv-tab .tb-soon{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--bg);border:1px solid var(--line);padding:2px 6px;border-radius:6px}
+.tab-panel{animation:tabIn .22s var(--ease)}
+@keyframes tabIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* Özet: iki kolonlu içerik ızgarası (santiye-detay ile aynı) */
+.dash-cols{display:grid;grid-template-columns:1.55fr 1fr;gap:16px;margin-bottom:16px;align-items:start}
+@media(max-width:1100px){.dash-cols{grid-template-columns:minmax(0,1fr)}}
+
+/* bakiye satırı — cari-durum.html bal deseninin büyütülmüş hali */
+.bal-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 22px}
+.bal-row + .bal-row{border-top:1px solid var(--line)}
+.bal-row .br-lbl{font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:8px}
+.bal-row .br-lbl i{font-size:12px;color:var(--muted);width:14px;text-align:center}
+.bal-row .br-val{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+.bal-row.borc .br-val{color:var(--danger)}
+.bal-row.odue{background:var(--danger-tint)}
+.bal-row.odue .br-lbl{color:var(--danger);font-weight:700}
+
+.ctx-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;font-size:13px}
+.ctx-row .ctx-lbl{color:var(--muted)}
+.ctx-row .ctx-val{color:var(--ink);font-weight:700;text-align:right}
+.ctx-row .ctx-val a{color:var(--acc-ink)}
+
+/* İlgili Kişiler: tekil kişi kartı */
+.person-card{display:flex;align-items:center;gap:16px;padding:22px}
+.person-mark{width:50px;height:50px;flex:none;border-radius:var(--r-circle);display:grid;place-items:center;font-size:16px;font-weight:800;background:var(--info-tint);color:var(--info)}
+.person-info{flex:1;min-width:0}
+.person-info h3{font-size:15.5px;font-weight:800;color:var(--ink);margin-bottom:3px}
+.person-info span{font-size:12.5px;color:var(--muted)}
+.person-contact{display:flex;flex-direction:column;gap:8px;padding:0 22px 22px}
+.pc-row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-2)}
+.pc-row i{width:16px;text-align:center;color:var(--acc-ink);font-size:12px}
+.pc-row a{color:inherit}
+.pc-row a:hover{color:var(--acc-ink)}
+
+/* Cari Hareketler ekstre tablosu */
+.col-tarih{width:100px}
+.col-tutar{width:130px}
+#tblHareket td.num{font-variant-numeric:tabular-nums}
+
+/* Sözleşme özet kartı */
+.szl-summary{padding:22px}
+.szl-summary h3{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.szl-summary .szl-sub{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+.kum-table{width:100%;min-width:400px;border-collapse:collapse}
+.kum-table th{text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:0 0 9px;border-bottom:1px solid var(--line)}
+.kum-table th.num,.kum-table td.num{text-align:right;padding-right:22px}
+.kum-table th:last-child,.kum-table td:last-child{width:130px}
+.kum-table td{padding:10px 0;font-size:13px;border-bottom:1px solid var(--line);vertical-align:middle}
+.kum-table tr:last-child td{border-bottom:none}
+.kum-table td.num{font-variant-numeric:tabular-nums;font-weight:700}
+.kum-table a{color:var(--ink);font-weight:700}
+.kum-table a:hover{color:var(--acc-ink)}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.kum-note{display:flex;align-items:center;gap:16px;padding:16px 22px;margin-top:4px;border-top:1px solid var(--line);flex-wrap:wrap}
+.kum-note .gbar{flex:1;min-width:160px}
+.kum-note .kn-txt{font-size:12px;color:var(--muted);flex:1 1 200px;min-width:0}
+
+/* Faz 2 kilit paneli — Fırsatlar/Teklifler */
+.locked-panel{padding:56px 24px;text-align:center;color:var(--muted)}
+.locked-panel i{font-size:26px;color:var(--acc-ink);margin-bottom:14px;display:block}
+.locked-panel h4{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:6px}
+.locked-panel p{font-size:13px;max-width:380px;margin:0 auto}
+.locked-panel .gp-soon{display:inline-block;margin-top:14px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--bg);border:1px solid var(--line);padding:4px 10px;border-radius:var(--r-pill)}
+</style>
+</head>
+<body data-sec="cari" data-screen="rehber">
+<div class="gv-app">
+  <aside class="gv-rail" id="gvRail"></aside>
+  <nav class="gv-menu" id="gvMenu"></nav>
+  <div class="gv-divider" id="gvDivider" role="separator" aria-label="Menüyü daralt/genişlet"><span class="gv-grip"></span></div>
+  <div class="gv-overlay" id="gvOverlay"></div>
+
+  <header class="gv-top">
+    <button class="gv-burger" id="gvBurger" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+    <div class="gv-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Ara"></div>
+    <div class="gv-top-tools">
+      <button class="gv-iconbtn" data-tip="Bildirimler" aria-label="Bildirimler"><i class="fa-regular fa-bell"></i><span class="gb-dot"></span></button>
+      <div class="gv-me">
+        <div class="me-ava" id="gvAva">·</div>
+        <div class="me-id"><div class="me-name" id="gvName">—</div><div class="me-role" id="gvRole">—</div></div>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="gv-main">
+    <div class="gv-page-head">
+      <div>
+        <a class="ph-back" href="crm-cari.html"><i class="fa-solid fa-arrow-left"></i> Firma Rehberi</a>
+        <div class="ph-eyebrow">Rehber &amp; Hesap · Taşeron</div>
+        <h1>Demir-Beton İnş. Ltd.</h1>
+        <div class="ph-sub">Vadi Konakları · kaba inşaat taşeronu · ilgili kişi Yusuf Ergin</div>
+      </div>
+      <div class="ph-actions" data-view="yonetim" hidden>
+        <a class="btn btn-ghost btn-sm" href="#" data-wip="1"><i class="fa-solid fa-pen"></i> Düzenle</a>
+        <a class="btn btn-acc btn-sm" href="crm-cari-durum.html?cari=demir-beton"><i class="fa-solid fa-scale-balanced"></i> Cari Durum</a>
+      </div>
+      <div class="ph-actions" data-view="satinalma" hidden>
+        <a class="btn btn-acc btn-sm" href="crm-satinalma-talepler.html"><i class="fa-solid fa-boxes-stacked"></i> Malzeme Talepleri</a>
+      </div>
+    </div>
+
+    <!-- ============ CARİ BAŞLIK KARTI ============ -->
+    <div class="gv-card cari-hero">
+      <div class="cari-hero-id">
+        <div class="cari-hero-mark">DB</div>
+        <div class="cari-hero-info">
+          <div class="cari-hero-tags">
+            <span class="gtag" style="background:var(--info-tint);color:var(--info);border-color:transparent">Taşeron</span>
+            <span class="gstat danger"><i class="fa-solid fa-triangle-exclamation"></i> Vadesi geçti · 4 gün</span>
+          </div>
+          <dl class="cari-hero-meta">
+            <div><dt>İlgili Kişi</dt><dd>Yusuf Ergin</dd></div>
+            <div><dt>Telefon</dt><dd>0532 411 27 63</dd></div>
+            <div><dt>İlişkili Şantiye</dt><dd><a href="crm-santiye-detay.html">Vadi Konakları</a></dd></div>
+            <div><dt>Vergi No</dt><dd>726 034 8841</dd></div>
+          </dl>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat danger"><span class="hstat-num">₺342.000</span><span class="hstat-lbl">Açık bakiye — bizim borcumuz</span></div>
+        <a class="hstat" href="crm-finans-sozlesme-detay.html"><span class="hstat-num">SZL-2025-T05</span><span class="hstat-lbl">Aktif sözleşme <i class="fa-solid fa-arrow-right"></i></span></a>
+        <a class="hstat" href="crm-finans-taseron.html"><span class="hstat-num">1</span><span class="hstat-lbl">Onay bekleyen hakediş <i class="fa-solid fa-arrow-right"></i></span></a>
+        <div class="hstat ok"><span class="hstat-num">1</span><span class="hstat-lbl">Aktif şantiye</span></div>
+      </div>
+    </div>
+
+    <!-- ============ SEKMELER ============ -->
+    <div class="gv-tabs" role="tablist" aria-label="Cari kartı sekmeleri">
+      <button class="gv-tab is-active" data-tab="ozet" role="tab" aria-selected="true"><i class="fa-solid fa-address-card"></i> Özet</button>
+      <button class="gv-tab" data-tab="kisiler" role="tab" aria-selected="false"><i class="fa-solid fa-id-card"></i> İlgili Kişiler</button>
+      <button class="gv-tab" data-tab="hareket" role="tab" aria-selected="false"><i class="fa-solid fa-receipt"></i> Cari Hareketler</button>
+      <button class="gv-tab" data-tab="sozlesme" role="tab" aria-selected="false"><i class="fa-solid fa-file-signature"></i> Sözleşmeler &amp; Hakedişler</button>
+      <button class="gv-tab is-locked" data-locked="1" role="tab" aria-selected="false" aria-disabled="true"><i class="fa-solid fa-lock"></i> Fırsatlar &amp; Teklifler <span class="tb-soon">Faz 2</span></button>
+    </div>
+
+    <!-- ============ ÖZET ============ -->
+    <section class="tab-panel" data-tab-panel="ozet" role="tabpanel" aria-label="Özet">
+      <div class="dash-cols">
+        <div class="gv-card">
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-building"></i> Firma Künyesi</div></div>
+          <div class="gc-body">
+            <dl class="cari-hero-meta" style="grid-template-columns:1fr">
+              <div><dt>Ünvan</dt><dd>Demir-Beton İnş. Ltd.</dd></div>
+              <div><dt>Cari Türü</dt><dd>Taşeron — kaba inşaat (kalıp, demir, beton işçiliği)</dd></div>
+              <div><dt>Vergi Dairesi / No</dt><dd>Tuzla V.D. · 726 034 8841</dd></div>
+              <div><dt>Adres</dt><dd>Tuzla Deri OSB, İstanbul</dd></div>
+              <div><dt>İlişkili Şantiye</dt><dd><a href="crm-santiye-detay.html">Vadi Konakları</a> — kaba inşaat imalatı</dd></div>
+            </dl>
+          </div>
+          <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Bu cariye ait tüm belgeler Sözleşmeler &amp; Hakedişler sekmesinde.</span></div>
+        </div>
+        <div class="gv-card">
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-scale-balanced"></i> Açık Bakiye</div></div>
+          <div class="bal-row borc odue">
+            <span class="br-lbl"><i class="fa-solid fa-triangle-exclamation"></i> Vadesi geçen tutar</span>
+            <span class="br-val">₺342.000</span>
+          </div>
+          <div class="bal-row">
+            <span class="br-lbl"><i class="fa-solid fa-calendar-days"></i> Son hareket tarihi</span>
+            <span class="br-val" style="font-weight:700;color:var(--ink)">28 Haz 2026</span>
+          </div>
+          <div class="bal-row">
+            <span class="br-lbl"><i class="fa-solid fa-clock"></i> Gecikme</span>
+            <span class="br-val" style="font-weight:700;color:var(--ink)">4 gün</span>
+          </div>
+          <div class="gc-foot"><a class="gc-link" href="crm-cari-durum.html?cari=demir-beton">Tam ekstreyi gör <i class="fa-solid fa-arrow-right"></i></a></div>
+        </div>
+      </div>
+
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-file-signature"></i> Sözleşme Özeti</div>
+          <a class="gc-link" href="#" data-tab-goto="sozlesme">Detay <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="gc-body">
+          <dl class="cari-hero-meta">
+            <div><dt>Sözleşme No</dt><dd><a href="crm-finans-sozlesme-detay.html" style="color:var(--acc-ink)">SZL-2025-T05</a></dd></div>
+            <div><dt>Sözleşme Bedeli</dt><dd>₺450.000 (KDV hariç)</dd></div>
+            <div><dt>Süre</dt><dd>1 Nisan 2026 – 30 Eylül 2026</dd></div>
+            <div><dt>Kümülatif İmalat</dt><dd>%66,7 (₺300.000)</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ İLGİLİ KİŞİLER ============ -->
+    <section class="tab-panel" data-tab-panel="kisiler" role="tabpanel" aria-label="İlgili Kişiler" hidden>
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-id-card"></i> İlgili Kişi</div>
+          <a class="gc-link" href="crm-cari-kisiler.html">Tüm cari kişileri <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="person-card">
+          <div class="person-mark">YE</div>
+          <div class="person-info">
+            <h3>Yusuf Ergin</h3>
+            <span>Taşeron Sorumlusu · Demir-Beton İnş. Ltd.</span>
+          </div>
+        </div>
+        <div class="person-contact">
+          <div class="pc-row"><i class="fa-solid fa-phone"></i> <a href="tel:05324112763">0532 411 27 63</a></div>
+          <div class="pc-row"><i class="fa-solid fa-envelope"></i> <a href="mailto:yusuf.ergin@demirbeton.example">yusuf.ergin@demirbeton.example</a></div>
+          <div class="pc-row"><i class="fa-solid fa-helmet-safety"></i> Vadi Konakları — kaba inşaat sahası</div>
+        </div>
+        <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Demir-Beton İnş. Ltd. için sistemde kayıtlı tek ilgili kişi budur.</span></div>
+      </div>
+    </section>
+
+    <!-- ============ CARİ HAREKETLER ============ -->
+    <section class="tab-panel" data-tab-panel="hareket" role="tabpanel" aria-label="Cari Hareketler" hidden>
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-receipt"></i> Son Hareketler</div>
+          <a class="gc-link" href="crm-cari-durum.html?cari=demir-beton">Tam ekstre — Cari Durum <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="gc-body flush">
+          <table class="gtable" id="tblHareket">
+            <thead>
+              <tr>
+                <th class="col-tarih">Tarih</th>
+                <th>Açıklama</th>
+                <th class="num col-tutar">Borç</th>
+                <th class="num col-tutar">Alacak</th>
+                <th class="num col-tutar">Yürüyen Bakiye</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="muted">02 Haz 2026</td>
+                <td class="t-strong">Hakediş #1 tahakkuku</td>
+                <td class="num">—</td>
+                <td class="num">₺210.000</td>
+                <td class="num" style="font-weight:800;color:var(--danger)">₺210.000 Borç</td>
+              </tr>
+              <tr>
+                <td class="muted">10 Haz 2026</td>
+                <td class="t-strong">Ödeme (banka havalesi)</td>
+                <td class="num">₺90.000</td>
+                <td class="num">—</td>
+                <td class="num" style="font-weight:800;color:var(--danger)">₺120.000 Borç</td>
+              </tr>
+              <tr>
+                <td class="muted">22 Haz 2026</td>
+                <td class="t-strong">Malzeme yansıtma faturası</td>
+                <td class="num">—</td>
+                <td class="num">₺132.000</td>
+                <td class="num" style="font-weight:800;color:var(--danger)">₺252.000 Borç</td>
+              </tr>
+              <tr>
+                <td class="muted">28 Haz 2026</td>
+                <td class="t-strong">Hakediş #2 tahakkuku (onayda)</td>
+                <td class="num">—</td>
+                <td class="num">₺90.000</td>
+                <td class="num" style="font-weight:800;color:var(--danger)">₺342.000 Borç</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SÖZLEŞMELER & HAKEDİŞLER ============ -->
+    <section class="tab-panel" data-tab-panel="sozlesme" role="tabpanel" aria-label="Sözleşmeler ve Hakedişler" hidden>
+      <div class="gv-card" style="margin-bottom:16px">
+        <div class="szl-summary">
+          <h3><a href="crm-finans-sozlesme-detay.html" style="color:var(--ink)">SZL-2025-T05</a> — Vadi Konakları kaba inşaat</h3>
+          <div class="szl-sub">Kalıp işçiliği, demir montajı, C30 beton dökümü · 1 Nisan 2026 – 30 Eylül 2026 · ₺450.000 (KDV hariç)</div>
+        </div>
+        <div class="kum-note" style="border-top:none;padding-top:0">
+          <div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:66.7%"></div></div><span class="gbar-val">%66,7</span></div>
+          <span class="kn-txt">₺300.000 kümülatif imalat / ₺450.000 sözleşme bedeli</span>
+          <a class="btn btn-ghost btn-sm" href="crm-finans-sozlesme-detay.html"><i class="fa-solid fa-file-signature"></i> Sözleşme Detayı</a>
+        </div>
+      </div>
+
+      <div class="gv-card">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-people-arrows"></i> Hakediş Geçmişi</div></div>
+        <div class="tbl-scroll" style="padding:0 22px 22px">
+          <table class="kum-table">
+            <thead>
+              <tr><th>Hakediş</th><th>Dönem</th><th class="num">Net Tutar</th><th>Durum</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><a href="crm-finans-hakedis-detay.html">TH-2026-014</a></td>
+                <td>Haziran 2026</td>
+                <td class="num">₺90.000</td>
+                <td><span class="gstat wait">Onay Bekliyor</span></td>
+              </tr>
+              <tr>
+                <td><a href="crm-finans-hakedis-detay.html">TH-2026-013</a></td>
+                <td>Mayıs 2026</td>
+                <td class="num">₺210.000</td>
+                <td><span class="gstat ok">Onaylandı</span></td>
+              </tr>
+              <tr>
+                <td><a href="crm-finans-hakedis-detay.html">TH-2026-005</a></td>
+                <td>Nisan 2026</td>
+                <td class="num">₺185.000</td>
+                <td><span class="gstat ok">Ödendi</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FIRSATLAR & TEKLİFLER (Faz 2 kilitli) ============ -->
+    <section class="tab-panel" data-tab-panel="firsat" role="tabpanel" aria-label="Fırsatlar ve Teklifler" hidden>
+      <div class="gv-card">
+        <div class="locked-panel">
+          <i class="fa-solid fa-lock"></i>
+          <h4>Satış fırsatları ve teklifler</h4>
+          <p>Bu cari için fırsat ve teklif takibi, Satış CRM modülüyle birlikte Faz 2 kapsamında eklenecek.</p>
+          <span class="gp-soon">Faz 2</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/ui.js"></script>
+<script>
+/* rol daraltması: yonetim (superadmin/sahip/yonetim/muhasebe) düzenleme görür, satinalma sınırlı görür */
+(function(){
+  if(!window.GV) return;
+  var MAP = { superadmin:'yonetim', sahip:'yonetim', yonetim:'yonetim', muhasebe:'yonetim', satinalma:'satinalma' };
+  var view = MAP[GV.role] || 'yonetim';
+  document.querySelectorAll('[data-view]').forEach(function(el){
+    el.hidden = el.getAttribute('data-view') !== view;
+  });
+})();
+
+/* sekme motoru: tık + URL hash, kilitli sekme toast ile bilgilendirir */
+(function(){
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.gv-tab'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
+  function activate(id){
+    tabs.forEach(function(t){
+      var on = t.getAttribute('data-tab') === id;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    panels.forEach(function(p){ p.hidden = p.getAttribute('data-tab-panel') !== id; });
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){
+      if(t.hasAttribute('data-locked')){
+        if(window.gvToast) gvToast('Fırsatlar &amp; Teklifler — Faz 2 kapsamında, bu sürümde kilitli.'.replace('&amp;','&'), {type:'info'});
+        return;
+      }
+      var id = t.getAttribute('data-tab');
+      activate(id);
+      history.replaceState(null, '', '#' + id);
+    });
+  });
+  document.querySelectorAll('[data-tab-goto]').forEach(function(el){
+    el.addEventListener('click', function(e){
+      e.preventDefault();
+      var id = el.getAttribute('data-tab-goto');
+      activate(id);
+      history.replaceState(null, '', '#' + id);
+      var btn = document.querySelector('.gv-tab[data-tab="' + id + '"]');
+      if(btn){ btn.scrollIntoView({block:'nearest', inline:'center'}); btn.focus(); }
+    });
+  });
+  var initial = (location.hash || '').replace('#', '');
+  var valid = tabs.some(function(t){ return t.getAttribute('data-tab') === initial; });
+  activate(valid ? initial : 'ozet');
+})();
+</script>
+</body>
+</html>

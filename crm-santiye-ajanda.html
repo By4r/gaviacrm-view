@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>İş Programı — Gavia CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+<link rel="stylesheet" href="assets/css/ui.css">
+<style>
+/* ============ SAYFAYA ÖZEL — İş Programı haftalık grid'i ============ */
+.ajd-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:16px 22px;border-bottom:1px solid var(--line)}
+.ajd-weeknav{display:flex;align-items:center;gap:12px}
+.ajd-week-lbl{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap}
+
+.ajd-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:var(--line)}
+.ajd-day{background:var(--paper);min-width:0;display:flex;flex-direction:column}
+.ajd-day.is-today{background:rgba(var(--acc-rgb),.045)}
+.ajd-dhead{padding:14px 12px 12px;border-bottom:1px solid var(--line);text-align:center}
+.ajd-day.is-today .ajd-dhead{border-bottom-color:rgba(var(--acc-rgb),.3)}
+.ajd-dname{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ajd-day.is-today .ajd-dname{color:var(--acc-ink)}
+.ajd-ddate{font-size:17px;font-weight:800;color:var(--ink);margin-top:2px;line-height:1}
+.ajd-day.is-today .ajd-ddate{color:var(--acc-ink)}
+.ajd-today-badge{display:inline-block;margin-top:6px;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--acc-ink);background:rgba(var(--acc-rgb),.14);padding:2px 8px;border-radius:var(--r-pill)}
+
+.ajd-list{flex:1;display:flex;flex-direction:column;gap:8px;padding:10px}
+.ajd-card{background:var(--bg);border:1px solid var(--line);border-left:3px solid var(--line-2);border-radius:var(--r-sm);padding:10px 11px;transition:.18s var(--ease)}
+.ajd-card:hover{border-color:var(--line-2);transform:translateY(-1px);box-shadow:var(--sh-sm)}
+.ajd-card.beton{border-left-color:var(--info)}
+.ajd-card.denetim{border-left-color:var(--warn)}
+.ajd-card.hakedis{border-left-color:var(--ok)}
+.ajd-card.isg{border-left-color:var(--acc-ink)}
+.ajd-card.toplanti{border-left-color:var(--ink-2)}
+.ajd-time{font-size:11px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.ajd-type{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;margin-left:7px}
+.ajd-card.beton .ajd-type{color:var(--info)}
+.ajd-card.denetim .ajd-type{color:var(--warn)}
+.ajd-card.hakedis .ajd-type{color:var(--ok)}
+.ajd-card.isg .ajd-type{color:var(--acc-ink)}
+.ajd-card.toplanti .ajd-type{color:var(--ink-2)}
+.ajd-title{font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.35;margin-top:6px}
+.ajd-meta{margin-top:7px;display:flex;flex-direction:column;gap:3px}
+.ajd-meta span{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ajd-meta i{width:12px;flex:none;font-size:10px}
+
+.ajd-empty{flex:1;display:flex;align-items:center;justify-content:center;padding:20px 10px;text-align:center}
+.ajd-empty span{font-size:11.5px;color:var(--line-2);font-weight:600}
+
+.ajd-legend{display:flex;flex-wrap:wrap;gap:16px;padding:14px 22px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-2)}
+.ajd-legend .lg-item{display:inline-flex;align-items:center;gap:7px}
+.ajd-legend .lg-dot{width:9px;height:9px;border-radius:50%;flex:none}
+.ajd-legend .lg-dot.beton{background:var(--info)}
+.ajd-legend .lg-dot.denetim{background:var(--warn)}
+.ajd-legend .lg-dot.hakedis{background:var(--ok)}
+.ajd-legend .lg-dot.isg{background:var(--acc-ink)}
+.ajd-legend .lg-dot.toplanti{background:var(--ink-2)}
+
+@media(max-width:980px){
+  .ajd-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .ajd-day:nth-child(n+5){border-top:1px solid var(--line)}
+}
+@media(max-width:640px){
+  .ajd-toolbar{padding:14px 16px}
+  .ajd-grid{grid-template-columns:1fr}
+  .ajd-day{border-top:1px solid var(--line)}
+  .ajd-day:first-child{border-top:none}
+  .ajd-dhead{display:flex;align-items:baseline;gap:9px;text-align:left;padding:12px 16px}
+  .ajd-ddate{margin-top:0}
+  .ajd-today-badge{margin-top:0;margin-left:auto}
+  .ajd-list{padding:0 16px 14px}
+  .ajd-legend{padding:14px 16px;gap:12px}
+}
+</style>
+</head>
+<body data-sec="santiye" data-screen="ajanda">
+<div class="gv-app">
+  <aside class="gv-rail" id="gvRail"></aside>
+  <nav class="gv-menu" id="gvMenu"></nav>
+  <div class="gv-divider" id="gvDivider" role="separator" aria-label="Menüyü daralt/genişlet"><span class="gv-grip"></span></div>
+  <div class="gv-overlay" id="gvOverlay"></div>
+
+  <header class="gv-top">
+    <button class="gv-burger" id="gvBurger" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+    <div class="gv-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Ara"></div>
+    <div class="gv-top-tools">
+      <button class="gv-iconbtn" data-tip="Bildirimler" aria-label="Bildirimler"><i class="fa-regular fa-bell"></i><span class="gb-dot"></span></button>
+      <div class="gv-me">
+        <div class="me-ava" id="gvAva">·</div>
+        <div class="me-id"><div class="me-name" id="gvName">—</div><div class="me-role" id="gvRole">—</div></div>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="gv-main">
+    <div class="gv-page-head">
+      <div>
+        <div class="ph-eyebrow">Saha</div>
+        <h1>İş Programı</h1>
+        <div class="ph-sub" id="ajdSub">Yükleniyor…</div>
+      </div>
+      <div class="ph-actions">
+        <a class="btn btn-acc btn-sm" href="#" data-wip="1"><i class="fa-solid fa-plus"></i> Etkinlik Ekle</a>
+      </div>
+    </div>
+
+    <div class="gv-card">
+      <div class="ajd-toolbar">
+        <div class="ajd-weeknav">
+          <button class="ia-btn" id="ajdPrev" aria-label="Önceki hafta" data-no-confirm><i class="fa-solid fa-chevron-left"></i></button>
+          <span class="ajd-week-lbl">29 Haziran – 5 Temmuz 2026</span>
+          <button class="ia-btn" id="ajdNext" aria-label="Sonraki hafta" data-no-confirm><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="ajd-grid" id="ajdGrid"></div>
+      <div class="ajd-legend">
+        <span class="lg-item"><span class="lg-dot beton"></span> Beton Dökümü</span>
+        <span class="lg-item"><span class="lg-dot denetim"></span> Denetim</span>
+        <span class="lg-item"><span class="lg-dot hakedis"></span> Hakediş Teslimi</span>
+        <span class="lg-item"><span class="lg-dot isg"></span> İSG Eğitimi</span>
+        <span class="lg-item"><span class="lg-dot toplanti"></span> Toplantı</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/ui.js"></script>
+<script>
+(function(){
+  if(!window.GV) return;
+
+  /* ---- mock hafta programı — kanonik şantiye/kişi adları (shell.js üst yorum bloğu).
+     TÜR renkleri accent'ten bağımsız semantik token'lar: beton=info, denetim=warn,
+     hakediş=ok, İSG eğitimi=acc-ink (kurumsal/eğitim), toplantı=ink-2 (nötr). ---- */
+  var TIP = {
+    beton:   {ic:'fa-trowel-bricks',   lbl:'Beton Dökümü'},
+    denetim: {ic:'fa-clipboard-check', lbl:'Denetim'},
+    hakedis: {ic:'fa-file-invoice-dollar', lbl:'Hakediş Teslimi'},
+    isg:     {ic:'fa-shield-halved',   lbl:'İSG Eğitimi'},
+    toplanti:{ic:'fa-people-arrows',   lbl:'Toplantı'}
+  };
+  var GUNLER = [
+    {g:'Pazartesi', k:'Pzt', d:29, ay:'Haz', olay:[
+      {saat:'07:00', tip:'beton', baslik:'Temel B Blok betonu', santiye:'Vadi Konakları', kisi:'İbrahim Sönmez, Ramazan Kılıç'}
+    ]},
+    {g:'Salı', k:'Sal', d:30, ay:'Haz', olay:[
+      {saat:'10:00', tip:'denetim', baslik:'Aliağa Liman İşletmeleri saha denetimi', santiye:'Liman Lojistik Merkezi', kisi:'Aylin Koç, Erhan Kaya'}
+    ]},
+    {g:'Çarşamba', k:'Çar', d:1, ay:'Tem', olay:[
+      {saat:'09:00', tip:'isg', baslik:'Yüksekte çalışma toolbox eğitimi', santiye:'Merkez Şantiye', kisi:'Ömer Taşkın'}
+    ]},
+    {g:'Perşembe', k:'Per', d:2, ay:'Tem', bugun:true, olay:[
+      {saat:'14:00', tip:'hakedis', baslik:'Haziran hakedişi teslimi — Körfez GYO', santiye:'Vadi Konakları', kisi:'Elif Sarıkaya, Selin Aydemir'},
+      {saat:'16:00', tip:'toplanti', baslik:'Haftalık saha koordinasyon toplantısı', santiye:'Liman Lojistik Merkezi', kisi:'Murat Denizli'}
+    ]},
+    {g:'Cuma', k:'Cum', d:3, ay:'Tem', olay:[
+      {saat:'11:00', tip:'denetim', baslik:'İç İSG denetimi — iskele kontrolü', santiye:'Vadi Konakları', kisi:'Hasan Demirci'}
+    ]},
+    {g:'Cumartesi', k:'Cmt', d:4, ay:'Tem', olay:[
+      {saat:'08:00', tip:'beton', baslik:'Atölye zemini dökümü', santiye:'Merkez Şantiye', kisi:'Recep Yaman'}
+    ]},
+    {g:'Pazar', k:'Paz', d:5, ay:'Tem', olay:[]}
+  ];
+
+  var grid = document.getElementById('ajdGrid');
+  var gh = '';
+  var toplamOlay = 0;
+  GUNLER.forEach(function(gun){
+    gh += '<div class="ajd-day'+(gun.bugun?' is-today':'')+'">';
+    gh += '<div class="ajd-dhead"><div class="ajd-dname">'+gun.g+'</div><div class="ajd-ddate">'+gun.d+' '+gun.ay+'</div>'
+        + (gun.bugun ? '<span class="ajd-today-badge">Bugün</span>' : '') + '</div>';
+    if(gun.olay.length){
+      gh += '<div class="ajd-list">';
+      gun.olay.forEach(function(o){
+        var T = TIP[o.tip];
+        toplamOlay++;
+        gh += '<div class="ajd-card '+o.tip+'" data-santiye="'+o.santiye+'">'
+            + '<span class="ajd-time">'+o.saat+'</span><span class="ajd-type"><i class="fa-solid '+T.ic+'"></i>'+T.lbl+'</span>'
+            + '<div class="ajd-title">'+o.baslik+'</div>'
+            + '<div class="ajd-meta"><span><i class="fa-solid fa-helmet-safety"></i>'+o.santiye+'</span><span><i class="fa-solid fa-user"></i>'+o.kisi+'</span></div>'
+            + '</div>';
+      });
+      gh += '</div>';
+    } else {
+      gh += '<div class="ajd-empty"><span>Planlı etkinlik yok</span></div>';
+    }
+    gh += '</div>';
+  });
+  grid.innerHTML = gh;
+  document.getElementById('ajdSub').textContent = toplamOlay + ' etkinlik · 29 Haziran – 5 Temmuz 2026 haftası';
+
+  /* şef tek şantiye görür — diğer etkinlik kartları kalıcı kaldırılır, boşalan gün boş durum gösterir */
+  if(GV.role === 'sef'){
+    document.querySelectorAll('.ajd-card').forEach(function(c){
+      if(c.getAttribute('data-santiye') !== 'Vadi Konakları') c.remove();
+    });
+    var kalan = 0;
+    document.querySelectorAll('.ajd-day').forEach(function(day){
+      var list = day.querySelector('.ajd-list');
+      if(list && !list.children.length){
+        list.outerHTML = '<div class="ajd-empty"><span>Planlı etkinlik yok</span></div>';
+      } else if(list){
+        kalan += list.children.length;
+      }
+    });
+    document.getElementById('ajdSub').textContent = kalan + ' etkinlik · Vadi Konakları · 29 Haziran – 5 Temmuz 2026 haftası';
+  }
+
+  document.getElementById('ajdPrev').addEventListener('click', function(){
+    gvToast('Önceki haftaların programı bu prototipte gösterilmiyor.', {type:'info'});
+  });
+  document.getElementById('ajdNext').addEventListener('click', function(){
+    gvToast('Gelecek haftanın programı henüz planlanmadı.', {type:'info'});
+  });
+})();
+</script>
+</body>
+</html>

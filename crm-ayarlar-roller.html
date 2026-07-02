@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Roller &amp; Yetkiler — Gavia CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+<link rel="stylesheet" href="assets/css/ui.css">
+<style>
+/* ============ SAYFAYA ÖZEL — rol × bölüm yetki matrisi (SAYFA-LOKAL) ============ */
+.mtx-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.mtx{width:100%;border-collapse:separate;border-spacing:0;min-width:960px}
+
+/* başlık satırı — bölüm sütunları */
+.mtx thead th{background:var(--paper);vertical-align:bottom}
+.mtx-rolehead{
+  position:sticky;left:0;z-index:3;background:var(--paper);
+  text-align:left;padding:14px 16px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);
+  font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);min-width:220px;
+}
+.mtx-col{padding:12px 6px 14px;text-align:center;border-bottom:1px solid var(--line)}
+.mtx-col .ci{width:32px;height:32px;margin:0 auto 7px;border-radius:var(--r-sm);display:grid;place-items:center;background:var(--bg);color:var(--ink-2);font-size:13px}
+.mtx-col .cl{font-size:11px;font-weight:700;color:var(--ink-2);white-space:nowrap}
+.mtx-col.ayar .ci{background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)}
+.mtx-col.ayar .cl{color:var(--acc-ink)}
+.mtx-cnthead{padding:12px 14px;text-align:center;border-bottom:1px solid var(--line);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+/* satırlar */
+.mtx tbody tr:hover td,.mtx tbody tr:hover .rolecell{background:var(--bg)}
+.rolecell{
+  position:sticky;left:0;z-index:1;background:var(--paper);
+  text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);
+}
+.rc-in{display:flex;align-items:center;gap:11px}
+.rc-mark{width:36px;height:36px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:12px;font-weight:800;background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)}
+.rc-info{min-width:0;line-height:1.35}
+.rc-info b{display:block;font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap}
+.rc-info span{font-size:11.5px;color:var(--muted);white-space:nowrap}
+tr.is-plat .rc-mark{background:var(--gv-deep);color:var(--gv-mint)}
+tr.is-owner .rc-mark{background:var(--acc-ink);color:#fff}
+
+.cell{text-align:center;border-bottom:1px solid var(--line);height:54px;font-size:0}
+.cell.on{background:rgba(var(--acc-rgb),.05)}
+.cell .yes{color:var(--acc-ink);font-size:14px}
+.cell .no{display:inline-block;width:13px;height:2px;border-radius:2px;background:var(--line-2)}
+.cell.ayarcol.on{background:rgba(var(--acc-rgb),.09)}
+
+.cntcell{text-align:center;border-bottom:1px solid var(--line);padding:0 14px}
+.cnt{font-size:12.5px;font-weight:800;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cnt.full{color:var(--acc-ink)}
+
+/* açıklama / lejant */
+.mtx-legend{display:flex;align-items:center;gap:20px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.lg-item{display:inline-flex;align-items:center;gap:8px}
+.lg-yes{color:var(--acc-ink);font-size:13px}
+.lg-no{display:inline-block;width:13px;height:2px;border-radius:2px;background:var(--line-2)}
+
+/* faz 2 — satış bölümü notu (matris 10. kolona ŞİŞİRİLMEZ) */
+.phase-note{
+  display:flex;align-items:flex-start;gap:13px;
+  background:var(--bg);border:1px dashed var(--line-2);border-radius:var(--r-md);padding:14px 16px;margin-top:16px;
+}
+.phase-note .pn-ico{width:36px;height:36px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;background:var(--paper);border:1px solid var(--line);color:var(--muted);font-size:14px}
+.phase-note .pn-b{min-width:0;line-height:1.5}
+.phase-note .pn-b b{font-size:13px;color:var(--ink-2);font-weight:700;display:inline-flex;align-items:center;gap:8px}
+.phase-note .pn-b p{font-size:12.5px;color:var(--muted);margin-top:3px}
+</style>
+</head>
+<body data-sec="ayarlar" data-screen="roller">
+<div class="gv-app">
+  <aside class="gv-rail" id="gvRail"></aside>
+  <nav class="gv-menu" id="gvMenu"></nav>
+  <div class="gv-divider" id="gvDivider" role="separator" aria-label="Menüyü daralt/genişlet"><span class="gv-grip"></span></div>
+  <div class="gv-overlay" id="gvOverlay"></div>
+
+  <header class="gv-top">
+    <button class="gv-burger" id="gvBurger" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+    <div class="gv-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Ara"></div>
+    <div class="gv-top-tools">
+      <button class="gv-iconbtn" data-tip="Bildirimler" aria-label="Bildirimler"><i class="fa-regular fa-bell"></i><span class="gb-dot"></span></button>
+      <div class="gv-me">
+        <div class="me-ava" id="gvAva">·</div>
+        <div class="me-id"><div class="me-name" id="gvName">—</div><div class="me-role" id="gvRole">—</div></div>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="gv-main">
+    <div class="gv-page-head">
+      <div>
+        <div class="ph-eyebrow">Yönetim</div>
+        <h1>Roller &amp; Yetkiler</h1>
+        <div class="ph-sub">Yapıtaş İnşaat A.Ş. — rollerin bölüm erişim matrisi</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" data-soon="1"><i class="fa-solid fa-lock"></i> Yeni rol</button>
+    </div>
+
+    <div class="gv-card">
+      <div class="gc-head">
+        <div class="gc-title"><i class="fa-solid fa-user-shield"></i> Rol Erişim Matrisi</div>
+        <div class="mtx-legend">
+          <span class="lg-item"><i class="fa-solid fa-check lg-yes"></i> Erişebilir</span>
+          <span class="lg-item"><span class="lg-no"></span> Erişemez</span>
+        </div>
+      </div>
+      <div class="gc-body flush">
+        <div class="mtx-wrap">
+          <table class="mtx" id="mtx">
+            <thead>
+              <tr id="mtxHead"></tr>
+            </thead>
+            <tbody id="mtxBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="gc-foot">
+        <span class="inv-note" style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)"><i class="fa-solid fa-circle-info" style="color:var(--acc-ink)"></i> Erişim yetkileri roller üzerinden yönetilir; kişi bazlı şantiye kapsamı <a href="crm-ayarlar-kullanicilar.html" style="color:var(--acc-ink);font-weight:700">Kullanıcılar</a> ekranındadır.</span>
+      </div>
+    </div>
+
+    <!-- Faz 2 genişleme — matrise kolon eklenmez, not olarak durur -->
+    <div class="phase-note">
+      <div class="pn-ico"><i class="fa-solid fa-chart-line"></i></div>
+      <div class="pn-b">
+        <b>Satış CRM <span class="gtag">Faz 2</span></b>
+        <p>Satış bölümü Faz 2'de açılır. Şu an rail'de yalnız Firma Sahibi ve Gavia platform yöneticisine kilitli çip olarak görünür; rol matrisine Faz 2'de sütun olarak eklenecektir.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/ui.js"></script>
+<script>
+/* ---- rol × bölüm matrisi — AŞAMA 1'de onaylanan ROLES config'inden BİREBİR ---- */
+(function(){
+  if(!window.GV) return;
+
+  var SECS = [
+    {k:'panel',     ic:'fa-gauge-high',     lbl:'Panel'},
+    {k:'santiye',   ic:'fa-helmet-safety',  lbl:'Şantiye'},
+    {k:'gorev',     ic:'fa-list-check',     lbl:'Görev'},
+    {k:'personel',  ic:'fa-users',          lbl:'Personel'},
+    {k:'operasyon', ic:'fa-clipboard-list', lbl:'Operasyon'},
+    {k:'satinalma', ic:'fa-cart-flatbed',   lbl:'Satın Alma'},
+    {k:'cari',      ic:'fa-address-book',   lbl:'Cari'},
+    {k:'finans',    ic:'fa-file-signature', lbl:'Finans'},
+    {k:'ayarlar',   ic:'fa-sliders',        lbl:'Ayarlar', admin:true}
+  ];
+  var ROLES = [
+    {ini:'DA', role:'Gavia Platform Yöneticisi', user:'Deniz Aksoy',      cls:'is-plat',  secs:['panel','santiye','gorev','personel','operasyon','satinalma','cari','finans','ayarlar']},
+    {ini:'KY', role:'Firma Sahibi',              user:'Kemal Yapıcıoğlu',  cls:'is-owner', secs:['panel','santiye','gorev','personel','operasyon','satinalma','cari','finans','ayarlar']},
+    {ini:'MD', role:'Genel Müdür',               user:'Murat Denizli',     secs:['panel','santiye','gorev','personel','operasyon','satinalma','cari','finans']},
+    {ini:'ES', role:'Teknik Müdür',              user:'Elif Sarıkaya',     secs:['panel','santiye','gorev','operasyon','finans']},
+    {ini:'HD', role:'Şantiye Şefi',              user:'Hasan Demirci',     secs:['panel','santiye','gorev','personel','operasyon','satinalma']},
+    {ini:'NA', role:'Muhasebe',                  user:'Nesrin Aydın',      secs:['panel','personel','operasyon','cari','finans']},
+    {ini:'BY', role:'Satın Alma Sorumlusu',      user:'Baran Yıldız',      secs:['panel','gorev','satinalma','cari']},
+    {ini:'SK', role:'İK Uzmanı',                 user:'Seda Karaca',       secs:['panel','gorev','personel']},
+    {ini:'AV', role:'Saha Personeli',            user:'Ali Vural',         secs:['panel','gorev']}
+  ];
+
+  var head = document.getElementById('mtxHead');
+  var hh = '<th class="mtx-rolehead">Rol</th>';
+  SECS.forEach(function(s){
+    hh += '<th class="mtx-col'+(s.admin?' ayar':'')+'"><span class="ci"><i class="fa-solid '+s.ic+'"></i></span><span class="cl">'+s.lbl+'</span></th>';
+  });
+  hh += '<th class="mtx-cnthead">Kapsam</th>';
+  head.innerHTML = hh;
+
+  var body = document.getElementById('mtxBody');
+  var bh = '';
+  ROLES.forEach(function(r){
+    bh += '<tr'+(r.cls?' class="'+r.cls+'"':'')+'>';
+    bh += '<td class="rolecell"><div class="rc-in"><div class="rc-mark">'+r.ini+'</div><div class="rc-info"><b>'+r.role+'</b><span>'+r.user+'</span></div></div></td>';
+    SECS.forEach(function(s){
+      var on = r.secs.indexOf(s.k) !== -1;
+      bh += '<td class="cell'+(s.admin?' ayarcol':'')+(on?' on':'')+'">'
+          + (on ? '<i class="fa-solid fa-check yes" aria-label="Erişebilir"></i>' : '<span class="no" aria-label="Erişemez"></span>')
+          + '</td>';
+    });
+    var n = r.secs.length;
+    bh += '<td class="cntcell"><span class="cnt'+(n===9?' full':'')+'">'+n+' / 9</span></td>';
+    bh += '</tr>';
+  });
+  body.innerHTML = bh;
+})();
+</script>
+</body>
+</html>
