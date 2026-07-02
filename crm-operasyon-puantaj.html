@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Puantaj — Gavia CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+<link rel="stylesheet" href="assets/css/ui.css">
+<style>
+/* ============ SAYFAYA ÖZEL — Puantaj grid'i ============ */
+.pt-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:16px 22px;border-bottom:1px solid var(--line)}
+.pt-weeknav{display:flex;align-items:center;gap:12px}
+.pt-week-lbl{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;min-width:190px;text-align:center}
+
+#tblPuantaj{min-width:900px;border-collapse:separate;border-spacing:0}
+#tblPuantaj th,#tblPuantaj td{border-bottom:1px solid var(--line)}
+#tblPuantaj tr:last-child td{border-bottom:none}
+.col-per{width:190px}
+.col-poz{width:150px}
+.col-gun{width:66px;text-align:center!important}
+.col-hafta{width:96px}
+
+/* personel adı hücresi — yatay kaydırmada sabit kalır */
+#tblPuantaj td:first-child,#tblPuantaj th:first-child{
+  position:sticky;left:0;background:var(--paper);z-index:2;
+}
+#tblPuantaj tbody tr:hover td:first-child{background:var(--bg)}
+
+.pp-cell{display:flex;align-items:center;gap:11px;min-width:0}
+.pp-mark{width:34px;height:34px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:12px;font-weight:800}
+.pp-info{min-width:0;line-height:1.3}
+.pp-info b{display:block;font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pp-info span{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* gün başlığı — bugün vurgusu */
+.dh{display:flex;flex-direction:column;align-items:center;gap:1px;line-height:1.2}
+.dh .dh-d{font-size:10px;font-weight:700;letter-spacing:.04em}
+.dh .dh-n{font-size:13px;font-weight:800;color:var(--ink)}
+th.is-today,td.is-today{background:rgba(var(--acc-rgb),.05)}
+th.is-today .dh-n{color:var(--acc-ink)}
+th.is-today .dh-d{color:var(--acc-ink)}
+
+/* günlük durum işareti */
+.pt-mark{
+  width:32px;height:32px;margin:0 auto;border-radius:var(--r-sm);display:grid;place-items:center;
+  font-size:13px;position:relative;cursor:default;
+}
+.pt-mark.tam{background:var(--ok-tint);color:var(--ok)}
+.pt-mark.yarim{background:var(--warn-tint);color:var(--warn)}
+.pt-mark.yok{background:var(--danger-tint);color:var(--danger)}
+.pt-mark.izin{background:var(--info-tint);color:var(--info)}
+.pt-mark.rapor{background:var(--bg);color:var(--muted);border:1px solid var(--line-2)}
+.pt-mark.tatil{background:transparent;color:var(--line-2);border:1px dashed var(--line)}
+.pt-mark.gelecek{background:transparent;color:var(--line-2)}
+.pt-mark.gelecek::before{content:"–";font-weight:700}
+
+/* hücre tooltip — sadece puantaj grid'inde, aşağı açılır */
+.pt-mark[data-tip]{position:relative}
+.pt-mark[data-tip]:hover::after,.pt-mark[data-tip]:focus-visible::after{opacity:1;transform:translateX(-50%) translateY(0)}
+.pt-mark[data-tip]::after{
+  content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;
+  transform:translateX(-50%) translateY(3px);
+  background:var(--ink);color:#fff;font-size:11px;font-weight:600;white-space:nowrap;
+  padding:5px 9px;border-radius:7px;box-shadow:var(--sh-md);
+  opacity:0;pointer-events:none;transition:opacity .15s var(--ease),transform .15s var(--ease);z-index:20;
+}
+
+.pt-total{font-size:13px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.pt-total span{display:block;font-size:10.5px;font-weight:600;color:var(--muted);margin-top:1px}
+
+/* lejant */
+.pt-legend{display:flex;flex-wrap:wrap;gap:16px;padding:16px 22px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-2)}
+.pt-legend .lg-item{display:inline-flex;align-items:center;gap:7px}
+.pt-legend .lg-sw{width:18px;height:18px;border-radius:6px;flex:none;display:grid;place-items:center;font-size:9px}
+.pt-legend .lg-sw.tam{background:var(--ok-tint);color:var(--ok)}
+.pt-legend .lg-sw.yarim{background:var(--warn-tint);color:var(--warn)}
+.pt-legend .lg-sw.yok{background:var(--danger-tint);color:var(--danger)}
+.pt-legend .lg-sw.izin{background:var(--info-tint);color:var(--info)}
+.pt-legend .lg-sw.rapor{background:var(--bg);color:var(--muted);border:1px solid var(--line-2)}
+.pt-legend .lg-sw.tatil{background:transparent;color:var(--line-2);border:1px dashed var(--line)}
+
+@media(max-width:640px){
+  .pt-toolbar{padding:14px 16px}
+  .pt-legend{padding:14px 16px;gap:12px}
+}
+</style>
+</head>
+<body data-sec="operasyon" data-screen="puantaj">
+<div class="gv-app">
+  <aside class="gv-rail" id="gvRail"></aside>
+  <nav class="gv-menu" id="gvMenu"></nav>
+  <div class="gv-divider" id="gvDivider" role="separator" aria-label="Menüyü daralt/genişlet"><span class="gv-grip"></span></div>
+  <div class="gv-overlay" id="gvOverlay"></div>
+
+  <header class="gv-top">
+    <button class="gv-burger" id="gvBurger" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+    <div class="gv-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Ara"></div>
+    <div class="gv-top-tools">
+      <button class="gv-iconbtn" data-tip="Bildirimler" aria-label="Bildirimler"><i class="fa-regular fa-bell"></i><span class="gb-dot"></span></button>
+      <div class="gv-me">
+        <div class="me-ava" id="gvAva">·</div>
+        <div class="me-id"><div class="me-name" id="gvName">—</div><div class="me-role" id="gvRole">—</div></div>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="gv-main">
+    <div class="gv-page-head">
+      <div>
+        <div class="ph-eyebrow">Günlük Kayıt</div>
+        <h1>Puantaj</h1>
+        <div class="ph-sub" id="ptSub">Yükleniyor…</div>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-check"></i></div>
+        <div><div class="kpi-num num" id="kpiTam">—</div><div class="kpi-lbl">Tam gün (29 Haz–2 Tem)</div>
+        <div class="kpi-delta flat"><i class="fa-solid fa-calendar-check"></i> İşlenen 4 gün</div></div>
+      </div>
+      <div class="kpi-card warn">
+        <div class="kpi-ico"><i class="fa-solid fa-circle-half-stroke"></i></div>
+        <div><div class="kpi-num num" id="kpiYarim">—</div><div class="kpi-lbl">Yarım gün</div>
+        <div class="kpi-delta flat"><i class="fa-solid fa-clock"></i> Erken çıkış / geç giriş</div></div>
+      </div>
+      <div class="kpi-card danger">
+        <div class="kpi-ico"><i class="fa-solid fa-xmark"></i></div>
+        <div><div class="kpi-num num" id="kpiYok">—</div><div class="kpi-lbl">Devamsız</div>
+        <div class="kpi-delta down"><i class="fa-solid fa-triangle-exclamation"></i> Mazeretsiz</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-ico" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-umbrella-beach"></i></div>
+        <div><div class="kpi-num num" id="kpiIzin">—</div><div class="kpi-lbl">İzinli / Raporlu</div>
+        <div class="kpi-delta flat"><i class="fa-solid fa-file-medical"></i> Bu hafta toplam</div></div>
+      </div>
+    </div>
+
+    <div class="gv-card">
+      <div class="pt-toolbar">
+        <div class="gfield" style="margin:0;min-width:230px">
+          <select id="ptSantiye" aria-label="Şantiye seç">
+            <option value="vadi">Vadi Konakları</option>
+            <option value="liman">Liman Lojistik Merkezi</option>
+            <option value="merkez">Merkez Şantiye</option>
+          </select>
+        </div>
+        <div class="pt-weeknav">
+          <button class="ia-btn" id="ptPrev" aria-label="Önceki hafta" data-no-confirm><i class="fa-solid fa-chevron-left"></i></button>
+          <span class="pt-week-lbl">29 Haziran – 5 Temmuz 2026</span>
+          <button class="ia-btn" id="ptNext" aria-label="Sonraki hafta" data-no-confirm><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="gc-body flush">
+        <table class="gtable" id="tblPuantaj">
+          <thead>
+            <tr>
+              <th class="col-per">Personel</th>
+              <th class="col-poz">Görev</th>
+              <th class="col-gun">Pzt <span style="display:block;font-weight:800;color:var(--ink)">29</span></th>
+              <th class="col-gun">Sal <span style="display:block;font-weight:800;color:var(--ink)">30</span></th>
+              <th class="col-gun">Çar <span style="display:block;font-weight:800;color:var(--ink)">1</span></th>
+              <th class="col-gun is-today">Per <span style="display:block;font-weight:800;color:var(--acc-ink)">2</span></th>
+              <th class="col-gun">Cum <span style="display:block;font-weight:800;color:var(--ink)">3</span></th>
+              <th class="col-gun">Cmt <span style="display:block;font-weight:800;color:var(--ink)">4</span></th>
+              <th class="col-gun">Paz <span style="display:block;font-weight:800;color:var(--ink)">5</span></th>
+              <th class="col-hafta num">Haftalık</th>
+            </tr>
+          </thead>
+          <tbody id="ptBody"></tbody>
+        </table>
+      </div>
+      <div class="pt-legend">
+        <span class="lg-item"><span class="lg-sw tam"><i class="fa-solid fa-check"></i></span> Tam gün</span>
+        <span class="lg-item"><span class="lg-sw yarim"><i class="fa-solid fa-circle-half-stroke"></i></span> Yarım gün</span>
+        <span class="lg-item"><span class="lg-sw yok"><i class="fa-solid fa-xmark"></i></span> Devamsız</span>
+        <span class="lg-item"><span class="lg-sw izin"><i class="fa-solid fa-umbrella-beach"></i></span> İzinli</span>
+        <span class="lg-item"><span class="lg-sw rapor"><i class="fa-solid fa-file-medical"></i></span> Raporlu</span>
+        <span class="lg-item"><span class="lg-sw tatil"><i class="fa-solid fa-moon"></i></span> Hafta tatili</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/ui.js"></script>
+<script>
+(function(){
+  if(!window.GV) return;
+
+  /* ---- mock puantaj verisi — sayfaya özel JS objesi (CLAUDE.md: küçük mock veri sayfa içine gömülür).
+     Saha işçisi isimleri shell.js kanonik listesinde kanonikleşti (Dalga 2A, T0 onayı) —
+     personel/özlük sayfalarıyla aynı adlar kullanılıyor, bkz. shell.js üst yorum bloğu. ---- */
+  var DAYS = ['Pzt 29','Sal 30','Çar 1','Per 2','Cum 3','Cmt 4','Paz 5'];
+  var TODAY_IDX = 3;             /* Perşembe 2 Temmuz — bugün */
+  var RECORDED_UPTO = 3;         /* 0..3 işlenmiş, 4-5 henüz işlenmedi, 6 hafta tatili */
+
+  var PERSONEL = [
+    {ad:'Hasan Demirci',  poz:'Şantiye Şefi',    santiye:'vadi',   gunler:['tam','tam','tam','tam']},
+    {ad:'Ali Vural',      poz:'Saha Personeli',  santiye:'vadi',   gunler:['tam','tam','tam','tam']},
+    {ad:'İbrahim Sönmez', poz:'Formen',          santiye:'vadi',   gunler:['tam','tam','yarim','tam']},
+    {ad:'Ramazan Kılıç',  poz:'Kalıpçı',         santiye:'vadi',   gunler:['tam','tam','tam','izin']},
+    {ad:'Selim Doğan',    poz:'Demir Ustası',    santiye:'vadi',   gunler:['tam','yok','tam','tam']},
+    {ad:'Musa Erdem',     poz:'Düz İşçi',        santiye:'vadi',   gunler:['izin','izin','tam','tam']},
+    {ad:'Veli Şimşek',    poz:'Elektrik Ustası', santiye:'vadi',   gunler:['tam','tam','rapor','rapor']},
+
+    {ad:'Aylin Koç',      poz:'Şantiye Şefi',    santiye:'liman',  gunler:['izin','izin','izin','izin']},
+    {ad:'Şükrü Aslan',    poz:'Formen',          santiye:'liman',  gunler:['tam','tam','tam','tam']},
+    {ad:'Halil Güneş',    poz:'Operatör',        santiye:'liman',  gunler:['tam','yarim','tam','tam']},
+    {ad:'Metin Çetin',    poz:'Kaynakçı',        santiye:'liman',  gunler:['tam','tam','izin','izin']},
+    {ad:'Osman Polat',    poz:'Düz İşçi',        santiye:'liman',  gunler:['yok','tam','tam','tam']},
+
+    {ad:'Ömer Taşkın',    poz:'Şantiye Şefi',    santiye:'merkez', gunler:['tam','tam','tam','tam']},
+    {ad:'Recep Yaman',    poz:'Formen',          santiye:'merkez', gunler:['tam','tam','tam','tam']},
+    {ad:'İlyas Kurt',     poz:'Marangoz',        santiye:'merkez', gunler:['tam','tam','tam','rapor']},
+    {ad:'Sadık Öz',       poz:'Düz İşçi',        santiye:'merkez', gunler:['yarim','tam','tam','tam']}
+  ];
+  var SANTIYE_ADI = {vadi:'Vadi Konakları', liman:'Liman Lojistik Merkezi', merkez:'Merkez Şantiye'};
+  var SANTIYE_TINT = {
+    vadi:  {bg:'rgba(var(--acc-rgb),.12)', fg:'var(--acc-ink)'},
+    liman: {bg:'var(--info-tint)', fg:'var(--info)'},
+    merkez:{bg:'var(--warn-tint)', fg:'var(--warn)'}
+  };
+  var STATUS = {
+    tam:    {ic:'fa-check',              lbl:'Tam gün'},
+    yarim:  {ic:'fa-circle-half-stroke', lbl:'Yarım gün'},
+    yok:    {ic:'fa-xmark',              lbl:'Devamsız — mazeretsiz'},
+    izin:   {ic:'fa-umbrella-beach',     lbl:'İzinli'},
+    rapor:  {ic:'fa-file-medical',       lbl:'Raporlu'},
+    tatil:  {ic:'fa-moon',               lbl:'Hafta tatili'},
+    gelecek:{ic:'',                      lbl:'Henüz işlenmedi'}
+  };
+
+  function initials(ad){
+    return ad.split(' ').map(function(p){ return p.charAt(0); }).join('').slice(0,2).toUpperCase();
+  }
+  function statusOf(person, dayIdx){
+    if(dayIdx === 6) return 'tatil';
+    if(dayIdx > RECORDED_UPTO) return 'gelecek';
+    return person.gunler[dayIdx] || 'gelecek';
+  }
+  function weeklyTotal(person){
+    var tam = 0, half = 0;
+    for(var i = 0; i <= RECORDED_UPTO; i++){
+      var s = person.gunler[i];
+      if(s === 'tam') tam++;
+      else if(s === 'yarim') half++;
+    }
+    return tam + half * 0.5;
+  }
+
+  var body = document.getElementById('ptBody');
+  var sel = document.getElementById('ptSantiye');
+  var sub = document.getElementById('ptSub');
+  var kpiTam = document.getElementById('kpiTam'), kpiYarim = document.getElementById('kpiYarim'),
+      kpiYok = document.getElementById('kpiYok'), kpiIzin = document.getElementById('kpiIzin');
+
+  function render(){
+    var santiye = sel.value;
+    var rows = PERSONEL.filter(function(p){ return p.santiye === santiye; });
+    var tint = SANTIYE_TINT[santiye];
+
+    var html = '';
+    rows.forEach(function(p){
+      html += '<tr>';
+      html += '<td><div class="pp-cell"><div class="pp-mark" style="background:'+tint.bg+';color:'+tint.fg+'">'+initials(p.ad)+'</div>'
+            + '<div class="pp-info"><b>'+p.ad+'</b><span>'+SANTIYE_ADI[santiye]+'</span></div></div></td>';
+      html += '<td>'+p.poz+'</td>';
+      for(var d = 0; d < 7; d++){
+        var st = statusOf(p, d);
+        var V = STATUS[st];
+        var todayCls = d === TODAY_IDX ? ' is-today' : '';
+        html += '<td class="col-gun'+todayCls+'"><div class="pt-mark '+st+'" data-tip="'+DAYS[d]+' · '+V.lbl+'" tabindex="0">'
+              + (V.ic ? '<i class="fa-solid '+V.ic+'"></i>' : '') + '</div></td>';
+      }
+      var wt = weeklyTotal(p);
+      html += '<td class="num"><div class="pt-total">'+(wt % 1 === 0 ? wt : wt.toString().replace('.', ','))+' gün<span>'+(RECORDED_UPTO+1)+' gün işlendi</span></div></td>';
+      html += '</tr>';
+    });
+    body.innerHTML = html || '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:32px">Bu şantiyede kayıtlı personel yok.</td></tr>';
+
+    /* KPI özetleri — seçili şantiye, işlenen 4 gün toplamı */
+    var c = {tam:0, yarim:0, yok:0, izin:0, rapor:0};
+    rows.forEach(function(p){
+      for(var i = 0; i <= RECORDED_UPTO; i++){ var s = p.gunler[i]; if(c[s] !== undefined) c[s]++; }
+    });
+    kpiTam.textContent = c.tam;
+    kpiYarim.textContent = c.yarim;
+    kpiYok.textContent = c.yok;
+    kpiIzin.textContent = (c.izin + c.rapor);
+    sub.textContent = rows.length + ' personel · ' + SANTIYE_ADI[santiye] + ' · 29 Haziran – 5 Temmuz 2026';
+  }
+
+  sel.addEventListener('change', render);
+
+  /* şef tek şantiye görür — seçici kendi sahasına sabitlenir */
+  if(GV.role === 'sef'){
+    sel.value = 'vadi';
+    sel.disabled = true;
+  }
+
+  document.getElementById('ptPrev').addEventListener('click', function(){
+    gvToast('Önceki haftaların kaydı bu prototipte gösterilmiyor.', {type:'info'});
+  });
+  document.getElementById('ptNext').addEventListener('click', function(){
+    gvToast('Gelecek haftanın puantajı henüz işlenmedi.', {type:'info'});
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -42,6 +42,9 @@
 .hstat-num{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
 .hstat-lbl{font-size:11.5px;color:var(--muted);font-weight:600;line-height:1.3}
 .hstat.ok .hstat-num{color:var(--ok)}
+a.hstat{border:1px solid transparent;transition:.2s var(--ease)}
+a.hstat:hover{border-color:var(--acc-ink);transform:translateY(-2px);box-shadow:var(--sh-sm)}
+a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
 @media(max-width:980px){.site-hero{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:640px){
   .site-hero{padding:20px 18px}
@@ -169,7 +172,7 @@
       </div>
       <div class="hero-stats">
         <div class="hstat"><span class="hstat-num">46/48</span><span class="hstat-lbl">Bugün sahada personel</span></div>
-        <div class="hstat"><span class="hstat-num">7</span><span class="hstat-lbl">Açık görev</span></div>
+        <a class="hstat" href="crm-gorev.html"><span class="hstat-num">7</span><span class="hstat-lbl">Açık görev <i class="fa-solid fa-arrow-right"></i></span></a>
         <div class="hstat"><span class="hstat-num">3</span><span class="hstat-lbl">Bekleyen malzeme talebi</span></div>
         <div class="hstat ok"><span class="hstat-num">+2 gün</span><span class="hstat-lbl">İş programının önünde</span></div>
       </div>

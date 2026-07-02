@@ -2,7 +2,8 @@
    GAVIA CRM — UI COMPONENT KATMANI (kabuk-bağımsız primitifler)
    Kart · KPI · buton · durum rozeti · data-table · filtre bar + chip ·
    ilerleme/limit çubuğu · toggle · form · modal · toast · dropdown ·
-   boş durum · aktivite listesi. Semantik renkler accent'ten BAĞIMSIZ.
+   boş durum · aktivite listesi · onay zinciri (gvChain).
+   Semantik renkler accent'ten BAĞIMSIZ.
    Pilot onayı sonrası KİLİTLİ — değişiklik sahibine (T0) sorulur.
    ===================================================================== */
 
@@ -19,6 +20,8 @@
 .btn-ghost:hover{border-color:var(--ink-2);transform:translateY(-2px)}
 .btn-danger{background:var(--danger);color:#fff}
 .btn-danger:hover{background:#B93838;transform:translateY(-2px)}
+.btn-warn{background:var(--warn);color:#fff}
+.btn-warn:hover{background:color-mix(in srgb,var(--warn) 85%,#000);transform:translateY(-2px)}
 .btn-sm{padding:8px 14px;font-size:12.5px;border-radius:var(--r-sm)}
 
 /* ============ PANEL KARTI ============ */
@@ -60,7 +63,7 @@
 .gstat{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:var(--r-sm);white-space:nowrap}
 .gstat::before{content:"";width:6px;height:6px;border-radius:var(--r-circle);background:currentColor}
 .gstat.ok{background:var(--ok-tint);color:var(--ok)}
-.gstat.wait{background:var(--warn-tint);color:var(--warn)}
+.gstat.wait,.gstat.warn{background:var(--warn-tint);color:var(--warn)}
 .gstat.danger{background:var(--danger-tint);color:var(--danger)}
 .gstat.info{background:var(--info-tint);color:var(--info)}
 .gstat.off{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
@@ -229,6 +232,43 @@
   background:rgba(var(--acc-rgb),.1);padding:5px 12px;border-radius:var(--r-pill);margin-top:10px;
 }
 
+/* ============ ONAY ZİNCİRİ (gvChain) — semantik renkler, accent'ten BAĞIMSIZ ============ */
+.gv-chain{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.chain-step{position:relative;display:flex;gap:14px;padding-bottom:22px}
+.chain-step:last-child{padding-bottom:0}
+.chain-step::before{content:"";position:absolute;left:16px;top:37px;bottom:3px;width:2px;border-radius:1px;background:var(--line)}
+.chain-step:last-child::before{display:none}
+.cs-node{
+  width:33px;height:33px;flex:none;border-radius:var(--r-circle);position:relative;z-index:1;
+  display:grid;place-items:center;font-size:12.5px;
+  background:var(--bg);color:var(--muted);border:1px solid var(--line);
+}
+.chain-step.ok .cs-node{background:var(--ok-tint);color:var(--ok);border-color:transparent}
+.chain-step.danger .cs-node{background:var(--danger-tint);color:var(--danger);border-color:transparent}
+.chain-step.warn .cs-node,.chain-step.wait .cs-node{background:var(--warn-tint);color:var(--warn);border-color:transparent}
+.chain-step.info .cs-node{background:var(--info-tint);color:var(--info);border-color:transparent}
+.chain-step.idle .cs-node{border-style:dashed}
+.chain-step.is-now .cs-node{box-shadow:0 0 0 4px color-mix(in srgb,var(--warn) 14%,transparent)}
+.cs-body{flex:1;min-width:0;padding-top:2px}
+.cs-top{display:flex;align-items:baseline;justify-content:space-between;gap:4px 14px;flex-wrap:wrap}
+.cs-who{min-width:0;line-height:1.4}
+.cs-who b{display:block;font-size:13.5px;font-weight:700;color:var(--ink)}
+.cs-who span{font-size:12px;color:var(--muted)}
+.chain-step.idle .cs-who b{color:var(--muted);font-weight:600}
+.cs-when{flex:none;text-align:right;line-height:1.4}
+.cs-act{display:block;font-size:12px;font-weight:700;color:var(--muted)}
+.chain-step.ok .cs-act{color:var(--ok)}
+.chain-step.danger .cs-act{color:var(--danger)}
+.chain-step.warn .cs-act,.chain-step.wait .cs-act{color:var(--warn)}
+.chain-step.info .cs-act{color:var(--info)}
+.cs-date{display:block;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.cs-note{
+  margin-top:9px;font-size:12.5px;line-height:1.5;color:var(--ink-2);
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);padding:9px 12px;
+}
+.cs-note.danger{background:var(--danger-tint);border-color:color-mix(in srgb,var(--danger) 22%,var(--paper))}
+.cs-note.warn{background:var(--warn-tint);border-color:color-mix(in srgb,var(--warn) 25%,var(--paper))}
+
 /* ============ ONAY MODALI (gvConfirm) ============ */
 .gv-modal-ov{
   position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:22px;
@@ -247,9 +287,23 @@
   background:rgba(var(--acc-rgb),.12);color:var(--acc-ink);
 }
 .gv-modal.danger .gv-modal-ico{background:var(--danger-tint);color:var(--danger)}
+.gv-modal.warn .gv-modal-ico{background:var(--warn-tint);color:var(--warn)}
 .gv-modal h3{font-size:18px;margin-bottom:7px;letter-spacing:-.01em}
 .gv-modal p{font-size:13.5px;color:var(--muted);line-height:1.55;margin-bottom:22px}
 .gv-modal-acts{display:flex;gap:10px;justify-content:flex-end}
+
+/* onay-zinciri aksiyon modalı (gvChainAction) — açıklama alanı */
+.gv-modal.has-note p{margin-bottom:14px}
+.gv-modal textarea{
+  width:100%;font-family:inherit;font-size:13.5px;font-weight:500;color:var(--ink);
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:10px 12px;outline:none;resize:vertical;min-height:76px;transition:.2s var(--ease);
+}
+.gv-modal textarea::placeholder{color:var(--muted)}
+.gv-modal textarea:focus{border-color:var(--acc);background:var(--paper);box-shadow:0 0 0 3px rgba(var(--acc-rgb),.12)}
+.gv-modal textarea.is-err{border-color:var(--danger);box-shadow:0 0 0 3px color-mix(in srgb,var(--danger) 14%,transparent)}
+.gv-m-err{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--danger);margin-top:8px}
+.gv-modal.has-note .gv-modal-acts{margin-top:18px}
 
 /* ============ TOAST (gvToast) ============ */
 .gv-toast-wrap{position:fixed;right:24px;bottom:24px;z-index:210;display:flex;flex-direction:column;gap:10px;align-items:flex-end}

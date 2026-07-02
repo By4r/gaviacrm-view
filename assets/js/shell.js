@@ -18,6 +18,13 @@
        Murat Denizli (GM) · Elif Sarıkaya (teknik md.) · Hasan Demirci, Aylin Koç,
        Ömer Taşkın (şefler) · Nesrin Aydın (muhasebe) · Baran Yıldız (satın alma) ·
        Seda Karaca (İK) · Ali Vural (saha personeli)
+   ─ Saha işçileri (Dalga 2A'da kanonikleşti — puantaj/personel/özlük BU adları kullanır):
+       Vadi Konakları: Ali Vural (saha personeli) · İbrahim Sönmez (formen) ·
+         Ramazan Kılıç (kalıpçı) · Selim Doğan (demir ustası) · Musa Erdem (düz işçi) ·
+         Veli Şimşek (elektrik ustası)
+       Liman Lojistik: Şükrü Aslan (formen) · Halil Güneş (operatör) ·
+         Metin Çetin (kaynakçı) · Osman Polat (düz işçi)
+       Merkez Şantiye: Recep Yaman (formen) · İlyas Kurt (marangoz) · Sadık Öz (düz işçi)
    ─ Taşeronlar: Demir-Beton İnş. Ltd. · Yalıtım Kardeşler · ElektroMek Taahhüt
    ─ Tedarikçiler: Ege Hazır Beton · Marmara Demir Çelik · Anadolu Hırdavat
    ─ Müşteri/Kurum: Körfez GYO · Aliağa Liman İşletmeleri · Sapanca Belediyesi
@@ -73,15 +80,15 @@
       {ic:'fa-circle-check',   lbl:'Tamamlananlar',    href:'crm-gorev.html?f=tamam',    screen:'tamam'}
     ]},
     personel:{ ic:'fa-users', eyebrow:'İnsan Kaynağı', title:'Personel & İK', menu:[
-      {ic:'fa-users',          lbl:'Personel Listesi', wip:1},
-      {ic:'fa-umbrella-beach', lbl:'İzinler',          wip:1, cnt:'5'},
-      {ic:'fa-file-medical',   lbl:'Raporlar',         wip:1},
-      {ic:'fa-hand-holding-dollar', lbl:'Avanslar',    wip:1},
-      {ic:'fa-folder-open',    lbl:'Özlük & Evrak',    wip:1}
+      {ic:'fa-users',          lbl:'Personel Listesi', href:'crm-personel.html',       screen:'liste'},
+      {ic:'fa-umbrella-beach', lbl:'İzinler',          href:'crm-personel-izin.html',  screen:'izin', cnt:'5'},
+      {ic:'fa-file-medical',   lbl:'Raporlar',         href:'crm-personel-rapor.html', screen:'rapor'},
+      {ic:'fa-hand-holding-dollar', lbl:'Avanslar',    href:'crm-personel-avans.html', screen:'avans'},
+      {ic:'fa-folder-open',    lbl:'Özlük & Evrak',    href:'crm-personel-ozluk.html', screen:'ozluk'}
     ]},
     operasyon:{ ic:'fa-clipboard-list', eyebrow:'Günlük Kayıt', title:'Saha Kayıtları', menu:[
-      {ic:'fa-cash-register',  lbl:'Kasa Raporu',      wip:1},
-      {ic:'fa-user-clock',     lbl:'Puantaj',          wip:1},
+      {ic:'fa-cash-register',  lbl:'Kasa Raporu',      href:'crm-operasyon-kasa.html',    screen:'kasa'},
+      {ic:'fa-user-clock',     lbl:'Puantaj',          href:'crm-operasyon-puantaj.html', screen:'puantaj'},
       {ic:'fa-truck-pickup',   lbl:'Makine Puantajı',  wip:1},
       {ic:'fa-utensils',       lbl:'Yemekhane',        wip:1}
     ]},
