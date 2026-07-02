@@ -170,3 +170,5 @@ gaviacrm/
 3. Her sayfa `?role=` simülasyonuna saygılı olmalı (yetkisiz içerik gizlenir).
 4. Bootstrap dışında commit/push için Beyar onayı ŞART.
 5. Hassas brief içeriği repoya girmez; mock veriler kurgusal.
+6. Deploy: push sonrası `gh api` Pages build polling YAPILMAZ; Beyar tarayıcıdan
+   doğrular. Sadece "push OK, Pages ~1-3 dk sonra canlı" de ve geç.
