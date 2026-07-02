@@ -1,0 +1,22 @@
+# ── HASSAS: Patron brief / kaynak dokümanlar ASLA commit edilmez ──
+# Repo PUBLIC. Kaynaklar masaüstünde durur; projeye kopyalanırsa docs/brief/ altına
+# konur ve bu klasör tamamen ignore'dur.
+docs/brief/
+*.docx
+*.doc
+*.pdf
+
+# Brief'ten türetilen iç planlama dokümanları da public repoya girmez
+tasks/
+
+# Claude Code yerel ayarları
+.claude/settings.local.json
+
+# macOS / editör
+.DS_Store
+Thumbs.db
+*.swp
+
+# Geçici / scratch
+_scratch/
+*.log
