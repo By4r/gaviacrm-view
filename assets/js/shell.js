@@ -21,6 +21,10 @@
    ─ Taşeronlar: Demir-Beton İnş. Ltd. · Yalıtım Kardeşler · ElektroMek Taahhüt
    ─ Tedarikçiler: Ege Hazır Beton · Marmara Demir Çelik · Anadolu Hırdavat
    ─ Müşteri/Kurum: Körfez GYO · Aliağa Liman İşletmeleri · Sapanca Belediyesi
+   ─ Cari ilgili kişileri (Dalga 1'de kanonikleşti — Kişiler sayfası bunları kullanır):
+       Selin Aydemir (Körfez GYO) · Erhan Kaya (Aliağa Liman) · Zeynep Ulusoy (Sapanca Bel.) ·
+       Yusuf Ergin (Demir-Beton) · Cemal Boz (Yalıtım Kard.) · Tolga Şener (ElektroMek) ·
+       Kadir Solmaz (Ege Hazır Beton) · Burcu İnan (Marmara Demir Ç.) · Fatih Coşkun (Anadolu Hırd.)
    ─ Tarih bağlamı: 2 Temmuz 2026, Perşembe
    ===================================================================== */
 (function(){
@@ -62,10 +66,11 @@
       {ic:'fa-shield-halved',  lbl:'İSG Tutanakları',    wip:1}
     ]},
     gorev:{ ic:'fa-list-check', eyebrow:'İş Takibi', title:'Görevler', menu:[
-      {ic:'fa-inbox',          lbl:'Bana Verilenler',  wip:1, cnt:'7'},
-      {ic:'fa-paper-plane',    lbl:'Verdiklerim',      wip:1},
-      {ic:'fa-triangle-exclamation', lbl:'Gecikenler', wip:1, cnt:'3'},
-      {ic:'fa-circle-check',   lbl:'Tamamlananlar',    wip:1}
+      /* tek liste + görünüm: sayfa ?f= paramını shell.js'ten ÖNCE body[data-screen]'e yazar */
+      {ic:'fa-inbox',          lbl:'Bana Verilenler',  href:'crm-gorev.html?f=bana',     screen:'bana', cnt:'7'},
+      {ic:'fa-paper-plane',    lbl:'Verdiklerim',      href:'crm-gorev.html?f=verdigim', screen:'verdigim'},
+      {ic:'fa-triangle-exclamation', lbl:'Gecikenler', href:'crm-gorev.html?f=geciken',  screen:'geciken', cnt:'3'},
+      {ic:'fa-circle-check',   lbl:'Tamamlananlar',    href:'crm-gorev.html?f=tamam',    screen:'tamam'}
     ]},
     personel:{ ic:'fa-users', eyebrow:'İnsan Kaynağı', title:'Personel & İK', menu:[
       {ic:'fa-users',          lbl:'Personel Listesi', wip:1},
@@ -86,9 +91,9 @@
       {ic:'fa-truck-ramp-box', lbl:'Termin Takibi',       wip:1}
     ]},
     cari:{ ic:'fa-address-book', eyebrow:'Rehber & Hesap', title:'Cariler', menu:[
-      {ic:'fa-building',       lbl:'Firma Rehberi',   wip:1},
+      {ic:'fa-building',       lbl:'Firma Rehberi',   href:'crm-cari.html',       screen:'rehber'},
       {ic:'fa-id-card',        lbl:'Kişiler',         wip:1},
-      {ic:'fa-scale-balanced', lbl:'Cari Durum',      wip:1}
+      {ic:'fa-scale-balanced', lbl:'Cari Durum',      href:'crm-cari-durum.html', screen:'durum'}
     ]},
     finans:{ ic:'fa-file-signature', eyebrow:'Finans', title:'Hakediş & Sözleşme', menu:[
       {ic:'fa-building-columns',lbl:'Kurum Hakedişleri',   wip:1},

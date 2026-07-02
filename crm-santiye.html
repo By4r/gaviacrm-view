@@ -16,10 +16,23 @@
 <link rel="stylesheet" href="assets/css/shell.css">
 <link rel="stylesheet" href="assets/css/ui.css">
 <style>
-/* sayfaya özel: ilerleme kolonu genişliği + tek satır hücreler */
+/* sayfaya özel: ilerleme kolonu genişliği + hedefli tek satır hücreler
+   (blanket td nowrap yerine, cari audit düzeltmesiyle aynı desen: yalnız
+   kısa/tek kelimelik kolonlar nowrap; Şantiye hücresi gcell-info genişliği
+   sınırlanır ki ui.css'teki ellipsis mekaniği devreye girsin.
+   1440'ta #tblSantiye için sabit min-width VERİLMEZ — .gc-body.flush'ın
+   clientWidth'ini (~1042px) aşarsa son kolon overflow-x:auto tarafından
+   kırpılır; tablo yalnızca içerik + col-prog genişliğine göre doğal boyutlanır.
+   640px altında mobil yatay kaydırma için ayrı, dar bir min-width verilir. */
 .col-prog{width:170px}
-.gtable .gbar{min-width:130px}
-#tblSantiye td{white-space:nowrap}
+#tblSantiye .gbar{min-width:96px}
+#tblSantiye .gcell-info{max-width:180px}
+#tblSantiye td:nth-child(2),
+#tblSantiye td:nth-child(3),
+#tblSantiye td.num{white-space:nowrap}
+@media(max-width:640px){
+  #tblSantiye{min-width:760px}
+}
 </style>
 </head>
 <body data-sec="santiye" data-screen="liste">
@@ -99,7 +112,7 @@
               <td><span class="gstat ok">Aktif</span></td>
               <td>
                 <div class="row-acts">
-                  <button class="ia-btn" data-wip="1" data-no-confirm aria-label="Şantiye kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+                  <a class="ia-btn" href="crm-santiye-detay.html" data-no-confirm aria-label="Şantiye kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
               </td>
             </tr>
@@ -120,7 +133,7 @@
               <td><span class="gstat wait">Programın gerisinde</span></td>
               <td>
                 <div class="row-acts">
-                  <button class="ia-btn" data-wip="1" data-no-confirm aria-label="Şantiye kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+                  <a class="ia-btn" href="crm-santiye-detay.html" data-no-confirm aria-label="Şantiye kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
               </td>
             </tr>
@@ -141,7 +154,7 @@
               <td><span class="gstat ok">Aktif</span></td>
               <td>
                 <div class="row-acts">
-                  <button class="ia-btn" data-wip="1" data-no-confirm aria-label="Şantiye kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+                  <a class="ia-btn" href="crm-santiye-detay.html" data-no-confirm aria-label="Şantiye kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
               </td>
             </tr>
@@ -162,7 +175,7 @@
               <td><span class="gstat info">Planlama · Eylül 2026</span></td>
               <td>
                 <div class="row-acts">
-                  <button class="ia-btn" data-wip="1" data-no-confirm aria-label="Şantiye kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+                  <a class="ia-btn" href="crm-santiye-detay.html" data-no-confirm aria-label="Şantiye kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
               </td>
             </tr>
@@ -183,7 +196,7 @@
               <td><span class="gstat off">Teslim edildi · Mart 2026</span></td>
               <td>
                 <div class="row-acts">
-                  <button class="ia-btn" data-wip="1" data-no-confirm aria-label="Şantiye kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+                  <a class="ia-btn" href="crm-santiye-detay.html" data-no-confirm aria-label="Şantiye kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
                 </div>
               </td>
             </tr>

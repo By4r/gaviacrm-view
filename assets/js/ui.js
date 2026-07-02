@@ -163,6 +163,13 @@
         if(tbl) applyFilters(tbl);
       });
     });
+    /* yüklemede ilk uygulama — sayfa scriptinin rol budaması (tr.remove) SONRASI
+       sayaç + boş durum senkronlanır (satır gizlemek İÇİN rol budamada tr.hidden
+       KULLANMA; bu ilk uygulama onu geri açar — budama tr.remove ile yapılır) */
+    document.querySelectorAll('input[data-table-search]').forEach(function(inp){
+      var tbl = document.querySelector(inp.getAttribute('data-table-search'));
+      if(tbl) applyFilters(tbl);
+    });
   }
   function applyFilters(tbl){
     var card = tbl.closest('.gv-card') || document;
@@ -180,7 +187,9 @@
     });
     var empty = card.querySelector('[data-table-empty]');
     if(empty) empty.hidden = shown !== 0;
-    var cnt = card.querySelector('[data-table-count]');
+    /* sayaç kart dışında (.gv-page-head) olabilir — karttan bulunamazsa belgeden.
+       Çok tablolu sayfada sayaç KART İÇİNE konmalı. */
+    var cnt = card.querySelector('[data-table-count]') || document.querySelector('[data-table-count]');
     if(cnt) cnt.textContent = shown;
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireTables);

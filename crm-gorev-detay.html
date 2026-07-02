@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Görev Detayı — Gavia CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+<link rel="stylesheet" href="assets/css/ui.css">
+<style>
+/* sayfaya özel: görev detay kompozisyonu */
+.gv-crumb{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:14px}
+.gv-crumb a{color:var(--acc-ink);font-weight:700}
+.gv-crumb a:hover{color:var(--acc-deep)}
+.gv-crumb i{font-size:9px;color:var(--line-2)}
+.gv-crumb span{color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:340px}
+
+.gd-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:22px;flex-wrap:wrap}
+.gd-head h1{font-size:23px;letter-spacing:-.015em;margin-bottom:9px;max-width:640px}
+.gd-badges{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gd-eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--acc-ink);margin-bottom:8px}
+
+.gpri{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:7px;white-space:nowrap}
+.gpri::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.gpri.high{background:var(--danger-tint);color:var(--danger)}
+.gpri.med{background:var(--warn-tint);color:var(--warn)}
+.gpri.low{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+
+.gd-grid{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+@media(max-width:980px){.gd-grid{grid-template-columns:minmax(0,1fr)}}
+
+.gd-block{padding:22px}
+.gd-block + .gd-block{border-top:1px solid var(--line)}
+.gd-label{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.gd-desc{font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+
+/* atama kartı */
+.who-row{display:flex;align-items:center;gap:12px;padding:10px 0}
+.who-mark{width:38px;height:38px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:13px;font-weight:800}
+.who-info{min-width:0;line-height:1.35}
+.who-info b{display:block;font-size:13.5px;font-weight:700;color:var(--ink)}
+.who-info span{font-size:11.5px;color:var(--muted)}
+.who-arrow{display:flex;justify-content:center;color:var(--line-2);font-size:12px;padding:1px 0 1px 19px}
+
+/* bağlam / tarih satırı */
+.ctx-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;font-size:13px}
+.ctx-row .ctx-lbl{color:var(--muted)}
+.ctx-row .ctx-val{color:var(--ink);font-weight:700;text-align:right}
+.ctx-val.late{color:var(--danger)}
+.ctx-link{display:flex;align-items:center;gap:11px;padding:6px 0}
+.ctx-link .who-mark{width:36px;height:36px}
+.ctx-link a{font-size:13.5px;font-weight:700;color:var(--ink)}
+.ctx-link a:hover{color:var(--acc-ink)}
+.ctx-link span{display:block;font-size:11.5px;color:var(--muted)}
+
+/* durum aksiyonları */
+.status-now{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.status-acts{display:flex;flex-direction:column;gap:8px}
+.status-acts .btn{justify-content:flex-start}
+.no-action{font-size:12.5px;color:var(--muted);line-height:1.6}
+
+/* dosya ekleri */
+.file-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.file-row:last-child{border-bottom:none}
+.file-ico{width:36px;height:36px;flex:none;border-radius:9px;display:grid;place-items:center;font-size:14px;background:var(--info-tint);color:var(--info)}
+.file-ico.pdf{background:var(--danger-tint);color:var(--danger)}
+.file-info{flex:1;min-width:0;line-height:1.35}
+.file-info b{display:block;font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-info span{font-size:11.5px;color:var(--muted)}
+
+/* yorum akışı */
+.cmt-row{display:flex;gap:12px;padding:14px 0}
+.cmt-row:first-child{padding-top:0}
+.cmt-ava{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:11.5px;font-weight:800;background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)}
+.cmt-body{flex:1;min-width:0;background:var(--bg);border-radius:var(--r-md);padding:11px 14px}
+.cmt-head{display:flex;align-items:baseline;gap:9px;margin-bottom:4px;flex-wrap:wrap}
+.cmt-head b{font-size:12.5px;font-weight:700;color:var(--ink)}
+.cmt-head span{font-size:11px;color:var(--muted)}
+.cmt-text{font-size:13px;color:var(--ink-2);line-height:1.55}
+.cmt-compose{display:flex;gap:12px;padding-top:16px;margin-top:6px;border-top:1px solid var(--line)}
+.cmt-compose .cmt-ava{background:var(--bg);color:var(--muted)}
+.cmt-compose-field{flex:1;display:flex;gap:10px}
+.cmt-compose-field input{flex:1}
+
+.gd-danger-card{border-color:var(--danger-tint)}
+.gd-danger-card .gd-block{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.gd-danger-txt .dt-label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.gd-danger-txt span{font-size:12px;color:var(--muted)}
+
+.gv-side-stack{display:flex;flex-direction:column;gap:16px}
+</style>
+</head>
+<body data-sec="gorev">
+<script>
+/* menü aktifliği için ?f= taşınır, yoksa 'bana' default (SÖZLEŞME task #3 ile aynı) */
+(function(){
+  var q = new URLSearchParams(location.search);
+  var f = q.get('f');
+  var VALID = ['bana','verdigim','geciken','tamam'];
+  document.body.dataset.screen = VALID.indexOf(f) !== -1 ? f : 'bana';
+})();
+</script>
+<div class="gv-app">
+  <aside class="gv-rail" id="gvRail"></aside>
+  <nav class="gv-menu" id="gvMenu"></nav>
+  <div class="gv-divider" id="gvDivider" role="separator" aria-label="Menüyü daralt/genişlet"><span class="gv-grip"></span></div>
+  <div class="gv-overlay" id="gvOverlay"></div>
+
+  <header class="gv-top">
+    <button class="gv-burger" id="gvBurger" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+    <div class="gv-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Ara"></div>
+    <div class="gv-top-tools">
+      <button class="gv-iconbtn" data-tip="Bildirimler" aria-label="Bildirimler"><i class="fa-regular fa-bell"></i><span class="gb-dot"></span></button>
+      <div class="gv-me">
+        <div class="me-ava" id="gvAva">·</div>
+        <div class="me-id"><div class="me-name" id="gvName">—</div><div class="me-role" id="gvRole">—</div></div>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="gv-main">
+    <div class="gv-crumb">
+      <a href="crm-gorev.html">Görevler</a>
+      <i class="fa-solid fa-chevron-right"></i>
+      <span>Perde betonu kür takibini raporla</span>
+    </div>
+
+    <div class="gd-head">
+      <div>
+        <div class="gd-eyebrow">Vadi Konakları · Görev #VK-118</div>
+        <h1>Perde betonu kür takibini raporla</h1>
+        <div class="gd-badges">
+          <span class="gstat danger">Gecikti</span>
+          <span class="gpri high">Yüksek öncelik</span>
+        </div>
+      </div>
+      <div class="ph-actions">
+        <a class="btn btn-ghost btn-sm" href="crm-gorev.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>
+      </div>
+    </div>
+
+    <div class="gd-grid">
+      <!-- ============ SOL: içerik ============ -->
+      <div class="gv-side-stack">
+        <div class="gv-card">
+          <div class="gd-block">
+            <div class="gd-label">Açıklama</div>
+            <p class="gd-desc">Vadi Konakları B Blok bodrum kat perde betonu 30 Haziran'da döküldü. Kalıp söküm sonrası kür sürecinin fotoğraflı olarak raporlanması ve 7 günlük kür süresi boyunca günlük sulama takibinin tutanağa geçirilmesi isteniyor. Rapor tamamlanmadan bir sonraki döküm programına geçilmeyecek.</p>
+          </div>
+          <div class="gd-block">
+            <div class="gd-label">Dosya Ekleri</div>
+            <div class="file-row">
+              <div class="file-ico pdf"><i class="fa-solid fa-file-pdf"></i></div>
+              <div class="file-info"><b>kur-plani.pdf</b><span>428 KB · Murat Denizli tarafından eklendi</span></div>
+              <button class="ia-btn" data-wip="1" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button>
+            </div>
+            <div class="file-row">
+              <div class="file-ico"><i class="fa-solid fa-file-image"></i></div>
+              <div class="file-info"><b>kalip-sokum-30haziran.jpg</b><span>2,1 MB · Hasan Demirci tarafından eklendi</span></div>
+              <button class="ia-btn" data-wip="1" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button>
+            </div>
+          </div>
+          <div class="gd-block">
+            <div class="gd-label">Yorumlar</div>
+            <div class="cmt-row">
+              <div class="cmt-ava">MD</div>
+              <div class="cmt-body">
+                <div class="cmt-head"><b>Murat Denizli</b><span>28 Haziran, 09:12</span></div>
+                <div class="cmt-text">Perde betonu döküldükten sonra kür sürecini takip edip fotoğraflı rapor bekliyorum.</div>
+              </div>
+            </div>
+            <div class="cmt-row">
+              <div class="cmt-ava">HD</div>
+              <div class="cmt-body">
+                <div class="cmt-head"><b>Hasan Demirci</b><span>30 Haziran, 14:20</span></div>
+                <div class="cmt-text">Kalıp söküm bugün yapıldı, kür örtüsü seriliyor. Yarın ilk fotoğrafları paylaşacağım.</div>
+              </div>
+            </div>
+            <div class="cmt-row">
+              <div class="cmt-ava">MD</div>
+              <div class="cmt-body">
+                <div class="cmt-head"><b>Murat Denizli</b><span>2 Temmuz, 08:05</span></div>
+                <div class="cmt-text">Termin dün geçti, rapor henüz gelmedi. Lütfen bugün öğleden önce paylaşın.</div>
+              </div>
+            </div>
+            <div class="cmt-compose">
+              <div class="cmt-ava" id="cmtMeAva">·</div>
+              <div class="cmt-compose-field">
+                <input type="text" placeholder="Yorum yazın…" id="cmtInput">
+                <button class="btn btn-acc btn-sm" data-no-confirm id="cmtSend"><i class="fa-solid fa-paper-plane"></i> Gönder</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gv-card gd-danger-card" data-view="onayci" hidden>
+          <div class="gd-block">
+            <div class="gd-danger-txt">
+              <span class="dt-label">Görevi sil</span>
+              <span>Görev ve ilişkili yorum/dosya kayıtları kalıcı olarak silinir.</span>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="gvToast('Perde betonu kür takibini raporla silindi.', {type:'danger'}); setTimeout(function(){location.href='crm-gorev.html';}, 900);"><i class="fa-solid fa-trash"></i> Görevi Sil</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SAĞ: bağlam ============ -->
+      <div class="gv-side-stack">
+        <div class="gv-card">
+          <div class="gd-block">
+            <div class="gd-label">Atama</div>
+            <div class="who-row">
+              <div class="who-mark" style="background:var(--info-tint);color:var(--info)">MD</div>
+              <div class="who-info"><b>Murat Denizli</b><span>Atayan · Genel Müdür</span></div>
+            </div>
+            <div class="who-arrow"><i class="fa-solid fa-arrow-down-long"></i></div>
+            <div class="who-row">
+              <div class="who-mark" style="background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)">HD</div>
+              <div class="who-info"><b>Hasan Demirci</b><span>Atanan · Şantiye Şefi — Vadi Konakları</span></div>
+            </div>
+          </div>
+          <div class="gd-block">
+            <div class="gd-label">Şantiye Bağlamı</div>
+            <div class="ctx-link">
+              <div class="who-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">VK</div>
+              <div>
+                <a href="crm-santiye.html">Vadi Konakları</a>
+                <span>Konut · Çekmeköy, İstanbul</span>
+              </div>
+            </div>
+          </div>
+          <div class="gd-block">
+            <div class="gd-label">Tarihler</div>
+            <div class="ctx-row"><span class="ctx-lbl">Oluşturma</span><span class="ctx-val">28 Haziran 2026</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Termin</span><span class="ctx-val late">1 Temmuz 2026 · dün</span></div>
+          </div>
+        </div>
+
+        <div class="gv-card" data-view="onayci" hidden>
+          <div class="gd-block">
+            <div class="gd-label">Durumu Güncelle</div>
+            <div class="status-now">
+              <span class="ctx-lbl">Şu an:</span>
+              <span class="gstat danger">Gecikti</span>
+            </div>
+            <div class="status-acts">
+              <button class="btn btn-ghost btn-sm" data-no-confirm onclick="gvToast('Durum “Devam Ediyor” olarak güncellendi.')"><i class="fa-solid fa-play"></i> Devam Ediyor olarak işaretle</button>
+              <button class="btn btn-acc btn-sm" data-no-confirm onclick="gvToast('Durum “Tamamlandı” olarak güncellendi.')"><i class="fa-solid fa-circle-check"></i> Tamamlandı olarak işaretle</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="gv-card" data-view="notonayci" hidden>
+          <div class="gd-block">
+            <div class="gd-label">Durum</div>
+            <div class="status-now" style="margin-bottom:0">
+              <span class="gstat danger">Gecikti</span>
+            </div>
+            <p class="no-action">Durum değişikliği yalnızca atayan veya şantiye şefi tarafından yapılabilir.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/ui.js"></script>
+<script>
+/* rol daraltması: durum değiştirme + silme yalnızca onaycı rollerde (superadmin/sahip/yonetim/teknik/sef) */
+(function(){
+  if(!window.GV) return;
+  var ONAYCI = ['superadmin','sahip','yonetim','teknik','sef'];
+  var isOnayci = ONAYCI.indexOf(GV.role) !== -1;
+  document.querySelectorAll('[data-view="onayci"]').forEach(function(el){ el.hidden = !isOnayci; });
+  document.querySelectorAll('[data-view="notonayci"]').forEach(function(el){ el.hidden = isOnayci; });
+
+  var meAva = document.getElementById('cmtMeAva');
+  if(meAva) meAva.textContent = GV.R.ini;
+
+  var send = document.getElementById('cmtSend'), inp = document.getElementById('cmtInput');
+  if(send && inp){
+    send.addEventListener('click', function(){
+      if(!inp.value.trim()){ return; }
+      gvToast('Yorumunuz eklendi.');
+      inp.value = '';
+    });
+  }
+})();
+</script>
+</body>
+</html>

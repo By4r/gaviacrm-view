@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Vadi Konakları — Şantiye Kartı — Gavia CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+<link rel="stylesheet" href="assets/css/ui.css">
+<style>
+/* ============ SAYFAYA ÖZEL — Şantiye Kartı (sekmeli detay) ============ */
+.ph-back{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:10px;transition:.18s var(--ease)}
+.ph-back i{font-size:11px}
+.ph-back:hover{color:var(--acc-ink)}
+
+/* iki kolonlu içerik ızgarası (panel.html ile aynı desen) */
+.dash-cols{display:grid;grid-template-columns:1.55fr 1fr;gap:16px;margin-bottom:16px;align-items:start}
+@media(max-width:1100px){.dash-cols{grid-template-columns:minmax(0,1fr)}}
+
+/* şantiye başlık kartı */
+.site-hero{display:grid;grid-template-columns:1.7fr 1fr;gap:30px;padding:26px 26px 24px;margin-bottom:22px}
+.site-hero-id{display:flex;gap:18px}
+.site-hero-mark{width:58px;height:58px;flex:none;border-radius:var(--r-md);display:grid;place-items:center;font-size:19px;font-weight:800;background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)}
+.site-hero-info{flex:1;min-width:0}
+.site-hero-tags{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.site-hero-prog{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.site-hero-prog .gbar{min-width:180px;flex:1;max-width:280px}
+.hp-lbl{font-size:12px;color:var(--muted);font-weight:600}
+.site-hero-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 22px}
+.site-hero-meta dt{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.site-hero-meta dd{font-size:13.5px;font-weight:700;color:var(--ink)}
+.hero-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-content:start}
+.hstat{background:var(--bg);border-radius:var(--r-md);padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.hstat-num{font-size:19px;font-weight:800;color:var(--ink);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.hstat-lbl{font-size:11.5px;color:var(--muted);font-weight:600;line-height:1.3}
+.hstat.ok .hstat-num{color:var(--ok)}
+@media(max-width:980px){.site-hero{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:640px){
+  .site-hero{padding:20px 18px}
+  .site-hero-id{flex-direction:column}
+  .site-hero-meta{grid-template-columns:1fr}
+}
+
+/* sekme çubuğu — alt çizgili, yoğun ERP dili (pill değil) */
+.gv-tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:22px;overflow-x:auto;scrollbar-width:none}
+.gv-tabs::-webkit-scrollbar{display:none}
+.gv-tab{display:inline-flex;align-items:center;gap:8px;padding:13px 4px;margin-right:26px;flex:none;
+  font-family:inherit;font-size:13.5px;font-weight:700;color:var(--muted);background:none;border:none;
+  border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;transition:.18s var(--ease)}
+.gv-tab i{font-size:13px}
+.gv-tab:hover{color:var(--ink)}
+.gv-tab.is-active{color:var(--acc-ink);border-color:var(--acc-ink)}
+.gv-tab .tb-cnt{font-size:10.5px;font-weight:700;background:var(--bg);color:var(--ink-2);padding:1px 6px;border-radius:var(--r-pill)}
+.gv-tab.is-active .tb-cnt{background:rgba(var(--acc-rgb),.16);color:var(--acc-deep)}
+.tab-panel{animation:tabIn .22s var(--ease)}
+@keyframes tabIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* Özet: kategori ilerleme satırları + kilometre taşı vurgusu */
+.cat-row{display:flex;align-items:center;gap:16px;padding:12px 0}
+.cat-row:first-child{padding-top:0}
+.cat-label{width:150px;flex:none;font-size:13px;font-weight:700;color:var(--ink-2)}
+.cat-row .gbar{flex:1}
+.milestone-box{display:flex;gap:14px;align-items:flex-start;background:var(--gv-mint-glow);border:1px solid rgba(var(--acc-rgb),.25);border-radius:var(--r-md);padding:16px 18px;margin-top:18px}
+.milestone-box i{color:var(--acc-ink);font-size:17px;margin-top:2px;flex:none}
+.milestone-box b{display:block;font-size:13.5px;color:var(--ink);margin-bottom:3px}
+.milestone-box span{font-size:12.5px;color:var(--ink-2)}
+
+/* İş Programı: gerçek sıra taşıyan kilometre taşı zaman çizelgesi */
+.ml-timeline{list-style:none;padding:22px 22px 4px;display:flex;flex-direction:column}
+.ml-item{position:relative;padding-left:34px;padding-bottom:26px}
+.ml-item:last-child{padding-bottom:2px}
+.ml-item::before{content:"";position:absolute;left:9px;top:22px;bottom:-6px;width:2px;background:var(--line)}
+.ml-item:last-child::before{display:none}
+.ml-dot{position:absolute;left:0;top:2px;width:20px;height:20px;border-radius:var(--r-circle);background:var(--paper);border:2px solid var(--line-2);display:grid;place-items:center;font-size:9px;color:var(--muted)}
+.ml-item.done .ml-dot{background:var(--ok);border-color:var(--ok);color:#fff}
+.ml-item.active .ml-dot{border-color:var(--acc-ink);box-shadow:0 0 0 4px rgba(var(--acc-rgb),.16)}
+.ml-item.active .ml-dot::after{content:"";width:8px;height:8px;border-radius:var(--r-circle);background:var(--acc-ink)}
+.ml-body b{display:block;font-size:13.5px;font-weight:700;color:var(--ink)}
+.ml-body span{font-size:12px;color:var(--muted)}
+
+/* Ekip: şef satırı */
+.chief-row{display:flex;align-items:center;gap:14px}
+.chief-row b{display:block;font-size:14.5px;font-weight:800;color:var(--ink)}
+.chief-row span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+
+/* İSG: özet istatistik ızgarası */
+.isg-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:640px){.isg-stats{grid-template-columns:1fr}}
+
+/* Dosyalar: dosya satırı */
+.file-row{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--line);transition:background .15s}
+.file-row:last-child{border-bottom:none}
+.file-row:hover{background:var(--bg)}
+.file-ico{width:38px;height:38px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:15px;background:var(--info-tint);color:var(--info)}
+.file-ico.xls{background:var(--ok-tint);color:var(--ok)}
+.file-ico.dwg{background:var(--warn-tint);color:var(--warn)}
+.file-info{flex:1;min-width:0;line-height:1.35}
+.file-info b{display:block;font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-info span{font-size:12px;color:var(--muted)}
+.file-meta{flex:none;font-size:12px;color:var(--muted);text-align:right;min-width:104px}
+@media(max-width:640px){.file-meta{display:none}}
+</style>
+</head>
+<body data-sec="santiye" data-screen="liste">
+<div class="gv-app">
+  <aside class="gv-rail" id="gvRail"></aside>
+  <nav class="gv-menu" id="gvMenu"></nav>
+  <div class="gv-divider" id="gvDivider" role="separator" aria-label="Menüyü daralt/genişlet"><span class="gv-grip"></span></div>
+  <div class="gv-overlay" id="gvOverlay"></div>
+
+  <header class="gv-top">
+    <button class="gv-burger" id="gvBurger" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+    <div class="gv-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Ara"></div>
+    <div class="gv-top-tools">
+      <button class="gv-iconbtn" data-tip="Bildirimler" aria-label="Bildirimler"><i class="fa-regular fa-bell"></i><span class="gb-dot"></span></button>
+      <div class="gv-me">
+        <div class="me-ava" id="gvAva">·</div>
+        <div class="me-id"><div class="me-name" id="gvName">—</div><div class="me-role" id="gvRole">—</div></div>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="gv-main">
+    <div class="gv-page-head">
+      <div>
+        <a class="ph-back" href="crm-santiye.html"><i class="fa-solid fa-arrow-left"></i> Şantiyeler</a>
+        <div class="ph-eyebrow">Saha · Konut</div>
+        <h1>Vadi Konakları</h1>
+        <div class="ph-sub">Çekmeköy, İstanbul · Körfez GYO</div>
+      </div>
+      <div class="ph-actions" data-view="yonetim" hidden>
+        <a class="btn btn-ghost btn-sm" href="#" data-wip="1"><i class="fa-solid fa-pen"></i> Düzenle</a>
+        <a class="btn btn-acc btn-sm" href="#" data-wip="1"><i class="fa-solid fa-camera"></i> Saha Bildirimi Ekle</a>
+      </div>
+      <div class="ph-actions" data-view="sef" hidden>
+        <a class="btn btn-acc btn-sm" href="#" data-wip="1"><i class="fa-solid fa-camera"></i> Saha Bildirimi Gönder</a>
+      </div>
+    </div>
+
+    <!-- ============ ŞANTİYE BAŞLIK KARTI ============ -->
+    <div class="gv-card site-hero">
+      <div class="site-hero-id">
+        <div class="site-hero-mark">VK</div>
+        <div class="site-hero-info">
+          <div class="site-hero-tags">
+            <span class="gtag mint">Konut</span>
+            <span class="gstat ok">Aktif</span>
+          </div>
+          <div class="site-hero-prog">
+            <div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:68%"></div></div><span class="gbar-val">%68</span></div>
+            <span class="hp-lbl">genel ilerleme</span>
+          </div>
+          <dl class="site-hero-meta">
+            <div><dt>Şantiye Şefi</dt><dd>Hasan Demirci</dd></div>
+            <div><dt>Müşteri</dt><dd>Körfez GYO</dd></div>
+            <div><dt>Konum</dt><dd>Çekmeköy, İstanbul</dd></div>
+            <div><dt>Tarih Aralığı</dt><dd>4 Mar 2024 – Ara 2026 (tahmini)</dd></div>
+          </dl>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><span class="hstat-num">46/48</span><span class="hstat-lbl">Bugün sahada personel</span></div>
+        <div class="hstat"><span class="hstat-num">7</span><span class="hstat-lbl">Açık görev</span></div>
+        <div class="hstat"><span class="hstat-num">3</span><span class="hstat-lbl">Bekleyen malzeme talebi</span></div>
+        <div class="hstat ok"><span class="hstat-num">+2 gün</span><span class="hstat-lbl">İş programının önünde</span></div>
+      </div>
+    </div>
+
+    <!-- ============ SEKMELER ============ -->
+    <div class="gv-tabs" role="tablist" aria-label="Şantiye detay sekmeleri">
+      <button class="gv-tab is-active" data-tab="ozet" role="tab" aria-selected="true"><i class="fa-solid fa-chart-simple"></i> Özet</button>
+      <button class="gv-tab" data-tab="program" role="tab" aria-selected="false"><i class="fa-solid fa-calendar-days"></i> İş Programı</button>
+      <button class="gv-tab" data-tab="ekip" role="tab" aria-selected="false"><i class="fa-solid fa-users"></i> Ekip</button>
+      <button class="gv-tab" data-tab="bildirim" role="tab" aria-selected="false"><i class="fa-solid fa-camera"></i> Saha Bildirimleri <span class="tb-cnt">4</span></button>
+      <button class="gv-tab" data-tab="isg" role="tab" aria-selected="false"><i class="fa-solid fa-shield-halved"></i> İSG</button>
+      <button class="gv-tab" data-tab="dosya" role="tab" aria-selected="false"><i class="fa-solid fa-folder-open"></i> Dosyalar</button>
+    </div>
+
+    <!-- ============ ÖZET ============ -->
+    <section class="tab-panel" data-tab-panel="ozet" role="tabpanel" aria-label="Özet">
+      <div class="dash-cols">
+        <div class="gv-card">
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-chart-simple"></i> İlerleme Kategorileri</div></div>
+          <div class="gc-body">
+            <div class="cat-row"><span class="cat-label">Kaba inşaat</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:94%"></div></div><span class="gbar-val">%94</span></div></div>
+            <div class="cat-row"><span class="cat-label">İnce işler</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:58%"></div></div><span class="gbar-val">%58</span></div></div>
+            <div class="cat-row"><span class="cat-label">Elektrik &amp; tesisat</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill warn" style="width:41%"></div></div><span class="gbar-val">%41</span></div></div>
+            <div class="cat-row"><span class="cat-label">Çevre düzenleme</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill warn" style="width:12%"></div></div><span class="gbar-val">%12</span></div></div>
+            <div class="milestone-box">
+              <i class="fa-solid fa-flag-checkered"></i>
+              <div><b>Yaklaşan kilometre taşı</b><span>Çatı ve cephe imalatının Eylül 2026'da başlaması planlanıyor — bkz. İş Programı sekmesi.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="gv-card">
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-building-user"></i> Proje Bilgileri</div></div>
+          <div class="gc-body">
+            <dl class="site-hero-meta">
+              <div><dt>Sözleşme Türü</dt><dd>Anahtar teslim</dd></div>
+              <div><dt>Kapalı Alan</dt><dd>38.400 m²</dd></div>
+              <div><dt>Bağımsız Birim</dt><dd>214 daire</dd></div>
+              <div><dt>Blok Sayısı</dt><dd>3 blok (A–B–C)</dd></div>
+            </dl>
+          </div>
+          <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Sözleşme ve ruhsat belgeleri Dosyalar sekmesinde.</span></div>
+        </div>
+      </div>
+
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-camera"></i> Son Saha Bildirimleri</div>
+          <a class="gc-link" href="#" data-tab-goto="bildirim">Tümü (4) <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="act-list">
+          <div class="act-row">
+            <div class="act-ico ok"><i class="fa-solid fa-camera"></i></div>
+            <div class="act-info"><b>Bodrum kat perde betonu döküldü</b><span>Hasan Demirci · 3 fotoğraf</span></div>
+            <span class="act-time">09:40</span>
+          </div>
+          <div class="act-row">
+            <div class="act-ico info"><i class="fa-solid fa-truck"></i></div>
+            <div class="act-info"><b>Ege Hazır Beton — 4. mikser sahada</b><span>irsaliye eklendi</span></div>
+            <span class="act-time">08:05</span>
+          </div>
+          <div class="act-row">
+            <div class="act-ico"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="act-info"><b>Haftalık İSG turu tamamlandı</b><span>Uygunsuzluk yok — tutanak yüklendi</span></div>
+            <span class="act-time">Dün</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ İŞ PROGRAMI ============ -->
+    <section class="tab-panel" data-tab-panel="program" role="tabpanel" aria-label="İş Programı" hidden>
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-calendar-days"></i> İş Programı — Ana Kalemler</div>
+          <a class="gc-link" href="#" data-wip="1">Tüm iş programını gör <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <ol class="ml-timeline">
+          <li class="ml-item done">
+            <span class="ml-dot"><i class="fa-solid fa-check"></i></span>
+            <div class="ml-body"><b>Temel ve bodrum betonu</b><span>Tamamlandı · Eylül 2024</span></div>
+          </li>
+          <li class="ml-item active">
+            <span class="ml-dot"></span>
+            <div class="ml-body"><b>Kaba inşaat — A, B, C Blok</b><span>Devam ediyor · tahmini bitiş Ağustos 2026</span></div>
+          </li>
+          <li class="ml-item">
+            <span class="ml-dot"></span>
+            <div class="ml-body"><b>Çatı ve cephe imalatı</b><span>Planlandı · Eylül 2026</span></div>
+          </li>
+          <li class="ml-item">
+            <span class="ml-dot"></span>
+            <div class="ml-body"><b>İnce işler ve tesisat</b><span>Planlandı · Ekim–Kasım 2026</span></div>
+          </li>
+          <li class="ml-item">
+            <span class="ml-dot"></span>
+            <div class="ml-body"><b>Teslim</b><span>Planlandı · Aralık 2026</span></div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ EKİP ============ -->
+    <section class="tab-panel" data-tab-panel="ekip" role="tabpanel" aria-label="Ekip" hidden>
+      <div class="dash-cols">
+        <div class="gv-card">
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-user-tie"></i> Şantiye Şefi</div></div>
+          <div class="gc-body">
+            <div class="chief-row">
+              <div class="site-hero-mark">HD</div>
+              <div>
+                <b>Hasan Demirci</b>
+                <span>Şantiye Şefi · Vadi Konakları sorumlusu</span>
+              </div>
+            </div>
+            <dl class="site-hero-meta" style="margin-top:18px">
+              <div><dt>Telefon</dt><dd>0532 XXX XX XX</dd></div>
+              <div><dt>E-posta</dt><dd>hasan.demirci@yapitas.example</dd></div>
+            </dl>
+          </div>
+          <div class="gc-foot"><span><i class="fa-solid fa-users"></i> 48 personel · 6 usta · 14 kalfa · 28 işçi</span></div>
+        </div>
+        <div class="gv-card">
+          <div class="gc-head">
+            <div class="gc-title"><i class="fa-solid fa-helmet-safety"></i> Taşeronlar</div>
+            <a class="gc-link" href="#" data-wip="1">Tümü <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          <div>
+            <div class="act-row">
+              <div class="act-ico info"><i class="fa-solid fa-industry"></i></div>
+              <div class="act-info"><b>Demir-Beton İnş. Ltd.</b><span>Kaba inşaat</span></div>
+              <span class="gstat ok">Sahada</span>
+            </div>
+            <div class="act-row">
+              <div class="act-ico"><i class="fa-solid fa-layer-group"></i></div>
+              <div class="act-info"><b>Yalıtım Kardeşler</b><span>Yalıtım</span></div>
+              <span class="gstat off">Bekliyor</span>
+            </div>
+            <div class="act-row">
+              <div class="act-ico warn"><i class="fa-solid fa-bolt"></i></div>
+              <div class="act-info"><b>ElektroMek Taahhüt</b><span>Elektrik &amp; tesisat</span></div>
+              <span class="gstat ok">Sahada</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SAHA BİLDİRİMLERİ ============ -->
+    <section class="tab-panel" data-tab-panel="bildirim" role="tabpanel" aria-label="Saha Bildirimleri" hidden>
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-camera"></i> Saha Bildirimleri</div>
+          <a class="gc-link" href="#" data-wip="1">Tümü (4) <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="act-list">
+          <div class="act-row">
+            <div class="act-ico ok"><i class="fa-solid fa-camera"></i></div>
+            <div class="act-info"><b>Bodrum kat perde betonu döküldü</b><span>Hasan Demirci · 3 fotoğraf</span></div>
+            <span class="act-time">09:40</span>
+          </div>
+          <div class="act-row">
+            <div class="act-ico info"><i class="fa-solid fa-truck"></i></div>
+            <div class="act-info"><b>Ege Hazır Beton — 4. mikser sahada</b><span>irsaliye eklendi</span></div>
+            <span class="act-time">08:05</span>
+          </div>
+          <div class="act-row">
+            <div class="act-ico"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="act-info"><b>Haftalık İSG turu tamamlandı</b><span>Uygunsuzluk yok — tutanak yüklendi</span></div>
+            <span class="act-time">Dün</span>
+          </div>
+          <div class="act-row">
+            <div class="act-ico info"><i class="fa-solid fa-hammer"></i></div>
+            <div class="act-info"><b>B Blok 3. kat kalıp söküldü</b><span>Hasan Demirci · imalat programına göre zamanında</span></div>
+            <span class="act-time">2 gün önce</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ İSG ============ -->
+    <section class="tab-panel" data-tab-panel="isg" role="tabpanel" aria-label="İSG" hidden>
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-shield-halved"></i> İSG Özeti</div>
+          <a class="gc-link" href="#" data-wip="1">Tüm tutanakları gör <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="gc-body">
+          <div class="isg-stats">
+            <div class="hstat ok"><span class="hstat-num">0</span><span class="hstat-lbl">2026'da iş kazası</span></div>
+            <div class="hstat"><span class="hstat-num">214</span><span class="hstat-lbl">Kazasız gün</span></div>
+            <div class="hstat"><span class="hstat-num">Dün</span><span class="hstat-lbl">Son İSG turu</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="act-row">
+            <div class="act-ico ok"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="act-info"><b>Haftalık İSG turu tamamlandı</b><span>Uygunsuzluk yok · İSG uzmanı</span></div>
+            <span class="act-time">Dün</span>
+          </div>
+          <div class="act-row">
+            <div class="act-ico warn"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="act-info"><b>Haftalık İSG turu — 1 uygunsuzluk giderildi</b><span>Merdiven korkuluğu eksikliği kapatıldı</span></div>
+            <span class="act-time">25 Haz</span>
+          </div>
+          <div class="act-row">
+            <div class="act-ico ok"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="act-info"><b>Haftalık İSG turu tamamlandı</b><span>Uygunsuzluk yok · İSG uzmanı</span></div>
+            <span class="act-time">18 Haz</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DOSYALAR ============ -->
+    <section class="tab-panel" data-tab-panel="dosya" role="tabpanel" aria-label="Dosyalar" hidden>
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-folder-open"></i> Dosyalar</div>
+          <a class="gc-link" href="#" data-wip="1">Tüm dosyaları gör <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div>
+          <div class="file-row">
+            <div class="file-ico"><i class="fa-solid fa-file-pdf"></i></div>
+            <div class="file-info"><b>Sözleşme — Körfez GYO.pdf</b><span>Anahtar teslim inşaat sözleşmesi</span></div>
+            <div class="file-meta">2.4 MB · 4 Mar 2024</div>
+            <div class="row-acts"><button class="ia-btn" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button></div>
+          </div>
+          <div class="file-row">
+            <div class="file-ico"><i class="fa-solid fa-file-pdf"></i></div>
+            <div class="file-info"><b>Ruhsat ve Yapı İzni.pdf</b><span>Çekmeköy Belediyesi</span></div>
+            <div class="file-meta">1.1 MB · 12 Mar 2024</div>
+            <div class="row-acts"><button class="ia-btn" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button></div>
+          </div>
+          <div class="file-row">
+            <div class="file-ico dwg"><i class="fa-solid fa-diagram-project"></i></div>
+            <div class="file-info"><b>Mimari Uygulama Projesi.dwg</b><span>Revize 2 — A-B-C Blok</span></div>
+            <div class="file-meta">18.6 MB · 20 Mar 2024</div>
+            <div class="row-acts"><button class="ia-btn" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button></div>
+          </div>
+          <div class="file-row">
+            <div class="file-ico xls"><i class="fa-solid fa-file-excel"></i></div>
+            <div class="file-info"><b>İmalat Programı — Rev.3.xlsx</b><span>Güncel iş programı</span></div>
+            <div class="file-meta">640 KB · 15 Haz 2026</div>
+            <div class="row-acts"><button class="ia-btn" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button></div>
+          </div>
+          <div class="file-row">
+            <div class="file-ico"><i class="fa-solid fa-file-pdf"></i></div>
+            <div class="file-info"><b>Teknik Şartname.pdf</b><span>Malzeme ve işçilik standartları</span></div>
+            <div class="file-meta">3.2 MB · 4 Mar 2024</div>
+            <div class="row-acts"><button class="ia-btn" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/ui.js"></script>
+<script>
+/* rol daraltması: yalnız superadmin/sahip/yonetim/teknik/sef bu bölüme erişir (shell.js ROLES.secs) */
+(function(){
+  if(!window.GV) return;
+  var MAP = { superadmin:'yonetim', sahip:'yonetim', yonetim:'yonetim', teknik:'yonetim', sef:'sef' };
+  var view = MAP[GV.role] || 'yonetim';
+  document.querySelectorAll('[data-view]').forEach(function(el){
+    el.hidden = el.getAttribute('data-view') !== view;
+  });
+})();
+
+/* sekme motoru: tık + URL hash, hafif geçiş animasyonu */
+(function(){
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.gv-tab'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
+  function activate(id){
+    tabs.forEach(function(t){
+      var on = t.getAttribute('data-tab') === id;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    panels.forEach(function(p){ p.hidden = p.getAttribute('data-tab-panel') !== id; });
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){
+      var id = t.getAttribute('data-tab');
+      activate(id);
+      history.replaceState(null, '', '#' + id);
+    });
+  });
+  document.querySelectorAll('[data-tab-goto]').forEach(function(el){
+    el.addEventListener('click', function(e){
+      e.preventDefault();
+      var id = el.getAttribute('data-tab-goto');
+      activate(id);
+      history.replaceState(null, '', '#' + id);
+      var btn = document.querySelector('.gv-tab[data-tab="' + id + '"]');
+      if(btn){ btn.scrollIntoView({block:'nearest', inline:'center'}); btn.focus(); }
+    });
+  });
+  var initial = (location.hash || '').replace('#', '');
+  var valid = tabs.some(function(t){ return t.getAttribute('data-tab') === initial; });
+  activate(valid ? initial : 'ozet');
+})();
+</script>
+</body>
+</html>
