@@ -18,6 +18,21 @@ modülleri İNŞA EDİLMEZ; ancak mimari (token yapısı, sidebar bölüm yapıs
 dosya adlandırma) bu fazları ileride ekleyebilecek şekilde genişletilebilir tutulur.
 Detaylı envanter: `tasks/plan.md` (yerel, commit edilmez).
 
+**Kesinleşen ürün kararları (2026-07):**
+- Ürün adı SABİT: **"Gavia CRM"**; logo/marka Gaviaworks kimliği (tipografik "G" mark).
+- Palet KESİN: Gaviaworks lacivert + mint. Turuncu/sarı İSG tonları KULLANILMAZ.
+- Demo personaları: **superadmin (Gavia Platform Yöneticisi) + sahip (Firma Sahibi)**
+  öncelikli; index bu ikisini öne çıkarır, default `superadmin`. Kiralanabilirlik hissi
+  tenant-admin konsoluyla verilir (Ayarlar > Firma: paket/limit/modül aç-kapa);
+  tenant-switcher Faz 2 — superadmin topbar'ında PASİF çip olarak yer tutar.
+- Rail 9 bölüm: panel, santiye, gorev, personel, operasyon, satinalma, **cari**
+  (Firma Rehberi + Kişiler + Cari Durum; satış pipeline'ı Faz 2 kilitli sekme), finans, ayarlar.
+- Dil: TR varsayılan; topbar'da PASİF dil düğmesi (TR çipi, kilitli — çok-dil Faz 2+).
+  Shell/menü/rol metinleri `shell.js` config'inde tek yerden yönetilir (i18n'e hazır).
+- Mobil first-class: web + mobil eşit önemde; 390px SS-eval zorunlu.
+- Mock tenant: "Yapıtaş İnşaat A.Ş." (tamamen kurgusal) — kanonik isim listesi shell.js
+  üstündeki yorum bloğunda; tüm sayfalar aynı adları kullanır.
+
 ## Gizlilik — KRİTİK
 
 Repo **PUBLIC**. Patron brief'i / kaynak dokümanlar (`~/Desktop/GaviaCRM Sources`) ve

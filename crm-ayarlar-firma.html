@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Firma Ayarları — Gavia CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+<link rel="stylesheet" href="assets/css/ui.css">
+<style>
+/* ============ SAYFAYA ÖZEL — paket kartı + iki kolonlu ayar düzeni ============ */
+.set-cols{display:grid;grid-template-columns:1fr 1.35fr;gap:16px;margin-bottom:16px;align-items:start}
+@media(max-width:1100px){.set-cols{grid-template-columns:minmax(0,1fr)}}
+.set-stack{display:flex;flex-direction:column;gap:16px}
+
+/* paket kartı — koyu marka yüzeyi (kiralanabilirlik vitrini) */
+.plan-card{
+  position:relative;overflow:hidden;border-radius:var(--r-lg);
+  background:var(--gv-deep);color:var(--gv-on-dark);border:1px solid var(--gv-border-dark);
+  padding:24px;box-shadow:var(--sh-md);
+}
+.plan-card::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(300px 180px at 100% 0%, rgba(63,213,173,.14), transparent 70%),
+    radial-gradient(rgba(63,213,173,.06) 1px, transparent 1px);
+  background-size:auto, 22px 22px;
+}
+.plan-card>*{position:relative;z-index:1}
+.plan-eyebrow{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gv-mint);margin-bottom:8px}
+.plan-name{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.plan-name .gstat{position:static}
+.plan-price{margin-top:14px;font-size:13px;color:var(--on-dark-mut)}
+.plan-price b{font-size:26px;font-weight:800;color:#fff;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.plan-meta{display:flex;flex-wrap:wrap;gap:14px;margin-top:16px;padding-top:16px;border-top:1px solid var(--hair)}
+.plan-meta div{line-height:1.4}
+.plan-meta b{display:block;font-size:13.5px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+.plan-meta span{font-size:11px;color:var(--on-dark-faint)}
+.plan-acts{display:flex;gap:10px;margin-top:20px}
+.plan-acts .btn-up{background:var(--gv-mint);color:var(--gv-deep)}
+.plan-acts .btn-up:hover{background:var(--gv-mint-bright);transform:translateY(-2px)}
+.plan-acts .btn-all{background:transparent;color:var(--gv-on-dark);border:1px solid var(--gv-border-dark)}
+.plan-acts .btn-all:hover{border-color:rgba(63,213,173,.5);color:#fff;transform:translateY(-2px)}
+
+/* fatura mini tablosu */
+.inv-note{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+.inv-note i{color:var(--acc-ink)}
+</style>
+</head>
+<body data-sec="ayarlar" data-screen="firma">
+<div class="gv-app">
+  <aside class="gv-rail" id="gvRail"></aside>
+  <nav class="gv-menu" id="gvMenu"></nav>
+  <div class="gv-divider" id="gvDivider" role="separator" aria-label="Menüyü daralt/genişlet"><span class="gv-grip"></span></div>
+  <div class="gv-overlay" id="gvOverlay"></div>
+
+  <header class="gv-top">
+    <button class="gv-burger" id="gvBurger" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+    <div class="gv-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Ara"></div>
+    <div class="gv-top-tools">
+      <button class="gv-iconbtn" data-tip="Bildirimler" aria-label="Bildirimler"><i class="fa-regular fa-bell"></i><span class="gb-dot"></span></button>
+      <div class="gv-me">
+        <div class="me-ava" id="gvAva">·</div>
+        <div class="me-id"><div class="me-name" id="gvName">—</div><div class="me-role" id="gvRole">—</div></div>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="gv-main">
+    <div class="gv-page-head">
+      <div>
+        <div class="ph-eyebrow">Yönetim</div>
+        <h1>Firma Ayarları</h1>
+        <div class="ph-sub">Yapıtaş İnşaat A.Ş. — abonelik, kullanım ve modül yönetimi</div>
+      </div>
+    </div>
+
+    <div class="set-cols">
+      <div class="set-stack">
+        <!-- paket kartı -->
+        <div class="plan-card">
+          <div class="plan-eyebrow">Aktif Abonelik</div>
+          <div class="plan-name">Profesyonel Paket <span class="gstat ok">Aktif</span></div>
+          <div class="plan-price"><b>₺14.900</b> / ay · yıllık faturalama</div>
+          <div class="plan-meta">
+            <div><b>1 Ağu 2026</b><span>Sonraki fatura</span></div>
+            <div><b>Mart 2027</b><span>Yenileme dönemi</span></div>
+            <div><b>Öncelikli</b><span>Destek seviyesi</span></div>
+          </div>
+          <div class="plan-acts">
+            <button class="btn btn-sm btn-up" onclick="gvToast('Paket yükseltme talebi Gavia ekibine iletildi.')"><i class="fa-solid fa-arrow-up"></i> Paketi Yükselt</button>
+            <a class="btn btn-sm btn-all" href="#" data-wip="1">Tüm Paketler</a>
+          </div>
+        </div>
+
+        <!-- kullanım limitleri -->
+        <div class="gv-card">
+          <div class="gc-head">
+            <div class="gc-title"><i class="fa-solid fa-gauge-simple-high"></i> Kullanım &amp; Limitler</div>
+          </div>
+          <div class="gc-body" style="padding-top:6px;padding-bottom:6px">
+            <div class="limit-row">
+              <div class="limit-top"><b>Kullanıcı</b><span><strong>18</strong> / 25</span></div>
+              <div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:72%"></div></div></div>
+            </div>
+            <div class="limit-row">
+              <div class="limit-top"><b>Aktif şantiye</b><span><strong>3</strong> / 5</span></div>
+              <div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:60%"></div></div></div>
+            </div>
+            <div class="limit-row">
+              <div class="limit-top"><b>Dosya depolama</b><span><strong>34</strong> / 50 GB</span></div>
+              <div class="gbar"><div class="gbar-track"><div class="gbar-fill warn" style="width:68%"></div></div></div>
+            </div>
+            <div class="limit-row">
+              <div class="limit-top"><b>Aylık SMS bildirimi</b><span><strong>2.400</strong> / 5.000</span></div>
+              <div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:48%"></div></div></div>
+            </div>
+          </div>
+          <div class="gc-foot">
+            <span class="inv-note"><i class="fa-solid fa-circle-info"></i> Limit artışı paket yükseltmesiyle yapılır.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- modüller -->
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-puzzle-piece"></i> Modüller</div>
+          <span class="gtag mint">7 / 10 açık</span>
+        </div>
+        <div class="gc-body" style="padding-top:4px;padding-bottom:4px">
+          <div class="mod-row">
+            <div class="mod-ico"><i class="fa-solid fa-helmet-safety"></i></div>
+            <div class="mod-info"><b>Şantiye &amp; Saha</b><span>Şantiye kartları, saha bildirimleri, İSG tutanakları</span></div>
+            <label class="gv-toggle"><input type="checkbox" checked data-mod="Şantiye &amp; Saha"><span class="tg-track"></span></label>
+          </div>
+          <div class="mod-row">
+            <div class="mod-ico"><i class="fa-solid fa-list-check"></i></div>
+            <div class="mod-info"><b>Görev Takibi</b><span>Görev verme, takip, gecikme uyarıları</span></div>
+            <label class="gv-toggle"><input type="checkbox" checked data-mod="Görev Takibi"><span class="tg-track"></span></label>
+          </div>
+          <div class="mod-row">
+            <div class="mod-ico"><i class="fa-solid fa-users"></i></div>
+            <div class="mod-info"><b>Personel &amp; İK</b><span>Özlük, izin, rapor, avans süreçleri</span></div>
+            <label class="gv-toggle"><input type="checkbox" checked data-mod="Personel &amp; İK"><span class="tg-track"></span></label>
+          </div>
+          <div class="mod-row">
+            <div class="mod-ico"><i class="fa-solid fa-clipboard-list"></i></div>
+            <div class="mod-info"><b>Saha Kayıtları</b><span>Kasa raporu, puantaj, makine puantajı, yemekhane</span></div>
+            <label class="gv-toggle"><input type="checkbox" checked data-mod="Saha Kayıtları"><span class="tg-track"></span></label>
+          </div>
+          <div class="mod-row">
+            <div class="mod-ico"><i class="fa-solid fa-cart-flatbed"></i></div>
+            <div class="mod-info"><b>Satın Alma</b><span>Malzeme talebi, satın alma formu, termin takibi</span></div>
+            <label class="gv-toggle"><input type="checkbox" checked data-mod="Satın Alma"><span class="tg-track"></span></label>
+          </div>
+          <div class="mod-row">
+            <div class="mod-ico"><i class="fa-solid fa-address-book"></i></div>
+            <div class="mod-info"><b>Cariler</b><span>Firma rehberi, kişiler, cari durum sorgusu</span></div>
+            <label class="gv-toggle"><input type="checkbox" checked data-mod="Cariler"><span class="tg-track"></span></label>
+          </div>
+          <div class="mod-row">
+            <div class="mod-ico"><i class="fa-solid fa-file-signature"></i></div>
+            <div class="mod-info"><b>Hakediş &amp; Sözleşme</b><span>Kurum ve taşeron hakedişleri, sözleşme arşivi</span></div>
+            <label class="gv-toggle"><input type="checkbox" checked data-mod="Hakediş &amp; Sözleşme"><span class="tg-track"></span></label>
+          </div>
+          <div class="mod-row is-locked">
+            <div class="mod-ico"><i class="fa-solid fa-chart-line"></i></div>
+            <div class="mod-info"><b>Satış CRM <span class="gtag">Faz 2</span></b><span>Fırsat, teklif ve satış hunisi yönetimi</span></div>
+            <label class="gv-toggle is-locked"><input type="checkbox" disabled><span class="tg-track"></span></label>
+          </div>
+          <div class="mod-row is-locked">
+            <div class="mod-ico"><i class="fa-solid fa-warehouse"></i></div>
+            <div class="mod-info"><b>Stok &amp; ERP <span class="gtag">Faz 2</span></b><span>Depo, stok hareketi, fatura entegrasyonu</span></div>
+            <label class="gv-toggle is-locked"><input type="checkbox" disabled><span class="tg-track"></span></label>
+          </div>
+          <div class="mod-row is-locked">
+            <div class="mod-ico"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <div class="mod-info"><b>Gavia Asistan <span class="gtag">Faz 3</span></b><span>Yapay zekâ destekli rapor ve özetler</span></div>
+            <label class="gv-toggle is-locked"><input type="checkbox" disabled><span class="tg-track"></span></label>
+          </div>
+        </div>
+        <div class="gc-foot">
+          <span class="inv-note"><i class="fa-solid fa-circle-info"></i> Kapatılan modül menüden gizlenir; veriler silinmez.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="set-cols">
+      <!-- fatura geçmişi -->
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-file-invoice"></i> Fatura Geçmişi</div>
+        </div>
+        <div class="gc-body flush">
+          <table class="gtable" style="min-width:420px">
+            <thead>
+              <tr><th>Dönem</th><th class="num">Tutar</th><th>Durum</th><th></th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="t-strong">Temmuz 2026</td>
+                <td class="num">₺14.900</td>
+                <td><span class="gstat ok">Ödendi</span></td>
+                <td><div class="row-acts"><button class="ia-btn" data-wip="1" data-no-confirm aria-label="Faturayı indir"><i class="fa-solid fa-download"></i></button></div></td>
+              </tr>
+              <tr>
+                <td class="t-strong">Haziran 2026</td>
+                <td class="num">₺14.900</td>
+                <td><span class="gstat ok">Ödendi</span></td>
+                <td><div class="row-acts"><button class="ia-btn" data-wip="1" data-no-confirm aria-label="Faturayı indir"><i class="fa-solid fa-download"></i></button></div></td>
+              </tr>
+              <tr>
+                <td class="t-strong">Mayıs 2026</td>
+                <td class="num">₺13.400</td>
+                <td><span class="gstat ok">Ödendi</span></td>
+                <td><div class="row-acts"><button class="ia-btn" data-wip="1" data-no-confirm aria-label="Faturayı indir"><i class="fa-solid fa-download"></i></button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- firma bilgileri -->
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-building-user"></i> Firma Bilgileri</div>
+        </div>
+        <div class="gc-body">
+          <form class="gform" onsubmit="event.preventDefault(); gvToast('Firma bilgileri kaydedildi.')">
+            <div class="gfield">
+              <label for="fAd">Firma unvanı</label>
+              <input id="fAd" type="text" value="Yapıtaş İnşaat A.Ş.">
+            </div>
+            <div class="gfield">
+              <label for="fVergi">Vergi no</label>
+              <input id="fVergi" type="text" value="935 041 7768" class="num">
+            </div>
+            <div class="gfield">
+              <label for="fYetkili">Yetkili</label>
+              <input id="fYetkili" type="text" value="Kemal Yapıcıoğlu">
+            </div>
+            <div class="gfield">
+              <label for="fTel">Telefon</label>
+              <input id="fTel" type="tel" value="0216 000 00 00">
+            </div>
+            <div class="gfield full">
+              <label for="fAdres">Merkez adres</label>
+              <input id="fAdres" type="text" value="İnşaatçılar Cad. No:12, Ümraniye / İstanbul">
+              <span class="gf-hint">Adres, hakediş ve sözleşme çıktılarında kullanılır.</span>
+            </div>
+            <div class="gfield full" style="flex-direction:row;justify-content:flex-end;gap:10px">
+              <button type="button" class="btn btn-ghost btn-sm" data-no-confirm onclick="gvToast('Değişiklikler geri alındı.',{type:'info'})">Vazgeç</button>
+              <button type="submit" class="btn btn-acc btn-sm"><i class="fa-solid fa-check"></i> Kaydet</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/ui.js"></script>
+<script>
+/* modül toggle simülasyonu — sayaç + toast */
+(function(){
+  var counter = document.querySelector('.gc-head .gtag.mint');
+  document.querySelectorAll('.gv-toggle input[data-mod]').forEach(function(inp){
+    inp.addEventListener('change', function(){
+      var open = document.querySelectorAll('.gv-toggle input[data-mod]:checked').length;
+      if(counter) counter.textContent = open + ' / 10 açık';
+      gvToast(inp.getAttribute('data-mod').replace(/&amp;/g,'&') + ' modülü ' + (inp.checked ? 'açıldı.' : 'kapatıldı.'), {type: inp.checked ? 'ok' : 'info'});
+    });
+  });
+})();
+</script>
+</body>
+</html>
