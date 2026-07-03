@@ -50,6 +50,12 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
   .site-hero{padding:20px 18px}
   .site-hero-id{flex-direction:column}
   .site-hero-meta{grid-template-columns:1fr}
+  /* 3 hero-aksiyonlu sayfalarda (Düzenle/Talep Oluştur/Saha Bildirimi) 390px'te
+     taşma önlenir — shell.css .ph-actions{flex:none} tek satır zorlar ve
+     flex-item shrink-to-fit genişliği wrap'i yok sayar; sayfa-lokal olarak
+     tam genişlik + sarma verilir (shell.css'e dokunulmaz). */
+  .ph-actions{flex-wrap:wrap;width:100%}
+  .ph-actions .btn{flex:1 1 auto;justify-content:center}
 }
 
 /* sekme çubuğu — alt çizgili, yoğun ERP dili (pill değil) */
@@ -89,14 +95,71 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
 .ml-body b{display:block;font-size:13.5px;font-weight:700;color:var(--ink)}
 .ml-body span{font-size:12px;color:var(--muted)}
 
-/* Ekip: şef satırı */
-.chief-row{display:flex;align-items:center;gap:14px}
-.chief-row b{display:block;font-size:14.5px;font-weight:800;color:var(--ink)}
+/* Ekip: şef satırı (personel kartına bağlı) */
+.chief-row{display:flex;align-items:center;gap:14px;border-radius:var(--r-md);transition:.18s var(--ease)}
+.chief-row b{display:block;font-size:14.5px;font-weight:800;color:var(--ink);transition:.18s var(--ease)}
 .chief-row span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.chief-row:hover b{color:var(--acc-ink)}
 
 /* İSG: özet istatistik ızgarası */
 .isg-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 @media(max-width:640px){.isg-stats{grid-template-columns:1fr}}
+
+/* Puantaj sekmesi — haftalık grid (crm-operasyon-puantaj.html görsel deseninin
+   şantiye kartına daraltılmış özeti; kanonik 10-durum seti — bkz. shell.js üst
+   yorum bloğu DALGA 4A KANONİK TANIMLAR). Sayfa-lokal .sp- ad alanı; ana puantaj
+   sayfasındaki .pt- sınıflarıyla ÇAKIŞMAZ. */
+.sp-scroll{overflow-x:auto}
+#tblSpPuantaj{min-width:640px;border-collapse:separate;border-spacing:0}
+#tblSpPuantaj th,#tblSpPuantaj td{border-bottom:1px solid var(--line)}
+#tblSpPuantaj tbody tr:last-child td{border-bottom:none}
+.col-sp-per{width:190px;text-align:left}
+.col-sp-gun{width:64px;text-align:center!important}
+.col-sp-gun span{display:block;font-weight:800;color:var(--ink);margin-top:1px}
+.col-sp-gun.is-today{background:rgba(var(--acc-rgb),.05)}
+.col-sp-gun.is-today span{color:var(--acc-ink)}
+td.col-sp-gun.is-today{background:rgba(var(--acc-rgb),.05)}
+
+.sp-cell{display:flex;align-items:center;gap:11px;min-width:0}
+.sp-mark{width:32px;height:32px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:11.5px;font-weight:800;background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)}
+.sp-info{min-width:0;line-height:1.3}
+.sp-info b{display:block;font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-info span{font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.sp-mark-day{width:30px;height:30px;margin:0 auto;border-radius:var(--r-sm);display:grid;place-items:center;font-size:12px;position:relative;cursor:default}
+.sp-mark-day.tam{background:var(--ok-tint);color:var(--ok)}
+.sp-mark-day.yarim{background:var(--warn-tint);color:var(--warn)}
+.sp-mark-day.yok{background:var(--danger-tint);color:var(--danger)}
+.sp-mark-day.izin{background:var(--info-tint);color:var(--info)}
+.sp-mark-day.rapor{background:var(--bg);color:var(--muted);border:1px solid var(--line-2)}
+.sp-mark-day.fm{background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)}
+.sp-mark-day.em{background:color-mix(in srgb,var(--warn) 22%,var(--warn-tint));color:color-mix(in srgb,var(--warn) 72%,black)}
+.sp-mark-day.rt{background:transparent;color:var(--ink-2);border:1px dashed color-mix(in srgb,var(--danger) 45%,var(--line-2))}
+.sp-mark-day.ht{background:transparent;color:var(--line-2);border:1px dashed var(--line)}
+
+.sp-mark-day[data-tip]:hover::after,.sp-mark-day[data-tip]:focus-visible::after{opacity:1;transform:translateX(-50%) translateY(0)}
+.sp-mark-day[data-tip]::after{
+  content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;
+  transform:translateX(-50%) translateY(3px);
+  background:var(--ink);color:var(--paper);font-size:11px;font-weight:600;white-space:nowrap;
+  padding:5px 9px;border-radius:7px;box-shadow:var(--sh-md);
+  opacity:0;pointer-events:none;transition:opacity .15s var(--ease),transform .15s var(--ease);z-index:20;
+}
+
+.sp-legend{display:flex;flex-wrap:wrap;gap:14px;padding:14px 22px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-2)}
+.sp-legend .lg-item{display:inline-flex;align-items:center;gap:6px}
+.sp-legend .lg-sw{width:17px;height:17px;border-radius:6px;flex:none;display:grid;place-items:center;font-size:8.5px}
+.sp-legend .lg-sw.tam{background:var(--ok-tint);color:var(--ok)}
+.sp-legend .lg-sw.yarim{background:var(--warn-tint);color:var(--warn)}
+.sp-legend .lg-sw.yok{background:var(--danger-tint);color:var(--danger)}
+.sp-legend .lg-sw.izin{background:var(--info-tint);color:var(--info)}
+.sp-legend .lg-sw.rapor{background:var(--bg);color:var(--muted);border:1px solid var(--line-2)}
+.sp-legend .lg-sw.fm{background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)}
+.sp-legend .lg-sw.em{background:color-mix(in srgb,var(--warn) 22%,var(--warn-tint));color:color-mix(in srgb,var(--warn) 72%,black)}
+.sp-legend .lg-sw.ht{background:transparent;color:var(--line-2);border:1px dashed var(--line)}
+@media(max-width:640px){
+  .sp-legend{padding:12px 16px;gap:10px}
+}
 
 /* Dosyalar: dosya satırı */
 .file-row{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--line);transition:background .15s}
@@ -142,9 +205,11 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
       </div>
       <div class="ph-actions" data-view="yonetim" hidden>
         <a class="btn btn-ghost btn-sm" href="#" data-wip="1"><i class="fa-solid fa-pen"></i> Düzenle</a>
+        <a class="btn btn-ghost btn-sm" href="crm-satinalma-talep-form.html?s=vadi"><i class="fa-solid fa-boxes-stacked"></i> Talep Oluştur</a>
         <a class="btn btn-acc btn-sm" href="#" data-wip="1"><i class="fa-solid fa-camera"></i> Saha Bildirimi Ekle</a>
       </div>
       <div class="ph-actions" data-view="sef" hidden>
+        <a class="btn btn-ghost btn-sm" href="crm-satinalma-talep-form.html?s=vadi"><i class="fa-solid fa-boxes-stacked"></i> Talep Oluştur</a>
         <a class="btn btn-acc btn-sm" href="#" data-wip="1"><i class="fa-solid fa-camera"></i> Saha Bildirimi Gönder</a>
       </div>
     </div>
@@ -171,10 +236,10 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
         </div>
       </div>
       <div class="hero-stats">
-        <div class="hstat"><span class="hstat-num">46/48</span><span class="hstat-lbl">Bugün sahada personel</span></div>
+        <a class="hstat" href="#" data-tab-goto="puantaj"><span class="hstat-num">46/48</span><span class="hstat-lbl">Bugün sahada personel <i class="fa-solid fa-arrow-right"></i></span></a>
         <a class="hstat" href="crm-gorev.html"><span class="hstat-num">7</span><span class="hstat-lbl">Açık görev <i class="fa-solid fa-arrow-right"></i></span></a>
-        <div class="hstat"><span class="hstat-num">3</span><span class="hstat-lbl">Bekleyen malzeme talebi</span></div>
-        <div class="hstat ok"><span class="hstat-num">+2 gün</span><span class="hstat-lbl">İş programının önünde</span></div>
+        <a class="hstat" href="crm-satinalma-talepler.html"><span class="hstat-num">3</span><span class="hstat-lbl">Bekleyen malzeme talebi <i class="fa-solid fa-arrow-right"></i></span></a>
+        <a class="hstat ok" href="#" data-tab-goto="program"><span class="hstat-num">+2 gün</span><span class="hstat-lbl">İş programının önünde <i class="fa-solid fa-arrow-right"></i></span></a>
       </div>
     </div>
 
@@ -183,6 +248,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
       <button class="gv-tab is-active" data-tab="ozet" role="tab" aria-selected="true"><i class="fa-solid fa-chart-simple"></i> Özet</button>
       <button class="gv-tab" data-tab="program" role="tab" aria-selected="false"><i class="fa-solid fa-calendar-days"></i> İş Programı</button>
       <button class="gv-tab" data-tab="ekip" role="tab" aria-selected="false"><i class="fa-solid fa-users"></i> Ekip</button>
+      <button class="gv-tab" data-tab="puantaj" role="tab" aria-selected="false"><i class="fa-solid fa-clipboard-user"></i> Puantaj</button>
       <button class="gv-tab" data-tab="bildirim" role="tab" aria-selected="false"><i class="fa-solid fa-camera"></i> Saha Bildirimleri <span class="tb-cnt">4</span></button>
       <button class="gv-tab" data-tab="isg" role="tab" aria-selected="false"><i class="fa-solid fa-shield-halved"></i> İSG</button>
       <button class="gv-tab" data-tab="dosya" role="tab" aria-selected="false"><i class="fa-solid fa-folder-open"></i> Dosyalar</button>
@@ -241,6 +307,35 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
           </div>
         </div>
       </div>
+
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-boxes-stacked"></i> Bu Şantiyenin Talepleri</div>
+          <a class="gc-link" href="crm-satinalma-talepler.html">Tümü <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="act-list">
+          <a class="act-row" href="crm-satinalma-talep-detay.html">
+            <div class="act-ico"><i class="fa-solid fa-boxes-stacked"></i></div>
+            <div class="act-info"><b>MLZ-2026-046</b><span>Hazır beton C30 (30 m³) + Ø12 demir (2 ton)</span></div>
+            <span data-badge="bekliyor"></span>
+          </a>
+          <a class="act-row" href="crm-satinalma-talep-detay.html">
+            <div class="act-ico"><i class="fa-solid fa-boxes-stacked"></i></div>
+            <div class="act-info"><b>MLZ-2026-043</b><span>PVC boru + pis su bağlantı seti</span></div>
+            <span data-badge="bekliyor"></span>
+          </a>
+          <a class="act-row" href="crm-satinalma-talep-detay.html">
+            <div class="act-ico"><i class="fa-solid fa-boxes-stacked"></i></div>
+            <div class="act-info"><b>MLZ-2026-040</b><span>Alçı sıva malzemesi — 40 torba</span></div>
+            <span class="gstat ok">Tamamlandı</span>
+          </a>
+          <a class="act-row" href="crm-satinalma-talep-detay.html">
+            <div class="act-ico"><i class="fa-solid fa-boxes-stacked"></i></div>
+            <div class="act-info"><b>MLZ-2026-036</b><span>Boya malzemesi — iç cephe</span></div>
+            <span data-badge="onaylandi"></span>
+          </a>
+        </div>
+      </div>
     </section>
 
     <!-- ============ İŞ PROGRAMI ============ -->
@@ -281,13 +376,13 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
         <div class="gv-card">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-user-tie"></i> Şantiye Şefi</div></div>
           <div class="gc-body">
-            <div class="chief-row">
+            <a class="chief-row" href="crm-personel-detay.html">
               <div class="site-hero-mark">HD</div>
               <div>
                 <b>Hasan Demirci</b>
                 <span>Şantiye Şefi · Vadi Konakları sorumlusu</span>
               </div>
-            </div>
+            </a>
             <dl class="site-hero-meta" style="margin-top:18px">
               <div><dt>Telefon</dt><dd>0532 XXX XX XX</dd></div>
               <div><dt>E-posta</dt><dd>hasan.demirci@yapitas.example</dd></div>
@@ -318,6 +413,107 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ============ PUANTAJ ============ -->
+    <section class="tab-panel" data-tab-panel="puantaj" role="tabpanel" aria-label="Puantaj" hidden>
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-clipboard-user"></i> Haftalık Puantaj — Vadi Konakları</div>
+          <a class="gc-link" href="crm-operasyon-puantaj.html">Tam puantaja git <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="gc-body flush">
+          <div class="sp-scroll">
+            <table class="gtable" id="tblSpPuantaj">
+              <thead>
+                <tr>
+                  <th class="col-sp-per">Personel</th>
+                  <th class="col-sp-gun">Pzt <span>29</span></th>
+                  <th class="col-sp-gun">Sal <span>30</span></th>
+                  <th class="col-sp-gun">Çar <span>1</span></th>
+                  <th class="col-sp-gun is-today">Per <span>2</span></th>
+                  <th class="col-sp-gun">Cum <span>3</span></th>
+                  <th class="col-sp-gun">Cmt <span>4</span></th>
+                  <th class="col-sp-gun">Paz <span>5</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="sp-cell"><div class="sp-mark">AV</div><div class="sp-info"><b>Ali Vural</b><span>Saha Personeli</span></div></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Pzt 29 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Sal 30 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Çar 1 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun is-today"><div class="sp-mark-day tam" data-tip="Per 2 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Cum 3 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Cmt 4 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day ht" data-tip="Paz 5 · Hafta tatili"><i class="fa-solid fa-moon"></i></div></td>
+                </tr>
+                <tr>
+                  <td><div class="sp-cell"><div class="sp-mark">İS</div><div class="sp-info"><b>İbrahim Sönmez</b><span>Formen</span></div></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day fm" data-tip="Pzt 29 · Fazla mesai (FM)"><i class="fa-solid fa-arrow-trend-up"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Sal 30 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day yarim" data-tip="Çar 1 · Yarım gün"><i class="fa-solid fa-circle-half-stroke"></i></div></td>
+                  <td class="col-sp-gun is-today"><div class="sp-mark-day tam" data-tip="Per 2 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day fm" data-tip="Cum 3 · Fazla mesai (FM)"><i class="fa-solid fa-arrow-trend-up"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Cmt 4 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day ht" data-tip="Paz 5 · Hafta tatili"><i class="fa-solid fa-moon"></i></div></td>
+                </tr>
+                <tr>
+                  <td><div class="sp-cell"><div class="sp-mark">RK</div><div class="sp-info"><b>Ramazan Kılıç</b><span>Kalıpçı</span></div></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Pzt 29 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Sal 30 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Çar 1 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun is-today"><div class="sp-mark-day izin" data-tip="Per 2 · İzinli"><i class="fa-solid fa-umbrella-beach"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Cum 3 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day yok" data-tip="Cmt 4 · Devamsız — mazeretsiz"><i class="fa-solid fa-xmark"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day ht" data-tip="Paz 5 · Hafta tatili"><i class="fa-solid fa-moon"></i></div></td>
+                </tr>
+                <tr>
+                  <td><div class="sp-cell"><div class="sp-mark">SD</div><div class="sp-info"><b>Selim Doğan</b><span>Demir Ustası</span></div></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Pzt 29 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day yok" data-tip="Sal 30 · Devamsız — mazeretsiz"><i class="fa-solid fa-xmark"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Çar 1 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun is-today"><div class="sp-mark-day em" data-tip="Per 2 · Eksik mesai (EM)"><i class="fa-solid fa-arrow-trend-down"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day em" data-tip="Cum 3 · Eksik mesai (EM)"><i class="fa-solid fa-arrow-trend-down"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Cmt 4 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day ht" data-tip="Paz 5 · Hafta tatili"><i class="fa-solid fa-moon"></i></div></td>
+                </tr>
+                <tr>
+                  <td><div class="sp-cell"><div class="sp-mark">ME</div><div class="sp-info"><b>Musa Erdem</b><span>Düz İşçi</span></div></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day izin" data-tip="Pzt 29 · İzinli"><i class="fa-solid fa-umbrella-beach"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day izin" data-tip="Sal 30 · İzinli"><i class="fa-solid fa-umbrella-beach"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Çar 1 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun is-today"><div class="sp-mark-day tam" data-tip="Per 2 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Cum 3 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Cmt 4 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day ht" data-tip="Paz 5 · Hafta tatili"><i class="fa-solid fa-moon"></i></div></td>
+                </tr>
+                <tr>
+                  <td><div class="sp-cell"><div class="sp-mark">VŞ</div><div class="sp-info"><b>Veli Şimşek</b><span>Elektrik Ustası</span></div></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Pzt 29 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Sal 30 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day rapor" data-tip="Çar 1 · Raporlu"><i class="fa-solid fa-file-medical"></i></div></td>
+                  <td class="col-sp-gun is-today"><div class="sp-mark-day rapor" data-tip="Per 2 · Raporlu"><i class="fa-solid fa-file-medical"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Cum 3 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day tam" data-tip="Cmt 4 · Tam gün"><i class="fa-solid fa-check"></i></div></td>
+                  <td class="col-sp-gun"><div class="sp-mark-day ht" data-tip="Paz 5 · Hafta tatili"><i class="fa-solid fa-moon"></i></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="sp-legend">
+          <span class="lg-item"><span class="lg-sw tam"><i class="fa-solid fa-check"></i></span> Tam gün</span>
+          <span class="lg-item"><span class="lg-sw yarim"><i class="fa-solid fa-circle-half-stroke"></i></span> Yarım gün</span>
+          <span class="lg-item"><span class="lg-sw yok"><i class="fa-solid fa-xmark"></i></span> Devamsız</span>
+          <span class="lg-item"><span class="lg-sw izin"><i class="fa-solid fa-umbrella-beach"></i></span> İzinli</span>
+          <span class="lg-item"><span class="lg-sw rapor"><i class="fa-solid fa-file-medical"></i></span> Raporlu</span>
+          <span class="lg-item"><span class="lg-sw fm"><i class="fa-solid fa-arrow-trend-up"></i></span> Fazla Mesai (FM)</span>
+          <span class="lg-item"><span class="lg-sw em"><i class="fa-solid fa-arrow-trend-down"></i></span> Eksik Mesai (EM)</span>
+          <span class="lg-item"><span class="lg-sw ht"><i class="fa-solid fa-moon"></i></span> Hafta Tatili</span>
+        </div>
+        <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> 29 Haziran – 5 Temmuz 2026 haftası özeti · resmi tatil (RT) bu hafta yok. Gün bazlı düzenleme ve önceki haftalar için tam puantaj sayfasına gidin.</span></div>
       </div>
     </section>
 
@@ -442,6 +638,14 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
   var view = MAP[GV.role] || 'yonetim';
   document.querySelectorAll('[data-view]').forEach(function(el){
     el.hidden = el.getAttribute('data-view') !== view;
+  });
+})();
+
+/* Özet sekmesi — bu şantiyenin talepleri: kayıt rozetleri (ui.js gvChainBadge) */
+(function(){
+  if(!window.GV || typeof gvChainBadge !== 'function') return;
+  document.querySelectorAll('[data-badge]').forEach(function(el){
+    el.innerHTML = gvChainBadge(el.getAttribute('data-badge'));
   });
 })();
 
