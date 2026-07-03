@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Operasyon Ekranı — Gavia CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<style>
+/* =====================================================================
+   OPERASYON EKRANI (kiosk/TV) — shell'siz tek dosya, bilinçli iskelet sapması.
+   SADECE tokens.css + bu blok. shell.css/ui.css/shell.js/ui.js YOK.
+   Birincil hedef: 1920×1080 TV mesafesi (kalın hiyerarşi, sakin hareket).
+   ===================================================================== */
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--gv-deep);
+  color:var(--on-dark);
+  font-family:var(--font);
+  min-height:100vh;
+  overflow-x:hidden;
+  display:flex;flex-direction:column;
+  background-image:
+    radial-gradient(1100px 620px at 100% -10%, var(--gv-mint-glow), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(63,213,173,.07), transparent 55%);
+  background-repeat:no-repeat;
+}
+
+/* ---------- üst şerit ---------- */
+.kiosk-top{
+  display:flex;align-items:center;gap:20px;
+  padding:20px clamp(20px,3vw,44px);
+  border-bottom:1px solid var(--gv-border-dark);
+}
+.k-mark{
+  width:44px;height:44px;flex:none;border-radius:12px;
+  background:linear-gradient(155deg,var(--gv-mint),var(--gv-mint-bright));
+  display:grid;place-items:center;
+  font-weight:800;font-size:19px;color:var(--gv-deep);letter-spacing:-.5px;
+}
+.k-brand{display:flex;flex-direction:column;line-height:1.25}
+.k-brand b{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.2px}
+.k-brand span{font-size:11.5px;font-weight:600;color:var(--on-dark-mut)}
+.k-div{width:1px;align-self:stretch;background:var(--gv-border-dark);margin:0 2px}
+.k-tenant{display:flex;align-items:center;gap:9px;font-size:14.5px;font-weight:700;color:var(--on-dark)}
+.k-tenant i{color:var(--gv-mint);font-size:13px}
+.k-live{
+  display:inline-flex;align-items:center;gap:6px;margin-left:4px;
+  padding:3px 9px 3px 7px;border-radius:var(--r-pill);
+  background:var(--gv-mint-glow);color:var(--gv-mint-bright);
+  font-size:10px;font-weight:800;letter-spacing:.6px;
+}
+.k-live .dot{width:6px;height:6px;border-radius:50%;background:var(--gv-mint-bright);animation:pulse-mint 2.2s ease-in-out infinite}
+.k-clockwrap{
+  margin-left:auto;display:flex;align-items:center;gap:22px;
+}
+.k-clock{text-align:right;line-height:1}
+.k-clock .hm{font-size:clamp(26px,2.4vw,34px);font-weight:800;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.k-clock .hm .s{font-size:.5em;font-weight:700;color:var(--gv-mint);margin-left:4px}
+.k-clock .dt{margin-top:5px;font-size:12.5px;color:var(--on-dark-mut);font-weight:600}
+.k-back{
+  flex:none;display:inline-flex;align-items:center;gap:9px;
+  padding:11px 18px;border-radius:var(--r-md);
+  background:transparent;border:1px solid var(--gv-border-dark);
+  color:var(--on-dark);font-family:var(--font);font-size:13.5px;font-weight:700;
+  text-decoration:none;transition:border-color .18s var(--ease),background .18s var(--ease);
+}
+.k-back:hover{background:rgba(255,255,255,.04);border-color:var(--gv-mint)}
+.k-back i{color:var(--gv-mint);font-size:12px}
+
+@keyframes pulse-mint{
+  0%,100%{box-shadow:0 0 0 0 rgba(79,229,189,.55)}
+  50%{box-shadow:0 0 0 5px rgba(79,229,189,0)}
+}
+@keyframes pulse-danger{
+  0%,100%{box-shadow:0 0 0 0 rgba(209,67,67,.5)}
+  50%{box-shadow:0 0 0 5px rgba(209,67,67,0)}
+}
+
+/* ---------- ana içerik ---------- */
+.kiosk-main{flex:1;padding:clamp(24px,3vw,42px) clamp(20px,3vw,44px) 30px;max-width:1880px;margin:0 auto;width:100%;display:flex;flex-direction:column;justify-content:center}
+
+.k-eyebrow{
+  display:flex;align-items:center;gap:9px;margin:0 0 14px;
+  font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--on-dark-faint);
+}
+.k-eyebrow i{color:var(--gv-mint);font-size:11px}
+
+/* şantiye durum satırı */
+.site-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:36px}
+.site-card{
+  background:var(--gv-night);border:1px solid var(--gv-border-dark);border-radius:var(--r-lg);
+  padding:30px;display:flex;align-items:center;gap:26px;
+}
+.ring{
+  --pct:0;--ring-c:var(--gv-mint);
+  width:140px;height:140px;flex:none;border-radius:50%;position:relative;
+  background:conic-gradient(var(--ring-c) calc(var(--pct)*3.6deg), var(--gv-border-dark) 0deg);
+}
+.ring::after{
+  content:"";position:absolute;inset:13px;border-radius:50%;background:var(--gv-night);
+}
+.ring-num{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1;
+}
+.ring-num b{font-size:29px;font-weight:800;color:#fff;line-height:1;font-variant-numeric:tabular-nums}
+.ring-num span{font-size:10px;font-weight:700;color:var(--on-dark-faint);letter-spacing:.04em;margin-top:4px;text-transform:uppercase}
+.site-info{flex:1;min-width:0}
+.site-info .snm{font-size:19px;font-weight:800;color:#fff;line-height:1.25}
+.site-info .sloc{font-size:13px;color:var(--on-dark-mut);margin-top:4px}
+.site-info .ssef{display:flex;align-items:center;gap:7px;margin-top:16px;font-size:13px;color:var(--on-dark);font-weight:600}
+.site-info .ssef i{color:var(--gv-mint);font-size:11px;flex:none}
+.site-info .snote{display:flex;align-items:center;gap:7px;margin-top:10px;font-size:12.5px;font-weight:700}
+.site-info .snote i{font-size:10px;flex:none}
+.site-info .snote.ok{color:var(--gv-mint-bright)}
+.site-info .snote.warn{color:var(--warn)}
+
+/* alt üç kolon */
+.bottom-grid{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:20px;align-items:stretch}
+.k-panel{
+  background:var(--gv-night);border:1px solid var(--gv-border-dark);border-radius:var(--r-lg);
+  display:flex;flex-direction:column;min-width:0;
+}
+.kp-head{display:flex;align-items:center;gap:10px;padding:18px 22px 14px}
+.kp-head i{font-size:13.5px;color:var(--gv-mint)}
+.kp-head b{font-size:14px;font-weight:800;color:#fff;letter-spacing:.01em}
+.kp-head .kp-cnt{margin-left:auto;font-size:22px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+.kp-body{padding:6px 0 14px;flex:1;display:flex;flex-direction:column;justify-content:center}
+
+/* onay dağılımı satırı */
+.onay-row{display:flex;align-items:center;gap:13px;padding:15px 22px}
+.onay-ico{width:34px;height:34px;flex:none;border-radius:9px;display:grid;place-items:center;font-size:13px}
+.onay-lbl{flex:1;min-width:0;font-size:13.5px;font-weight:700;color:var(--on-dark)}
+.onay-bar{flex:none;width:96px;height:5px;border-radius:99px;background:var(--gv-border-dark);overflow:hidden;margin-right:12px}
+.onay-bar span{display:block;height:100%;border-radius:99px;background:var(--gv-mint)}
+.onay-num{flex:none;width:22px;text-align:right;font-size:15.5px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+
+/* kritik uyarı satırı */
+.alert-row{display:flex;align-items:flex-start;gap:12px;padding:16px 22px;border-left:3px solid transparent}
+.alert-row.sev-danger{border-left-color:var(--danger)}
+.alert-row.sev-warn{border-left-color:var(--warn)}
+.alert-dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:5px}
+.alert-dot.sev-danger{background:var(--danger);animation:pulse-danger 2.4s ease-in-out infinite}
+.alert-dot.sev-warn{background:var(--warn)}
+.alert-txt{flex:1;min-width:0;line-height:1.42}
+.alert-txt b{display:block;font-size:12.8px;font-weight:700;color:var(--on-dark)}
+.alert-txt span{display:block;font-size:11.5px;color:var(--on-dark-mut);margin-top:2px}
+.alert-tail{flex:none;font-size:11px;font-weight:800;color:var(--danger);margin-top:1px}
+
+/* ajanda satırı */
+.ajd-row{display:flex;align-items:center;gap:13px;padding:17px 22px}
+.ajd-dot{width:9px;height:9px;border-radius:50%;flex:none}
+.ajd-txt{flex:1;min-width:0;line-height:1.4}
+.ajd-txt b{display:block;font-size:12.8px;font-weight:700;color:var(--on-dark)}
+.ajd-txt span{display:block;font-size:11.5px;color:var(--on-dark-mut);margin-top:2px}
+.ajd-time{flex:none;font-size:12.5px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;background:rgba(255,255,255,.05);padding:4px 9px;border-radius:7px}
+
+.kp-row-div{border-top:1px solid var(--hair)}
+
+/* alt imza şeridi */
+.kiosk-foot{
+  flex:none;display:flex;align-items:center;gap:10px;
+  padding:14px clamp(20px,3vw,44px);border-top:1px solid var(--gv-border-dark);
+  font-size:11.5px;color:var(--on-dark-faint);
+}
+.kiosk-foot .kf-mark{color:var(--gv-mint);font-weight:800}
+.kiosk-foot .kf-sep{opacity:.5}
+.kiosk-foot .kf-right{margin-left:auto}
+
+@media(max-width:1439px){
+  .bottom-grid{grid-template-columns:1fr 1fr;}
+  .bottom-grid .k-panel:first-child{grid-column:1 / -1}
+}
+@media(max-width:1099px){
+  .site-grid{grid-template-columns:1fr}
+  .bottom-grid{grid-template-columns:1fr}
+  .bottom-grid .k-panel:first-child{grid-column:auto}
+  .k-clockwrap{gap:14px}
+}
+@media(max-width:640px){
+  .kiosk-top{flex-wrap:wrap;row-gap:12px}
+  .k-clockwrap{margin-left:0;width:100%;justify-content:space-between}
+  .k-back{margin-left:auto}
+  .site-card{flex-wrap:wrap;justify-content:center;text-align:center}
+  .site-info{width:100%}
+  .site-info .ssef,.site-info .snote{justify-content:center}
+  .onay-bar{width:64px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .k-live .dot,.alert-dot.sev-danger{animation:none}
+}
+</style>
+</head>
+<body data-sec="panel" data-screen="operasyon-kiosk">
+
+<header class="kiosk-top">
+  <div class="k-mark">G</div>
+  <div class="k-brand"><b>Gavia CRM</b><span>Operasyon Ekranı</span></div>
+  <div class="k-div"></div>
+  <div class="k-tenant"><i class="fa-solid fa-building"></i> Yapıtaş İnşaat A.Ş.
+    <span class="k-live"><span class="dot"></span>CANLI</span>
+  </div>
+  <div class="k-clockwrap">
+    <div class="k-clock">
+      <div class="hm" id="kHm">--:--<span class="s" id="kS">--</span></div>
+      <div class="dt">2 Temmuz 2026, Perşembe</div>
+    </div>
+    <a class="k-back" href="crm-panel.html"><i class="fa-solid fa-arrow-left"></i> Panele Dön</a>
+  </div>
+</header>
+
+<main class="kiosk-main">
+
+  <div class="k-eyebrow"><i class="fa-solid fa-helmet-safety"></i> Şantiye Durumu</div>
+  <div class="site-grid">
+    <div class="site-card">
+      <div class="ring" style="--pct:68;--ring-c:var(--gv-mint)">
+        <div class="ring-num"><b>%68</b><span>İlerleme</span></div>
+      </div>
+      <div class="site-info">
+        <div class="snm">Vadi Konakları</div>
+        <div class="sloc">Konut · Çekmeköy, İstanbul</div>
+        <div class="ssef"><i class="fa-solid fa-user"></i> Hasan Demirci</div>
+        <div class="snote ok"><i class="fa-solid fa-arrow-trend-up"></i> Programın 2 gün önünde</div>
+      </div>
+    </div>
+    <div class="site-card">
+      <div class="ring" style="--pct:41;--ring-c:var(--warn)">
+        <div class="ring-num"><b>%41</b><span>İlerleme</span></div>
+      </div>
+      <div class="site-info">
+        <div class="snm">Liman Lojistik Merkezi</div>
+        <div class="sloc">Ticari · Aliağa, İzmir</div>
+        <div class="ssef"><i class="fa-solid fa-user"></i> Aylin Koç</div>
+        <div class="snote warn"><i class="fa-solid fa-triangle-exclamation"></i> İş programı 6 gün geride</div>
+      </div>
+    </div>
+    <div class="site-card">
+      <div class="ring" style="--pct:86;--ring-c:var(--gv-mint)">
+        <div class="ring-num"><b>%86</b><span>İlerleme</span></div>
+      </div>
+      <div class="site-info">
+        <div class="snm">Merkez Şantiye</div>
+        <div class="sloc">Depo + atölye · Gebze, Kocaeli</div>
+        <div class="ssef"><i class="fa-solid fa-user"></i> Ömer Taşkın</div>
+        <div class="snote ok"><i class="fa-solid fa-circle-check"></i> Planlandığı gibi ilerliyor</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="k-eyebrow"><i class="fa-solid fa-chart-simple"></i> Gündem</div>
+  <div class="bottom-grid">
+
+    <!-- Bekleyen Onaylar -->
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-stamp"></i><b>Bekleyen Onaylar</b><span class="kp-cnt">12</span></div>
+      <div class="kp-body">
+        <div class="onay-row">
+          <div class="onay-ico" style="background:rgba(169,121,8,.16);color:var(--warn)"><i class="fa-solid fa-cash-register"></i></div>
+          <div class="onay-lbl">Kasa gideri</div>
+          <div class="onay-bar"><span style="width:17%;background:var(--warn)"></span></div>
+          <div class="onay-num">2</div>
+        </div>
+        <div class="onay-row kp-row-div">
+          <div class="onay-ico" style="background:rgba(59,111,212,.16);color:var(--info)"><i class="fa-solid fa-boxes-stacked"></i></div>
+          <div class="onay-lbl">Malzeme talebi</div>
+          <div class="onay-bar"><span style="width:42%;background:var(--info)"></span></div>
+          <div class="onay-num">5</div>
+        </div>
+        <div class="onay-row kp-row-div">
+          <div class="onay-ico" style="background:rgba(46,158,107,.16);color:var(--ok)"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+          <div class="onay-lbl">Avans talebi</div>
+          <div class="onay-bar"><span style="width:17%;background:var(--ok)"></span></div>
+          <div class="onay-num">2</div>
+        </div>
+        <div class="onay-row kp-row-div">
+          <div class="onay-ico" style="background:rgba(209,67,67,.16);color:var(--danger)"><i class="fa-solid fa-umbrella-beach"></i></div>
+          <div class="onay-lbl">İzin talebi</div>
+          <div class="onay-bar"><span style="width:8%;background:var(--danger)"></span></div>
+          <div class="onay-num">1</div>
+        </div>
+        <div class="onay-row kp-row-div">
+          <div class="onay-ico" style="background:var(--gv-mint-glow);color:var(--gv-mint)"><i class="fa-solid fa-people-arrows"></i></div>
+          <div class="onay-lbl">Taşeron hakediş</div>
+          <div class="onay-bar"><span style="width:17%;background:var(--gv-mint)"></span></div>
+          <div class="onay-num">2</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kritik Uyarılar -->
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i><b>Kritik Uyarılar</b></div>
+      <div class="kp-body">
+        <div class="alert-row sev-danger">
+          <span class="alert-dot sev-danger"></span>
+          <div class="alert-txt"><b>SAT-2026-011 · XPS yalıtım teslimi gecikti</b><span>Ege Hazır Beton · Merkez Şantiye · plan 30 Haziran</span></div>
+          <div class="alert-tail">2 gün</div>
+        </div>
+        <div class="alert-row sev-danger kp-row-div">
+          <span class="alert-dot sev-danger"></span>
+          <div class="alert-txt"><b>ISG-2026-008 · İskele korkuluk eksikliği</b><span>Vadi Konakları · B Blok · aksiyon bekliyor</span></div>
+        </div>
+        <div class="alert-row sev-warn kp-row-div">
+          <span class="alert-dot sev-warn"></span>
+          <div class="alert-txt"><b>Günlük puantaj İK onayına gönderilmedi</b><span>2 Temmuz girişi · 3 şantiye · durum: Taslak</span></div>
+        </div>
+        <div class="alert-row sev-warn kp-row-div">
+          <span class="alert-dot sev-warn"></span>
+          <div class="alert-txt"><b>3 görev vadesini geçti</b><span>Perde betonu kür raporu · kalıp iskelesi sökümü…</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ajanda -->
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-calendar-day"></i><b>Ajanda</b></div>
+      <div class="kp-body">
+        <div class="ajd-row">
+          <span class="ajd-dot" style="background:var(--danger)"></span>
+          <div class="ajd-txt"><b>SAT-2026-016 · Kalıp kerestesi teslimi</b><span>Vadi Konakları · Ege Hazır Beton</span></div>
+          <div class="ajd-time">09:00</div>
+        </div>
+        <div class="ajd-row kp-row-div">
+          <span class="ajd-dot" style="background:var(--ok)"></span>
+          <div class="ajd-txt"><b>HKD-2026-006 · İşveren onay takibi</b><span>Körfez GYO · Elif Sarıkaya</span></div>
+          <div class="ajd-time">14:00</div>
+        </div>
+        <div class="ajd-row kp-row-div">
+          <span class="ajd-dot" style="background:var(--on-dark-mut)"></span>
+          <div class="ajd-txt"><b>Haftalık saha koordinasyon toplantısı</b><span>Liman Lojistik Merkezi · Murat Denizli</span></div>
+          <div class="ajd-time">16:00</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="kiosk-foot">
+  <span><span class="kf-mark">Gavia CRM</span> <span class="kf-sep">·</span> Yapıtaş İnşaat A.Ş. <span class="kf-sep">·</span> Profesyonel Paket</span>
+  <span class="kf-right">Gaviaworks</span>
+</footer>
+
+<script>
+/* rol round-trip: shell.js yüklenmiyor ama ?role= geldiğinde localStorage bozulmasın */
+(function(){
+  var m = location.search.match(/[?&]role=([^&]+)/);
+  if(m) localStorage.setItem('gv_crm_role', decodeURIComponent(m[1]));
+})();
+
+/* canlı saat — gerçek zaman; tarih kanonik mock bağlamına sabit [MOCK-SİM] */
+(function(){
+  var hm = document.getElementById('kHm'), s = document.getElementById('kS');
+  function p(n){ return (n < 10 ? '0' : '') + n; }
+  function tick(){
+    var d = new Date();
+    hm.firstChild.textContent = p(d.getHours()) + ':' + p(d.getMinutes());
+    s.textContent = p(d.getSeconds());
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
+</body>
+</html>

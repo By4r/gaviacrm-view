@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Demirbaş — Gavia CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+<link rel="stylesheet" href="assets/css/ui.css">
+<style>
+/* ============ SAYFAYA ÖZEL — Demirbaş envanteri ============ */
+#tblDemirbas{min-width:1040px}
+.col-kategori{width:160px}
+.col-kisi{width:150px}
+.col-santiye{width:140px}
+.col-tarih{width:140px}
+.col-durum{width:130px}
+
+.dm-cell{display:flex;align-items:center;gap:12px;min-width:0}
+.dm-mark{width:38px;height:38px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:14px}
+.dm-info{min-width:0;line-height:1.35}
+.dm-info b{display:block;font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.dm-info .dm-no{font-size:11.5px;color:var(--muted)}
+
+.dm-kisisiz{color:var(--muted);font-style:italic}
+
+/* Hurda — "off" (İade Edildi) ile aynı sessiz aile, ama ayırt edici koyu zemin
+   (statik .gstat, shell.js DALGA 4C kanonik bloğunda "muted" olarak tanımlı) */
+.gstat.hurda{background:var(--line);color:var(--ink-2)}
+
+/* iki boyutlu filtre — kategori grubu + durum grubu (crm-santiye-isg.html deseninin
+   aynısı; ui.js'in tekil data-filter primitifi iki grubu birlikte AND edemediği için
+   bu sayfada özel JS ile bağlanır, bkz. script — ui.js DEĞİŞTİRİLMEDİ) */
+.filter-bar.stack{flex-direction:column;align-items:stretch;gap:12px}
+.filter-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.filter-row .frow-lbl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);flex:none;min-width:64px}
+
+@media(max-width:640px){
+  .dm-info b{max-width:180px}
+  .filter-row .frow-lbl{min-width:0;width:100%}
+}
+</style>
+</head>
+<body data-sec="operasyon" data-screen="demirbas">
+<div class="gv-app">
+  <aside class="gv-rail" id="gvRail"></aside>
+  <nav class="gv-menu" id="gvMenu"></nav>
+  <div class="gv-divider" id="gvDivider" role="separator" aria-label="Menüyü daralt/genişlet"><span class="gv-grip"></span></div>
+  <div class="gv-overlay" id="gvOverlay"></div>
+
+  <header class="gv-top">
+    <button class="gv-burger" id="gvBurger" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+    <div class="gv-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Ara"></div>
+    <div class="gv-top-tools">
+      <button class="gv-iconbtn" data-tip="Bildirimler" aria-label="Bildirimler"><i class="fa-regular fa-bell"></i><span class="gb-dot"></span></button>
+      <div class="gv-me">
+        <div class="me-ava" id="gvAva">·</div>
+        <div class="me-id"><div class="me-name" id="gvName">—</div><div class="me-role" id="gvRole">—</div></div>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="gv-main">
+    <div class="gv-page-head">
+      <div>
+        <div class="ph-eyebrow">Günlük Kayıt</div>
+        <h1>Demirbaş</h1>
+        <div class="ph-sub" id="dmSub">Yükleniyor…</div>
+      </div>
+      <div class="ph-actions">
+        <a class="btn btn-acc btn-sm" href="#" data-wip="1"><i class="fa-solid fa-plus"></i> Yeni Demirbaş</a>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-ico"><i class="fa-solid fa-boxes-stacked"></i></div>
+        <div><div class="kpi-num num" id="kpiToplam">—</div><div class="kpi-lbl">Toplam kalem</div>
+        <div class="kpi-delta flat"><i class="fa-solid fa-toolbox"></i> Tüm şantiyeler</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-user-check"></i></div>
+        <div><div class="kpi-num num" id="kpiZimmetli">—</div><div class="kpi-lbl">Aktif zimmet</div>
+        <div class="kpi-delta flat"><i class="fa-solid fa-id-badge"></i> Kişiye bağlı</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-ico" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-warehouse"></i></div>
+        <div><div class="kpi-num num" id="kpiDepoda">—</div><div class="kpi-lbl">Depoda</div>
+        <div class="kpi-delta flat"><i class="fa-solid fa-box"></i> Zimmetsiz, kullanıma hazır</div></div>
+      </div>
+      <div class="kpi-card warn">
+        <div class="kpi-ico"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+        <div><div class="kpi-num num" id="kpiServiste">—</div><div class="kpi-lbl">Serviste</div>
+        <div class="kpi-delta down"><i class="fa-solid fa-triangle-exclamation"></i> Bakım/onarımda</div></div>
+      </div>
+    </div>
+
+    <div class="gv-card">
+      <div class="filter-bar stack">
+        <div class="fb-search" style="max-width:360px">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="dmSearch" placeholder="Demirbaş adı, ZMT no veya kişi ara">
+        </div>
+        <div class="filter-row">
+          <span class="frow-lbl">Kategori</span>
+          <div class="chips" id="dmKatChips">
+            <button class="chip is-on" data-kat="hepsi">Tümü <span class="ch-cnt">10</span></button>
+            <button class="chip" data-kat="telefon">Telefon &amp; İletişim <span class="ch-cnt">3</span></button>
+            <button class="chip" data-kat="tablet">Tablet <span class="ch-cnt">1</span></button>
+            <button class="chip" data-kat="elaleti">El Aleti <span class="ch-cnt">2</span></button>
+            <button class="chip" data-kat="guvenlik">Güvenlik Ekipmanı <span class="ch-cnt">1</span></button>
+            <button class="chip" data-kat="arac">Araç <span class="ch-cnt">1</span></button>
+            <button class="chip" data-kat="makine">Makine-Ekipman <span class="ch-cnt">2</span></button>
+          </div>
+        </div>
+        <div class="filter-row">
+          <span class="frow-lbl">Durum</span>
+          <div class="chips" id="dmDurumChips">
+            <button class="chip is-on" data-durum="hepsi">Tümü</button>
+            <button class="chip" data-durum="zimmetli">Zimmetli</button>
+            <button class="chip" data-durum="depoda">Depoda</button>
+            <button class="chip" data-durum="serviste">Serviste</button>
+            <button class="chip" data-durum="hurda">Hurda</button>
+            <button class="chip" data-durum="iade">İade Edildi</button>
+          </div>
+        </div>
+      </div>
+      <div class="gc-body flush">
+        <table class="gtable" id="tblDemirbas">
+          <thead>
+            <tr>
+              <th>Demirbaş</th>
+              <th class="col-kategori">Kategori</th>
+              <th class="col-kisi">Zimmetli Kişi</th>
+              <th class="col-santiye">Şantiye</th>
+              <th class="col-tarih">Teslim Tarihi</th>
+              <th class="col-durum">Durum</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="dmBody"></tbody>
+        </table>
+        <div class="gv-empty" id="dmEmpty" hidden>
+          <div class="ge-ico"><i class="fa-solid fa-toolbox"></i></div>
+          <h4>Eşleşen demirbaş yok</h4>
+          <p>Aramayı temizleyin veya farklı bir kategori/durum filtresi seçin.</p>
+        </div>
+      </div>
+      <div class="gc-foot"><span id="dmFoot">—</span></div>
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/ui.js"></script>
+<script>
+(function(){
+  if(!window.GV) return;
+
+  /* ---- mock demirbaş envanteri — shell.js kanonik listesinden BİREBİR (Dalga 4C,
+     bkz. üst yorum bloğu "DALGA 4C KANONİK TANIMLAR"). personel-detay.html zimmet
+     sekmesiyle numara/tarih/durum tutarlı tutulmalı — burada değiştirilirse orada da
+     güncellenmeli. ---- */
+  var SANTIYE_ADI = {vadi:'Vadi Konakları', liman:'Liman Lojistik Merkezi', merkez:'Merkez Şantiye', depo:'Merkez depo'};
+  var KATEGORI = {
+    telefon:  {lbl:'Telefon & İletişim', ic:'fa-mobile-screen-button', bg:'var(--info-tint)', fg:'var(--info)'},
+    tablet:   {lbl:'Tablet',             ic:'fa-tablet-screen-button', bg:'rgba(var(--acc-rgb),.12)', fg:'var(--acc-ink)'},
+    elaleti:  {lbl:'El Aleti',           ic:'fa-screwdriver-wrench',   bg:'var(--warn-tint)', fg:'var(--warn)'},
+    guvenlik: {lbl:'Güvenlik Ekipmanı',  ic:'fa-shield-halved',        bg:'var(--danger-tint)', fg:'var(--danger)'},
+    arac:     {lbl:'Araç',               ic:'fa-truck-pickup',         bg:'var(--ok-tint)', fg:'var(--ok)'},
+    makine:   {lbl:'Makine-Ekipman',     ic:'fa-gears',                bg:'var(--bg)', fg:'var(--ink-2)'}
+  };
+  var DURUM = {
+    zimmetli: {cls:'ok',    lbl:'Zimmetli'},
+    depoda:   {cls:'info',  lbl:'Depoda'},
+    serviste: {cls:'warn',  lbl:'Serviste'},
+    hurda:    {cls:'hurda', lbl:'Hurda'},
+    iade:     {cls:'off',   lbl:'İade Edildi'}
+  };
+  var DEMIRBAS = [
+    {no:'ZMT-2026-041', ad:'İş Telefonu', alt:'Samsung Galaxy A54, 64GB',         kat:'telefon',  kisi:'Hasan Demirci', santiye:'vadi', tarih:'3 Oca 2026',   durum:'zimmetli'},
+    {no:'ZMT-2026-042', ad:'El Aleti Seti', alt:'Bosch GSB 18V-55, 18 parça',     kat:'elaleti',  kisi:'Hasan Demirci', santiye:'vadi', tarih:'3 Oca 2026',   durum:'zimmetli'},
+    {no:'ZMT-2026-043', ad:'Güvenlik Ekipmanı', alt:'baret + yelek + bot seti',   kat:'guvenlik', kisi:'Hasan Demirci', santiye:'vadi', tarih:'3 Oca 2026',   durum:'zimmetli'},
+    {no:'ZMT-2026-044', ad:'Araç', alt:'Ford Ranger pikap, 34 ABC 123',           kat:'arac',     kisi:'Hasan Demirci', santiye:'vadi', tarih:'3 Oca 2026',   durum:'zimmetli'},
+    {no:'ZMT-2026-045', ad:'Tablet', alt:'Samsung Galaxy Tab A9, 64GB',           kat:'tablet',   kisi:'Aylin Koç',     santiye:'liman', tarih:'15 Şub 2026', durum:'zimmetli'},
+    {no:'ZMT-2026-046', ad:'Lazer Metre', alt:'Bosch GLM 50 C',                   kat:'elaleti',  kisi:'Ömer Taşkın',   santiye:'merkez', tarih:'20 Oca 2026', durum:'zimmetli'},
+    {no:'ZMT-2026-047', ad:'Kırıcı-Delici', alt:'Hilti TE 60-A36',                kat:'makine',   kisi:null, santiye:'depo', tarih:'25 Haz 2026', tarihNot:'gönderim', durum:'serviste'},
+    {no:'ZMT-2026-048', ad:'El Telsizi Seti', alt:'Motorola CP040, 4 adet',       kat:'telefon',  kisi:null, santiye:'depo', tarih:'—', durum:'depoda'},
+    {no:'ZMT-2025-017', ad:'El Telsizi', alt:'Motorola CP040 — iade: 3 Oca 2026', kat:'telefon',  kisi:'Hasan Demirci', santiye:null, tarih:'10 Mar 2025', durum:'iade'},
+    {no:'ZMT-2025-009', ad:'Jeneratör', alt:'Honda EU22i — hurda kararı: 12 May 2026', kat:'makine', kisi:null, santiye:null, tarih:'8 Nis 2025', durum:'hurda'}
+  ];
+
+  var body = document.getElementById('dmBody');
+  var html = '';
+  DEMIRBAS.forEach(function(d){
+    var K = KATEGORI[d.kat];
+    var D = DURUM[d.durum];
+    html += '<tr data-kat="'+d.kat+'" data-durum="'+d.durum+'" data-santiye="'+(d.santiye||'')+'">';
+    html += '<td><div class="dm-cell"><div class="dm-mark" style="background:'+K.bg+';color:'+K.fg+'"><i class="fa-solid '+K.ic+'"></i></div>'
+          + '<div class="dm-info"><b>'+d.ad+'</b><span class="dm-no">'+d.no+' — '+d.alt+'</span></div></div></td>';
+    html += '<td>'+K.lbl+'</td>';
+    html += '<td>'+(d.kisi ? d.kisi : '<span class="dm-kisisiz">(kişisiz)</span>')+'</td>';
+    html += '<td>'+(d.santiye ? SANTIYE_ADI[d.santiye] : '<span class="dm-kisisiz">—</span>')+'</td>';
+    html += '<td>'+(d.tarihNot ? '<span class="muted" style="font-size:11.5px">'+d.tarihNot+':</span> ' : '')+d.tarih+'</td>';
+    html += '<td><span class="gstat '+D.cls+'">'+D.lbl+'</span></td>';
+    html += '<td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>';
+    html += '</tr>';
+  });
+  body.innerHTML = html;
+
+  /* şef yalnız kendi şantiyesinin (Vadi Konakları) demirbaşını görür — kalıcı satır
+     kaldırma (tr.remove), makine.html/isg.html'deki rol budama deseniyle aynı.
+     Şantiyesi olmayan (merkez depo / kapanmış kayıt) kalemler üst yönetim + İK +
+     muhasebe görünümüne özgüdür. */
+  if(GV.role === 'sef'){
+    document.querySelectorAll('#tblDemirbas tbody tr').forEach(function(tr){
+      if(tr.getAttribute('data-santiye') !== 'vadi') tr.remove();
+    });
+  }
+
+  function refreshCounts(){
+    var rows = document.querySelectorAll('#tblDemirbas tbody tr');
+    var byKat = {hepsi:0}, byDurum = {hepsi:0};
+    rows.forEach(function(tr){
+      byKat.hepsi++; byDurum.hepsi++;
+      var k = tr.getAttribute('data-kat'); byKat[k] = (byKat[k]||0) + 1;
+      var d = tr.getAttribute('data-durum'); byDurum[d] = (byDurum[d]||0) + 1;
+    });
+    document.querySelectorAll('#dmKatChips .chip').forEach(function(ch){
+      var c = ch.querySelector('.ch-cnt');
+      if(c) c.textContent = byKat[ch.getAttribute('data-kat')] || 0;
+    });
+    document.getElementById('kpiToplam').textContent = byDurum.hepsi;
+    document.getElementById('kpiZimmetli').textContent = byDurum.zimmetli || 0;
+    document.getElementById('kpiDepoda').textContent = byDurum.depoda || 0;
+    document.getElementById('kpiServiste').textContent = byDurum.serviste || 0;
+    return byDurum;
+  }
+  var counts0 = refreshCounts();
+  document.getElementById('dmSub').textContent = counts0.hepsi + ' kalem · ' + (counts0.zimmetli||0) + ' aktif zimmet · 2 Temmuz 2026, Perşembe';
+
+  /* iki boyutlu filtre — kategori chip + durum chip + serbest metin AND'lenir */
+  var curKat = 'hepsi', curDurum = 'hepsi';
+  function applyFilter(){
+    var term = document.getElementById('dmSearch').value.trim().toLocaleLowerCase('tr');
+    var shown = 0;
+    document.querySelectorAll('#tblDemirbas tbody tr').forEach(function(tr){
+      var okKat = curKat === 'hepsi' || tr.getAttribute('data-kat') === curKat;
+      var okDurum = curDurum === 'hepsi' || tr.getAttribute('data-durum') === curDurum;
+      var okTerm = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
+      var show = okKat && okDurum && okTerm;
+      tr.hidden = !show;
+      if(show) shown++;
+    });
+    document.getElementById('dmEmpty').hidden = shown !== 0;
+    document.getElementById('dmFoot').textContent = shown + ' kalem gösteriliyor · toplam ' + DEMIRBAS.length + ' kayıt';
+  }
+  document.getElementById('dmSearch').addEventListener('input', applyFilter);
+  document.getElementById('dmKatChips').addEventListener('click', function(e){
+    var ch = e.target.closest('.chip[data-kat]'); if(!ch) return;
+    document.querySelectorAll('#dmKatChips .chip').forEach(function(x){ x.classList.remove('is-on'); });
+    ch.classList.add('is-on');
+    curKat = ch.getAttribute('data-kat');
+    applyFilter();
+  });
+  document.getElementById('dmDurumChips').addEventListener('click', function(e){
+    var ch = e.target.closest('.chip[data-durum]'); if(!ch) return;
+    document.querySelectorAll('#dmDurumChips .chip').forEach(function(x){ x.classList.remove('is-on'); });
+    ch.classList.add('is-on');
+    curDurum = ch.getAttribute('data-durum');
+    applyFilter();
+  });
+
+  applyFilter();
+})();
+</script>
+</body>
+</html>
