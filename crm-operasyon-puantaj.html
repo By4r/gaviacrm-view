@@ -97,9 +97,24 @@ th.is-today .dh-d{color:var(--acc-ink)}
 .pt-legend .lg-sw.rt{background:var(--bg);color:var(--ink-2);border:1px dashed var(--line-2)}
 .pt-legend .lg-sw.ht{background:transparent;color:var(--line-2);border:1px dashed var(--line)}
 
+/* ============ Günlük Giriş paneli (MOCK-SİM — sayfa-lokal, backend yok) ============ */
+.pg-row{display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.pg-row:last-child{border-bottom:none}
+.pg-name{flex:1 1 220px;min-width:0}
+.pg-ctrl{flex:none;min-width:176px}
+.pg-ctrl .gfield{margin:0}
+.pg-status{flex:none;display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;color:var(--ink-2);min-width:176px}
+.pg-status .pt-mark{width:28px;height:28px;margin:0;font-size:12px}
+.pg-empty{padding:8px 0;font-size:13px;color:var(--muted);line-height:1.6}
+.pg-foot{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding-top:16px;margin-top:6px;border-top:1px solid var(--line);flex-wrap:wrap}
+.pg-foot-note{flex:1 1 240px;font-size:12px;color:var(--muted);line-height:1.5;min-width:0}
+
 @media(max-width:640px){
   .pt-toolbar{padding:14px 16px}
   .pt-legend{padding:14px 16px;gap:12px}
+  .pg-ctrl,.pg-status{min-width:0;flex:1 1 100%;justify-content:flex-start}
+  .pg-foot{justify-content:stretch}
+  .pg-foot .btn{flex:1 1 auto;justify-content:center}
 }
 </style>
 </head>
@@ -130,6 +145,17 @@ th.is-today .dh-d{color:var(--acc-ink)}
         <h1>Puantaj</h1>
         <div class="ph-sub" id="ptSub">Yükleniyor…</div>
       </div>
+      <div class="ph-actions">
+        <button class="btn btn-acc btn-sm" id="btnGunlukToggle" type="button" data-no-confirm aria-expanded="false" aria-controls="gunlukCard"><i class="fa-solid fa-list-check"></i> Günlük Giriş</button>
+      </div>
+    </div>
+
+    <div class="gv-card" id="gunlukCard" style="margin-bottom:24px" hidden>
+      <div class="gc-head">
+        <div class="gc-title"><i class="fa-solid fa-user-clock"></i> Günlük Giriş — 2 Temmuz 2026, Perşembe</div>
+        <span class="gstat" id="gunlukDurum"></span>
+      </div>
+      <div class="gc-body" id="gunlukBody"></div>
     </div>
 
     <div class="kpi-grid">
@@ -333,7 +359,126 @@ th.is-today .dh-d{color:var(--acc-ink)}
     sub.textContent = rows.length + ' personel · ' + SANTIYE_ADI[santiye] + ' · 29 Haziran – 5 Temmuz 2026';
   }
 
-  sel.addEventListener('change', render);
+  /* ============ Günlük Giriş — şef girişi + İK onay simülasyonu
+     [MOCK-SİM: backend yok, tamamen sayfa-lokal JS + localStorage; mevcut aylık grid'e
+     ve verisine dokunmaz. ui.js gvChain'e/gvChainBadge'e DOKUNULMAZ — bu ayrı,
+     .gstat ile yürüyen sayfa-lokal bir yaşam-döngüsüdür.] ---- */
+  var GUNLUK_KEY = 'gv_pt_gunluk_2tem';
+  var SEL_DURUMLAR = ['tam','fm','em','yarim','yok','izin','rapor','rt','ht'];
+  var GUNLUK_LBL = {taslak:'Taslak', gonderildi:'İK Onayında', onaylandi:'Onaylandı', reddedildi:'Reddedildi'};
+  var GUNLUK_TIP = {taslak:'off', gonderildi:'warn', onaylandi:'ok', reddedildi:'danger'};
+
+  function loadGunluk(){
+    try{ return JSON.parse(localStorage.getItem(GUNLUK_KEY)) || {}; }catch(e){ return {}; }
+  }
+  function saveGunluk(all){
+    try{ localStorage.setItem(GUNLUK_KEY, JSON.stringify(all)); }catch(e){}
+  }
+
+  var gunlukCard = document.getElementById('gunlukCard');
+  var gunlukBody = document.getElementById('gunlukBody');
+  var gunlukDurumEl = document.getElementById('gunlukDurum');
+  var btnToggle = document.getElementById('btnGunlukToggle');
+
+  function renderGunluk(){
+    var santiye = sel.value;
+    var rows = PERSONEL.filter(function(p){ return p.santiye === santiye; });
+    var all = loadGunluk();
+    var rec = all[santiye];
+    var durum = rec ? rec.status : 'taslak';
+    var isSef = GV.role === 'sef';
+    var isOnayci = GV.role === 'ik' || GV.role === 'superadmin';
+    var editable = isSef && (durum === 'taslak' || durum === 'reddedildi');
+
+    gunlukDurumEl.textContent = GUNLUK_LBL[durum];
+    gunlukDurumEl.className = 'gstat ' + GUNLUK_TIP[durum];
+
+    var tint = SANTIYE_TINT[santiye];
+    var html = '';
+    rows.forEach(function(p){
+      var kayitli = rec && rec.entries && rec.entries[p.ad];
+      var val = kayitli || p.gunler[TODAY_IDX] || 'tam';
+      html += '<div class="pg-row">';
+      html += '<div class="pg-name"><div class="pp-cell"><div class="pp-mark" style="background:'+tint.bg+';color:'+tint.fg+'">'+initials(p.ad)+'</div>'
+            + '<div class="pp-info"><b>'+p.ad+'</b><span>'+p.poz+'</span></div></div></div>';
+      if(editable){
+        html += '<div class="pg-ctrl"><div class="gfield"><select data-ad="'+p.ad+'" aria-label="'+p.ad+' — bugünkü durum">'
+              + SEL_DURUMLAR.map(function(k){ return '<option value="'+k+'"'+(k===val?' selected':'')+'>'+STATUS[k].lbl+'</option>'; }).join('')
+              + '</select></div></div>';
+      } else {
+        var V = STATUS[val];
+        html += '<div class="pg-status"><span class="pt-mark '+val+'">'+(V.ic ? '<i class="fa-solid '+V.ic+'"></i>' : '')+'</span>'+V.lbl+'</div>';
+      }
+      html += '</div>';
+    });
+    gunlukBody.innerHTML = html || '<div class="pg-empty">Bu şantiyede kayıtlı personel yok.</div>';
+
+    var foot = '';
+    if(editable){
+      var noteEdit = durum === 'reddedildi' ? 'İK tarafından reddedildi — durumları güncelleyip tekrar gönderebilirsiniz.' : 'Bugünün durumlarını gözden geçirin, ardından İK onayına gönderin.';
+      foot = '<div class="pg-foot"><span class="pg-foot-note">'+noteEdit+'</span>'
+           + '<button type="button" class="btn btn-acc btn-sm" id="btnGunlukGonder" data-no-confirm><i class="fa-solid fa-paper-plane"></i> İK Onayına Gönder</button></div>';
+    } else if(isOnayci && durum === 'gonderildi'){
+      var gonderenNot = rec && rec.gonderen ? (rec.gonderen + ' tarafından ' + (rec.saat || 'bugün') + ' gönderildi.') : '';
+      foot = '<div class="pg-foot"><span class="pg-foot-note">'+gonderenNot+'</span>'
+           + '<button type="button" class="btn btn-ghost btn-sm" id="btnGunlukReddet" data-no-confirm><i class="fa-solid fa-xmark"></i> Reddet</button>'
+           + '<button type="button" class="btn btn-acc btn-sm" id="btnGunlukOnayla" data-no-confirm><i class="fa-solid fa-check"></i> Onayla</button></div>';
+    } else if(!isSef && durum === 'taslak'){
+      foot = '<div class="pg-foot"><span class="pg-foot-note">Bugün için puantaj henüz Şantiye Şefi tarafından İK onayına gönderilmedi.</span></div>';
+    } else if(durum === 'onaylandi'){
+      foot = '<div class="pg-foot"><span class="pg-foot-note">İK Uzmanı tarafından onaylandı — bugünün puantajı işlendi.</span></div>';
+    } else if(durum === 'reddedildi' && !isSef){
+      foot = '<div class="pg-foot"><span class="pg-foot-note">Reddedildi — Şantiye Şefinin durumları güncelleyip yeniden göndermesi bekleniyor.</span></div>';
+    } else if(durum === 'gonderildi' && !isOnayci){
+      foot = '<div class="pg-foot"><span class="pg-foot-note">İK onayında bekliyor.</span></div>';
+    }
+    if(foot) gunlukBody.insertAdjacentHTML('beforeend', foot);
+
+    if(editable){
+      document.getElementById('btnGunlukGonder').addEventListener('click', function(){
+        var entries = {};
+        Array.prototype.forEach.call(gunlukBody.querySelectorAll('select[data-ad]'), function(s){ entries[s.getAttribute('data-ad')] = s.value; });
+        var all2 = loadGunluk();
+        all2[santiye] = {status:'gonderildi', entries:entries, gonderen:GV.R.name, saat:'2 Temmuz 14:10'};
+        saveGunluk(all2);
+        gvToast('Günlük puantaj İK onayına gönderildi.');
+        renderGunluk();
+      });
+    }
+    if(isOnayci && durum === 'gonderildi'){
+      document.getElementById('btnGunlukOnayla').addEventListener('click', function(){
+        var all2 = loadGunluk();
+        if(all2[santiye]){ all2[santiye].status = 'onaylandi'; saveGunluk(all2); }
+        gvToast('Günlük puantaj onaylandı.');
+        renderGunluk();
+      });
+      document.getElementById('btnGunlukReddet').addEventListener('click', function(){
+        gvConfirm({
+          danger:true, icon:'fa-xmark', ok:'Reddet', cancel:'Vazgeç',
+          title:'Günlük puantaj reddedilsin mi?',
+          message: SANTIYE_ADI[santiye] + ' şantiyesinin bugünkü puantaj girişi reddedilecek; Şantiye Şefi bilgilendirilir.',
+          onConfirm:function(){
+            var all2 = loadGunluk();
+            if(all2[santiye]){ all2[santiye].status = 'reddedildi'; saveGunluk(all2); }
+            gvToast('Günlük puantaj reddedildi.', {type:'danger'});
+            renderGunluk();
+          }
+        });
+      });
+    }
+  }
+
+  btnToggle.addEventListener('click', function(){
+    var opening = gunlukCard.hidden;
+    gunlukCard.hidden = !opening;
+    btnToggle.setAttribute('aria-expanded', opening ? 'true' : 'false');
+    if(opening) renderGunluk();
+  });
+
+  sel.addEventListener('change', function(){
+    render();
+    if(!gunlukCard.hidden) renderGunluk();
+  });
 
   /* şef tek şantiye görür — seçici kendi sahasına sabitlenir */
   if(GV.role === 'sef'){
