@@ -183,7 +183,7 @@
     satinalma: { name:'Baran Yıldız',     role:'Satın Alma Sorumlusu',      ini:'BY',
                  secs:['panel','satinalma','cari','gorev'], land:'crm-panel.html' },
     ik:        { name:'Seda Karaca',      role:'İK Uzmanı',                 ini:'SK',
-                 secs:['panel','personel','gorev'], land:'crm-panel.html' },
+                 secs:['panel','personel','gorev','operasyon'], land:'crm-panel.html' },
     personel:  { name:'Ali Vural',        role:'Saha Personeli',            ini:'AV',
                  secs:['panel','gorev'], land:'crm-panel.html' }
   };
