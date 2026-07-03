@@ -256,6 +256,10 @@ img{display:block;max-width:100%}
   .gv-tenant{padding:0 10px}
   .gv-tenant .tn-lbl{max-width:86px}
   .gv-page-head h1{font-size:20px}
+  /* 3+ hero aksiyonunda flex:none tek satır zorlar, shrink-to-fit wrap'i
+     yok sayar → doc-level yatay taşma; dar ekranda tam genişlik + sarma */
+  .gv-page-head .ph-actions{flex-wrap:wrap;width:100%}
+  .gv-page-head .ph-actions .btn{flex:1 1 auto;justify-content:center}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none !important;animation:none !important}

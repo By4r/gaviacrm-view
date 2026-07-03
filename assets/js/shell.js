@@ -37,6 +37,10 @@
        TH-2026-### taşeron hakediş · HKD-2026-### kurum hakediş · AVN-2026-### avans ·
        SZL-2025-T## / SZL-2026-K## sözleşme (T=taşeron, K=kurum) ·
        MKN-## makine · ISG-2026-### İSG tutanağı (Dalga 3'te doğdu)
+       Not (4B): MLZ-2026-032/033 liste-dışı ESKİ tamamlanmış talepler — talepler
+       listesi 034-046 aralığını gösterir; 032 → SAT-2026-009 (PVC, Vadi),
+       033 → SAT-2026-010 (kaynak teli, Liman) kaynak referansı. Onay bekleyen
+       talebe (043/045 gibi) tamamlanmış SAT formu BAĞLANMAZ.
    ─ Makine parkı (Dalga 3'te kanonikleşti — makine puantajı BU listeyi kullanır):
        Vadi Konakları: Ekskavatör CAT 320 (MKN-01, kiralık) ·
          Kule Vinç Potain MC-85 (MKN-02, öz mal) ·
