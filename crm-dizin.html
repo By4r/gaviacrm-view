@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Ekran Dizini — Gavia CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<style>
+  /* Dizin — giriş ekranıyla aynı "meta katman" dili: shell'siz, koyu zemin.
+     CRM ekranları light içerik alanında yaşar; giriş + dizin ürünün DIŞINDAN
+     bakan sayfalardır, dark marka kimliğini kullanır (index.html emsali). */
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    min-height:100vh;background:var(--gv-deep);color:var(--gv-on-dark);
+    font-family:var(--font);font-weight:500;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(rgba(63,213,173,.07) 1px,transparent 1px);
+    background-size:24px 24px;
+  }
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--gv-mint);outline-offset:2px;border-radius:4px}
+  code,.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:44px 24px 60px}
+
+  /* ---- Başlık ---- */
+  .head{display:flex;align-items:flex-start;gap:18px;margin-bottom:26px;flex-wrap:wrap}
+  .mark{
+    width:52px;height:52px;flex:none;border-radius:14px;
+    background:var(--gv-mint-glow);border:1px solid rgba(63,213,173,.3);
+    display:grid;place-items:center;
+    color:var(--gv-mint);font-weight:800;font-size:21px;letter-spacing:-.03em;
+  }
+  .h-txt{flex:1;min-width:260px}
+  .eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gv-mint);margin-bottom:6px}
+  h1{font-size:27px;font-weight:800;letter-spacing:-.02em;color:#fff;margin-bottom:6px}
+  .sub{font-size:13.5px;line-height:1.6;color:var(--on-dark-mut);max-width:600px}
+  .h-side{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+  .stat-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .schip{
+    font-size:11px;font-weight:700;padding:5px 11px;border-radius:var(--r-pill);
+    background:rgba(20,21,51,.7);border:1px solid var(--gv-border-dark);color:var(--on-dark);
+    white-space:nowrap;
+  }
+  .schip b{color:var(--gv-mint);font-weight:800}
+  .back{
+    display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;
+    color:var(--on-dark-mut);transition:.2s var(--ease);
+  }
+  .back:hover{color:var(--gv-mint)}
+
+  /* ---- Bölüm quick-nav — ürünün ikon rail'inin yatay izdüşümü ---- */
+  .railnav{
+    position:sticky;top:0;z-index:10;
+    display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+    padding:12px 0;margin-bottom:22px;
+    background:linear-gradient(to bottom, var(--gv-deep) 82%, rgba(2,8,55,0));
+  }
+  .railnav::-webkit-scrollbar{display:none}
+  .rn{
+    display:inline-flex;align-items:center;gap:8px;flex:none;
+    font-size:12px;font-weight:700;padding:8px 13px;border-radius:10px;
+    background:rgba(20,21,51,.7);border:1px solid var(--gv-border-dark);
+    color:var(--on-dark-mut);transition:.2s var(--ease);
+  }
+  .rn i{font-size:11.5px;color:var(--on-dark-faint);transition:.2s var(--ease)}
+  .rn:hover{color:#fff;border-color:rgba(63,213,173,.45)}
+  .rn:hover i{color:var(--gv-mint)}
+  .rn-sub{border-style:dashed}
+
+  /* ---- Kategori kartları — masonry kolonlar ---- */
+  .cols{columns:3 300px;column-gap:14px}
+  .cat{
+    break-inside:avoid;margin-bottom:14px;scroll-margin-top:76px;
+    background:var(--gv-night);border:1px solid var(--gv-border-dark);
+    border-radius:var(--r-lg);overflow:hidden;
+  }
+  .c-head{display:flex;align-items:center;gap:12px;padding:16px 16px 13px;border-bottom:1px solid var(--hair)}
+  .c-ico{
+    width:38px;height:38px;flex:none;border-radius:11px;display:grid;place-items:center;
+    font-size:15px;background:var(--gv-mint-glow);color:var(--gv-mint);
+    border:1px solid rgba(63,213,173,.22);
+  }
+  .c-tit{flex:1;min-width:0;line-height:1.3}
+  .c-tit b{display:block;font-size:14.5px;font-weight:800;color:#fff;letter-spacing:-.01em}
+  .c-tit span{font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--on-dark-faint)}
+  .c-cnt{
+    flex:none;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:var(--r-pill);
+    background:rgba(233,238,241,.06);color:var(--on-dark-mut);
+  }
+
+  .rows{list-style:none}
+  .row{
+    display:block;padding:11px 16px;border-bottom:1px solid var(--hair);
+    transition:background .18s var(--ease);position:relative;
+  }
+  .rows li:last-child .row{border-bottom:none}
+  .row::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+    background:var(--gv-mint);opacity:0;transition:opacity .18s var(--ease);
+  }
+  .row:hover{background:rgba(63,213,173,.05)}
+  .row:hover::before{opacity:1}
+  .r-top{display:flex;align-items:baseline;gap:10px}
+  .r-top b{flex:1;min-width:0;font-size:13px;font-weight:700;color:var(--gv-on-dark);letter-spacing:-.005em}
+  .row:hover .r-top b{color:#fff}
+  .r-desc{display:block;font-size:11.5px;line-height:1.5;color:var(--on-dark-faint);margin-top:2px}
+  .r-file{display:block;font-size:10px;color:var(--on-dark-faint);opacity:.75;margin-top:4px;letter-spacing:.01em}
+  .row:hover .r-file{color:var(--gv-mint);opacity:1}
+
+  /* tür rozeti — sabit sözlük: liste/detay/form/rapor + yapısal türler */
+  .t{
+    flex:none;font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    padding:2px 7px;border-radius:5px;
+    background:rgba(233,238,241,.06);color:var(--on-dark-mut);
+  }
+  .t-detay{background:rgba(59,111,212,.16);color:#8FB2EE}
+  .t-form{background:var(--gv-mint-glow);color:var(--gv-mint)}
+  .t-rapor{background:rgba(169,121,8,.18);color:#E4BE5E}
+  .t-kiosk{background:rgba(233,238,241,.1);color:#fff}
+
+  .foot{margin-top:32px;text-align:center;font-size:11.5px;color:var(--on-dark-faint);line-height:1.7}
+  .foot a{color:var(--on-dark-mut);font-weight:700}
+  .foot a:hover{color:var(--gv-mint)}
+
+  @media(max-width:760px){
+    .wrap{padding:30px 16px 44px}
+    .head{gap:14px}
+    .h-side{align-items:flex-start}
+    .stat-chips{justify-content:flex-start}
+    h1{font-size:23px}
+    .cat{scroll-margin-top:66px}
+  }
+  @media(prefers-reduced-motion:reduce){ *{transition:none !important} }
+</style>
+</head>
+<body data-sec="dizin">
+<main class="wrap">
+
+  <header class="head">
+    <div class="mark">G</div>
+    <div class="h-txt">
+      <div class="eyebrow">Gaviaworks · Statik Prototip</div>
+      <h1>Ekran Dizini</h1>
+      <p class="sub">Faz 1 operasyon çekirdeğinin tüm ekranları — modül modül, tıklanabilir.
+        Sıralama ürünün sol rail'iyle birebir; Raporlar ve Operasyon Ekranı panel bölümünün altında yaşar.</p>
+    </div>
+    <div class="h-side">
+      <div class="stat-chips">
+        <span class="schip"><b>57</b> ekran</span>
+        <span class="schip"><b>11</b> modül grubu</span>
+        <span class="schip">Faz 1 <b>komplet</b></span>
+      </div>
+      <a class="back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Giriş / rol seçimi</a>
+    </div>
+  </header>
+
+  <nav class="railnav" aria-label="Modül grupları">
+    <a class="rn" href="#panel"><i class="fa-solid fa-gauge-high"></i>Panel</a>
+    <a class="rn rn-sub" href="#raporlar"><i class="fa-solid fa-chart-column"></i>Raporlar</a>
+    <a class="rn rn-sub" href="#kiosk"><i class="fa-solid fa-tv"></i>Kiosk</a>
+    <a class="rn" href="#santiye"><i class="fa-solid fa-helmet-safety"></i>Şantiye</a>
+    <a class="rn" href="#gorev"><i class="fa-solid fa-list-check"></i>Görevler</a>
+    <a class="rn" href="#personel"><i class="fa-solid fa-users"></i>Personel</a>
+    <a class="rn" href="#operasyon"><i class="fa-solid fa-clipboard-list"></i>Operasyon</a>
+    <a class="rn" href="#satinalma"><i class="fa-solid fa-cart-flatbed"></i>Satın Alma</a>
+    <a class="rn" href="#cari"><i class="fa-solid fa-address-book"></i>Cari</a>
+    <a class="rn" href="#finans"><i class="fa-solid fa-file-signature"></i>Finans</a>
+    <a class="rn" href="#ayarlar"><i class="fa-solid fa-sliders"></i>Ayarlar</a>
+  </nav>
+
+  <section class="cols">
+
+    <article class="cat" id="panel">
+      <div class="c-head">
+        <div class="c-ico"><i class="fa-solid fa-gauge-high"></i></div>
+        <div class="c-tit"><b>Panel &amp; Kontrol</b><span>Genel Bakış</span></div>
+        <span class="c-cnt">5 ekran</span>
+      </div>
+      <ul class="rows">
+        <li><a class="row" href="crm-panel.html">
+          <span class="r-top"><b>Ana Panel</b><em class="t">hub</em></span>
+          <span class="r-desc">Rol bazlı KPI'lar, bekleyen onaylar, canlı saat + sağ bilgi kolonu</span>
+          <code class="r-file">crm-panel.html</code></a></li>
+        <li><a class="row" href="crm-panel-ozet.html">
+          <span class="r-top"><b>Günlük Özet</b><em class="t t-rapor">rapor</em></span>
+          <span class="r-desc">Günün şantiye · puantaj · kasa özeti tek ekranda</span>
+          <code class="r-file">crm-panel-ozet.html</code></a></li>
+        <li><a class="row" href="crm-panel-ajanda.html">
+          <span class="r-top"><b>Ajandam</b><em class="t">takvim</em></span>
+          <span class="r-desc">Kişisel ajanda — role göre daralan olay listesi</span>
+          <code class="r-file">crm-panel-ajanda.html</code></a></li>
+        <li><a class="row" href="crm-panel-onaylar.html">
+          <span class="r-top"><b>Bekleyen Onaylar</b><em class="t">liste</em></span>
+          <span class="r-desc">Onay zinciri rozetli 12 bekleyen kayıt</span>
+          <code class="r-file">crm-panel-onaylar.html</code></a></li>
+        <li><a class="row" href="crm-panel-bildirimler.html">
+          <span class="r-top"><b>Bildirimler</b><em class="t">liste</em></span>
+          <span class="r-desc">Topbar zilinin hedefi — sistem bildirim akışı</span>
+          <code class="r-file">crm-panel-bildirimler.html</code></a></li>
+      </ul>
+    </article>
+
+    <article class="cat" id="raporlar">
+      <div class="c-head">
+        <div class="c-ico"><i class="fa-solid fa-chart-column"></i></div>
+        <div class="c-tit"><b>Raporlar</b><span>Panel Altı</span></div>
+        <span class="c-cnt">4 ekran</span>
+      </div>
+      <ul class="rows">
+        <li><a class="row" href="crm-panel-raporlar.html">
+          <span class="r-top"><b>Rapor Merkezi</b><em class="t">hub</em></span>
+          <span class="r-desc">13 rapor kartı — 3'ü canlı, kalanı planlı</span>
+          <code class="r-file">crm-panel-raporlar.html</code></a></li>
+        <li><a class="row" href="crm-panel-rapor-puantaj.html">
+          <span class="r-top"><b>Puantaj Raporu</b><em class="t t-rapor">rapor</em></span>
+          <span class="r-desc">Ay karşılaştırmalı devam · mesai kırılımı</span>
+          <code class="r-file">crm-panel-rapor-puantaj.html</code></a></li>
+        <li><a class="row" href="crm-panel-rapor-maliyet.html">
+          <span class="r-top"><b>Şantiye Maliyet Raporu</b><em class="t t-rapor">rapor</em></span>
+          <span class="r-desc">Kasa + satın alma derlemesi, şantiye bazlı</span>
+          <code class="r-file">crm-panel-rapor-maliyet.html</code></a></li>
+        <li><a class="row" href="crm-panel-rapor-personel.html">
+          <span class="r-top"><b>Personel Raporu</b><em class="t t-rapor">rapor</em></span>
+          <span class="r-desc">Kadro, izin ve devamsızlık dağılımı</span>
+          <code class="r-file">crm-panel-rapor-personel.html</code></a></li>
+      </ul>
+    </article>
+
+    <article class="cat" id="kiosk">
+      <div class="c-head">
+        <div class="c-ico"><i class="fa-solid fa-tv"></i></div>
+        <div class="c-tit"><b>Kiosk</b><span>Panel Altı · Shell'siz</span></div>
+        <span class="c-cnt">1 ekran</span>
+      </div>
+      <ul class="rows">
+        <li><a class="row" href="crm-panel-operasyon.html">
+          <span class="r-top"><b>Operasyon Ekranı</b><em class="t t-kiosk">kiosk</em></span>
+          <span class="r-desc">Saha / TV görünümü — canlı saat, günün operasyon özeti</span>
+          <code class="r-file">crm-panel-operasyon.html</code></a></li>
+      </ul>
+    </article>
+
+    <article class="cat" id="santiye">
+      <div class="c-head">
+        <div class="c-ico"><i class="fa-solid fa-helmet-safety"></i></div>
+        <div class="c-tit"><b>Şantiye / Saha</b><span>Saha</span></div>
+        <span class="c-cnt">6 ekran</span>
+      </div>
+      <ul class="rows">
+        <li><a class="row" href="crm-santiye.html">
+          <span class="r-top"><b>Şantiye Listesi</b><em class="t">liste</em></span>
+          <span class="r-desc">Aktif şantiyeler — ilerleme ve saha kadrosu</span>
+          <code class="r-file">crm-santiye.html</code></a></li>
+        <li><a class="row" href="crm-santiye-detay.html">
+          <span class="r-top"><b>Şantiye Kartı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">Vadi Konakları — özet, iş programı, İSG, puantaj dahil 7 sekme</span>
+          <code class="r-file">crm-santiye-detay.html</code></a></li>
+        <li><a class="row" href="crm-santiye-form.html">
+          <span class="r-top"><b>Yeni Şantiye</b><em class="t t-form">form</em></span>
+          <span class="r-desc">Şantiye açılış formu</span>
+          <code class="r-file">crm-santiye-form.html</code></a></li>
+        <li><a class="row" href="crm-santiye-ajanda.html">
+          <span class="r-top"><b>İş Programı</b><em class="t">takvim</em></span>
+          <span class="r-desc">Haftalık saha takvimi — hafta grid'i</span>
+          <code class="r-file">crm-santiye-ajanda.html</code></a></li>
+        <li><a class="row" href="crm-santiye-bildirimler.html">
+          <span class="r-top"><b>Saha Bildirimleri</b><em class="t">liste</em></span>
+          <span class="r-desc">Fotoğraflı saha bildirim akışı</span>
+          <code class="r-file">crm-santiye-bildirimler.html</code></a></li>
+        <li><a class="row" href="crm-santiye-isg.html">
+          <span class="r-top"><b>İSG Tutanakları</b><em class="t">liste</em></span>
+          <span class="r-desc">ISG-2026-### tutanakları, tür + şantiye filtreli</span>
+          <code class="r-file">crm-santiye-isg.html</code></a></li>
+      </ul>
+    </article>
+
+    <article class="cat" id="gorev">
+      <div class="c-head">
+        <div class="c-ico"><i class="fa-solid fa-list-check"></i></div>
+        <div class="c-tit"><b>Görevler</b><span>İş Takibi</span></div>
+        <span class="c-cnt">3 ekran</span>
+      </div>
+      <ul class="rows">
+        <li><a class="row" href="crm-gorev.html">
+          <span class="r-top"><b>Görevler</b><em class="t">liste</em></span>
+          <span class="r-desc">Bana verilenler / verdiklerim / gecikenler filtreleri</span>
+          <code class="r-file">crm-gorev.html</code></a></li>
+        <li><a class="row" href="crm-gorev-detay.html">
+          <span class="r-top"><b>Görev Detayı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">Görev kartı — atama, termin, yorum akışı</span>
+          <code class="r-file">crm-gorev-detay.html</code></a></li>
+        <li><a class="row" href="crm-gorev-form.html">
+          <span class="r-top"><b>Görev Oluştur</b><em class="t t-form">form</em></span>
+          <span class="r-desc">Görev atama formu — panel ve listeden erişilir</span>
+          <code class="r-file">crm-gorev-form.html</code></a></li>
+      </ul>
+    </article>
+
+    <article class="cat" id="personel">
+      <div class="c-head">
+        <div class="c-ico"><i class="fa-solid fa-users"></i></div>
+        <div class="c-tit"><b>Personel / İK</b><span>İnsan Kaynağı</span></div>
+        <span class="c-cnt">8 ekran</span>
+      </div>
+      <ul class="rows">
+        <li><a class="row" href="crm-personel.html">
+          <span class="r-top"><b>Personel Listesi</b><em class="t">liste</em></span>
+          <span class="r-desc">22 kişilik bordro kadrosu, şantiye dağılımı</span>
+          <code class="r-file">crm-personel.html</code></a></li>
+        <li><a class="row" href="crm-personel-detay.html">
+          <span class="r-top"><b>Personel Kartı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">Hasan Demirci — İK kartı + zimmet sekmesi</span>
+          <code class="r-file">crm-personel-detay.html</code></a></li>
+        <li><a class="row" href="crm-personel-form.html">
+          <span class="r-top"><b>Yeni Personel</b><em class="t t-form">form</em></span>
+          <span class="r-desc">İşe giriş formu — İK alan seti</span>
+          <code class="r-file">crm-personel-form.html</code></a></li>
+        <li><a class="row" href="crm-personel-izin.html">
+          <span class="r-top"><b>İzinler</b><em class="t">liste</em></span>
+          <span class="r-desc">İZN-2026-### kayıtları — 12 izin türü</span>
+          <code class="r-file">crm-personel-izin.html</code></a></li>
+        <li><a class="row" href="crm-personel-izin-form.html">
+          <span class="r-top"><b>İzin Talebi</b><em class="t t-form">form</em></span>
+          <span class="r-desc">Otomatik yasal gün hesabı, tür bazlı alanlar</span>
+          <code class="r-file">crm-personel-izin-form.html</code></a></li>
+        <li><a class="row" href="crm-personel-avans.html">
+          <span class="r-top"><b>Avanslar</b><em class="t">liste</em></span>
+          <span class="r-desc">AVN-2026-### avans talepleri ve onay durumu</span>
+          <code class="r-file">crm-personel-avans.html</code></a></li>
+        <li><a class="row" href="crm-personel-ozluk.html">
+          <span class="r-top"><b>Özlük &amp; Evrak</b><em class="t">liste</em></span>
+          <span class="r-desc">Evrak eksik / tam takibi</span>
+          <code class="r-file">crm-personel-ozluk.html</code></a></li>
+        <li><a class="row" href="crm-personel-rapor.html">
+          <span class="r-top"><b>Sağlık Raporları</b><em class="t">liste</em></span>
+          <span class="r-desc">İstirahat ve sağlık raporu kayıtları</span>
+          <code class="r-file">crm-personel-rapor.html</code></a></li>
+      </ul>
+    </article>
+
+    <article class="cat" id="operasyon">
+      <div class="c-head">
+        <div class="c-ico"><i class="fa-solid fa-clipboard-list"></i></div>
+        <div class="c-tit"><b>Operasyon</b><span>Günlük Kayıt</span></div>
+        <span class="c-cnt">8 ekran</span>
+      </div>
+      <ul class="rows">
+        <li><a class="row" href="crm-operasyon-kasa.html">
+          <span class="r-top"><b>Kasa Raporu</b><em class="t">liste</em></span>
+          <span class="r-desc">KSA-2026-### günlük kasa hareketleri</span>
+          <code class="r-file">crm-operasyon-kasa.html</code></a></li>
+        <li><a class="row" href="crm-operasyon-kasa-detay.html">
+          <span class="r-top"><b>Kasa Raporu Detayı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">Kalem dökümü + onay zinciri</span>
+          <code class="r-file">crm-operasyon-kasa-detay.html</code></a></li>
+        <li><a class="row" href="crm-operasyon-kasa-form.html">
+          <span class="r-top"><b>Yeni Kasa Raporu</b><em class="t t-form">form</em></span>
+          <span class="r-desc">Günlük kasa girişi</span>
+          <code class="r-file">crm-operasyon-kasa-form.html</code></a></li>
+        <li><a class="row" href="crm-operasyon-puantaj.html">
+          <span class="r-top"><b>Puantaj</b><em class="t">liste</em></span>
+          <span class="r-desc">10 durum kodlu çizelge; günlük giriş + İK onayı</span>
+          <code class="r-file">crm-operasyon-puantaj.html</code></a></li>
+        <li><a class="row" href="crm-operasyon-makine.html">
+          <span class="r-top"><b>Makine Puantajı</b><em class="t">liste</em></span>
+          <span class="r-desc">MKN-01–06 makine parkı çalışma saatleri</span>
+          <code class="r-file">crm-operasyon-makine.html</code></a></li>
+        <li><a class="row" href="crm-operasyon-yemekhane.html">
+          <span class="r-top"><b>Yemekhane</b><em class="t">liste</em></span>
+          <span class="r-desc">Öğün sayıları ve maliyet takibi</span>
+          <code class="r-file">crm-operasyon-yemekhane.html</code></a></li>
+        <li><a class="row" href="crm-operasyon-demirbas.html">
+          <span class="r-top"><b>Demirbaş</b><em class="t">liste</em></span>
+          <span class="r-desc">ZMT-2026-### zimmet envanteri</span>
+          <code class="r-file">crm-operasyon-demirbas.html</code></a></li>
+        <li><a class="row" href="crm-operasyon-demirbas-detay.html">
+          <span class="r-top"><b>Demirbaş Detayı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">ZMT-2026-041 — zimmet ver / iade al akışı</span>
+          <code class="r-file">crm-operasyon-demirbas-detay.html</code></a></li>
+      </ul>
+    </article>
+
+    <article class="cat" id="satinalma">
+      <div class="c-head">
+        <div class="c-ico"><i class="fa-solid fa-cart-flatbed"></i></div>
+        <div class="c-tit"><b>Satın Alma</b><span>Tedarik</span></div>
+        <span class="c-cnt">6 ekran</span>
+      </div>
+      <ul class="rows">
+        <li><a class="row" href="crm-satinalma-talepler.html">
+          <span class="r-top"><b>Malzeme Talepleri</b><em class="t">liste</em></span>
+          <span class="r-desc">MLZ-2026-### talepleri, yaşam döngüsü rozetleri</span>
+          <code class="r-file">crm-satinalma-talepler.html</code></a></li>
+        <li><a class="row" href="crm-satinalma-talep-detay.html">
+          <span class="r-top"><b>Talep Detayı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">Onay zinciri aksiyonlu örnek kayıt</span>
+          <code class="r-file">crm-satinalma-talep-detay.html</code></a></li>
+        <li><a class="row" href="crm-satinalma-talep-form.html">
+          <span class="r-top"><b>Yeni Malzeme Talebi</b><em class="t t-form">form</em></span>
+          <span class="r-desc">Şantiye ön-seçimli talep formu</span>
+          <code class="r-file">crm-satinalma-talep-form.html</code></a></li>
+        <li><a class="row" href="crm-satinalma-formlar.html">
+          <span class="r-top"><b>Satın Alma Formları</b><em class="t">liste</em></span>
+          <span class="r-desc">SAT-2026-### sipariş formları</span>
+          <code class="r-file">crm-satinalma-formlar.html</code></a></li>
+        <li><a class="row" href="crm-satinalma-form-detay.html">
+          <span class="r-top"><b>Form Detayı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">Sipariş kalemi dökümü, kaynak talep bağı</span>
+          <code class="r-file">crm-satinalma-form-detay.html</code></a></li>
+        <li><a class="row" href="crm-satinalma-termin.html">
+          <span class="r-top"><b>Termin Takibi</b><em class="t">liste</em></span>
+          <span class="r-desc">Teslimat termin takvimi</span>
+          <code class="r-file">crm-satinalma-termin.html</code></a></li>
+      </ul>
+    </article>
+
+    <article class="cat" id="cari">
+      <div class="c-head">
+        <div class="c-ico"><i class="fa-solid fa-address-book"></i></div>
+        <div class="c-tit"><b>Cari</b><span>Rehber &amp; Hesap</span></div>
+        <span class="c-cnt">5 ekran</span>
+      </div>
+      <ul class="rows">
+        <li><a class="row" href="crm-cari.html">
+          <span class="r-top"><b>Firma Rehberi</b><em class="t">liste</em></span>
+          <span class="r-desc">9 firma — taşeron ve tedarikçi kartları</span>
+          <code class="r-file">crm-cari.html</code></a></li>
+        <li><a class="row" href="crm-cari-detay.html">
+          <span class="r-top"><b>Cari Kartı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">Demir-Beton — 5 sekme; satış pipeline'ı Faz 2 kilitli</span>
+          <code class="r-file">crm-cari-detay.html</code></a></li>
+        <li><a class="row" href="crm-cari-form.html">
+          <span class="r-top"><b>Yeni Firma</b><em class="t t-form">form</em></span>
+          <span class="r-desc">Canlı önizleme kartlı cari açılış formu</span>
+          <code class="r-file">crm-cari-form.html</code></a></li>
+        <li><a class="row" href="crm-cari-kisiler.html">
+          <span class="r-top"><b>Kişiler</b><em class="t">liste</em></span>
+          <span class="r-desc">Firma yetkilileri rehberi — 9 kişi</span>
+          <code class="r-file">crm-cari-kisiler.html</code></a></li>
+        <li><a class="row" href="crm-cari-durum.html">
+          <span class="r-top"><b>Cari Durum</b><em class="t">liste</em></span>
+          <span class="r-desc">Borç / alacak bakiye sorgusu</span>
+          <code class="r-file">crm-cari-durum.html</code></a></li>
+      </ul>
+    </article>
+
+    <article class="cat" id="finans">
+      <div class="c-head">
+        <div class="c-ico"><i class="fa-solid fa-file-signature"></i></div>
+        <div class="c-tit"><b>Finans</b><span>Hakediş &amp; Sözleşme</span></div>
+        <span class="c-cnt">6 ekran</span>
+      </div>
+      <ul class="rows">
+        <li><a class="row" href="crm-finans-kurum.html">
+          <span class="r-top"><b>Kurum Hakedişleri</b><em class="t">liste</em></span>
+          <span class="r-desc">HKD-2026-### işveren hakedişleri</span>
+          <code class="r-file">crm-finans-kurum.html</code></a></li>
+        <li><a class="row" href="crm-finans-taseron.html">
+          <span class="r-top"><b>Taşeron Hakedişleri</b><em class="t">liste</em></span>
+          <span class="r-desc">TH-2026-### taşeron ödemeleri</span>
+          <code class="r-file">crm-finans-taseron.html</code></a></li>
+        <li><a class="row" href="crm-finans-hakedis-detay.html">
+          <span class="r-top"><b>Hakediş Detayı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">Kesinti dökümü + dönem puantajı satırı</span>
+          <code class="r-file">crm-finans-hakedis-detay.html</code></a></li>
+        <li><a class="row" href="crm-finans-hakedis-form.html">
+          <span class="r-top"><b>Yeni Hakediş</b><em class="t t-form">form</em></span>
+          <span class="r-desc">Kurum / taşeron; teminat &amp; avans mahsubu canlı hesap</span>
+          <code class="r-file">crm-finans-hakedis-form.html</code></a></li>
+        <li><a class="row" href="crm-finans-sozlesmeler.html">
+          <span class="r-top"><b>Sözleşme Arşivi</b><em class="t">liste</em></span>
+          <span class="r-desc">SZL kayıtları — kurum ve taşeron sözleşmeleri</span>
+          <code class="r-file">crm-finans-sozlesmeler.html</code></a></li>
+        <li><a class="row" href="crm-finans-sozlesme-detay.html">
+          <span class="r-top"><b>Sözleşme Detayı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">Sözleşme künyesi, teminat ve ödeme planı</span>
+          <code class="r-file">crm-finans-sozlesme-detay.html</code></a></li>
+      </ul>
+    </article>
+
+    <article class="cat" id="ayarlar">
+      <div class="c-head">
+        <div class="c-ico"><i class="fa-solid fa-sliders"></i></div>
+        <div class="c-tit"><b>Ayarlar</b><span>Tenant-Admin Konsolu</span></div>
+        <span class="c-cnt">5 ekran</span>
+      </div>
+      <ul class="rows">
+        <li><a class="row" href="crm-ayarlar-firma.html">
+          <span class="r-top"><b>Firma Ayarları</b><em class="t">konsol</em></span>
+          <span class="r-desc">Paket, limit ve modül aç-kapa — kiralanabilirlik yüzü</span>
+          <code class="r-file">crm-ayarlar-firma.html</code></a></li>
+        <li><a class="row" href="crm-ayarlar-kullanicilar.html">
+          <span class="r-top"><b>Kullanıcılar</b><em class="t">liste</em></span>
+          <span class="r-desc">18/25 koltuk — kullanıcı ve rol atamaları</span>
+          <code class="r-file">crm-ayarlar-kullanicilar.html</code></a></li>
+        <li><a class="row" href="crm-ayarlar-moduller.html">
+          <span class="r-top"><b>Modüller</b><em class="t">konsol</em></span>
+          <span class="r-desc">7 aktif + 5 kilitli modül (Faz 2)</span>
+          <code class="r-file">crm-ayarlar-moduller.html</code></a></li>
+        <li><a class="row" href="crm-ayarlar-roller.html">
+          <span class="r-top"><b>Roller &amp; Yetkiler</b><em class="t">konsol</em></span>
+          <span class="r-desc">9 rol × 9 bölüm yetki matrisi, kısmi erişim rozetli</span>
+          <code class="r-file">crm-ayarlar-roller.html</code></a></li>
+        <li><a class="row" href="crm-ayarlar-onay.html">
+          <span class="r-top"><b>Onay Akışları</b><em class="t">konsol</em></span>
+          <span class="r-desc">Kasa, malzeme, izin, avans, hakediş zincir tanımları</span>
+          <code class="r-file">crm-ayarlar-onay.html</code></a></li>
+      </ul>
+    </article>
+
+  </section>
+
+  <footer class="foot">
+    Gavia CRM — statik UI prototipi · tüm veriler kurgusaldır ·
+    <a href="index.html">Giriş ekranı</a>
+  </footer>
+</main>
+</body>
+</html>
