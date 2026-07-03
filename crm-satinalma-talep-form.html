@@ -196,9 +196,17 @@
 (function(){
   if(!window.GV) return;
 
-  /* sef ise şantiye seçici kendi sahasına sabitlenir */
+  /* şantiye ön-seçimi: sef ise kendi sahasına sabitlenir (öncelikli — ?s= onu ezmez);
+     değilse URL'deki ?s=vadi|liman|merkez parametresi seçiciyi ön-seçer. */
   var santiyeSel = document.getElementById('fSantiye');
-  if(GV.role === 'sef'){ santiyeSel.value = 'Vadi Konakları'; santiyeSel.disabled = true; }
+  if(GV.role === 'sef'){
+    santiyeSel.value = 'Vadi Konakları';
+    santiyeSel.disabled = true;
+  } else {
+    var S_MAP = { vadi:'Vadi Konakları', liman:'Liman Lojistik Merkezi', merkez:'Merkez Şantiye' };
+    var sParam = new URLSearchParams(location.search).get('s');
+    if(sParam && S_MAP[sParam]) santiyeSel.value = S_MAP[sParam];
+  }
 
   var wrap = document.getElementById('kalWrap');
   var totEl = document.getElementById('totKalem');

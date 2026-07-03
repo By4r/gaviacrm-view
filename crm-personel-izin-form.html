@@ -38,6 +38,15 @@
 .flow-step b{display:block;font-size:12.5px;font-weight:700;color:var(--ink)}
 .flow-step span{font-size:11.5px;color:var(--muted)}
 .flow-arrow{padding-left:15px;color:var(--line-2);font-size:11px}
+
+.gf-hint-auto{display:flex;align-items:center;gap:6px;color:var(--acc-ink)}
+.gf-hint-auto i{font-size:11px}
+.chk-line{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink);height:41px}
+.chk-line input{width:16px;height:16px;accent-color:var(--acc-ink);cursor:pointer;flex:none}
+.saat-range{display:flex;align-items:center;gap:8px}
+.saat-range input{flex:1;min-width:0}
+.saat-range span{color:var(--muted);font-weight:700}
+#fGun[readonly]{background:var(--bg);color:var(--ink-2);cursor:not-allowed}
 </style>
 </head>
 <body data-sec="personel" data-screen="izin">
@@ -92,16 +101,37 @@
             <div class="gfield">
               <label for="fTur">İzin Türü</label>
               <select id="fTur">
-                <option>Yıllık İzin</option>
-                <option>Mazeret İzni</option>
-                <option>Ücretsiz İzin</option>
-                <option>Evlilik İzni</option>
-                <option>Doğum / Babalık İzni</option>
+                <option value="yillik">Yıllık İzin</option>
+                <option value="yol">Yol İzni</option>
+                <option value="mazeret">Mazeret İzni</option>
+                <option value="evlilik">Evlilik İzni</option>
+                <option value="dogum">Doğum İzni</option>
+                <option value="babalik">Babalık İzni</option>
+                <option value="olum">Ölüm (Vefat) İzni</option>
+                <option value="raporlu">Raporlu</option>
+                <option value="ucretsiz">Ücretsiz İzin</option>
+                <option value="saatlik">Saatlik İzin</option>
+                <option value="tamgun">Tam Gün İzin</option>
+                <option value="yarim">Yarım Gün İzin</option>
               </select>
             </div>
-            <div class="gfield">
+            <div class="gfield" id="fYolWrap" hidden>
+              <label>&nbsp;</label>
+              <label class="chk-line"><input type="checkbox" id="fYol"> Yol izni ekle <span class="gf-hint">(+4 güne kadar)</span></label>
+              <span class="gf-hint gf-hint-auto" id="fYolHint" hidden><i class="fa-solid fa-circle-check"></i> Yol izni talebe eklendi — yıllık izninizle birlikte değerlendirilecek.</span>
+            </div>
+            <div class="gfield" id="fGunWrap">
               <label for="fGun">Gün Sayısı</label>
-              <input type="number" id="fGun" min="1" value="5">
+              <input type="number" id="fGun" min="0.5" step="0.5" value="14">
+              <span class="gf-hint gf-hint-auto" id="fGunHint" hidden><i class="fa-solid fa-circle-check"></i> Yasal süre otomatik uygulandı.</span>
+            </div>
+            <div class="gfield" id="fSaatWrap" hidden>
+              <label for="fSaatBasla">Saat Aralığı</label>
+              <div class="saat-range">
+                <input type="time" id="fSaatBasla" value="09:00">
+                <span>–</span>
+                <input type="time" id="fSaatBitis" value="13:00">
+              </div>
             </div>
             <div class="gfield">
               <label for="fBasla">Başlangıç Tarihi</label>
@@ -114,6 +144,7 @@
             <div class="gfield full">
               <label for="fAciklama">Açıklama <span class="gf-hint">(isteğe bağlı)</span></label>
               <textarea id="fAciklama" rows="3" placeholder="Şantiye şefinize veya İK'ya iletmek istediğiniz not…"></textarea>
+              <span class="gf-hint gf-hint-auto" id="fRaporHint" hidden><i class="fa-solid fa-paperclip"></i> Rapor eki beklenir — açıklamaya rapor tarihini ve süresini belirtin.</span>
             </div>
             <div class="gfield full">
               <label for="fVekil">Vekil / Devir</label>
@@ -166,6 +197,60 @@
   if(['superadmin','sahip','yonetim','ik'].indexOf(GV.role) === -1){
     document.querySelectorAll('[data-admin-only]').forEach(function(el){ el.hidden = true; });
   }
+
+  /* [MOCK-SİM] izin türü → gün kuralı haritası — statik simülasyon, gerçek
+     mevzuat/kıdem motoru değildir (bkz. shell.js DALGA 4A KANONİK TANIMLAR). */
+  var GUN_KURAL = {
+    yillik:   { tip:'serbest', varsayilan:14, yol:true },
+    yol:      { tip:'serbest', varsayilan:2 },
+    mazeret:  { tip:'serbest', varsayilan:1 },
+    evlilik:  { tip:'oto', deger:5 },
+    dogum:    { tip:'oto', deger:112 },
+    babalik:  { tip:'oto', deger:5 },
+    olum:     { tip:'oto', deger:3 },
+    raporlu:  { tip:'serbest', varsayilan:1, rapor:true },
+    ucretsiz: { tip:'serbest', varsayilan:1 },
+    saatlik:  { tip:'saat' },
+    tamgun:   { tip:'sabit', deger:1 },
+    yarim:    { tip:'sabit', deger:0.5 }
+  };
+
+  var elTur = document.getElementById('fTur'),
+      elGunWrap = document.getElementById('fGunWrap'), elGun = document.getElementById('fGun'), elGunHint = document.getElementById('fGunHint'),
+      elSaatWrap = document.getElementById('fSaatWrap'),
+      elYolWrap = document.getElementById('fYolWrap'), elYol = document.getElementById('fYol'), elYolHint = document.getElementById('fYolHint'),
+      elRaporHint = document.getElementById('fRaporHint');
+
+  function uygula(){
+    var kural = GUN_KURAL[elTur.value];
+    if(!kural) return;
+
+    elSaatWrap.hidden = kural.tip !== 'saat';
+    elGunWrap.hidden = kural.tip === 'saat';
+    elYolWrap.hidden = !kural.yol;
+    if(!kural.yol){ elYol.checked = false; elYolHint.hidden = true; }
+    elRaporHint.hidden = !kural.rapor;
+
+    if(kural.tip === 'oto' || kural.tip === 'sabit'){
+      elGun.value = kural.deger;
+      elGun.readOnly = true;
+      elGunHint.hidden = false;
+      elGunHint.innerHTML = kural.tip === 'oto'
+        ? '<i class="fa-solid fa-circle-check"></i> Yasal süre otomatik uygulandı.'
+        : '<i class="fa-solid fa-circle-check"></i> Bu izin türü için gün sayısı sabittir.';
+    } else if(kural.tip === 'serbest'){
+      elGun.readOnly = false;
+      elGun.value = kural.varsayilan;
+      elGunHint.hidden = true;
+    }
+  }
+
+  elTur.addEventListener('change', uygula);
+  if(elYol){
+    elYol.addEventListener('change', function(){ elYolHint.hidden = !elYol.checked; });
+  }
+  uygula();
+
   var btn = document.getElementById('izinSubmit');
   if(btn){
     btn.addEventListener('click', function(){

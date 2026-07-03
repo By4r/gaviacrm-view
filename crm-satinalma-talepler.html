@@ -69,7 +69,7 @@
       <div>
         <div class="ph-eyebrow">Tedarik</div>
         <h1>Malzeme Talepleri</h1>
-        <div class="ph-sub" id="phSub"><span data-table-count>13</span> talep · 9'u Satın Alma onayı bekliyor</div>
+        <div class="ph-sub" id="phSub"><span data-table-count>13</span> talep · 7'si Satın Alma onayı bekliyor</div>
       </div>
       <div class="ph-actions">
         <a class="btn btn-ghost btn-sm" href="#" data-wip="1"><i class="fa-solid fa-download"></i> Dışa Aktar</a>
@@ -80,7 +80,7 @@
     <div class="kpi-grid">
       <div class="kpi-card warn">
         <div class="kpi-ico"><i class="fa-solid fa-hourglass-half"></i></div>
-        <div><div class="kpi-num num" id="kpiAcikNum">9</div><div class="kpi-lbl">Onay bekleyen talep</div>
+        <div><div class="kpi-num num" id="kpiAcikNum">7</div><div class="kpi-lbl">Onay bekleyen talep</div>
         <div class="kpi-delta down"><i class="fa-solid fa-clock"></i> En eski 6 gündür bekliyor</div></div>
       </div>
       <div class="kpi-card">
@@ -108,8 +108,10 @@
         </div>
         <div class="chips" data-target="#tblTalep">
           <button class="chip is-on" data-filter="hepsi">Tümü <span class="ch-cnt">13</span></button>
-          <button class="chip" data-filter="bekliyor">Onay Bekliyor <span class="ch-cnt">9</span></button>
+          <button class="chip" data-filter="bekliyor">Onay Bekliyor <span class="ch-cnt">7</span></button>
           <button class="chip" data-filter="onaylandi">Onaylandı <span class="ch-cnt">2</span></button>
+          <button class="chip" data-filter="tedarik">Tedarik Sürecinde <span class="ch-cnt">1</span></button>
+          <button class="chip" data-filter="tamamlandi">Tamamlandı <span class="ch-cnt">1</span></button>
           <button class="chip" data-filter="reddedildi">Reddedildi <span class="ch-cnt">1</span></button>
           <button class="chip" data-filter="revize">Revize İstendi <span class="ch-cnt">1</span></button>
         </div>
@@ -173,22 +175,22 @@
               <td data-badge="bekliyor"></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="bekliyor" data-santiye="merkez">
+            <tr data-f="tedarik" data-santiye="merkez">
               <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><b>MLZ-2026-041</b><span>28 Haziran 2026</span></div></div></td>
               <td>Merkez Şantiye</td>
               <td><span class="tl-desc">Elektrik kablosu NYY 3x2,5 — 500 m</span></td>
               <td>Recep Yaman</td>
               <td><span class="pri normal">Normal</span></td>
-              <td data-badge="bekliyor"></td>
+              <td><span class="gstat info">Tedarik Sürecinde</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="bekliyor" data-santiye="vadi">
+            <tr data-f="tamamlandi" data-santiye="vadi">
               <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><b>MLZ-2026-040</b><span>27 Haziran 2026</span></div></div></td>
               <td>Vadi Konakları</td>
               <td><span class="tl-desc">Alçı sıva malzemesi — 40 torba</span></td>
               <td>Selim Doğan</td>
               <td><span class="pri planli">Planlı</span></td>
-              <td data-badge="bekliyor"></td>
+              <td><span class="gstat ok">Tamamlandı</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
             <tr data-f="bekliyor" data-santiye="vadi">
@@ -272,7 +274,7 @@
     document.querySelectorAll('#tblTalep tbody tr').forEach(function(tr){
       if(tr.getAttribute('data-santiye') !== 'vadi') tr.remove();
     });
-    var counts = {hepsi:0, bekliyor:0, onaylandi:0, reddedildi:0, revize:0};
+    var counts = {hepsi:0, bekliyor:0, onaylandi:0, tedarik:0, tamamlandi:0, reddedildi:0, revize:0};
     document.querySelectorAll('#tblTalep tbody tr').forEach(function(tr){
       counts.hepsi++;
       var f = tr.getAttribute('data-f');

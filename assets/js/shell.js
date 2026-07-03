@@ -48,6 +48,32 @@
    ─ Yemekhane bağlamı: kişi sayıları saha kadrosu+şef+taşeron ekipleriyle tutarlı
        (VK ~35 · Liman ~22 · Merkez ~12; taşeron yemekleri ayrı satırda gösterilir)
    ─ Tarih bağlamı: 2 Temmuz 2026, Perşembe
+   ─ DALGA 4A KANONİK TANIMLAR (2026-07-03 — 4A sayfaları BU tanımları kullanır):
+     · İzin türleri (12) + gün kuralı [MOCK-SİM — statik harita; mevzuat/kıdem motoru DEĞİL]:
+         yillik   Yıllık İzin       → serbest (varsayılan 14)
+         yol      Yol İzni          → yıllığa ek; checkbox ile +4 güne kadar
+         mazeret  Mazeret İzni      → serbest (varsayılan 1)
+         evlilik  Evlilik İzni      → 5  (otomatik)
+         dogum    Doğum İzni        → 112 (16 hafta, otomatik)
+         babalik  Babalık İzni      → 5  (otomatik)
+         olum     Ölüm (Vefat) İzni → 3  (otomatik)
+         raporlu  Raporlu           → rapor süresi kadar (serbest; rapor eki beklenir)
+         ucretsiz Ücretsiz İzin     → serbest
+         saatlik  Saatlik İzin      → gün alanı saat girişine döner (0,5 gün altı)
+         tamgun   Tam Gün İzin      → 1   (sabit)
+         yarim    Yarım Gün İzin    → 0,5 (sabit)
+       Otomatik türlerde form "yasal süre otomatik uygulandı" notu gösterir.
+   ─ Puantaj durum seti (mevcut 6 + 4A'da +4; puantaj sayfası ve şantiye-detay
+       puantaj sekmesi AYNI seti kullanır):
+         tam Tam gün (ok) · yarim Yarım gün (warn) · yok Gelmedi (danger) ·
+         izin İzinli (info) · rapor Raporlu (muted) · fm Fazla Mesai FM (acc) ·
+         em Eksik Mesai EM (warn koyu türev, color-mix) · rt Resmi Tatil RT (dashed) ·
+         ht Hafta Tatili HT (dashed muted) — mevcut jenerik "tatil" HT'ye ayrışır, RT ayrı işaret.
+   ─ Ajanda olay türleri + renk (kişisel ajanda; santiye-ajanda .ajd-card pattern'i):
+         toplanti Toplantı (ink-2) · gorev Görev (acc-ink) · ziyaret Şantiye Ziyareti (info) ·
+         izin İzin başl./bitiş (warn) · odeme Ödeme/Hakediş (ok) · termin Malzeme Teslim (danger)
+   ─ Talep yaşam-döngüsü ek durumları (statik .gstat; gvChainBadge'e DOKUNULMAZ):
+         "Tedarik Sürecinde" (info) · "Tamamlandı" (ok)
    ===================================================================== */
 (function(){
   'use strict';
@@ -77,6 +103,7 @@
       {ic:'fa-gauge-high', lbl:'Ana Panel', href:'crm-panel.html', screen:'panel'},
       {seclbl:'Gündem'},
       {ic:'fa-sun',            lbl:'Günlük Özet',      href:'crm-panel-ozet.html',        screen:'ozet'},
+      {ic:'fa-calendar-week',  lbl:'Ajanda',           href:'crm-panel-ajanda.html',      screen:'ajanda'},
       {ic:'fa-list-check',     lbl:'Görevlerim',       href:'crm-gorev.html?f=bana'},
       {ic:'fa-stamp',          lbl:'Bekleyen Onaylar', href:'crm-panel-onaylar.html',     screen:'onaylar', cnt:'12'},
       {ic:'fa-bell',           lbl:'Bildirimler',      href:'crm-panel-bildirimler.html', screen:'bildirimler'}

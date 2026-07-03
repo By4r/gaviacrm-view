@@ -21,13 +21,14 @@
 .pt-weeknav{display:flex;align-items:center;gap:12px}
 .pt-week-lbl{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;min-width:190px;text-align:center}
 
-#tblPuantaj{min-width:900px;border-collapse:separate;border-spacing:0}
+#tblPuantaj{min-width:1030px;border-collapse:separate;border-spacing:0}
 #tblPuantaj th,#tblPuantaj td{border-bottom:1px solid var(--line)}
 #tblPuantaj tr:last-child td{border-bottom:none}
 .col-per{width:190px}
 .col-poz{width:150px}
 .col-gun{width:66px;text-align:center!important}
-.col-hafta{width:96px}
+.col-hafta{width:92px}
+.col-ozet{width:150px}
 
 /* personel adı hücresi — yatay kaydırmada sabit kalır */
 #tblPuantaj td:first-child,#tblPuantaj th:first-child{
@@ -59,7 +60,10 @@ th.is-today .dh-d{color:var(--acc-ink)}
 .pt-mark.yok{background:var(--danger-tint);color:var(--danger)}
 .pt-mark.izin{background:var(--info-tint);color:var(--info)}
 .pt-mark.rapor{background:var(--bg);color:var(--muted);border:1px solid var(--line-2)}
-.pt-mark.tatil{background:transparent;color:var(--line-2);border:1px dashed var(--line)}
+.pt-mark.fm{background:rgba(var(--acc-rgb),.16);color:var(--acc-ink)}
+.pt-mark.em{background:color-mix(in srgb, var(--warn) 30%, var(--warn-tint));color:color-mix(in srgb, var(--warn) 78%, #000)}
+.pt-mark.rt{background:var(--bg);color:var(--ink-2);border:1px dashed var(--line-2)}
+.pt-mark.ht{background:transparent;color:var(--line-2);border:1px dashed var(--line)}
 .pt-mark.gelecek{background:transparent;color:var(--line-2)}
 .pt-mark.gelecek::before{content:"–";font-weight:700}
 
@@ -77,6 +81,8 @@ th.is-today .dh-d{color:var(--acc-ink)}
 .pt-total{font-size:13px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
 .pt-total span{display:block;font-size:10.5px;font-weight:600;color:var(--muted);margin-top:1px}
 
+.pt-ozet{font-size:12px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+
 /* lejant */
 .pt-legend{display:flex;flex-wrap:wrap;gap:16px;padding:16px 22px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-2)}
 .pt-legend .lg-item{display:inline-flex;align-items:center;gap:7px}
@@ -86,7 +92,10 @@ th.is-today .dh-d{color:var(--acc-ink)}
 .pt-legend .lg-sw.yok{background:var(--danger-tint);color:var(--danger)}
 .pt-legend .lg-sw.izin{background:var(--info-tint);color:var(--info)}
 .pt-legend .lg-sw.rapor{background:var(--bg);color:var(--muted);border:1px solid var(--line-2)}
-.pt-legend .lg-sw.tatil{background:transparent;color:var(--line-2);border:1px dashed var(--line)}
+.pt-legend .lg-sw.fm{background:rgba(var(--acc-rgb),.16);color:var(--acc-ink)}
+.pt-legend .lg-sw.em{background:color-mix(in srgb, var(--warn) 30%, var(--warn-tint));color:color-mix(in srgb, var(--warn) 78%, #000)}
+.pt-legend .lg-sw.rt{background:var(--bg);color:var(--ink-2);border:1px dashed var(--line-2)}
+.pt-legend .lg-sw.ht{background:transparent;color:var(--line-2);border:1px dashed var(--line)}
 
 @media(max-width:640px){
   .pt-toolbar{padding:14px 16px}
@@ -175,6 +184,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
               <th class="col-gun">Cmt <span style="display:block;font-weight:800;color:var(--ink)">4</span></th>
               <th class="col-gun">Paz <span style="display:block;font-weight:800;color:var(--ink)">5</span></th>
               <th class="col-hafta num">Haftalık</th>
+              <th class="col-ozet">Temmuz Özeti</th>
             </tr>
           </thead>
           <tbody id="ptBody"></tbody>
@@ -186,7 +196,10 @@ th.is-today .dh-d{color:var(--acc-ink)}
         <span class="lg-item"><span class="lg-sw yok"><i class="fa-solid fa-xmark"></i></span> Devamsız</span>
         <span class="lg-item"><span class="lg-sw izin"><i class="fa-solid fa-umbrella-beach"></i></span> İzinli</span>
         <span class="lg-item"><span class="lg-sw rapor"><i class="fa-solid fa-file-medical"></i></span> Raporlu</span>
-        <span class="lg-item"><span class="lg-sw tatil"><i class="fa-solid fa-moon"></i></span> Hafta tatili</span>
+        <span class="lg-item"><span class="lg-sw fm"><i class="fa-solid fa-arrow-trend-up"></i></span> Fazla mesai (FM)</span>
+        <span class="lg-item"><span class="lg-sw em"><i class="fa-solid fa-arrow-trend-down"></i></span> Eksik mesai (EM)</span>
+        <span class="lg-item"><span class="lg-sw rt"><i class="fa-solid fa-flag"></i></span> Resmî tatil (RT)</span>
+        <span class="lg-item"><span class="lg-sw ht"><i class="fa-solid fa-moon"></i></span> Hafta tatili (HT)</span>
       </div>
     </div>
   </main>
@@ -208,15 +221,15 @@ th.is-today .dh-d{color:var(--acc-ink)}
   var PERSONEL = [
     {ad:'Hasan Demirci',  poz:'Şantiye Şefi',    santiye:'vadi',   gunler:['tam','tam','tam','tam']},
     {ad:'Ali Vural',      poz:'Saha Personeli',  santiye:'vadi',   gunler:['tam','tam','tam','tam']},
-    {ad:'İbrahim Sönmez', poz:'Formen',          santiye:'vadi',   gunler:['tam','tam','yarim','tam']},
+    {ad:'İbrahim Sönmez', poz:'Formen',          santiye:'vadi',   gunler:['fm','tam','yarim','tam']},
     {ad:'Ramazan Kılıç',  poz:'Kalıpçı',         santiye:'vadi',   gunler:['tam','tam','tam','izin']},
-    {ad:'Selim Doğan',    poz:'Demir Ustası',    santiye:'vadi',   gunler:['tam','yok','tam','tam']},
+    {ad:'Selim Doğan',    poz:'Demir Ustası',    santiye:'vadi',   gunler:['tam','yok','tam','em']},
     {ad:'Musa Erdem',     poz:'Düz İşçi',        santiye:'vadi',   gunler:['izin','izin','tam','tam']},
     {ad:'Veli Şimşek',    poz:'Elektrik Ustası', santiye:'vadi',   gunler:['tam','tam','rapor','rapor']},
 
     {ad:'Aylin Koç',      poz:'Şantiye Şefi',    santiye:'liman',  gunler:['izin','izin','izin','izin']},
     {ad:'Şükrü Aslan',    poz:'Formen',          santiye:'liman',  gunler:['tam','tam','tam','tam']},
-    {ad:'Halil Güneş',    poz:'Operatör',        santiye:'liman',  gunler:['tam','yarim','tam','tam']},
+    {ad:'Halil Güneş',    poz:'Operatör',        santiye:'liman',  gunler:['tam','yarim','tam','fm']},
     {ad:'Metin Çetin',    poz:'Kaynakçı',        santiye:'liman',  gunler:['tam','tam','izin','izin']},
     {ad:'Osman Polat',    poz:'Düz İşçi',        santiye:'liman',  gunler:['yok','tam','tam','tam']},
 
@@ -225,6 +238,11 @@ th.is-today .dh-d{color:var(--acc-ink)}
     {ad:'İlyas Kurt',     poz:'Marangoz',        santiye:'merkez', gunler:['tam','tam','tam','rapor']},
     {ad:'Sadık Öz',       poz:'Düz İşçi',        santiye:'merkez', gunler:['yarim','tam','tam','tam']}
   ];
+  /* Temmuz özeti — grid indeks 2 (Çar 1 Tem) ve 3 (Per 2 Tem, bugün) TEK Temmuz günleri;
+     0-1 (29-30 Haz) Haziran'a ait, ay özetine dahil edilmez. */
+  var JULY_START_IDX = 2;
+  var OZET_KOD = {tam:'N', fm:'FM', em:'E', yarim:'Y', yok:'D', izin:'İ', rapor:'R'};
+  var OZET_SIRA = ['tam','fm','em','yarim','yok','izin','rapor'];
   var SANTIYE_ADI = {vadi:'Vadi Konakları', liman:'Liman Lojistik Merkezi', merkez:'Merkez Şantiye'};
   var SANTIYE_TINT = {
     vadi:  {bg:'rgba(var(--acc-rgb),.12)', fg:'var(--acc-ink)'},
@@ -237,7 +255,10 @@ th.is-today .dh-d{color:var(--acc-ink)}
     yok:    {ic:'fa-xmark',              lbl:'Devamsız — mazeretsiz'},
     izin:   {ic:'fa-umbrella-beach',     lbl:'İzinli'},
     rapor:  {ic:'fa-file-medical',       lbl:'Raporlu'},
-    tatil:  {ic:'fa-moon',               lbl:'Hafta tatili'},
+    fm:     {ic:'fa-arrow-trend-up',     lbl:'Fazla mesai (FM)'},
+    em:     {ic:'fa-arrow-trend-down',   lbl:'Eksik mesai (EM)'},
+    rt:     {ic:'fa-flag',               lbl:'Resmî tatil (RT)'},
+    ht:     {ic:'fa-moon',               lbl:'Hafta tatili (HT)'},
     gelecek:{ic:'',                      lbl:'Henüz işlenmedi'}
   };
 
@@ -245,7 +266,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
     return ad.split(' ').map(function(p){ return p.charAt(0); }).join('').slice(0,2).toUpperCase();
   }
   function statusOf(person, dayIdx){
-    if(dayIdx === 6) return 'tatil';
+    if(dayIdx === 6) return 'ht';
     if(dayIdx > RECORDED_UPTO) return 'gelecek';
     return person.gunler[dayIdx] || 'gelecek';
   }
@@ -253,10 +274,20 @@ th.is-today .dh-d{color:var(--acc-ink)}
     var tam = 0, half = 0;
     for(var i = 0; i <= RECORDED_UPTO; i++){
       var s = person.gunler[i];
-      if(s === 'tam') tam++;
-      else if(s === 'yarim') half++;
+      if(s === 'tam' || s === 'fm') tam++;
+      else if(s === 'yarim' || s === 'em') half++;
     }
     return tam + half * 0.5;
+  }
+  function monthlySummary(person){
+    var c = {};
+    for(var i = JULY_START_IDX; i <= RECORDED_UPTO; i++){
+      var s = person.gunler[i];
+      c[s] = (c[s] || 0) + 1;
+    }
+    var parts = [];
+    OZET_SIRA.forEach(function(k){ if(c[k]) parts.push(c[k] + ' ' + OZET_KOD[k]); });
+    return parts.length ? parts.join(' · ') : '—';
   }
 
   var body = document.getElementById('ptBody');
@@ -285,9 +316,10 @@ th.is-today .dh-d{color:var(--acc-ink)}
       }
       var wt = weeklyTotal(p);
       html += '<td class="num"><div class="pt-total">'+(wt % 1 === 0 ? wt : wt.toString().replace('.', ','))+' gün<span>'+(RECORDED_UPTO+1)+' gün işlendi</span></div></td>';
+      html += '<td><div class="pt-ozet">'+monthlySummary(p)+'</div></td>';
       html += '</tr>';
     });
-    body.innerHTML = html || '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:32px">Bu şantiyede kayıtlı personel yok.</td></tr>';
+    body.innerHTML = html || '<tr><td colspan="11" style="text-align:center;color:var(--muted);padding:32px">Bu şantiyede kayıtlı personel yok.</td></tr>';
 
     /* KPI özetleri — seçili şantiye, işlenen 4 gün toplamı */
     var c = {tam:0, yarim:0, yok:0, izin:0, rapor:0};
