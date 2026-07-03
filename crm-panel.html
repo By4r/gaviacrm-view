@@ -81,6 +81,52 @@
 .task-due{flex:none;font-size:11.5px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
 .task-due.late{color:var(--danger)}
 @media(max-width:640px){.task-row{padding:13px 16px}}
+
+/* ============ F2 — sağ bilgi kolonu (canlı saat + hava [MOCK-SİM] + gündem) ============ */
+.dash-body{display:grid;grid-template-columns:minmax(0,1fr) 304px;gap:18px;align-items:start}
+.dash-left{min-width:0;container-type:inline-size}
+.dash-side{display:flex;flex-direction:column;gap:16px;min-width:0}
+@media(max-width:1199px){.dash-body{grid-template-columns:minmax(0,1fr)}}
+/* sol alan daralınca (sağ kolon + katlanmamış menü) onay/şantiye kartları alt alta,
+   KPI'lar 2×2'ye iner — etiketler 3 satıra kırılmasın */
+@container (max-width:940px){
+  .dash-cols{grid-template-columns:minmax(0,1fr)}
+  .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* şu an kartı — koyu marka zemininde canlı saat */
+.now-card{background:var(--gv-deep);border:1px solid var(--gv-border-dark);border-radius:var(--r-md);padding:18px;color:var(--gv-on-dark)}
+.now-clock{display:flex;align-items:baseline;gap:7px;font-variant-numeric:tabular-nums}
+.now-clock .nc-hm{font-size:38px;font-weight:800;letter-spacing:-.5px;line-height:1;color:#fff}
+.now-clock .nc-s{font-size:14px;font-weight:700;color:var(--gv-mint)}
+.now-date{margin-top:8px;font-size:12.5px;color:var(--gv-on-dark);opacity:.85}
+.now-wx{margin-top:14px;padding-top:12px;border-top:1px solid var(--gv-border-dark)}
+.now-wx-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.now-wx-head span{font-size:10.5px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;opacity:.6}
+.wx-sim{font-size:9px;font-weight:800;letter-spacing:.5px;padding:2px 6px;border-radius:6px;background:var(--gv-mint-glow);color:var(--gv-mint);opacity:1}
+.wx-row{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px}
+.wx-row i{width:16px;text-align:center;color:var(--gv-mint);font-size:12px;flex:none}
+.wx-row b{font-weight:800;color:#fff;flex:none}
+.wx-row span{color:var(--gv-on-dark);opacity:.62;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wx-row .wx-t{font-weight:800;color:#fff;opacity:1;font-variant-numeric:tabular-nums;flex:none}
+
+/* kompakt yan kart pattern'i */
+.sc-head{display:flex;align-items:center;gap:8px;padding:13px 16px 10px}
+.sc-head i{font-size:12px;color:var(--acc-ink)}
+.sc-head b{font-size:12.5px;font-weight:800;letter-spacing:.2px;color:var(--ink)}
+.sc-head .sc-cnt{margin-left:auto;font-size:10.5px;font-weight:800;color:var(--muted)}
+.sc-row{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;border-top:1px solid var(--line);text-decoration:none}
+a.sc-row:hover{background:var(--bg)}
+.sc-dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:5px}
+.sc-txt{flex:1;min-width:0;line-height:1.45}
+.sc-txt b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:12.5px;font-weight:700;color:var(--ink);overflow:hidden}
+.sc-txt span{display:block;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-tail{flex:none;font-size:11px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:2px}
+.sc-tail.warn{color:var(--warn)} .sc-tail.danger{color:var(--danger)} .sc-tail.ok{color:var(--ok)}
+.sc-foot{padding:9px 16px;border-top:1px solid var(--line)}
+.sc-foot a{font-size:11.5px;font-weight:700;color:var(--acc-ink);text-decoration:none}
+.sc-foot a:hover{text-decoration:underline}
+.sc-foot a i{font-size:9.5px}
 </style>
 </head>
 <body data-sec="panel" data-screen="panel">
@@ -125,6 +171,9 @@
         <a class="btn btn-acc btn-sm" href="crm-santiye-bildirimler.html"><i class="fa-solid fa-camera"></i> Saha Bildirimi Gönder</a>
       </div>
     </div>
+
+    <div class="dash-body">
+    <div class="dash-left">
 
     <!-- ============ YÖNETİM GÖRÜNÜMÜ (superadmin · sahip · yonetim · teknik) ============ -->
     <section data-view="yonetim">
@@ -397,6 +446,114 @@
       </div>
     </section>
 
+    </div><!-- /dash-left -->
+
+    <!-- ============ F2 — SAĞ BİLGİ KOLONU (≥1200px sağda, altında akar) ============ -->
+    <aside class="dash-side">
+
+      <!-- canlı saat (gerçek zaman) + kanonik tarih + hava [MOCK-SİM] -->
+      <div class="now-card" data-view="yonetim sef kisisel">
+        <div class="now-clock"><span class="nc-hm" id="nowHm">--:--</span><span class="nc-s" id="nowS">--</span></div>
+        <div class="now-date" id="nowDate">2 Temmuz 2026, Perşembe</div>
+        <div class="now-wx">
+          <div class="now-wx-head"><span>Şantiye havası</span><span class="wx-sim">MOCK-SİM</span></div>
+          <div class="wx-row"><i class="fa-solid fa-sun"></i><b>VK</b><span>Çekmeköy, İstanbul</span><span class="wx-t">29°</span></div>
+          <div class="wx-row"><i class="fa-solid fa-sun"></i><b>LL</b><span>Aliağa, İzmir</span><span class="wx-t">34°</span></div>
+          <div class="wx-row"><i class="fa-solid fa-cloud-sun"></i><b>MŞ</b><span>Gebze, Kocaeli</span><span class="wx-t">30°</span></div>
+        </div>
+      </div>
+
+      <!-- kritik uyarılar -->
+      <div class="gv-card" data-view="yonetim sef">
+        <div class="sc-head"><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i><b>Kritik Uyarılar</b></div>
+        <a class="sc-row" href="crm-satinalma-termin.html" data-view="yonetim">
+          <span class="sc-dot" style="background:var(--danger)"></span>
+          <span class="sc-txt"><b>SAT-2026-011 · XPS yalıtım teslimi gecikti</b><span>Ege Hazır Beton · Merkez Şantiye · plan 30 Haziran</span></span>
+          <span class="sc-tail danger">2 gün</span>
+        </a>
+        <a class="sc-row" href="crm-santiye-isg.html" data-view="yonetim sef">
+          <span class="sc-dot" style="background:var(--danger)"></span>
+          <span class="sc-txt"><b>ISG-2026-008 · İskele korkuluk eksikliği</b><span>Vadi Konakları · B Blok · aksiyon bekliyor</span></span>
+        </a>
+        <a class="sc-row" href="crm-operasyon-puantaj.html" data-view="yonetim">
+          <span class="sc-dot" style="background:var(--warn)"></span>
+          <span class="sc-txt"><b>Günlük puantaj İK onayına gönderilmedi</b><span>2 Temmuz girişi · 3 şantiye · durum: Taslak</span></span>
+        </a>
+        <a class="sc-row" href="crm-operasyon-puantaj.html" data-view="sef" hidden>
+          <span class="sc-dot" style="background:var(--warn)"></span>
+          <span class="sc-txt"><b>Günlük puantaj girişiniz İK onayına gönderilmedi</b><span>Vadi Konakları · 2 Temmuz · durum: Taslak</span></span>
+        </a>
+        <a class="sc-row" href="crm-gorev.html?f=geciken" data-view="yonetim">
+          <span class="sc-dot" style="background:var(--warn)"></span>
+          <span class="sc-txt"><b>3 görev vadesini geçti</b><span>Perde betonu kür raporu · kalıp iskelesi sökümü…</span></span>
+        </a>
+      </div>
+
+      <!-- bugünün ajandası (kanonik: crm-panel-ajanda.html 2 Tem olayları) -->
+      <div class="gv-card" data-view="yonetim sef">
+        <div class="sc-head"><i class="fa-solid fa-calendar-day"></i><b>Ajanda</b><span class="sc-cnt" data-view="yonetim">bugün 3 olay</span></div>
+        <a class="sc-row" href="crm-satinalma-form-detay.html" data-view="yonetim sef">
+          <span class="sc-dot" style="background:var(--danger)"></span>
+          <span class="sc-txt"><b>SAT-2026-016 · Kalıp kerestesi teslimi</b><span>Vadi Konakları · Ege Hazır Beton · bugün teslim</span></span>
+          <span class="sc-tail">09:00</span>
+        </a>
+        <a class="sc-row" href="crm-finans-hakedis-detay.html" data-view="yonetim">
+          <span class="sc-dot" style="background:var(--ok)"></span>
+          <span class="sc-txt"><b>HKD-2026-006 · İşveren onay takibi</b><span>Körfez GYO · gönderildi 20 Haziran · Elif Sarıkaya</span></span>
+          <span class="sc-tail">14:00</span>
+        </a>
+        <a class="sc-row" href="crm-santiye-ajanda.html" data-view="yonetim">
+          <span class="sc-dot" style="background:var(--ink-2)"></span>
+          <span class="sc-txt"><b>Haftalık saha koordinasyon toplantısı</b><span>Liman Lojistik Merkezi · Murat Denizli</span></span>
+          <span class="sc-tail">16:00</span>
+        </a>
+        <a class="sc-row" href="crm-santiye-ajanda.html" data-view="sef" hidden>
+          <span class="sc-dot" style="background:var(--info)"></span>
+          <span class="sc-txt"><b>İç İSG denetimi — iskele kontrolü</b><span>Vadi Konakları · Hasan Demirci</span></span>
+          <span class="sc-tail">Yarın 11:00</span>
+        </a>
+        <div class="sc-foot"><a href="crm-panel-ajanda.html">Ajandayı aç <i class="fa-solid fa-arrow-right"></i></a></div>
+      </div>
+
+      <!-- yaklaşan izinler (kanonik: crm-personel-izin.html) -->
+      <div class="gv-card" data-view="yonetim">
+        <div class="sc-head"><i class="fa-solid fa-umbrella-beach"></i><b>Yaklaşan İzinler</b></div>
+        <a class="sc-row" href="crm-personel-izin.html">
+          <span class="sc-dot" style="background:var(--info)"></span>
+          <span class="sc-txt"><b>Aylin Koç · Yıllık izin</b><span>İZN-2026-030 · 1–3 Temmuz · son gün yarın</span></span>
+          <span class="sc-tail">İzinli</span>
+        </a>
+        <a class="sc-row" href="crm-personel-izin.html">
+          <span class="sc-dot" style="background:var(--warn)"></span>
+          <span class="sc-txt"><b>Ali Vural · Yıllık izin talebi</b><span>İZN-2026-031 · 6–10 Temmuz · şef onayında</span></span>
+          <span class="sc-tail warn">Onayda</span>
+        </a>
+      </div>
+
+      <!-- ödeme & hakediş (kanonik: crm-finans-kurum/taseron) -->
+      <div class="gv-card" data-view="yonetim">
+        <div class="sc-head"><i class="fa-solid fa-file-signature"></i><b>Ödeme & Hakediş</b></div>
+        <a class="sc-row" href="crm-finans-hakedis-detay.html">
+          <span class="sc-dot" style="background:var(--warn)"></span>
+          <span class="sc-txt"><b>HKD-2026-006 · Körfez GYO</b><span>İşveren onayında · 12 gündür beklemede</span></span>
+          <span class="sc-tail">₺1,63M</span>
+        </a>
+        <a class="sc-row" href="crm-finans-hakedis-detay.html">
+          <span class="sc-dot" style="background:var(--ok)"></span>
+          <span class="sc-txt"><b>TH-2026-013 · Demir-Beton İnş.</b><span>Mayıs hakedişi · onaylandı · ödeme sırada</span></span>
+          <span class="sc-tail">₺210.000</span>
+        </a>
+        <a class="sc-row" href="crm-finans-hakedis-detay.html">
+          <span class="sc-dot" style="background:var(--warn)"></span>
+          <span class="sc-txt"><b>TH-2026-014 · Demir-Beton İnş.</b><span>Haziran hakedişi · gönderildi 28 Haziran</span></span>
+          <span class="sc-tail">₺90.000</span>
+        </a>
+        <div class="sc-foot"><a href="crm-finans-kurum.html">Kurum hakedişleri <i class="fa-solid fa-arrow-right"></i></a></div>
+      </div>
+
+    </aside>
+    </div><!-- /dash-body -->
+
   </main>
 </div>
 
@@ -417,16 +574,37 @@
   };
   if(!window.GV) return;
   var view = MAP[GV.role] || 'kisisel';
+  /* F2: data-view artık boşluk-ayrımlı liste alabilir ("yonetim sef") */
   document.querySelectorAll('[data-view]').forEach(function(el){
-    el.hidden = el.getAttribute('data-view') !== view;
+    el.hidden = el.getAttribute('data-view').split(' ').indexOf(view) === -1;
   });
   document.querySelectorAll('[data-only]').forEach(function(el){
     el.hidden = el.getAttribute('data-only') !== GV.role;
   });
   var ad = GV.R.name.split(' ')[0];
-  document.getElementById('dashGreet').textContent = 'Günaydın, ' + ad;
+  /* F2: selamlama gerçek saate göre */
+  var saat = new Date().getHours();
+  var selam = saat < 6 ? 'İyi geceler' : saat < 12 ? 'Günaydın' : saat < 18 ? 'İyi günler' : 'İyi akşamlar';
+  document.getElementById('dashGreet').textContent = selam + ', ' + ad;
   document.getElementById('dashSub').textContent = GV.STR.greetDate + ' — ' +
     GREET[view].replace('Günaydın, {ad} — ','').replace('{ad}', ad);
+  /* F2: sağ kolon tarih satırı tek kaynaktan (shell.js STR) */
+  var nd = document.getElementById('nowDate');
+  if(nd) nd.textContent = GV.STR.greetDate;
+})();
+
+/* F2 — canlı saat: saat GERÇEK zamandır; tarih kanonik mock bağlamına sabittir [MOCK-SİM] */
+(function(){
+  var hm = document.getElementById('nowHm'), sn = document.getElementById('nowS');
+  if(!hm || !sn) return;
+  function p(n){ return (n < 10 ? '0' : '') + n; }
+  function tick(){
+    var d = new Date();
+    hm.textContent = p(d.getHours()) + ':' + p(d.getMinutes());
+    sn.textContent = p(d.getSeconds());
+  }
+  tick();
+  setInterval(tick, 1000);
 })();
 </script>
 </body>
