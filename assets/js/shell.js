@@ -78,6 +78,32 @@
          izin İzin başl./bitiş (warn) · odeme Ödeme/Hakediş (ok) · termin Malzeme Teslim (danger)
    ─ Talep yaşam-döngüsü ek durumları (statik .gstat; gvChainBadge'e DOKUNULMAZ):
          "Tedarik Sürecinde" (info) · "Tamamlandı" (ok)
+   ─ DALGA 4C KANONİK TANIMLAR (2026-07-03 — demirbaş/rapor sayfaları BU tanımları kullanır):
+     · Zimmet/demirbaş numaralama: ZMT-YYYY-### (yıl = teslim/kayıt yılı).
+       ZMT-2025-### serisi = KAPANMIŞ ESKİ KAYITLAR (iade edilmiş / hurdaya ayrılmış).
+       Audit fix: 4B'deki "ZMT-2026-045 · teslim 10 Mar 2025" kaydı ZMT-2025-017'ye
+       düşürüldü (tarih korundu); boşalan 045 numarası yeni kaleme verildi — seri boşluksuz.
+     · Demirbaş kategorileri (6): Telefon & İletişim · Tablet · El Aleti ·
+       Güvenlik Ekipmanı · Araç · Makine-Ekipman
+     · Demirbaş durum rozetleri (statik .gstat): Zimmetli (ok) · Depoda (info) ·
+       Serviste (warn) · Hurda (muted) · İade Edildi (off — kişi zimmet geçmişinde)
+     · KANONİK ENVANTER (demirbaş listesi ↔ personel-detay zimmet sekmesi BİREBİR):
+         ZMT-2026-041 İş Telefonu — Samsung Galaxy A54, 64GB      · Hasan Demirci · Vadi   · Zimmetli · 3 Oca 2026
+         ZMT-2026-042 El Aleti Seti — Bosch GSB 18V-55, 18 parça  · Hasan Demirci · Vadi   · Zimmetli · 3 Oca 2026
+         ZMT-2026-043 Güvenlik Ekipmanı — baret+yelek+bot seti    · Hasan Demirci · Vadi   · Zimmetli · 3 Oca 2026
+         ZMT-2026-044 Araç — Ford Ranger pikap, 34 ABC 123        · Hasan Demirci · Vadi   · Zimmetli · 3 Oca 2026
+         ZMT-2026-045 Tablet — Samsung Galaxy Tab A9, 64GB        · Aylin Koç     · Liman  · Zimmetli · 15 Şub 2026
+         ZMT-2026-046 Lazer Metre — Bosch GLM 50 C                · Ömer Taşkın   · Merkez · Zimmetli · 20 Oca 2026
+         ZMT-2026-047 Kırıcı-Delici — Hilti TE 60-A36             · (kişisiz)     · Merkez depo · Serviste (gönderim 25 Haz 2026)
+         ZMT-2026-048 El Telsizi Seti — Motorola CP040, 4 adet    · (kişisiz)     · Merkez depo · Depoda
+         ZMT-2025-017 El Telsizi — Motorola CP040                 · Hasan Demirci · —      · İade Edildi (teslim 10 Mar 2025 → iade 3 Oca 2026)
+         ZMT-2025-009 Jeneratör — Honda EU22i                     · (kişisiz)     · —      · Hurda (teslim 8 Nis 2025 → hurda kararı 12 May 2026)
+     · Raporlama merkezi: panel menüsü altında (yeni rail bölümü AÇILMAZ); 13 rapor
+       kartı, 3 temsili ekran (puantaj/maliyet/personel). Rapor tutarları mevcut
+       KSA/TH/HKD/MLZ kayıtlarından DERLENİR — yeni tutar UYDURULMAZ.
+     · Ekran-seviyesi RBAC (ROLES[r].scr — 4C'de doğdu): İK operasyonda yalnız
+       puantaj+demirbaş; saha personeli + satın alma panelde Raporlar'ı görmez.
+       Roller matrisi (crm-ayarlar-roller.html) bu kısıtları "kısmi" rozetiyle gösterir.
    ===================================================================== */
 (function(){
   'use strict';
@@ -110,7 +136,9 @@
       {ic:'fa-calendar-week',  lbl:'Ajanda',           href:'crm-panel-ajanda.html',      screen:'ajanda'},
       {ic:'fa-list-check',     lbl:'Görevlerim',       href:'crm-gorev.html?f=bana'},
       {ic:'fa-stamp',          lbl:'Bekleyen Onaylar', href:'crm-panel-onaylar.html',     screen:'onaylar', cnt:'12'},
-      {ic:'fa-bell',           lbl:'Bildirimler',      href:'crm-panel-bildirimler.html', screen:'bildirimler'}
+      {ic:'fa-bell',           lbl:'Bildirimler',      href:'crm-panel-bildirimler.html', screen:'bildirimler'},
+      {seclbl:'Analiz'},
+      {ic:'fa-chart-column',   lbl:'Raporlar',         href:'crm-panel-raporlar.html',    screen:'raporlar'}
     ]},
     santiye:{ ic:'fa-helmet-safety', eyebrow:'Saha', title:'Şantiyeler', menu:[
       {ic:'fa-helmet-safety',  lbl:'Şantiye Listesi',    href:'crm-santiye.html', screen:'liste'},
@@ -136,7 +164,8 @@
       {ic:'fa-cash-register',  lbl:'Kasa Raporu',      href:'crm-operasyon-kasa.html',    screen:'kasa'},
       {ic:'fa-user-clock',     lbl:'Puantaj',          href:'crm-operasyon-puantaj.html', screen:'puantaj'},
       {ic:'fa-truck-pickup',   lbl:'Makine Puantajı',  href:'crm-operasyon-makine.html',    screen:'makine'},
-      {ic:'fa-utensils',       lbl:'Yemekhane',        href:'crm-operasyon-yemekhane.html', screen:'yemekhane'}
+      {ic:'fa-utensils',       lbl:'Yemekhane',        href:'crm-operasyon-yemekhane.html', screen:'yemekhane'},
+      {ic:'fa-toolbox',        lbl:'Demirbaş',         href:'crm-operasyon-demirbas.html',  screen:'demirbas'}
     ]},
     satinalma:{ ic:'fa-cart-flatbed', eyebrow:'Tedarik', title:'Satın Alma', menu:[
       {ic:'fa-boxes-stacked',  lbl:'Malzeme Talepleri',   href:'crm-satinalma-talepler.html', screen:'talepler', cnt:'9'},
@@ -181,12 +210,20 @@
     muhasebe:  { name:'Nesrin Aydın',     role:'Muhasebe',                  ini:'NA',
                  secs:['panel','operasyon','cari','finans','personel'], land:'crm-panel.html' },
     satinalma: { name:'Baran Yıldız',     role:'Satın Alma Sorumlusu',      ini:'BY',
-                 secs:['panel','satinalma','cari','gorev'], land:'crm-panel.html' },
+                 secs:['panel','satinalma','cari','gorev'], land:'crm-panel.html',
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } },
     ik:        { name:'Seda Karaca',      role:'İK Uzmanı',                 ini:'SK',
-                 secs:['panel','personel','gorev','operasyon'], land:'crm-panel.html' },
+                 secs:['panel','personel','gorev','operasyon'], land:'crm-panel.html',
+                 scr:{ operasyon:['puantaj','demirbas'] } },
     personel:  { name:'Ali Vural',        role:'Saha Personeli',            ini:'AV',
-                 secs:['panel','gorev'], land:'crm-panel.html' }
+                 secs:['panel','gorev'], land:'crm-panel.html',
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } }
   };
+  /* scr = ekran-seviyesi budama (4C): bölüm İÇİNDE rolün görebildiği data-screen
+     listesi. Tanımsızsa bölümün tamamı görünür (bölüm-seviyesi RBAC aynen).
+     Listedeki kısıt: menü öğesi gizlenir + sayfa guard'ı landing'e döndürür.
+     screen'siz menü öğeleri (çapraz linkler, ör. Görevlerim) budamadan MUAF.
+     crm-ayarlar-roller.html matrisi bu kısıtları "kısmi" rozetiyle YANSITIR — senkron tut. */
 
   /* ---- rol çöz (param > localStorage > superadmin) ---- */
   var q = new URLSearchParams(location.search);
@@ -200,6 +237,12 @@
   var sec = document.body.dataset.sec || 'panel';
   var screen = document.body.dataset.screen || null;
   if(sec !== 'giris' && R.secs.indexOf(sec) === -1){ location.replace(R.land); return; }
+  /* ekran-seviyesi guard (scr) — kısıtlı bölümde liste-dışı ekran landing'e döner */
+  function scrOk(secKey, m){
+    var lim = R.scr && R.scr[secKey];
+    return !lim || !m.screen || lim.indexOf(m.screen) !== -1;
+  }
+  if(sec !== 'giris' && screen && !scrOk(sec, {screen:screen})){ location.replace(R.land); return; }
   var S = SECTIONS[sec];
 
   window.GV = { role:role, R:R, sec:sec, screen:screen, STR:STR };
@@ -219,8 +262,10 @@
         return;
       }
       if(R.secs.indexOf(key) === -1) return;
-      var built = X.menu.some(function(m){return m.href;});
-      var href = built ? X.menu.filter(function(m){return m.href;})[0].href : '#';
+      /* rail linki rolün GÖREBİLDİĞİ ilk ekrana gider (scr budaması dahil) */
+      var vis = X.menu.filter(function(m){return m.href && scrOk(key, m);});
+      var built = vis.length > 0;
+      var href = built ? vis[0].href : '#';
       h += '<a class="gv-rail-ico'+(key===sec?' is-active':'')+(built?'':' rail-wip')+'" data-sec="'+key+'" href="'+href+'" data-tip="'+X.title+'"><i class="fa-solid '+X.ic+'"></i></a>';
     });
     h += '<div class="gv-rail-foot">'
@@ -239,7 +284,10 @@
   var menuEl = document.getElementById('gvMenu');
   if(menuEl){
     var mh = '<div class="gv-menu-head"><span class="gmh-eyebrow">'+S.eyebrow+'</span><span class="gmh-title">'+S.title+'</span></div><div class="gv-mnav">';
-    S.menu.forEach(function(m){
+    /* scr budaması: gizlenen öğeler + altı boşalan bölüm başlıkları menüden düşer */
+    var mlist = S.menu.filter(function(m){ return m.seclbl || scrOk(sec, m); });
+    mlist = mlist.filter(function(m, i){ return !m.seclbl || (mlist[i+1] && !mlist[i+1].seclbl); });
+    mlist.forEach(function(m){
       if(m.seclbl){ mh += '<div class="gv-msec">'+m.seclbl+'</div>'; return; }
       var isActive = screen && m.screen === screen;
       var cls = 'gv-mlink'+(isActive?' is-active':'');

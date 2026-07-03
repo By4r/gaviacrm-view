@@ -51,6 +51,7 @@ tr.is-owner .rc-mark{background:var(--acc-ink);color:#fff}
 .cell{text-align:center;border-bottom:1px solid var(--line);height:54px;font-size:0}
 .cell.on{background:rgba(var(--acc-rgb),.05)}
 .cell .yes{color:var(--acc-ink);font-size:14px}
+.cell .part{color:var(--acc-ink);font-size:14px;opacity:.72;cursor:help}
 .cell .no{display:inline-block;width:13px;height:2px;border-radius:2px;background:var(--line-2)}
 .cell.ayarcol.on{background:rgba(var(--acc-rgb),.09)}
 
@@ -110,6 +111,7 @@ tr.is-owner .rc-mark{background:var(--acc-ink);color:#fff}
         <div class="gc-title"><i class="fa-solid fa-user-shield"></i> Rol Erişim Matrisi</div>
         <div class="mtx-legend">
           <span class="lg-item"><i class="fa-solid fa-check lg-yes"></i> Erişebilir</span>
+          <span class="lg-item"><i class="fa-solid fa-circle-half-stroke lg-yes" style="opacity:.72"></i> Kısmi</span>
           <span class="lg-item"><span class="lg-no"></span> Erişemez</span>
         </div>
       </div>
@@ -164,10 +166,14 @@ tr.is-owner .rc-mark{background:var(--acc-ink);color:#fff}
     {ini:'ES', role:'Teknik Müdür',              user:'Elif Sarıkaya',     secs:['panel','santiye','gorev','operasyon','finans']},
     {ini:'HD', role:'Şantiye Şefi',              user:'Hasan Demirci',     secs:['panel','santiye','gorev','personel','operasyon','satinalma']},
     {ini:'NA', role:'Muhasebe',                  user:'Nesrin Aydın',      secs:['panel','personel','operasyon','cari','finans']},
-    {ini:'BY', role:'Satın Alma Sorumlusu',      user:'Baran Yıldız',      secs:['panel','gorev','satinalma','cari']},
-    {ini:'SK', role:'İK Uzmanı',                 user:'Seda Karaca',       secs:['panel','gorev','personel','operasyon']},
-    {ini:'AV', role:'Saha Personeli',            user:'Ali Vural',         secs:['panel','gorev']}
+    {ini:'BY', role:'Satın Alma Sorumlusu',      user:'Baran Yıldız',      secs:['panel','gorev','satinalma','cari'],
+     part:{panel:'Panel: Raporlar hariç'}},
+    {ini:'SK', role:'İK Uzmanı',                 user:'Seda Karaca',       secs:['panel','gorev','personel','operasyon'],
+     part:{operasyon:'Operasyon: yalnız Puantaj + Demirbaş'}},
+    {ini:'AV', role:'Saha Personeli',            user:'Ali Vural',         secs:['panel','gorev'],
+     part:{panel:'Panel: Raporlar hariç'}}
   ];
+  /* part = ekran-seviyesi kısıt (shell.js ROLES[r].scr ile BİREBİR senkron — 4C) */
 
   var head = document.getElementById('mtxHead');
   var hh = '<th class="mtx-rolehead">Rol</th>';
@@ -184,8 +190,10 @@ tr.is-owner .rc-mark{background:var(--acc-ink);color:#fff}
     bh += '<td class="rolecell"><div class="rc-in"><div class="rc-mark">'+r.ini+'</div><div class="rc-info"><b>'+r.role+'</b><span>'+r.user+'</span></div></div></td>';
     SECS.forEach(function(s){
       var on = r.secs.indexOf(s.k) !== -1;
+      var pt = on && r.part && r.part[s.k];
       bh += '<td class="cell'+(s.admin?' ayarcol':'')+(on?' on':'')+'">'
-          + (on ? '<i class="fa-solid fa-check yes" aria-label="Erişebilir"></i>' : '<span class="no" aria-label="Erişemez"></span>')
+          + (pt ? '<i class="fa-solid fa-circle-half-stroke part" title="'+pt+'" aria-label="Kısmi erişim — '+pt+'"></i>'
+                : on ? '<i class="fa-solid fa-check yes" aria-label="Erişebilir"></i>' : '<span class="no" aria-label="Erişemez"></span>')
           + '</td>';
     });
     var n = r.secs.length;
