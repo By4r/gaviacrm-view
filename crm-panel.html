@@ -127,6 +127,17 @@ a.sc-row:hover{background:var(--bg)}
 .sc-foot a{font-size:11.5px;font-weight:700;color:var(--acc-ink);text-decoration:none}
 .sc-foot a:hover{text-decoration:underline}
 .sc-foot a i{font-size:9.5px}
+
+/* Notlarım — kişisel kısa not kartı (localStorage; yalnız bu tarayıcıda) [MOCK-SİM] */
+.nt-row{display:flex;align-items:flex-start;gap:9px;padding:9px 16px;border-top:1px solid var(--line)}
+.nt-row .nt-ico{font-size:5px;color:var(--acc-ink);margin-top:7px;flex:none}
+.nt-row span.nt-txt{flex:1;min-width:0;font-size:12.5px;line-height:1.45;color:var(--ink);overflow-wrap:break-word}
+.nt-del{flex:none;border:0;background:none;color:var(--muted);cursor:pointer;font-size:11px;padding:2px 5px;border-radius:6px}
+.nt-del:hover{color:var(--danger);background:var(--danger-tint)}
+.nt-empty{padding:12px 16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);line-height:1.5}
+.nt-add{display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--line)}
+.nt-add input{flex:1;min-width:0;height:34px;padding:0 10px;border:1px solid var(--line-2);border-radius:var(--r-sm);font:inherit;font-size:12.5px;color:var(--ink);background:var(--paper)}
+.nt-add input:focus{outline:2px solid rgba(var(--acc-rgb),.35);outline-offset:1px;border-color:transparent}
 </style>
 </head>
 <body data-sec="panel" data-screen="panel">
@@ -397,23 +408,23 @@ a.sc-row:hover{background:var(--bg)}
       </div>
     </section>
 
-    <!-- ============ KİŞİSEL GÖRÜNÜM (muhasebe · satinalma · ik · personel) ============ -->
+    <!-- ============ KİŞİSEL GÖRÜNÜM (personel — saha personeli, kanonik: Ali Vural) ============ -->
     <section data-view="kisisel" hidden>
       <div class="kpi-grid">
         <div class="kpi-card">
           <div class="kpi-ico"><i class="fa-solid fa-list-check"></i></div>
-          <div><div class="kpi-num num">4</div><div class="kpi-lbl">Açık görevim</div>
-          <div class="kpi-delta flat"><i class="fa-solid fa-calendar"></i> 1'i bu hafta</div></div>
+          <div><div class="kpi-num num">2</div><div class="kpi-lbl">Açık görevim</div>
+          <div class="kpi-delta flat"><i class="fa-solid fa-calendar"></i> puantaj defteri · 3 Temmuz</div></div>
         </div>
         <div class="kpi-card info">
           <div class="kpi-ico"><i class="fa-solid fa-umbrella-beach"></i></div>
           <div><div class="kpi-num num">14 gün</div><div class="kpi-lbl">İzin bakiyem</div>
-          <div class="kpi-delta flat"><i class="fa-solid fa-circle-check"></i> talep yok</div></div>
+          <div class="kpi-delta flat"><i class="fa-solid fa-hourglass-half"></i> İZN-2026-031 onayda</div></div>
         </div>
         <div class="kpi-card warn">
           <div class="kpi-ico"><i class="fa-solid fa-stamp"></i></div>
-          <div><div class="kpi-num num">2</div><div class="kpi-lbl">Onayımı bekleyen</div>
-          <div class="kpi-delta down"><i class="fa-solid fa-clock"></i> 1'i dünden</div></div>
+          <div><div class="kpi-num num">2</div><div class="kpi-lbl">Bekleyen talebim</div>
+          <div class="kpi-delta down"><i class="fa-solid fa-clock"></i> izin + avans onayda</div></div>
         </div>
         <div class="kpi-card">
           <div class="kpi-ico"><i class="fa-solid fa-bell"></i></div>
@@ -430,18 +441,290 @@ a.sc-row:hover{background:var(--bg)}
         <div>
           <div class="task-row">
             <span class="task-chk"></span>
-            <div class="task-info"><b>Haziran kasa mutabakatını tamamla</b><span>Murat Denizli verdi</span></div>
+            <div class="task-info"><b>Puantaj defterini güncelle</b><span>Hasan Demirci verdi · Vadi Konakları</span></div>
             <span class="task-due">3 Tem</span>
           </div>
           <div class="task-row">
             <span class="task-chk"></span>
-            <div class="task-info"><b>Demir-Beton hakediş evraklarını kontrol et</b><span>2 no.lu taşeron hakedişi</span></div>
-            <span class="task-due">7 Tem</span>
+            <div class="task-info"><b>Kalıp kereste stok sayımı</b><span>Hasan Demirci verdi · Vadi Konakları</span></div>
+            <span class="task-due">8 Tem</span>
           </div>
           <div class="task-row done">
             <span class="task-chk"></span>
-            <div class="task-info"><b>Avans ödemelerini banka listesine aktar</b><span>Tamamlandı</span></div>
-            <span class="task-due">Dün</span>
+            <div class="task-info"><b>Kalıp kereste stok sayımı ön kontrolü</b><span>Tamamlandı</span></div>
+            <span class="task-due">29 Haz</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ İK GÖRÜNÜMÜ (ik — kanonik: Seda Karaca) ============
+         Veriler mevcut sayfalardan derlendi: personel (kadro 22 / 4 eksik evrak),
+         izin (İZN-2026-031), rapor (4 kayıt / 1 SGK bekleyen), avans (AVN-2026-014),
+         puantaj (2 Tem günlük giriş: Taslak), özlük (13 tam / 6 yaklaşan). -->
+    <section data-view="ik" hidden>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-ico"><i class="fa-solid fa-users"></i></div>
+          <div><div class="kpi-num num">22</div><div class="kpi-lbl">Toplam kadro</div>
+          <div class="kpi-delta flat"><i class="fa-solid fa-umbrella-beach"></i> 1 bugün izinli</div></div>
+        </div>
+        <div class="kpi-card warn">
+          <div class="kpi-ico"><i class="fa-solid fa-user-clock"></i></div>
+          <div><div class="kpi-num num">3</div><div class="kpi-lbl">Onay bekleyen puantaj girişi</div>
+          <div class="kpi-delta down"><i class="fa-solid fa-clock"></i> 2 Temmuz · durum: Taslak</div></div>
+        </div>
+        <div class="kpi-card info">
+          <div class="kpi-ico"><i class="fa-solid fa-notes-medical"></i></div>
+          <div><div class="kpi-num num">4</div><div class="kpi-lbl">Bu ay rapor kaydı</div>
+          <div class="kpi-delta flat"><i class="fa-solid fa-file-medical"></i> 1 SGK bildirimi bekliyor</div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-ico"><i class="fa-solid fa-folder-open"></i></div>
+          <div><div class="kpi-num num">4</div><div class="kpi-lbl">Eksik evrak</div>
+          <div class="kpi-delta down"><i class="fa-solid fa-triangle-exclamation"></i> 6 evrakın süresi yaklaşıyor</div></div>
+        </div>
+      </div>
+
+      <div class="dash-cols">
+        <div class="gv-card">
+          <div class="gc-head">
+            <div class="gc-title"><i class="fa-solid fa-inbox"></i> İK Kuyruğum</div>
+            <a class="gc-link" href="crm-personel.html">Personel listesi <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          <div>
+            <a class="sc-row" href="crm-operasyon-puantaj.html">
+              <span class="sc-dot" style="background:var(--warn)"></span>
+              <span class="sc-txt"><b>Günlük puantaj onayı bekliyor</b><span>3 şantiye girişi · 2 Temmuz · durum: Taslak</span></span>
+              <span class="sc-tail warn">Bugün</span>
+            </a>
+            <a class="sc-row" href="crm-personel-izin.html">
+              <span class="sc-dot" style="background:var(--info)"></span>
+              <span class="sc-txt"><b>İZN-2026-031 · Ali Vural — 5 gün yıllık izin</b><span>6–10 Temmuz · şef onayında, sıradaki adım İK</span></span>
+              <span class="sc-tail">Sırada</span>
+            </a>
+            <a class="sc-row" href="crm-personel-rapor.html">
+              <span class="sc-dot" style="background:var(--danger)"></span>
+              <span class="sc-txt"><b>SGK bildirimi bekleyen rapor</b><span>1 istirahat raporu · bildirim yapılmadı</span></span>
+              <span class="sc-tail danger">1</span>
+            </a>
+            <a class="sc-row" href="crm-personel-avans.html">
+              <span class="sc-dot" style="background:var(--ok)"></span>
+              <span class="sc-txt"><b>AVN-2026-014 · Ali Vural — ₺4.000 avans</b><span>Muhasebe adımında · İK takibinde</span></span>
+              <span class="sc-tail">Onayda</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="gv-card">
+          <div class="gc-head">
+            <div class="gc-title"><i class="fa-solid fa-folder-tree"></i> Özlük &amp; Doküman</div>
+            <a class="gc-link" href="crm-personel-ozluk.html">Tümü <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          <div>
+            <a class="sc-row" href="crm-personel-ozluk.html">
+              <span class="sc-dot" style="background:var(--danger)"></span>
+              <span class="sc-txt"><b>Eksik evrakı olan personel</b><span>İşe giriş evrakları tamamlanmalı</span></span>
+              <span class="sc-tail danger">4</span>
+            </a>
+            <a class="sc-row" href="crm-personel-ozluk.html">
+              <span class="sc-dot" style="background:var(--warn)"></span>
+              <span class="sc-txt"><b>Süresi yaklaşan evrak</b><span>Sertifika / sağlık raporu yenilemesi</span></span>
+              <span class="sc-tail warn">6</span>
+            </a>
+            <a class="sc-row" href="crm-personel-ozluk.html">
+              <span class="sc-dot" style="background:var(--ok)"></span>
+              <span class="sc-txt"><b>Dosyası tam personel</b><span>110 evrak kaydı sistemde</span></span>
+              <span class="sc-tail ok">13</span>
+            </a>
+          </div>
+          <div class="gc-foot">
+            <span><i class="fa-solid fa-circle-info"></i> Giriş-çıkış kayıtları puantaj ekranında izlenir.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SATIN ALMA GÖRÜNÜMÜ (satinalma — kanonik: Baran Yıldız) ============
+         Veriler mevcut sayfalardan derlendi: talepler (7 onay sürecinde, MLZ-2026-046
+         satın alma adımında), termin (3 yolda / SAT-2026-011 gecikti / SAT-2026-016 bugün),
+         formlar (₺347.200 · 9 form), cari (9 kayıt). -->
+    <section data-view="satinalma" hidden>
+      <div class="kpi-grid">
+        <div class="kpi-card warn">
+          <div class="kpi-ico"><i class="fa-solid fa-stamp"></i></div>
+          <div><div class="kpi-num num">7</div><div class="kpi-lbl">Onay sürecindeki talep</div>
+          <div class="kpi-delta down"><i class="fa-solid fa-hourglass-half"></i> 1'i satın alma adımında</div></div>
+        </div>
+        <div class="kpi-card info">
+          <div class="kpi-ico"><i class="fa-solid fa-truck"></i></div>
+          <div><div class="kpi-num num">3</div><div class="kpi-lbl">Yolda / bekleyen sipariş</div>
+          <div class="kpi-delta flat"><i class="fa-solid fa-box"></i> 1'i bugün teslim</div></div>
+        </div>
+        <div class="kpi-card danger">
+          <div class="kpi-ico"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <div><div class="kpi-num num">1</div><div class="kpi-lbl">Geciken sipariş</div>
+          <div class="kpi-delta down"><i class="fa-solid fa-clock"></i> SAT-2026-011 · 2 gün</div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-ico"><i class="fa-solid fa-sack-dollar"></i></div>
+          <div><div class="kpi-num num">₺347.200</div><div class="kpi-lbl">Bu ay verilen sipariş</div>
+          <div class="kpi-delta flat"><i class="fa-solid fa-calendar"></i> 9 form toplamı</div></div>
+        </div>
+      </div>
+
+      <div class="dash-cols">
+        <div class="gv-card">
+          <div class="gc-head">
+            <div class="gc-title"><i class="fa-solid fa-stamp"></i> Onayımdaki Talepler</div>
+            <a class="gc-link" href="crm-satinalma-talepler.html">Tümü (7) <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          <div>
+            <div class="apr-row">
+              <div class="apr-ico" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-boxes-stacked"></i></div>
+              <div class="apr-info">
+                <b><a href="crm-satinalma-talep-detay.html">MLZ-2026-046 — Hazır beton C30 (30 m³) + Ø12 demir (2 ton)</a></b>
+                <span>Vadi Konakları · Hasan Demirci · acil talep</span>
+                <span class="apr-chain"><span class="st done"><i class="fa-solid fa-check"></i> Şef</span><i class="fa-solid fa-chevron-right sep"></i><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Satın Alma</span></span>
+              </div>
+              <div class="apr-acts">
+                <button class="btn btn-ghost btn-sm">Reddet</button>
+                <button class="btn btn-acc btn-sm" onclick="gvToast('Malzeme talebi onaylandı.')">Onayla</button>
+              </div>
+            </div>
+          </div>
+          <div class="gc-foot">
+            <span><i class="fa-solid fa-circle-info"></i> Diğer 6 talep şef / teknik müdür adımında.</span>
+          </div>
+        </div>
+
+        <div class="gv-card">
+          <div class="gc-head">
+            <div class="gc-title"><i class="fa-solid fa-truck-ramp-box"></i> Termin Takibi</div>
+            <a class="gc-link" href="crm-satinalma-termin.html">Tümü <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          <div>
+            <a class="sc-row" href="crm-satinalma-termin.html">
+              <span class="sc-dot" style="background:var(--danger)"></span>
+              <span class="sc-txt"><b>SAT-2026-011 · XPS yalıtım teslimi gecikti</b><span>Ege Hazır Beton · Merkez Şantiye · plan 30 Haziran</span></span>
+              <span class="sc-tail danger">2 gün</span>
+            </a>
+            <a class="sc-row" href="crm-satinalma-form-detay.html">
+              <span class="sc-dot" style="background:var(--warn)"></span>
+              <span class="sc-txt"><b>SAT-2026-016 · Kalıp kerestesi teslimi</b><span>Vadi Konakları · Ege Hazır Beton · bugün 09:00</span></span>
+              <span class="sc-tail warn">Bugün</span>
+            </a>
+            <a class="sc-row" href="crm-satinalma-termin.html">
+              <span class="sc-dot" style="background:var(--info)"></span>
+              <span class="sc-txt"><b>SAT-2026-012 · Elektrik kablosu NYY</b><span>Merkez Şantiye · termin 3 Temmuz</span></span>
+              <span class="sc-tail">Yarın</span>
+            </a>
+          </div>
+          <div class="gc-foot">
+            <span><i class="fa-solid fa-circle-info"></i> Cari ve tedarikçi kartları: <a href="crm-cari.html" class="gc-link" style="display:inline">Firma Rehberi</a></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MUHASEBE GÖRÜNÜMÜ (muhasebe — kanonik: Nesrin Aydın) ============
+         Veriler mevcut sayfalardan derlendi: panel-onaylar (AVN-2026-014 + TH-2026-014 +
+         TH-2026-009 muhasebe adımında = ₺170.200), kasa (₺28.150 / KSA-021 + KSA-018 onayda),
+         finans-kurum (HKD-2026-006 ₺1,63M), cari (borç ₺822.450 / 2 vadesi geçen). -->
+    <section data-view="muhasebe" hidden>
+      <div class="kpi-grid">
+        <div class="kpi-card warn">
+          <div class="kpi-ico"><i class="fa-solid fa-stamp"></i></div>
+          <div><div class="kpi-num num">3</div><div class="kpi-lbl">Onayımı bekleyen işlem</div>
+          <div class="kpi-delta down"><i class="fa-solid fa-coins"></i> ₺170.200 toplam</div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-ico"><i class="fa-solid fa-cash-register"></i></div>
+          <div><div class="kpi-num num">₺28.150</div><div class="kpi-lbl">Temmuz kasa çıkışı</div>
+          <div class="kpi-delta flat"><i class="fa-solid fa-hourglass-half"></i> 2 kasa raporu onayda</div></div>
+        </div>
+        <div class="kpi-card info">
+          <div class="kpi-ico"><i class="fa-solid fa-file-signature"></i></div>
+          <div><div class="kpi-num num">₺1,63M</div><div class="kpi-lbl">Onay bekleyen hakediş</div>
+          <div class="kpi-delta flat"><i class="fa-solid fa-building"></i> HKD-2026-006 · Körfez GYO</div></div>
+        </div>
+        <div class="kpi-card danger">
+          <div class="kpi-ico"><i class="fa-solid fa-scale-balanced"></i></div>
+          <div><div class="kpi-num num">2</div><div class="kpi-lbl">Vadesi geçen cari hesap</div>
+          <div class="kpi-delta down"><i class="fa-solid fa-arrow-trend-down"></i> borç toplamı ₺822.450</div></div>
+        </div>
+      </div>
+
+      <div class="dash-cols">
+        <div class="gv-card">
+          <div class="gc-head">
+            <div class="gc-title"><i class="fa-solid fa-stamp"></i> Onayımdaki İşlemler</div>
+            <a class="gc-link" href="crm-panel-onaylar.html">Onay kuyruğu <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          <div>
+            <div class="apr-row">
+              <div class="apr-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+              <div class="apr-info">
+                <b><a href="crm-personel-avans.html">AVN-2026-014 — Avans talebi ₺4.000</a></b>
+                <span>Ali Vural · Vadi Konakları · maaşa mahsuben</span>
+                <span class="apr-chain"><span class="st done"><i class="fa-solid fa-check"></i> Şef</span><i class="fa-solid fa-chevron-right sep"></i><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Muhasebe</span></span>
+              </div>
+              <div class="apr-acts">
+                <button class="btn btn-ghost btn-sm">Reddet</button>
+                <button class="btn btn-acc btn-sm" onclick="gvToast('Avans talebi onaylandı.')">Onayla</button>
+              </div>
+            </div>
+            <div class="apr-row">
+              <div class="apr-ico" style="background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)"><i class="fa-solid fa-people-arrows"></i></div>
+              <div class="apr-info">
+                <b><a href="crm-finans-hakedis-detay.html">TH-2026-014 — Taşeron hakediş ₺90.000 net</a></b>
+                <span>Vadi Konakları · Demir-Beton İnş. Ltd. · Haziran 2026 dönemi</span>
+                <span class="apr-chain"><span class="st done"><i class="fa-solid fa-check"></i> Teknik</span><i class="fa-solid fa-chevron-right sep"></i><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Muhasebe</span></span>
+              </div>
+              <div class="apr-acts">
+                <button class="btn btn-ghost btn-sm">Reddet</button>
+                <button class="btn btn-acc btn-sm" onclick="gvToast('Taşeron hakedişi onaylandı.')">Onayla</button>
+              </div>
+            </div>
+            <div class="apr-row">
+              <div class="apr-ico" style="background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)"><i class="fa-solid fa-people-arrows"></i></div>
+              <div class="apr-info">
+                <b><a href="crm-finans-hakedis-detay.html">TH-2026-009 — Taşeron hakediş ₺76.200 net</a></b>
+                <span>Vadi Konakları · ElektroMek Taahhüt · Haziran 2026 dönemi</span>
+                <span class="apr-chain"><span class="st done"><i class="fa-solid fa-check"></i> Teknik</span><i class="fa-solid fa-chevron-right sep"></i><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Muhasebe</span></span>
+              </div>
+              <div class="apr-acts">
+                <button class="btn btn-ghost btn-sm">Reddet</button>
+                <button class="btn btn-acc btn-sm" onclick="gvToast('Taşeron hakedişi onaylandı.')">Onayla</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gv-card">
+          <div class="gc-head">
+            <div class="gc-title"><i class="fa-solid fa-cash-register"></i> Kasa Takibi</div>
+            <a class="gc-link" href="crm-operasyon-kasa.html">Kasa hareketleri <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          <div>
+            <a class="sc-row" href="crm-operasyon-kasa-detay.html">
+              <span class="sc-dot" style="background:var(--warn)"></span>
+              <span class="sc-txt"><b>KSA-2026-018 · Kasa gideri ₺24.900</b><span>Vadi Konakları · hafriyat nakliyesi + yakıt · GM onayında</span></span>
+              <span class="sc-tail warn">Onayda</span>
+            </a>
+            <a class="sc-row" href="crm-operasyon-kasa-detay.html">
+              <span class="sc-dot" style="background:var(--warn)"></span>
+              <span class="sc-txt"><b>KSA-2026-021 · Kasa gideri ₺18.400</b><span>Vadi Konakları · nakliye + işçilik avansı · teknik müdür onayında</span></span>
+              <span class="sc-tail warn">Onayda</span>
+            </a>
+            <a class="sc-row" href="crm-cari.html">
+              <span class="sc-dot" style="background:var(--info)"></span>
+              <span class="sc-txt"><b>Cari alacak toplamı ₺2.830.000</b><span>9 cari hesap · 2'sinde vade geçti</span></span>
+              <span class="sc-tail">₺2,83M</span>
+            </a>
+          </div>
+          <div class="gc-foot">
+            <span><i class="fa-solid fa-circle-info"></i> Avans ödemeleri kasa çıkışlarına işlenir.</span>
           </div>
         </div>
       </div>
@@ -453,7 +736,7 @@ a.sc-row:hover{background:var(--bg)}
     <aside class="dash-side">
 
       <!-- canlı saat (gerçek zaman) + kanonik tarih + hava [MOCK-SİM] -->
-      <div class="now-card" data-view="yonetim sef kisisel">
+      <div class="now-card" data-view="yonetim sef kisisel ik satinalma muhasebe">
         <div class="now-clock"><span class="nc-hm" id="nowHm">--:--</span><span class="nc-s" id="nowS">--</span></div>
         <div class="now-date" id="nowDate">2 Temmuz 2026, Perşembe</div>
         <div class="now-wx">
@@ -465,9 +748,9 @@ a.sc-row:hover{background:var(--bg)}
       </div>
 
       <!-- kritik uyarılar -->
-      <div class="gv-card" data-view="yonetim sef">
+      <div class="gv-card" data-view="yonetim sef ik satinalma">
         <div class="sc-head"><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i><b>Kritik Uyarılar</b></div>
-        <a class="sc-row" href="crm-satinalma-termin.html" data-view="yonetim">
+        <a class="sc-row" href="crm-satinalma-termin.html" data-view="yonetim satinalma">
           <span class="sc-dot" style="background:var(--danger)"></span>
           <span class="sc-txt"><b>SAT-2026-011 · XPS yalıtım teslimi gecikti</b><span>Ege Hazır Beton · Merkez Şantiye · plan 30 Haziran</span></span>
           <span class="sc-tail danger">2 gün</span>
@@ -476,7 +759,7 @@ a.sc-row:hover{background:var(--bg)}
           <span class="sc-dot" style="background:var(--danger)"></span>
           <span class="sc-txt"><b>ISG-2026-008 · İskele korkuluk eksikliği</b><span>Vadi Konakları · B Blok · aksiyon bekliyor</span></span>
         </a>
-        <a class="sc-row" href="crm-operasyon-puantaj.html" data-view="yonetim">
+        <a class="sc-row" href="crm-operasyon-puantaj.html" data-view="yonetim ik">
           <span class="sc-dot" style="background:var(--warn)"></span>
           <span class="sc-txt"><b>Günlük puantaj İK onayına gönderilmedi</b><span>2 Temmuz girişi · 3 şantiye · durum: Taslak</span></span>
         </a>
@@ -491,14 +774,14 @@ a.sc-row:hover{background:var(--bg)}
       </div>
 
       <!-- bugünün ajandası (kanonik: crm-panel-ajanda.html 2 Tem olayları) -->
-      <div class="gv-card" data-view="yonetim sef">
+      <div class="gv-card" data-view="yonetim sef satinalma muhasebe">
         <div class="sc-head"><i class="fa-solid fa-calendar-day"></i><b>Ajanda</b><span class="sc-cnt" data-view="yonetim">bugün 3 olay</span></div>
-        <a class="sc-row" href="crm-satinalma-form-detay.html" data-view="yonetim sef">
+        <a class="sc-row" href="crm-satinalma-form-detay.html" data-view="yonetim sef satinalma">
           <span class="sc-dot" style="background:var(--danger)"></span>
           <span class="sc-txt"><b>SAT-2026-016 · Kalıp kerestesi teslimi</b><span>Vadi Konakları · Ege Hazır Beton · bugün teslim</span></span>
           <span class="sc-tail">09:00</span>
         </a>
-        <a class="sc-row" href="crm-finans-hakedis-detay.html" data-view="yonetim">
+        <a class="sc-row" href="crm-finans-hakedis-detay.html" data-view="yonetim muhasebe">
           <span class="sc-dot" style="background:var(--ok)"></span>
           <span class="sc-txt"><b>HKD-2026-006 · İşveren onay takibi</b><span>Körfez GYO · gönderildi 20 Haziran · Elif Sarıkaya</span></span>
           <span class="sc-tail">14:00</span>
@@ -517,7 +800,7 @@ a.sc-row:hover{background:var(--bg)}
       </div>
 
       <!-- yaklaşan izinler (kanonik: crm-personel-izin.html) -->
-      <div class="gv-card" data-view="yonetim">
+      <div class="gv-card" data-view="yonetim ik">
         <div class="sc-head"><i class="fa-solid fa-umbrella-beach"></i><b>Yaklaşan İzinler</b></div>
         <a class="sc-row" href="crm-personel-izin.html">
           <span class="sc-dot" style="background:var(--info)"></span>
@@ -532,7 +815,7 @@ a.sc-row:hover{background:var(--bg)}
       </div>
 
       <!-- ödeme & hakediş (kanonik: crm-finans-kurum/taseron) -->
-      <div class="gv-card" data-view="yonetim">
+      <div class="gv-card" data-view="yonetim muhasebe">
         <div class="sc-head"><i class="fa-solid fa-file-signature"></i><b>Ödeme & Hakediş</b></div>
         <a class="sc-row" href="crm-finans-hakedis-detay.html">
           <span class="sc-dot" style="background:var(--warn)"></span>
@@ -552,6 +835,16 @@ a.sc-row:hover{background:var(--bg)}
         <div class="sc-foot"><a href="crm-finans-kurum.html">Kurum hakedişleri <i class="fa-solid fa-arrow-right"></i></a></div>
       </div>
 
+      <!-- notlarım — günlük kısa notlar (localStorage, bu tarayıcıya özel) [MOCK-SİM] -->
+      <div class="gv-card" data-view="yonetim sef kisisel ik satinalma muhasebe">
+        <div class="sc-head"><i class="fa-regular fa-note-sticky"></i><b>Notlarım</b><span class="sc-cnt" id="ntCnt"></span></div>
+        <div id="ntList"></div>
+        <div class="nt-add">
+          <input id="ntInput" type="text" maxlength="120" placeholder="Kısa not ekle…" aria-label="Yeni not">
+          <button class="btn btn-acc btn-sm" id="ntBtn" aria-label="Not ekle"><i class="fa-solid fa-plus"></i></button>
+        </div>
+      </div>
+
     </aside>
     </div><!-- /dash-body -->
 
@@ -561,17 +854,21 @@ a.sc-row:hover{background:var(--bg)}
 <script src="assets/js/shell.js"></script>
 <script src="assets/js/ui.js"></script>
 <script>
-/* rol → panel görünümü eşlemesi (3 farklı state) */
+/* rol → panel görünümü eşlemesi (6 farklı state — departman bazlı operasyon ekranı) */
 (function(){
   var MAP = {
     superadmin:'yonetim', sahip:'yonetim', yonetim:'yonetim', teknik:'yonetim',
     sef:'sef',
-    muhasebe:'kisisel', satinalma:'kisisel', ik:'kisisel', personel:'kisisel'
+    ik:'ik', satinalma:'satinalma', muhasebe:'muhasebe',
+    personel:'kisisel'
   };
   var GREET = {
     yonetim:'Günaydın, {ad} — sahada 3 şantiye, 12 onay sizi bekliyor.',
     sef:'Günaydın, {ad} — Vadi Konakları bugün 46 kişiyle çalışıyor.',
-    kisisel:'Günaydın, {ad} — bugün 4 açık göreviniz var.'
+    ik:'Günaydın, {ad} — günlük puantaj onayınızı bekliyor, 1 izin talebi sırada.',
+    satinalma:'Günaydın, {ad} — 1 talep onayınızda, 1 sipariş gecikmede.',
+    muhasebe:'Günaydın, {ad} — onayınızda 3 işlem var, toplam ₺170.200.',
+    kisisel:'Günaydın, {ad} — bugün 2 açık göreviniz var.'
   };
   if(!window.GV) return;
   var view = MAP[GV.role] || 'kisisel';
@@ -606,6 +903,42 @@ a.sc-row:hover{background:var(--bg)}
   }
   tick();
   setInterval(tick, 1000);
+})();
+
+/* Notlarım — kişisel kısa notlar; localStorage'da saklanır, backend yok [MOCK-SİM] */
+(function(){
+  var KEY = 'gvPanelNotlar',
+      list = document.getElementById('ntList'),
+      inp  = document.getElementById('ntInput'),
+      btn  = document.getElementById('ntBtn'),
+      cnt  = document.getElementById('ntCnt');
+  if(!list || !inp || !btn) return;
+  function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || []; }catch(e){ return []; } }
+  function save(n){ localStorage.setItem(KEY, JSON.stringify(n)); }
+  function esc(s){ var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+  function render(){
+    var n = load();
+    cnt.textContent = n.length ? n.length + ' not' : '';
+    list.innerHTML = n.length
+      ? n.map(function(t, i){
+          return '<div class="nt-row"><i class="fa-solid fa-circle nt-ico"></i><span class="nt-txt">' + esc(t) +
+                 '</span><button class="nt-del" data-i="' + i + '" data-no-confirm aria-label="Notu sil"><i class="fa-solid fa-xmark"></i></button></div>';
+        }).join('')
+      : '<div class="nt-empty">Henüz not yok — güne dair kısa notlarınızı buraya ekleyin.</div>';
+  }
+  function add(){
+    var t = (inp.value || '').trim();
+    if(!t) return;
+    var n = load(); n.unshift(t); save(n);
+    inp.value = ''; render();
+  }
+  btn.addEventListener('click', add);
+  inp.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); add(); } });
+  list.addEventListener('click', function(e){
+    var b = e.target.closest('.nt-del'); if(!b) return;
+    var n = load(); n.splice(+b.getAttribute('data-i'), 1); save(n); render();
+  });
+  render();
 })();
 </script>
 </body>
