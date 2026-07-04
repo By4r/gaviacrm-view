@@ -68,9 +68,10 @@ th.is-today .dh-d{color:var(--acc-ink)}
 .pt-mark.gelecek::before{content:"–";font-weight:700}
 
 /* hücre tooltip — sadece puantaj grid'inde, aşağı açılır */
-.pt-mark[data-tip]{position:relative}
-.pt-mark[data-tip]:hover::after,.pt-mark[data-tip]:focus-visible::after{opacity:1;transform:translateX(-50%) translateY(0)}
-.pt-mark[data-tip]::after{
+.pt-mark[data-tip],.tg-day[data-tip]{position:relative}
+.pt-mark[data-tip]:hover::after,.pt-mark[data-tip]:focus-visible::after,
+.tg-day[data-tip]:hover::after,.tg-day[data-tip]:focus-visible::after{opacity:1;transform:translateX(-50%) translateY(0)}
+.pt-mark[data-tip]::after,.tg-day[data-tip]::after{
   content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;
   transform:translateX(-50%) translateY(3px);
   background:var(--ink);color:#fff;font-size:11px;font-weight:600;white-space:nowrap;
@@ -128,6 +129,33 @@ th.is-today .dh-d{color:var(--acc-ink)}
   .pg-foot{justify-content:stretch}
   .pg-foot .btn{flex:1 1 auto;justify-content:center}
 }
+
+/* ============ Görünüm sekmeleri (Bireysel / Taşeron) ============ */
+.gv-tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:22px;overflow-x:auto;scrollbar-width:none}
+.gv-tabs::-webkit-scrollbar{display:none}
+.gv-tab{display:inline-flex;align-items:center;gap:8px;padding:13px 4px;margin-right:26px;flex:none;
+  background:none;border:none;border-bottom:2px solid transparent;font-family:inherit;font-size:13.5px;font-weight:700;
+  color:var(--muted);cursor:pointer;transition:.2s var(--ease)}
+.gv-tab i{font-size:13px}
+.gv-tab:hover{color:var(--ink)}
+.gv-tab.is-active{color:var(--acc-ink);border-color:var(--acc-ink)}
+.tab-panel{animation:tabIn .22s var(--ease)}
+@keyframes tabIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ============ Taşeron adam-gün grid'i ============ */
+#tblTaseron{min-width:900px;border-collapse:separate;border-spacing:0}
+#tblTaseron th,#tblTaseron td{border-bottom:1px solid var(--line)}
+#tblTaseron tbody tr:last-child td{border-bottom:none}
+#tblTaseron td:first-child,#tblTaseron th:first-child{position:sticky;left:0;background:var(--paper);z-index:2}
+#tblTaseron tbody tr:hover td:first-child{background:var(--bg)}
+.tg-ekip{font-size:12.5px;font-weight:700;color:var(--ink-2);white-space:nowrap}
+.tg-day{width:34px;height:34px;margin:0 auto;border-radius:var(--r-sm);display:grid;place-items:center;
+  font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;background:var(--bg);color:var(--ink-2)}
+.tg-day.today{background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)}
+.tg-day.gelecek{background:transparent;color:var(--line-2)}
+.tg-day.ht{background:transparent;color:var(--line-2);border:1px dashed var(--line)}
+.tg-total{font-size:13px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.tg-total span{display:block;font-size:10.5px;font-weight:600;color:var(--muted);margin-top:1px}
 </style>
 </head>
 <body data-sec="operasyon" data-screen="puantaj">
@@ -157,10 +185,18 @@ th.is-today .dh-d{color:var(--acc-ink)}
         <h1>Puantaj</h1>
         <div class="ph-sub" id="ptSub">Yükleniyor…</div>
       </div>
-      <div class="ph-actions">
+      <div class="ph-actions" data-tab-panel-actions="bireysel">
         <button class="btn btn-acc btn-sm" id="btnGunlukToggle" type="button" data-no-confirm aria-expanded="false" aria-controls="gunlukCard"><i class="fa-solid fa-list-check"></i> Günlük Giriş</button>
       </div>
     </div>
+
+    <!-- ============ SEKMELER ============ -->
+    <div class="gv-tabs" role="tablist" aria-label="Puantaj görünümü">
+      <button class="gv-tab is-active" data-tab="bireysel" role="tab" aria-selected="true"><i class="fa-solid fa-user-clock"></i> Bireysel</button>
+      <button class="gv-tab" data-tab="taseron" role="tab" aria-selected="false"><i class="fa-solid fa-people-group"></i> Taşeron</button>
+    </div>
+
+    <section class="tab-panel" data-tab-panel="bireysel" role="tabpanel" aria-label="Bireysel">
 
     <div class="gv-card" id="gunlukCard" style="margin-bottom:24px" hidden>
       <div class="gc-head">
@@ -241,6 +277,42 @@ th.is-today .dh-d{color:var(--acc-ink)}
         <div class="pt-legend-note"><i class="fa-solid fa-circle-info"></i> Geç giriş veya erken çıkış için ayrı bir puantaj kodu yoktur; bu durumlar mevcut kodlarla işlenir — gün yarıda kesiliyorsa "Yarım gün", tam gün içindeki kısa eksik ise "Eksik mesai (EM)" olarak kaydedilir.</div>
       </div>
     </div>
+
+    </section>
+
+    <!-- ============ TAŞERON — firma bazlı adam-gün grid'i (madde 16.2)
+         Kişi adı LİSTELENMEZ; hücre = o gün sahadaki kişi sayısı, ekip büyüklüğünü aşmaz.
+         2 Temmuz (bugün) değerleri yemekhane taşeron öğle sayılarıyla birebir: Demir-Beton 10 ·
+         ElektroMek 6 · Yalıtım Kardeşler 8 (bkz. crm-operasyon-yemekhane.html + shell.js kanonik
+         yorum bloğu). Geçmiş günler ekip büyüklüğü sınırı içinde hafif varyasyonla üretildi. -->
+    <section class="tab-panel" data-tab-panel="taseron" role="tabpanel" aria-label="Taşeron" hidden>
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-people-group"></i> Taşeron Adam-Gün Puantajı</div>
+          <span class="ph-sub" style="margin:0" id="tgSub">Yükleniyor…</span>
+        </div>
+        <div class="gc-body flush">
+          <table class="gtable" id="tblTaseron">
+            <thead>
+              <tr>
+                <th class="col-per">Firma</th>
+                <th class="col-poz">Ekip Büyüklüğü</th>
+                <th class="col-gun">Pzt <span style="display:block;font-weight:800;color:var(--ink)">29</span></th>
+                <th class="col-gun">Sal <span style="display:block;font-weight:800;color:var(--ink)">30</span></th>
+                <th class="col-gun">Çar <span style="display:block;font-weight:800;color:var(--ink)">1</span></th>
+                <th class="col-gun is-today">Per <span style="display:block;font-weight:800;color:var(--acc-ink)">2</span></th>
+                <th class="col-gun">Cum <span style="display:block;font-weight:800;color:var(--ink)">3</span></th>
+                <th class="col-gun">Cmt <span style="display:block;font-weight:800;color:var(--ink)">4</span></th>
+                <th class="col-gun">Paz <span style="display:block;font-weight:800;color:var(--ink)">5</span></th>
+                <th class="col-hafta num">Haftalık Adam-Gün</th>
+              </tr>
+            </thead>
+            <tbody id="tgBody"></tbody>
+          </table>
+        </div>
+        <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Taşeron puantajı firma bazında tutulur; kişi adı listelenmez. Hücre değeri o gün sahadaki kişi sayısıdır, ekip büyüklüğünü aşamaz.</span></div>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -530,6 +602,65 @@ th.is-today .dh-d{color:var(--acc-ink)}
   });
 
   render();
+
+  /* ============ Taşeron adam-gün grid'i (madde 16.2) — kişi adı YOK, firma bazlı sayım.
+     2 Temmuz (bugün, TODAY_IDX) değerleri yemekhane taşeron öğle sayılarıyla birebir:
+     Demir-Beton 10 · ElektroMek 6 · Yalıtım Kardeşler 8. Geçmiş günler ekip büyüklüğü
+     sınırını aşmayan hafif varyasyonla üretildi (bkz. crm-operasyon-yemekhane.html). ---- */
+  var TASERON = [
+    {ad:'Demir-Beton İnş. Ltd.', santiye:'vadi',  ekip:10, gunler:[9,10,8,10]},
+    {ad:'ElektroMek Taahhüt',    santiye:'vadi',  ekip:6,  gunler:[6,5,6,6]},
+    {ad:'Yalıtım Kardeşler',     santiye:'liman', ekip:8,  gunler:[7,8,7,8]}
+  ];
+
+  var tgBody = document.getElementById('tgBody');
+  var tgSub = document.getElementById('tgSub');
+
+  function renderTaseron(){
+    var rows = GV.role === 'sef' ? TASERON.filter(function(f){ return f.santiye === 'vadi'; }) : TASERON;
+    var html = '';
+    var haftaToplam = 0, bugunToplam = 0;
+    rows.forEach(function(f){
+      var toplam = f.gunler.reduce(function(a, b){ return a + b; }, 0);
+      haftaToplam += toplam;
+      bugunToplam += f.gunler[TODAY_IDX];
+      html += '<tr>';
+      html += '<td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)"><i class="fa-solid fa-people-group"></i></div>'
+            + '<div class="pp-info"><b>'+f.ad+'</b><span>'+SANTIYE_ADI[f.santiye]+'</span></div></div></td>';
+      html += '<td class="tg-ekip">'+f.ekip+' kişilik ekip</td>';
+      for(var d = 0; d < 7; d++){
+        var todayCls = d === TODAY_IDX ? ' is-today' : '';
+        var cell;
+        if(d === 6) cell = '<div class="tg-day ht" data-tip="'+DAYS[d]+' · Hafta tatili" tabindex="0">–</div>';
+        else if(d > RECORDED_UPTO) cell = '<div class="tg-day gelecek" data-tip="'+DAYS[d]+' · Henüz işlenmedi" tabindex="0">–</div>';
+        else cell = '<div class="tg-day'+(d===TODAY_IDX?' today':'')+'" data-tip="'+DAYS[d]+' · '+f.gunler[d]+' kişi sahada" tabindex="0">'+f.gunler[d]+'</div>';
+        html += '<td class="col-gun'+todayCls+'">'+cell+'</td>';
+      }
+      html += '<td class="num"><div class="tg-total">'+toplam+' adam-gün<span>'+(RECORDED_UPTO+1)+' gün işlendi</span></div></td>';
+      html += '</tr>';
+    });
+    tgBody.innerHTML = html || '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:32px">Bu şantiyede kayıtlı taşeron ekibi yok.</td></tr>';
+    tgSub.textContent = bugunToplam + ' kişi bugün sahada · ' + rows.length + ' firma · haftalık ' + haftaToplam + ' adam-gün';
+  }
+  renderTaseron();
+
+  /* ============ Sekme geçişi — Bireysel / Taşeron ============
+     Mevcut günlük-giriş/İK-onay sim'ine ve aylık grid'e dokunmaz; yalnız görünürlük değişir. ---- */
+  var gvTabs = Array.prototype.slice.call(document.querySelectorAll('.gv-tab'));
+  var tabPanels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
+  var tabActions = Array.prototype.slice.call(document.querySelectorAll('[data-tab-panel-actions]'));
+  function activateTab(id){
+    gvTabs.forEach(function(t){
+      var on = t.getAttribute('data-tab') === id;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    tabPanels.forEach(function(p){ p.hidden = p.getAttribute('data-tab-panel') !== id; });
+    tabActions.forEach(function(a){ a.hidden = a.getAttribute('data-tab-panel-actions') !== id; });
+  }
+  gvTabs.forEach(function(t){
+    t.addEventListener('click', function(){ activateTab(t.getAttribute('data-tab')); });
+  });
 })();
 </script>
 </body>

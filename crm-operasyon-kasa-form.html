@@ -93,6 +93,16 @@
       <!-- ============ SOL: form ============ -->
       <div class="gv-card">
         <div class="gd-block">
+          <div class="gd-label">İşlem Türü</div>
+          <div class="chips" id="turSecim">
+            <button type="button" class="chip" data-tur="giris"><i class="fa-solid fa-coins"></i> Giriş</button>
+            <button type="button" class="chip" data-tur="tahsilat"><i class="fa-solid fa-sack-dollar"></i> Tahsilat</button>
+            <button type="button" class="chip is-on" data-tur="odeme"><i class="fa-solid fa-cash-register"></i> Ödeme</button>
+            <button type="button" class="chip" data-tur="avans"><i class="fa-solid fa-hand-holding-dollar"></i> Avans Ödemesi</button>
+          </div>
+        </div>
+
+        <div class="gd-block">
           <div class="gd-label">Rapor Bilgileri</div>
           <form class="gform" id="kasaForm" onsubmit="return false">
             <div class="gfield">
@@ -107,21 +117,45 @@
               <label for="fTarih">Tarih</label>
               <input id="fTarih" type="date" value="2026-07-02">
             </div>
-            <div class="gfield">
+            <div class="gfield" id="fldOdeme">
               <label for="fOdeme">Ödeme yöntemi</label>
               <select id="fOdeme">
                 <option>Nakit</option>
                 <option>Kasa avansından</option>
               </select>
             </div>
-            <div class="gfield">
+            <div class="gfield" id="fldDonem">
               <label for="fDonem">Kasa dönemi</label>
               <input id="fDonem" type="text" value="Temmuz 2026" disabled>
+            </div>
+            <div class="gfield" id="fldCari" hidden>
+              <label for="fCari">Cari</label>
+              <select id="fCari">
+                <option>Körfez GYO</option>
+                <option>Aliağa Liman İşletmeleri</option>
+                <option>Marmara Demir Çelik</option>
+              </select>
+            </div>
+            <div class="gfield" id="fldReferans" hidden>
+              <label for="fReferans">İlgili belge (opsiyonel)</label>
+              <input id="fReferans" type="text" placeholder="ör. HKD-2026-006">
             </div>
           </form>
         </div>
 
-        <div class="gd-block">
+        <div class="gd-block" id="blkTutar" hidden>
+          <div class="gd-label">Tutar</div>
+          <div class="gfield">
+            <label for="fTekTutar">Tutar</label>
+            <input id="fTekTutar" type="text" class="num-inp" placeholder="₺0">
+          </div>
+          <div class="gfield full" style="margin-top:12px">
+            <label for="fTekAciklama">Açıklama</label>
+            <input id="fTekAciklama" type="text" placeholder="ör. Genel merkez kasa beslemesi">
+          </div>
+        </div>
+
+        <div class="gd-block" id="blkKalem">
           <div class="gd-label">Kalem Dökümü</div>
           <div id="kalWrap">
             <div class="kal-row">
@@ -168,6 +202,7 @@
           <div class="gd-label">Not</div>
           <div class="gfield full" style="margin:0">
             <textarea id="fNot" rows="3" placeholder="Onaycıya iletmek istediğiniz açıklama (opsiyonel)"></textarea>
+            <!-- placeholder tür değişince applyTur() içinde güncellenir (giriş/tahsilatta onaycı yok) -->
           </div>
         </div>
       </div>
@@ -177,11 +212,11 @@
         <div class="gv-card">
           <div class="gd-block">
             <div class="gd-label">Toplam</div>
-            <div class="tot-card"><span>Rapor tutarı</span><b id="totTutar">₺9.350</b></div>
-            <p class="sub-note"><i class="fa-solid fa-circle-info"></i>Gönderdiğinizde rapor Teknik Müdür onayına düşer; onay zinciri rapor detayında görüntülenir.</p>
+            <div class="tot-card"><span id="totLbl">Rapor tutarı</span><b id="totTutar">₺9.350</b></div>
+            <p class="sub-note" id="subNote"><i class="fa-solid fa-circle-info"></i>Gönderdiğinizde rapor Teknik Müdür onayına düşer; onay zinciri rapor detayında görüntülenir.</p>
           </div>
           <div class="gd-block frm-acts">
-            <button type="button" class="btn btn-acc btn-sm" id="btnSend"><i class="fa-solid fa-paper-plane"></i> Onaya Gönder</button>
+            <button type="button" class="btn btn-acc btn-sm" id="btnSend"><i class="fa-solid fa-paper-plane"></i> <span id="btnSendLbl">Onaya Gönder</span></button>
             <button type="button" class="btn btn-ghost btn-sm" id="btnDraft" data-no-confirm><i class="fa-solid fa-floppy-disk"></i> Taslak Olarak Kaydet</button>
             <a class="btn btn-ghost btn-sm" href="crm-operasyon-kasa.html" data-no-confirm>Vazgeç</a>
           </div>
@@ -203,6 +238,18 @@
 
   var wrap = document.getElementById('kalWrap');
   var totEl = document.getElementById('totTutar');
+  var totLbl = document.getElementById('totLbl');
+  var subNote = document.getElementById('subNote');
+  var btnSendLbl = document.getElementById('btnSendLbl');
+  var blkKalem = document.getElementById('blkKalem');
+  var blkTutar = document.getElementById('blkTutar');
+  var fldCari = document.getElementById('fldCari');
+  var fldReferans = document.getElementById('fldReferans');
+  var fldOdeme = document.getElementById('fldOdeme');
+  var fCari = document.getElementById('fCari');
+  var tekTutarInp = document.getElementById('fTekTutar');
+  var tekAciklamaInp = document.getElementById('fTekAciklama');
+  var fNot = document.getElementById('fNot');
 
   function parseTL(v){
     var n = parseFloat((v || '').replace(/[₺.\s]/g,'').replace(',', '.'));
@@ -211,11 +258,53 @@
   function fmtTL(n){
     return '₺' + n.toLocaleString('tr-TR', {maximumFractionDigits:0});
   }
+
+  /* ============ 8.3 — İşlem türü seçimi [MOCK-SİM] ============
+     Giriş/Tahsilat: tek tutar + tek açıklama (Tahsilat'ta ayrıca Cari alanı);
+     Ödeme/Avans Ödemesi: mevcut kalem-dökümü akışı AYNEN korunur, yalnız
+     tür etiketi ve onay-akışı metni değişir. Yeni kayıt NUMARASI üretilmez
+     (5B form idiyomu). */
+  var curTur = 'odeme';
+  var TUR_META = {
+    giris:    { totLbl:'Giriş tutarı',    sendLbl:'Kaydet',       note:'Bu kayıt onay akışına girmez; şantiye kasasına doğrudan giriş olarak işlenir.',                notPh:'Notunuz (opsiyonel)' },
+    tahsilat: { totLbl:'Tahsilat tutarı', sendLbl:'Kaydet',       note:'Bu kayıt onay akışına girmez; seçilen cariden yapılan tahsilat olarak doğrudan işlenir.',      notPh:'Notunuz (opsiyonel)' },
+    odeme:    { totLbl:'Rapor tutarı',    sendLbl:'Onaya Gönder', note:'Gönderdiğinizde rapor Teknik Müdür onayına düşer; onay zinciri rapor detayında görüntülenir.', notPh:'Onaycıya iletmek istediğiniz açıklama (opsiyonel)' },
+    avans:    { totLbl:'Avans tutarı',    sendLbl:'Onaya Gönder', note:'Gönderdiğinizde rapor Teknik Müdür onayına düşer; onay zinciri rapor detayında görüntülenir.', notPh:'Onaycıya iletmek istediğiniz açıklama (opsiyonel)' }
+  };
+
   function recalc(){
+    if(curTur === 'giris' || curTur === 'tahsilat'){
+      totEl.textContent = fmtTL(parseTL(tekTutarInp.value));
+      return;
+    }
     var sum = 0;
     wrap.querySelectorAll('.kal-tutar-inp').forEach(function(inp){ sum += parseTL(inp.value); });
     totEl.textContent = fmtTL(sum);
   }
+
+  function applyTur(t){
+    curTur = t;
+    var meta = TUR_META[t];
+    totLbl.textContent = meta.totLbl;
+    subNote.innerHTML = '<i class="fa-solid fa-circle-info"></i>' + meta.note;
+    btnSendLbl.textContent = meta.sendLbl;
+    fNot.placeholder = meta.notPh;
+    var tekli = (t === 'giris' || t === 'tahsilat');
+    blkKalem.hidden = tekli;
+    blkTutar.hidden = !tekli;
+    fldCari.hidden = (t !== 'tahsilat');
+    fldReferans.hidden = (t !== 'tahsilat');
+    fldOdeme.hidden = tekli;
+    recalc();
+  }
+  document.getElementById('turSecim').addEventListener('click', function(e){
+    var ch = e.target.closest('.chip[data-tur]'); if(!ch) return;
+    this.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('is-on'); });
+    ch.classList.add('is-on');
+    applyTur(ch.getAttribute('data-tur'));
+  });
+  tekTutarInp.addEventListener('input', recalc);
+
   wrap.addEventListener('input', function(e){
     if(e.target.classList.contains('kal-tutar-inp')) recalc();
   });
@@ -238,13 +327,20 @@
     gvToast('Rapor taslak olarak kaydedildi.', {type:'info'});
   });
   document.getElementById('btnSend').addEventListener('click', function(){
+    if(curTur === 'giris' || curTur === 'tahsilat'){
+      if(!tekAciklamaInp.value.trim()){ gvToast('Açıklama girin.', {type:'danger'}); return; }
+      if(parseTL(tekTutarInp.value) <= 0){ gvToast('Tutar girin.', {type:'danger'}); return; }
+      gvToast(curTur === 'tahsilat' ? (fCari.value + ' tahsilatı kasaya işlendi.') : 'Kasa girişi kaydedildi.');
+      setTimeout(function(){ location.href = 'crm-operasyon-kasa.html'; }, 900);
+      return;
+    }
     var anyDesc = Array.prototype.some.call(wrap.querySelectorAll('.kal-row input[type="text"]'), function(i){ return i.value.trim(); });
     if(!anyDesc){ gvToast('En az bir kalem açıklaması girin.', {type:'danger'}); return; }
     gvToast('Rapor onaya gönderildi. Teknik Müdür onayı bekleniyor.');
     setTimeout(function(){ location.href = 'crm-operasyon-kasa.html'; }, 900);
   });
 
-  recalc();
+  applyTur('odeme');
 })();
 </script>
 </body>

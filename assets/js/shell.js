@@ -104,6 +104,47 @@
      · Ekran-seviyesi RBAC (ROLES[r].scr — 4C'de doğdu): İK operasyonda yalnız
        puantaj+demirbaş; saha personeli + satın alma panelde Raporlar'ı görmez.
        Roller matrisi (crm-ayarlar-roller.html) bu kısıtları "kısmi" rozetiyle gösterir.
+   ─ DALGA 5C KANONİK TANIMLAR (2026-07-04 — LEAD ön-işi; 5C sayfaları BU tanımları kullanır):
+     · KSG-2026-### kasa GİRİŞ/TAHSİLAT serisi (KSA-2026-### GİDER olarak kalır —
+       mevcut KSA kayıtlarına ve gvChain gider akışına DOKUNULMAZ; KSA satırları
+       tür etiketi olarak Ödeme/Avans Ödemesi alır, KSG satırları statik .gstat, zincir YOK):
+         KSG-2026-001 ·  9 Haz 2026 · Giriş    · Genel merkez kasa beslemesi → Vadi Konakları   · ₺100.000 · (iç transfer, cari yok)
+         KSG-2026-002 · 15 Haz 2026 · Tahsilat · Körfez GYO — HKD-2026-004 hakediş ödemesi      · ₺540.000 · Vadi
+         KSG-2026-003 · 20 Haz 2026 · Giriş    · Genel merkez kasa beslemesi → Liman Lojistik   · ₺85.000
+         KSG-2026-004 · 24 Haz 2026 · Tahsilat · Körfez GYO — HKD-2026-005 hakediş ödemesi      · ₺620.000 · Vadi
+         KSG-2026-005 · 29 Haz 2026 · Tahsilat · Marmara Demir Çelik — hurda karkas demir satışı · ₺46.500 · Merkez
+         KSG-2026-006 ·  1 Tem 2026 · Giriş    · Genel merkez kasa beslemesi → Merkez Şantiye   · ₺60.000
+       Kural: Tahsilat tutarı bağlı belgeyle BİREBİR (HKD-2026-004 ₺540.000 + HKD-2026-005
+       ₺620.000, ikisi de kurum sayfasında "Ödendi" — KSG bu ödemelerin kasa karşılığı).
+       Aliağa HKD-001/002 ödemeleri KSG serisi ÖNCESİ kabul edilir (kayıt açılmaz);
+       HKD-2026-003 "Onaylandı" = HENÜZ ödenmedi → KSG kaydı YOK.
+     · KANONİK SAHA HEADCOUNT (mini-fix #3 çözümü — taşeron DAHİL tek sayı seti):
+         Vadi Konakları   51 = 35 öz kadro + Demir-Beton 10 + ElektroMek 6
+         Liman Lojistik   30 = 22 öz kadro + Yalıtım Kardeşler 8
+         Merkez Şantiye   12 = 12 öz kadro (taşeron YOK — depo+atölye)
+         TOPLAM SAHADA    93 = 69 öz + 24 taşeron
+       Kaynak: yemekhane öğle öğün sayıları (öz 35/22/12 + taşeron 10/6/8) ZATEN CANLI
+       kanonik; öğle toplamı 93 = headcount BİREBİR. santiye.html 48/61/33 ile
+       panel-ozet 48/52/48 kırılımları BAYAT → 5C'de bu sete hizalanır.
+       Metrik ayrımı: bireysel puantaj = ÖZ kadro (69; 13 temsili ad idiyomu sürer) ·
+       taşeron = firma bazlı adam-gün, kişi adı listelenmez (madde 16.2 sekmesi) ·
+       bordro/idari kadro 22 kişi AYRI metrik (İK sayfaları) — headcount'a karışmaz.
+       Hizalama hedefleri (5C üretim grep listesi): santiye.html personel kolonu
+       48→51 · 61→30 · 33→12 + ph-sub "142 personel"→93; panel-ozet "142 kişi"/"142
+       sahada"/"142/148"→90/93 (giriş kırılımı VK 49/51 · Liman 29/30 · Merkez 12/12;
+       kayıtsız/izinli 3; oran %97) + şef bloğu 46/48→49/51; grep sweep "142|/148|
+       46/48|50/52" → panel.html sef görünümü + kiosk (crm-panel-operasyon.html) +
+       rapor-puantaj dahil TÜM sayfalar.
+     · Makine yakıt/bakım kanonikleri (madde 10.2 — MKN parkı sayfa durumlarıyla senkron):
+         MKN-01 Ekskavatör CAT 320     · motorin ~118 L/gün · son bakım 21 Haz 2026 (250 saat) · sonraki 500 saat
+         MKN-02 Kule Vinç Potain MC-85 · elektrikli → yakıt "—"  · son bakım 12 Haz 2026 · aylık periyodik
+         MKN-03 Beton Pompası M42      · hizmet alımı (Ege Hazır Beton) → yakıt/bakım hizmette, kolonlar "—"
+         MKN-04 Mobil Vinç LTM 1050    · motorin ~65 L/gün  · son bakım 28 Haz 2026
+         MKN-05 Forklift Toyota 8FD25  · motorin ~22 L/gün  · son bakım 5 Haz 2026
+         MKN-06 Beko Loder JCB 3CX     · motorin ~40 L/gün  · ARIZALI (hidrolik) — servis kaydı 2 Tem 2026, sayfadaki durumla senkron
+     · Yemekhane birim maliyet (madde 11 — mock, KDV dahil): kahvaltı ₺50 · öğle ₺90 ·
+       akşam ₺75. 2 Tem günlük toplam: 84×50 + 93×90 + 46×75 = ₺16.020; taşeron payı
+       58 öğün = ₺4.185 (ayrı gösterilir; firmaya yansıtma/faturalama Faz 2 — UI notu).
    ===================================================================== */
 (function(){
   'use strict';

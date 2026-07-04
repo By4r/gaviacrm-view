@@ -217,7 +217,9 @@
 (function(){
   if(!window.GV) return;
 
-  document.getElementById('gdBadge').innerHTML = gvChainBadge('bekliyor');
+  /* 5C madde 8.4 — tür rozeti: bu kayıt (KSA-2026-018) bir Ödeme; tahsilat
+     olsaydı burada cari satırı da eklenirdi (bkz crm-operasyon-kasa.html KSG satırları) */
+  document.getElementById('gdBadge').innerHTML = gvChainBadge('bekliyor') + '<span class="gtag">Ödeme</span>';
 
   gvChain(document.getElementById('chainEl'), {steps:[
     {rol:'Şantiye Şefi', kisi:'Hasan Demirci', durum:'olusturdu', tarih:'29 Haziran 2026 08:40'},

@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="assets/css/ui.css">
 <style>
 /* ============ SAYFAYA ÖZEL — Yemekhane kaydı ============ */
-#tblYemek{min-width:680px}
+#tblYemek{min-width:780px}
 .col-ogun{width:100px}
 .col-toplam{width:110px}
 
@@ -49,6 +49,25 @@ tr.is-tas:hover td{background:var(--bg)}
 }
 @media(max-width:420px){
   .week-strip{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ---- maliyet şeridi (madde 11 — birim maliyet katmanı) ---- */
+.my-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:20px 22px}
+.my-item{padding:0 20px;border-left:1px solid var(--line)}
+.my-item:first-child{padding-left:0;border-left:none}
+.my-item .my-num{font-size:22px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.my-item.acc .my-num{color:var(--acc-ink)}
+.my-item .my-lbl{font-size:12px;font-weight:700;color:var(--ink-2);margin-top:3px}
+.my-item .my-sub{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.5}
+.col-tutar{width:100px}
+.yk-tutar{color:var(--ink-2);font-variant-numeric:tabular-nums}
+tr.is-tas .yk-tutar{color:var(--muted)}
+tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+
+@media(max-width:640px){
+  .my-strip{grid-template-columns:1fr;gap:14px;padding:16px}
+  .my-item{padding:0;border-left:none;padding-top:14px;border-top:1px solid var(--line)}
+  .my-item:first-child{padding-top:0;border-top:none}
 }
 </style>
 </head>
@@ -120,6 +139,7 @@ tr.is-tas:hover td{background:var(--bg)}
               <th class="col-ogun num">Öğle</th>
               <th class="col-ogun num">Akşam</th>
               <th class="col-toplam num">Toplam</th>
+              <th class="col-tutar num">Tutar</th>
             </tr>
           </thead>
           <tbody id="ykBody"></tbody>
@@ -130,9 +150,17 @@ tr.is-tas:hover td{background:var(--bg)}
               <td class="num t-strong" id="ftOgle">—</td>
               <td class="num t-strong" id="ftAksam">—</td>
               <td class="num t-strong" id="ftToplam">—</td>
+              <td class="num yk-tutar-total" id="ftTutar">—</td>
             </tr>
           </tfoot>
         </table>
+      </div>
+      <!-- Maliyet katmanı (madde 11): birim maliyet mock, KDV dahil — kahvaltı ₺50 · öğle ₺90 · akşam ₺75
+           (bkz. shell.js DALGA 5C KANONİK TANIMLAR). Tutar = yukarıdaki kişi sayıları × birim fiyat;
+           YERLER dizisindeki öğün SAYILARINA dokunulmadı, yalnız bu katman eklendi. -->
+      <div class="my-strip" id="maliyetStrip"></div>
+      <div class="gc-foot" style="border-top:1px dashed var(--line-2)">
+        <span><i class="fa-solid fa-circle-info"></i> Taşeron öğün maliyeti firma bazında ayrı izlenir; firmaya yansıtma/faturalama Faz 2 kapsamındadır.</span>
       </div>
     </div>
 
@@ -165,14 +193,23 @@ tr.is-tas:hover td{background:var(--bg)}
     {ad:'Merkez Şantiye',        tip:'oz',  ic:'fa-helmet-safety', kahvalti:11, ogle:12, aksam:5}
   ];
 
+  /* birim maliyet (madde 11 — mock, KDV dahil; shell.js kanonik yorum bloğuyla senkron) */
+  var BIRIM = {kahvalti:50, ogle:90, aksam:75};
+  function tutar(y){ return y.kahvalti*BIRIM.kahvalti + y.ogle*BIRIM.ogle + y.aksam*BIRIM.aksam; }
+  function trTl(n){ return '₺' + Math.round(n).toLocaleString('tr-TR'); }
+
   var body = document.getElementById('ykBody');
   var html = '';
   var t = {kahvalti:0, ogle:0, aksam:0};
+  var tas = {kahvalti:0, ogle:0, aksam:0};
   var tasToplam = 0;
   YERLER.forEach(function(y){
     var toplam = y.kahvalti + y.ogle + y.aksam;
     t.kahvalti += y.kahvalti; t.ogle += y.ogle; t.aksam += y.aksam;
-    if(y.tip === 'tas') tasToplam += toplam;
+    if(y.tip === 'tas'){
+      tasToplam += toplam;
+      tas.kahvalti += y.kahvalti; tas.ogle += y.ogle; tas.aksam += y.aksam;
+    }
     html += '<tr class="'+(y.tip === 'tas' ? 'is-tas' : '')+'">';
     html += '<td><div class="yk-cell"><div class="yk-mark'+(y.tip==='tas'?' tas':'')+'"><i class="fa-solid '+y.ic+'"></i></div>'
           + '<div class="yk-info"><b>'+y.ad+'</b>'
@@ -182,21 +219,38 @@ tr.is-tas:hover td{background:var(--bg)}
     html += '<td class="num yk-num">'+y.ogle+'</td>';
     html += '<td class="num yk-num">'+y.aksam+'</td>';
     html += '<td class="num"><span class="yk-total">'+toplam+'</span></td>';
+    html += '<td class="num yk-tutar">'+trTl(tutar(y))+'</td>';
     html += '</tr>';
   });
   body.innerHTML = html;
 
   var genelToplam = t.kahvalti + t.ogle + t.aksam;
+  var maliyetToplam = t.kahvalti*BIRIM.kahvalti + t.ogle*BIRIM.ogle + t.aksam*BIRIM.aksam;
+  var maliyetTas = tas.kahvalti*BIRIM.kahvalti + tas.ogle*BIRIM.ogle + tas.aksam*BIRIM.aksam;
+  var maliyetOz = maliyetToplam - maliyetTas;
   document.getElementById('ftKahvalti').textContent = t.kahvalti;
   document.getElementById('ftOgle').textContent = t.ogle;
   document.getElementById('ftAksam').textContent = t.aksam;
   document.getElementById('ftToplam').textContent = genelToplam;
+  document.getElementById('ftTutar').textContent = trTl(maliyetToplam);
 
   document.getElementById('kpiToplam').textContent = genelToplam;
   document.getElementById('kpiOgle').textContent = t.ogle;
   document.getElementById('kpiTaseron').textContent = tasToplam;
   document.getElementById('kpiTaseronYuzde').innerHTML = '<i class="fa-solid fa-chart-pie"></i> Toplamın %' + Math.round(tasToplam / genelToplam * 100) + '’i';
   document.getElementById('ykSub').textContent = genelToplam + ' kişi · 3 şantiye + 3 taşeron ekibi · 2 Temmuz 2026, Perşembe';
+
+  function renderMaliyet(toplam, oz, tasT, tasOgun, kisi){
+    var strip = document.getElementById('maliyetStrip');
+    strip.innerHTML =
+      '<div class="my-item acc"><div class="my-num">'+trTl(toplam)+'</div><div class="my-lbl">Bugünkü toplam yemekhane maliyeti</div>'
+      + '<div class="my-sub">'+kisi.kahvalti+' kahvaltı × ₺'+BIRIM.kahvalti+' + '+kisi.ogle+' öğle × ₺'+BIRIM.ogle+' + '+kisi.aksam+' akşam × ₺'+BIRIM.aksam+'</div></div>'
+      + '<div class="my-item"><div class="my-num">'+trTl(oz)+'</div><div class="my-lbl">Öz kadro payı</div>'
+      + '<div class="my-sub">Şantiye kadrosu yemekleri</div></div>'
+      + '<div class="my-item"><div class="my-num">'+trTl(tasT)+'</div><div class="my-lbl">Taşeron payı — '+tasOgun+' öğün</div>'
+      + '<div class="my-sub">Ayrı gösterilir; firmaya yansıtma/faturalama Faz 2 kapsamındadır.</div></div>';
+  }
+  renderMaliyet(maliyetToplam, maliyetOz, maliyetTas, tasToplam, t);
 
   /* ---- haftalık özet — bugüne kadar (Pzt–Per) işlenmiş, kalanı henüz kaydedilmedi ---- */
   var HAFTA = [
@@ -242,6 +296,13 @@ tr.is-tas:hover td{background:var(--bg)}
     document.getElementById('kpiSantiyeSayi').textContent = '1';
     document.getElementById('kpiSantiyeList').innerHTML = '<i class="fa-solid fa-check"></i> Vadi Konakları';
     document.getElementById('ykSub').textContent = sTop + ' kişi · Vadi Konakları + taşeron ekipleri · 2 Temmuz 2026, Perşembe';
+
+    var sMaliyet = st.kahvalti*BIRIM.kahvalti + st.ogle*BIRIM.ogle + st.aksam*BIRIM.aksam;
+    var sTasKalan = {kahvalti:0, ogle:0, aksam:0};
+    kalan.filter(function(y){return y.tip==='tas';}).forEach(function(y){ sTasKalan.kahvalti += y.kahvalti; sTasKalan.ogle += y.ogle; sTasKalan.aksam += y.aksam; });
+    var sMaliyetTas = sTasKalan.kahvalti*BIRIM.kahvalti + sTasKalan.ogle*BIRIM.ogle + sTasKalan.aksam*BIRIM.aksam;
+    document.getElementById('ftTutar').textContent = trTl(sMaliyet);
+    renderMaliyet(sMaliyet, sMaliyet - sMaliyetTas, sMaliyetTas, sTas, st);
   }
 })();
 </script>
