@@ -33,7 +33,7 @@
 
 .gd-block{padding:22px}
 .gd-block + .gd-block{border-top:1px solid var(--line)}
-.gd-label{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.gd-label{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .gd-desc{font-size:13.5px;line-height:1.7;color:var(--ink-2)}
 
 /* teklif karşılaştırma / kalem dökümü mini tablo */
@@ -48,6 +48,7 @@
 
 .teklif-note{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:12px;display:flex;align-items:flex-start;gap:8px}
 .teklif-note i{color:var(--acc-ink);margin-top:2px}
+.kal-teslim{font-size:11.5px;color:var(--muted);font-weight:500}
 
 /* belge ekleri */
 .file-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
@@ -57,6 +58,14 @@
 .file-info{flex:1;min-width:0;line-height:1.35}
 .file-info b{display:block;font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .file-info span{font-size:11.5px;color:var(--muted)}
+
+/* belge ekleme alanı (madde 13.2) */
+.attach-zone{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:20px 16px;margin-top:14px;border:1.5px dashed var(--line-2);border-radius:var(--r-sm);color:var(--muted);cursor:pointer;transition:.18s var(--ease)}
+.attach-zone i{font-size:19px;color:var(--acc-ink)}
+.attach-zone b{font-size:13px;color:var(--ink);font-weight:700}
+.attach-zone span{font-size:11.5px;color:var(--muted)}
+.attach-zone:hover,.attach-zone:focus-visible{border-color:var(--acc);background:rgba(var(--acc-rgb),.05)}
+.attach-zone:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 
 /* bağlam satırları */
 .ctx-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;font-size:13px}
@@ -118,18 +127,28 @@
     <div class="gd-grid">
       <!-- ============ SOL: içerik ============ -->
       <div class="gv-side-stack">
+        <!-- Teklifler [MOCK-SİM] — madde 13.1: 2 tedarikçiden toplanan teklif karşılaştırması
+             statik olarak sunulur; seçili teklifin tutarı (₺142.500) alttaki Kalem Dökümü
+             toplamıyla birebir eşleşir, diğer teklif kıyas amaçlı daha yüksektir. İkinci teklif
+             sahibi (Trakya Beton Santrali) bilinçli olarak crm-cari.html'deki kanonik tedarikçi
+             listesinde YOK — gerçek akışta teklif toplanan her firmaya cari kartı açılmaz,
+             yalnız seçilen tedarikçiye (Ege Hazır Beton, zaten kanonik cari) açılır. -->
         <div class="gv-card">
           <div class="gd-block">
-            <div class="gd-label">Tedarikçi Teklifi</div>
+            <div class="gd-label">Teklifler <span class="gtag mint">MOCK-SİM</span></div>
             <table class="kal-table">
               <tbody>
                 <tr>
-                  <td><div class="kal-name"><span class="kal-ad">Ege Hazır Beton</span><span class="gtag mint">Seçili teklif</span></div></td>
-                  <td class="kal-tutar">₺4.750 / m³</td>
+                  <td><div class="kal-name"><span class="kal-ad">Ege Hazır Beton</span><span class="kal-teslim">7 iş günü teslim</span><span class="gtag mint">Seçili Teklif</span></div></td>
+                  <td class="kal-tutar">₺142.500</td>
+                </tr>
+                <tr>
+                  <td><div class="kal-name"><span class="kal-ad">Trakya Beton Santrali</span><span class="kal-teslim">10 iş günü teslim · cari kaydı yok — teklif aşaması</span></div></td>
+                  <td class="kal-tutar">₺156.400</td>
                 </tr>
               </tbody>
             </table>
-            <p class="teklif-note"><i class="fa-solid fa-circle-info"></i>Hazır beton, bölgede tek yetkili santral olduğu için ikinci teklif istenmedi; birim fiyat Haziran ortalamasıyla uyumlu.</p>
+            <p class="teklif-note"><i class="fa-solid fa-circle-info"></i>2 tedarikçiden toplanan teklifler arasında fiyat ve teslim süresi avantajı nedeniyle Ege Hazır Beton seçildi.</p>
           </div>
           <div class="gd-block">
             <div class="gd-label">Kalem Dökümü</div>
@@ -152,6 +171,16 @@
               <div class="file-ico pdf"><i class="fa-solid fa-file-pdf"></i></div>
               <div class="file-info"><b>ege-hazirbeton-teklif.pdf</b><span>218 KB · Baran Yıldız tarafından eklendi</span></div>
               <button class="ia-btn" data-wip="1" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button>
+            </div>
+            <div class="file-row">
+              <div class="file-ico pdf"><i class="fa-solid fa-file-pdf"></i></div>
+              <div class="file-info"><b>teklif-karsilastirma.pdf</b><span>96 KB · Baran Yıldız tarafından eklendi</span></div>
+              <button class="ia-btn" data-wip="1" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button>
+            </div>
+            <div class="attach-zone" role="button" tabindex="0">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <b>Dosya ekle</b>
+              <span>PDF, JPG, PNG — sürükle bırak veya tıkla (demo)</span>
             </div>
           </div>
         </div>
@@ -213,6 +242,15 @@
   if(btn) btn.addEventListener('click', function(){
     gvToast('SAT-2026-014 Genel Müdür onayına gönderildi.');
     document.querySelector('.gd-badges').innerHTML = gvChainBadge('bekliyor');
+  });
+
+  /* belge ekleme alanı (madde 13.2) — prototipte simüle edilir, dosya yüklenmez */
+  document.querySelectorAll('.attach-zone').forEach(function(zone){
+    function trigger(){ gvToast('Dosya yükleme prototip kapsamında simüledir', {type:'info'}); }
+    zone.addEventListener('click', trigger);
+    zone.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); trigger(); }
+    });
   });
 })();
 </script>

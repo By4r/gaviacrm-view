@@ -78,6 +78,14 @@
 .sub-note{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:14px}
 .sub-note i{color:var(--acc-ink);margin-right:5px}
 
+/* belge ekleme alanı (madde 15) */
+.attach-zone{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:20px 16px;border:1.5px dashed var(--line-2);border-radius:var(--r-sm);color:var(--muted);cursor:pointer;transition:.18s var(--ease)}
+.attach-zone i{font-size:19px;color:var(--acc-ink)}
+.attach-zone b{font-size:13px;color:var(--ink);font-weight:700}
+.attach-zone span{font-size:11.5px;color:var(--muted)}
+.attach-zone:hover,.attach-zone:focus-visible{border-color:var(--acc);background:rgba(var(--acc-rgb),.05)}
+.attach-zone:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
 .frm-acts{display:flex;flex-direction:column;gap:10px}
 .frm-acts .btn{width:100%;justify-content:center}
 </style>
@@ -205,6 +213,17 @@
         </div>
         <div class="gd-block" id="kesKurumNote" hidden>
           <div class="kes-note"><i class="fa-solid fa-circle-info"></i> Kurum hakedişlerinde teminat/avans kesintisi uygulanmaz — net tutar brüt hakediş tutarına eşittir. KDV tevkifatı faturalama aşamasında ayrıca hesaplanır.</div>
+        </div>
+
+        <!-- Belgeler [MOCK-SİM] — madde 15: metraj tutanağı / hakediş eki belge yükleme
+             prototipte simüle edilir, gerçek dosya yüklenmez. -->
+        <div class="gd-block">
+          <div class="gd-label">Belgeler <span class="gtag mint">MOCK-SİM</span></div>
+          <div class="attach-zone" role="button" tabindex="0">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <b>Dosya ekle</b>
+            <span>PDF, JPG, PNG — sürükle bırak veya tıkla (demo)</span>
+          </div>
         </div>
       </div>
 
@@ -365,6 +384,15 @@
   });
 
   recalc();
+
+  /* belge ekleme alanı (madde 15) — prototipte simüle edilir, dosya yüklenmez */
+  document.querySelectorAll('.attach-zone').forEach(function(zone){
+    function trigger(){ gvToast('Dosya yükleme prototip kapsamında simüledir', {type:'info'}); }
+    zone.addEventListener('click', trigger);
+    zone.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); trigger(); }
+    });
+  });
 })();
 </script>
 </body>

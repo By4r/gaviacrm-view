@@ -62,6 +62,13 @@
 .dm-acts{display:flex;flex-direction:column;gap:8px;padding:18px 22px 22px}
 .dm-acts .btn{justify-content:flex-start}
 .dm-acts-note{font-size:12px;color:var(--muted);line-height:1.6;padding:0 22px 20px}
+
+/* fotoğraf alanı — <img> KULLANILMAZ (bkz. CLAUDE.md görsel kuralı); gerçek foto
+   yüklenmediği için div + düz nötr zemin + FA ikon + boş-durum metniyle placeholder.
+   İleride gerçek foto eklenirse aynı div background-image/cover/center ile doldurulur. */
+.dm-foto{aspect-ratio:4/3;background:var(--bg);border:1px dashed var(--line-2);border-radius:var(--r-md);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted)}
+.dm-foto i{font-size:30px;color:var(--line-2)}
+.dm-foto span{font-size:12.5px;font-weight:600}
 </style>
 </head>
 <body data-sec="operasyon" data-screen="demirbas">
@@ -109,6 +116,13 @@
       <!-- ============ SOL: içerik ============ -->
       <div class="gv-side-stack">
         <div class="gv-card">
+          <div class="gd-block">
+            <div class="gd-label">Fotoğraf</div>
+            <div class="dm-foto">
+              <i class="fa-solid fa-image"></i>
+              <span>Fotoğraf eklenmedi</span>
+            </div>
+          </div>
           <div class="gd-block">
             <div class="gd-label">Kalem Bilgileri</div>
             <div class="ctx-row"><span class="ctx-lbl">Kategori</span><span class="ctx-val">Telefon &amp; İletişim</span></div>

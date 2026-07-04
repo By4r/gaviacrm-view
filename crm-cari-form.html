@@ -38,6 +38,8 @@
 .tip-opt[data-t="musteri"]::before{background:var(--acc-ink)}
 .tip-opt[data-t="taseron"]::before{background:var(--info)}
 .tip-opt[data-t="tedarikci"]::before{background:var(--warn)}
+.tip-opt[data-t="kurum"]::before{background:var(--acc-ink)}
+.tip-opt[data-t="kisi"]::before{background:var(--ok)}
 .tip-opt.is-on{border-color:var(--acc-ink);color:var(--acc-ink);background:rgba(var(--acc-rgb),.09)}
 
 /* firma özeti — canlı önizleme kartı, gorev-form tsum dilinin aynısı */
@@ -81,24 +83,31 @@
     <div class="gv-crumb">
       <a href="crm-cari.html">Firma Rehberi</a>
       <i class="fa-solid fa-chevron-right"></i>
-      <span>Yeni Firma</span>
+      <span id="crumbTxt">Yeni Firma</span>
     </div>
 
     <div class="gv-page-head">
       <div>
         <div class="ph-eyebrow">Rehber &amp; Hesap</div>
-        <h1>Yeni Firma</h1>
+        <h1 id="pageH1">Yeni Firma</h1>
         <div class="ph-sub">Cari kaydını açın; bakiye ve hareket takibi ilk fatura veya hakedişle başlar.</div>
       </div>
     </div>
 
     <div class="form-grid">
       <div class="gv-card">
-        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-building"></i> Firma Bilgileri</div></div>
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-building" id="ficoTitle"></i> <span id="ftxtTitle">Firma Bilgileri</span></div></div>
         <div class="gc-body">
           <form class="gform" id="cariForm">
             <div class="gfield full">
-              <label for="fAd">Firma Adı</label>
+              <label>Kayıt Türü</label>
+              <div class="tip-group" id="kayitGroup">
+                <label class="tip-opt is-on" data-t="kurum"><input type="radio" name="kayit" value="kurum" checked> Kurum</label>
+                <label class="tip-opt" data-t="kisi"><input type="radio" name="kayit" value="kisi"> Kişi</label>
+              </div>
+            </div>
+            <div class="gfield full">
+              <label for="fAd" id="lblAd">Firma Adı</label>
               <input type="text" id="fAd" placeholder="örn. Trakya Yalıtım San. Tic. Ltd.">
             </div>
             <div class="gfield full">
@@ -109,19 +118,19 @@
                 <label class="tip-opt" data-t="tedarikci"><input type="radio" name="tur" value="tedarikci"> Tedarikçi</label>
               </div>
             </div>
-            <div class="gfield">
+            <div class="gfield kurum-only">
               <label for="fVD">Vergi Dairesi</label>
               <input type="text" id="fVD" placeholder="örn. Kadıköy V.D.">
             </div>
-            <div class="gfield">
+            <div class="gfield kurum-only">
               <label for="fVNo">Vergi No</label>
               <input type="text" id="fVNo" placeholder="örn. 481 026 3390">
             </div>
-            <div class="gfield">
+            <div class="gfield kurum-only">
               <label for="fKisi">İlgili Kişi</label>
               <input type="text" id="fKisi" placeholder="Ad Soyad">
             </div>
-            <div class="gfield">
+            <div class="gfield kurum-only">
               <label for="fUnvan">Unvan</label>
               <input type="text" id="fUnvan" placeholder="örn. Proje Müdürü">
             </div>
@@ -152,19 +161,19 @@
         </div>
         <div class="form-foot">
           <a class="btn btn-ghost btn-sm" href="crm-cari.html" data-no-confirm>Vazgeç</a>
-          <button type="button" class="btn btn-acc btn-sm" data-no-confirm id="cariSubmit"><i class="fa-solid fa-plus"></i> Firmayı Ekle</button>
+          <button type="button" class="btn btn-acc btn-sm" data-no-confirm id="cariSubmit"><i class="fa-solid fa-plus"></i> <span id="submitTxt">Firmayı Ekle</span></button>
         </div>
       </div>
 
       <div class="gv-side-stack" style="display:flex;flex-direction:column;gap:16px">
         <div class="gv-card">
-          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-eye"></i> Firma Önizleme</div></div>
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-eye"></i> <span id="ptxtTitle">Firma Önizleme</span></div></div>
           <div class="fh-preview">
             <div class="fh-mark" id="pMark">TY</div>
             <div class="fh-info"><b id="pAd">Yeni Firma</b><span class="muted" style="font-size:12px" id="pTur">Müşteri</span></div>
           </div>
           <div class="gc-body" style="padding-top:0">
-            <div class="tsum-row">
+            <div class="tsum-row kurum-only" id="sumKisiRow">
               <div class="tsum-ico"><i class="fa-solid fa-id-card"></i></div>
               <div class="tsum-body"><div class="tsum-lbl">İlgili Kişi</div><div class="tsum-val muted" id="sumKisi">Girilmedi</div></div>
             </div>
@@ -200,17 +209,44 @@
   }
 
   var TUR_LBL = {musteri:'Müşteri', taseron:'Taşeron', tedarikci:'Tedarikçi'};
+  var kayitTuru = 'kurum';
 
   function initials(name){
     var parts = name.trim().split(/\s+/).filter(Boolean);
-    if(!parts.length) return 'YF';
+    if(!parts.length) return kayitTuru === 'kisi' ? 'YK' : 'YF';
     if(parts.length === 1) return parts[0].slice(0,2).toUpperCase();
     return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
   }
 
+  /* Kurum/Kişi tip toggle — crm-finans-hakedis-form.html'deki Kurum/Taşeron
+     toggle'ı ile aynı desen: seçime göre firma-özgü alanlar (vergi, ilgili kişi/
+     unvan) gizlenir, ad alanı ve kart başlıkları kişi diline döner. */
+  function applyKayit(tip){
+    kayitTuru = tip;
+    var isKisi = tip === 'kisi';
+    document.querySelectorAll('.kurum-only').forEach(function(el){ el.hidden = isKisi; });
+    document.getElementById('lblAd').textContent = isKisi ? 'Ad Soyad' : 'Firma Adı';
+    document.getElementById('fAd').placeholder = isKisi ? 'örn. Ahmet Yılmaz' : 'örn. Trakya Yalıtım San. Tic. Ltd.';
+    document.getElementById('ficoTitle').className = 'fa-solid ' + (isKisi ? 'fa-user' : 'fa-building');
+    document.getElementById('ftxtTitle').textContent = isKisi ? 'Kişi Bilgileri' : 'Firma Bilgileri';
+    document.getElementById('ptxtTitle').textContent = isKisi ? 'Kişi Önizleme' : 'Firma Önizleme';
+    document.getElementById('crumbTxt').textContent = isKisi ? 'Yeni Kişi' : 'Yeni Firma';
+    document.getElementById('pageH1').textContent = isKisi ? 'Yeni Kişi' : 'Yeni Firma';
+    document.getElementById('submitTxt').textContent = isKisi ? 'Kişiyi Ekle' : 'Firmayı Ekle';
+    document.title = (isKisi ? 'Yeni Kişi' : 'Yeni Firma') + ' — Gavia CRM';
+    syncPreview();
+  }
+
+  document.getElementById('kayitGroup').addEventListener('click', function(e){
+    var opt = e.target.closest('.tip-opt'); if(!opt) return;
+    document.querySelectorAll('#kayitGroup .tip-opt').forEach(function(o){ o.classList.remove('is-on'); });
+    opt.classList.add('is-on');
+    applyKayit(opt.getAttribute('data-t'));
+  });
+
   function syncPreview(){
     var ad = document.getElementById('fAd').value.trim();
-    document.getElementById('pAd').textContent = ad || 'Yeni Firma';
+    document.getElementById('pAd').textContent = ad || (kayitTuru === 'kisi' ? 'Yeni Kişi' : 'Yeni Firma');
     document.getElementById('pMark').textContent = initials(ad);
 
     var tur = document.querySelector('input[name="tur"]:checked').value;
@@ -232,7 +268,7 @@
 
   document.getElementById('tipGroup').addEventListener('click', function(e){
     var opt = e.target.closest('.tip-opt'); if(!opt) return;
-    document.querySelectorAll('.tip-opt').forEach(function(o){ o.classList.remove('is-on'); });
+    document.querySelectorAll('#tipGroup .tip-opt').forEach(function(o){ o.classList.remove('is-on'); });
     opt.classList.add('is-on');
     syncPreview();
   });
@@ -240,13 +276,13 @@
   ['fAd','fKisi','fUnvan','fTel'].forEach(function(id){
     document.getElementById(id).addEventListener('input', syncPreview);
   });
-  syncPreview();
+  applyKayit('kurum');
 
   document.getElementById('cariSubmit').addEventListener('click', function(){
     if(this.disabled) return;
     var ad = document.getElementById('fAd').value.trim();
-    if(!ad){ gvToast('Firma adını girin.', {type:'danger'}); document.getElementById('fAd').focus(); return; }
-    gvToast('"' + ad + '" cari kaydı oluşturuldu — Firma Rehberi listesine eklendi.');
+    if(!ad){ gvToast(kayitTuru === 'kisi' ? 'Ad Soyad girin.' : 'Firma adını girin.', {type:'danger'}); document.getElementById('fAd').focus(); return; }
+    gvToast('"' + ad + '" ' + (kayitTuru === 'kisi' ? 'kişi' : 'firma') + ' cari kaydı oluşturuldu — Firma Rehberi listesine eklendi.');
     setTimeout(function(){ location.href = 'crm-cari.html'; }, 900);
   });
 })();
