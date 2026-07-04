@@ -159,7 +159,7 @@
               <div><dt>Acil Durum İletişimi</dt><dd>Meltem Demirci — 0532 407 28 40 (eş)</dd></div>
             </dl>
           </div>
-          <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Bordro / özlük maaş bilgileri Faz 2 kapsamındadır.</span></div>
+          <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Bordro hesaplama Faz 2 kapsamındadır.</span></div>
         </div>
       </div>
 
@@ -180,9 +180,12 @@
             <div><dt>Acil Durum Kişisi — Ad Soyad</dt><dd>Meltem Demirci</dd></div>
             <div><dt>Acil Durum Kişisi — Telefon</dt><dd>0532 407 28 40</dd></div>
             <div><dt>Acil Durum Kişisi — Yakınlık</dt><dd>Eş</dd></div>
+            <div data-payroll-only><dt>Brüt Ücret</dt><dd>₺52.000</dd></div>
+            <div data-payroll-only><dt>SGK Sicil No</dt><dd>3417298450</dd></div>
+            <div data-payroll-only><dt>SGK Giriş Tarihi</dt><dd>15 Şubat 2017</dd></div>
           </dl>
         </div>
-        <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Bordro / özlük maaş bilgileri Faz 2 kapsamındadır.</span></div>
+        <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Bordro hesaplama Faz 2 kapsamındadır.</span></div>
       </div>
     </section>
 
@@ -337,6 +340,9 @@
   if(!window.GV) return;
   if(['superadmin','sahip','yonetim','ik'].indexOf(GV.role) === -1){
     document.querySelectorAll('[data-admin-only]').forEach(function(el){ el.hidden = true; });
+  }
+  if(['superadmin','sahip'].indexOf(GV.role) === -1){
+    document.querySelectorAll('[data-payroll-only]').forEach(function(el){ el.hidden = true; });
   }
 })();
 </script>
