@@ -24,6 +24,25 @@
 .ajd-weeknav{display:flex;align-items:center;gap:12px}
 .ajd-week-lbl{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap}
 
+/* ---- "Etkinlik Ekle" split menü + kart işlem menüsü — ikisi de .gv-pop'u
+   <button> varyantıyla yeniden kullanır (ui.js'in .gv-pop a stili sadece <a>
+   hedefliyor; burada sayfa-lokal <button> stili eklenir, ui.js'e DOKUNULMADI) ---- */
+.ajd-add-wrap{position:relative;display:inline-flex}
+.ajd-add-wrap .gv-pop{min-width:228px}
+.gv-pop button{
+  all:unset;box-sizing:border-box;display:flex;align-items:center;gap:11px;width:100%;
+  padding:9px 12px;border-radius:var(--r-sm);font-size:13.5px;font-weight:600;color:var(--ink-2);
+  cursor:pointer;transition:.15s var(--ease);font-family:inherit;
+}
+.gv-pop button i{width:16px;text-align:center;font-size:13px;color:var(--muted);transition:.15s var(--ease)}
+.gv-pop button:hover,.gv-pop button:focus-visible{background:var(--bg);color:var(--ink)}
+.gv-pop button:hover i,.gv-pop button:focus-visible i{color:var(--acc-ink)}
+.gv-pop button.danger{color:var(--danger)}
+.gv-pop button.danger i{color:var(--danger)}
+.gv-pop button.danger:hover,.gv-pop button.danger:focus-visible{background:var(--danger-tint)}
+.ajd-add-wrap .gv-pop a{font-weight:700;color:var(--acc-ink)}
+.ajd-add-wrap .gv-pop a i{color:var(--acc-ink)}
+
 .ajd-typebar{display:flex;flex-wrap:wrap;gap:8px;padding:14px 22px;border-bottom:1px solid var(--line)}
 .chip-dot{width:8px;height:8px;border-radius:50%;flex:none}
 
@@ -39,9 +58,33 @@
 .ajd-today-badge{display:inline-block;margin-top:6px;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--acc-ink);background:rgba(var(--acc-rgb),.14);padding:2px 8px;border-radius:var(--r-pill)}
 
 .ajd-list{flex:1;display:flex;flex-direction:column;gap:8px;padding:10px}
-.ajd-card{background:var(--bg);border:1px solid var(--line);border-left:3px solid var(--line-2);border-radius:var(--r-sm);padding:10px 11px;transition:.18s var(--ease);display:block;text-decoration:none}
+.ajd-card-wrap{position:relative}
+.ajd-card{background:var(--bg);border:1px solid var(--line);border-left:3px solid var(--line-2);border-radius:var(--r-sm);padding:10px 34px 10px 11px;transition:.18s var(--ease);display:block;text-decoration:none}
 .ajd-card:hover{border-color:var(--line-2);transform:translateY(-1px);box-shadow:var(--sh-sm)}
 .ajd-card:not(a){cursor:default}
+
+/* ---- kart işlem (⋯) menüsü — KASITLI olarak kartın <a>'sının DIŞINDA, kendi
+   overlay wrapper'ında durur (sibling, nested değil). Neden: kart <a> ise ve
+   ⋯ menüsü (Sil dahil) o <a>'nın İÇİNDE olsaydı, ui.js'in global yıkıcı-aksiyon
+   interceptor'ı (destrKind → el.querySelector('.fa-trash')/textContent regex)
+   TÜM kartın closest('button,a') = <a class="ajd-card"> olduğunu görüp kartın
+   HERHANGİ bir yerine tıklamayı "Sil" sanıp confirm modalı açıyordu (doğrulandı).
+   Overlay + preventDefault/stopPropagation bu çakışmayı da, link tetiklenmesini
+   de önler. ---- */
+.ajd-kebab-wrap{position:absolute;top:7px;right:7px;z-index:5}
+.ajd-kebab{
+  flex:none;width:26px;height:26px;border-radius:var(--r-sm);border:1px solid transparent;background:transparent;
+  color:var(--muted);font-size:12px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:.15s var(--ease);opacity:0;position:relative;
+}
+.ajd-card-wrap:hover .ajd-kebab,.ajd-kebab:focus-visible,.ajd-kebab.is-open{opacity:1}
+.ajd-kebab:hover,.ajd-kebab:focus-visible{border-color:var(--line-2);background:var(--paper);color:var(--acc-ink)}
+.ajd-card-pop{top:calc(100% + 4px);right:0;min-width:208px}
+@media(max-width:640px){
+  .ajd-kebab{opacity:1;width:44px;height:44px}
+  .ajd-kebab-wrap{top:2px;right:2px}
+  .ajd-card{padding-right:56px}
+}
 .ajd-card.toplanti{border-left-color:var(--ink-2)}
 .ajd-card.gorev{border-left-color:var(--acc-ink)}
 .ajd-card.ziyaret{border-left-color:var(--info)}
@@ -110,7 +153,19 @@
         <div class="ph-sub" id="ajdSub">Yükleniyor…</div>
       </div>
       <div class="ph-actions">
-        <a class="btn btn-acc btn-sm" href="#" data-wip="1"><i class="fa-solid fa-plus"></i> Etkinlik Ekle</a>
+        <div class="ajd-add-wrap">
+          <button type="button" class="btn btn-acc btn-sm" id="ajdAddBtn" aria-haspopup="true" aria-expanded="false">
+            <i class="fa-solid fa-plus"></i> Etkinlik Ekle <i class="fa-solid fa-chevron-down" style="font-size:9px;margin-left:1px"></i>
+          </button>
+          <div class="gv-pop" id="ajdAddPop">
+            <button type="button" data-add="program"><i class="fa-solid fa-calendar-plus"></i> Program Ekle</button>
+            <button type="button" data-add="isprogrami"><i class="fa-solid fa-diagram-project"></i> İş Programı Ekle</button>
+            <button type="button" data-add="not"><i class="fa-solid fa-note-sticky"></i> Ajandaya Not Ekle</button>
+            <button type="button" data-add="toplanti"><i class="fa-solid fa-people-arrows"></i> Toplantı Ekle</button>
+            <div class="gp-div"></div>
+            <a href="crm-gorev-form.html"><i class="fa-solid fa-list-check"></i> Görev Hatırlatması Ekle</a>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -202,13 +257,27 @@
       gun.olay.forEach(function(o){
         var T = TIP[o.tip];
         var tag = o.href ? 'a' : 'div';
-        h += '<'+tag+' class="ajd-card '+o.tip+'" data-etype="'+o.tip+'" data-santiye="'+(o.santiye||'')+'" data-rel="'+o.rel.join(' ')+'"'+(o.href?' href="'+o.href+'"':'')+'>'
-           + '<span class="ajd-time">'+o.saat+'</span><span class="ajd-type"><i class="fa-solid '+T.ic+'"></i>'+T.lbl+'</span>'
-           + '<div class="ajd-title">'+o.baslik+'</div>'
-           + '<div class="ajd-meta">'
-           + (o.santiye ? '<span><i class="fa-solid fa-helmet-safety"></i>'+o.santiye+'</span>' : '')
-           + '<span><i class="fa-solid fa-user"></i>'+o.kisi+'</span></div>'
-           + '</'+tag+'>';
+        h += '<div class="ajd-card-wrap">'
+           + '<'+tag+' class="ajd-card '+o.tip+'" data-etype="'+o.tip+'" data-santiye="'+(o.santiye||'')+'" data-rel="'+o.rel.join(' ')+'"'+(o.href?' href="'+o.href+'"':'')+'>'
+           +   '<span class="ajd-time">'+o.saat+'</span><span class="ajd-type"><i class="fa-solid '+T.ic+'"></i>'+T.lbl+'</span>'
+           +   '<div class="ajd-title">'+o.baslik+'</div>'
+           +   '<div class="ajd-meta">'
+           +   (o.santiye ? '<span><i class="fa-solid fa-helmet-safety"></i>'+o.santiye+'</span>' : '')
+           +   '<span><i class="fa-solid fa-user"></i>'+o.kisi+'</span></div>'
+           + '</'+tag+'>'
+           + '<div class="ajd-kebab-wrap">'
+           +   '<button type="button" class="ajd-kebab" aria-haspopup="true" aria-expanded="false" aria-label="İşlemler"><i class="fa-solid fa-ellipsis-vertical"></i></button>'
+           +   '<div class="gv-pop ajd-card-pop" role="menu">'
+           +     '<button type="button" data-cact="duzenle"><i class="fa-solid fa-pen"></i> Düzenle</button>'
+           +     '<button type="button" data-cact="tamamla"><i class="fa-solid fa-check"></i> Tamamlandı İşaretle</button>'
+           +     '<button type="button" data-cact="ertele"><i class="fa-solid fa-clock-rotate-left"></i> Ertele</button>'
+           +     '<button type="button" data-cact="hatirlatma"><i class="fa-solid fa-bell"></i> Hatırlatma Ekle</button>'
+           +     '<button type="button" data-cact="ata"><i class="fa-solid fa-user-plus"></i> İlgili Personele Ata</button>'
+           +     '<div class="gp-div"></div>'
+           +     '<button type="button" class="danger" data-cact="sil"><i class="fa-solid fa-trash"></i> Sil</button>'
+           +   '</div>'
+           + '</div>'
+           + '</div>';
       });
       h += '</div>';
     } else {
@@ -233,11 +302,12 @@
   function applyRoleScope(){
     if(WIDE.indexOf(GV.role) !== -1) return;
     var home = ROLE_HOME[GV.role];
-    document.querySelectorAll('.ajd-card').forEach(function(card){
+    document.querySelectorAll('.ajd-card-wrap').forEach(function(wrap){
+      var card = wrap.querySelector('.ajd-card');
       var rel = (card.getAttribute('data-rel')||'').split(' ').filter(Boolean);
       var santiye = card.getAttribute('data-santiye');
       var keep = rel.indexOf(GV.role) !== -1 || (home && santiye === home);
-      if(!keep) card.remove();
+      if(!keep) wrap.remove();
     });
     document.querySelectorAll('.ajd-day').forEach(function(day){
       var list = day.querySelector('.ajd-list');
@@ -269,9 +339,10 @@
       var shown = 0;
       document.querySelectorAll('.ajd-day').forEach(function(day){
         var vis = 0;
-        day.querySelectorAll('.ajd-card').forEach(function(card){
+        day.querySelectorAll('.ajd-card-wrap').forEach(function(wrap){
+          var card = wrap.querySelector('.ajd-card');
           var ok = (f === 'hepsi') || card.getAttribute('data-etype') === f;
-          card.hidden = !ok;
+          wrap.hidden = !ok;
           if(ok){ vis++; shown++; }
         });
         var list = day.querySelector('.ajd-list');
@@ -303,6 +374,77 @@
   document.getElementById('ajdNext').addEventListener('click', function(){
     gvToast('Gelecek haftanın programı henüz planlanmadı.', {type:'info'});
   });
+
+  /* ---- "Etkinlik Ekle" split menü — data-wip yerine gerçek dropdown. "Görev
+     Hatırlatması Ekle" tek GERÇEK href (crm-gorev-form.html); diğerleri gvToast sim. ---- */
+  (function(){
+    var addBtn = document.getElementById('ajdAddBtn');
+    var addPop = document.getElementById('ajdAddPop');
+    if(!addBtn || !addPop) return;
+    function setAddOpen(o){ addPop.classList.toggle('open', o); addBtn.setAttribute('aria-expanded', o ? 'true' : 'false'); }
+    addBtn.addEventListener('click', function(e){ e.stopPropagation(); setAddOpen(!addPop.classList.contains('open')); });
+    document.addEventListener('click', function(e){ if(!addPop.contains(e.target) && e.target !== addBtn) setAddOpen(false); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setAddOpen(false); });
+    var ADD_MSG = {
+      program:'Program ajandaya eklendi (demo).',
+      isprogrami:'İş programına eklendi (demo).',
+      not:'Not ajandaya eklendi (demo).',
+      toplanti:'Toplantı ajandaya eklendi (demo).'
+    };
+    addPop.querySelectorAll('button[data-add]').forEach(function(b){
+      b.addEventListener('click', function(){
+        setAddOpen(false);
+        gvToast(ADD_MSG[b.getAttribute('data-add')] || 'Eklendi (demo).', {type:'ok'});
+      });
+    });
+  })();
+
+  /* ---- kart işlem menüsü (⋯) [MOCK-SİM] — kart <a> olabildiği için tıklama
+     preventDefault+stopPropagation ile linki TETİKLEMEZ. "Sil" ui.js'in global
+     yıkıcı-aksiyon interceptor'ına (fa-trash ikonu → destrKind) düşer ve KENDİ
+     confirm akışını kullanır — burada AYRICA elle onaylanmaz. ---- */
+  (function(){
+    function closeAllCardMenus(){
+      document.querySelectorAll('.ajd-card-pop.open').forEach(function(p){
+        p.classList.remove('open');
+        var btn = p.parentElement.querySelector('.ajd-kebab');
+        if(btn){ btn.classList.remove('is-open'); btn.setAttribute('aria-expanded','false'); }
+      });
+    }
+    var CACT_MSG = {
+      duzenle:{msg:'düzenleme ekranı bu prototipte simülasyondur (demo).', type:'info'},
+      tamamla:{msg:'tamamlandı olarak işaretlendi.', type:'ok'},
+      ertele:{msg:'ertelendi (demo).', type:'info'},
+      hatirlatma:{msg:'için hatırlatma eklendi.', type:'ok'},
+      ata:{msg:'ilgili personele atandı (demo).', type:'info'}
+    };
+    document.addEventListener('click', function(e){
+      var kb = e.target.closest('.ajd-kebab');
+      if(kb){
+        e.preventDefault(); e.stopPropagation();
+        var pop = kb.parentElement.querySelector('.ajd-card-pop');
+        var willOpen = !pop.classList.contains('open');
+        closeAllCardMenus();
+        pop.classList.toggle('open', willOpen);
+        kb.classList.toggle('is-open', willOpen);
+        kb.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        return;
+      }
+      var item = e.target.closest('.ajd-card-pop [data-cact]');
+      if(item){
+        e.preventDefault(); e.stopPropagation();
+        var card = item.closest('.ajd-card');
+        var title = card ? (card.querySelector('.ajd-title') || {}).textContent : '';
+        var kind = item.getAttribute('data-cact');
+        closeAllCardMenus();
+        var V = CACT_MSG[kind];
+        if(V) gvToast((title ? '“' + title + '” ' : 'Etkinlik ') + V.msg, {type:V.type});
+        return;
+      }
+      if(!e.target.closest('.ajd-card-pop')) closeAllCardMenus();
+    });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeAllCardMenus(); });
+  })();
 })();
 </script>
 </body>
