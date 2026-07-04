@@ -1,7 +1,8 @@
 /* =====================================================================
    GAVIA CRM — PAYLAŞILAN UI PRİMİTİFLERİ (kabuk-bağımsız)
    gvToast · gvConfirm (+ delege yıkıcı-aksiyon onayı) · hesap dropdown ·
-   data-wip / data-soon yakalama · tablo arama + chip filtre yardımcıları ·
+   data-wip / data-soon yakalama · data-export format menüsü [MOCK-SİM] ·
+   tablo arama + chip filtre yardımcıları ·
    gvChain onay zinciri (timeline + rozet + onayla/reddet/revize aksiyonu).
    Pilot onayı sonrası KİLİTLİ (sahip: T0).
    ===================================================================== */
@@ -107,6 +108,71 @@
       ? ((window.GV && GV.STR.phase2 || 'Faz 2') + ' kapsamında — bu sürümde kilitli.')
       : ((window.GV && GV.STR.wip) || 'Bu ekran çoğaltma dalgasında eklenecek.');
     gvToast(msg, {type:'info'});
+  });
+
+  /* ---- data-export — DIŞA AKTARMA format menüsü [MOCK-SİM] ----
+     <a data-export="Kasa hareketleri"> → Excel/PDF/CSV mini-dropdown + gvToast sim.
+     Görsel: .gv-pop idiyomu; konum inline fixed (butona demirli — ata elemanın
+     position'ına bağımlı DEĞİL, ui.css dokunuşu yok). Gerçek dosya üretimi Faz 2. ---- */
+  var EXP_FMT = [
+    {ic:'fa-file-excel', lbl:'Excel (.xlsx)', f:'Excel'},
+    {ic:'fa-file-pdf',   lbl:'PDF (.pdf)',    f:'PDF'},
+    {ic:'fa-file-csv',   lbl:'CSV (.csv)',    f:'CSV'}
+  ];
+  var expMenu = null, expBtn = null;
+  function expClose(){
+    if(!expMenu) return;
+    var m = expMenu; expMenu = null;
+    m.classList.remove('open');
+    if(expBtn){ expBtn.setAttribute('aria-expanded','false'); expBtn = null; }
+    setTimeout(function(){ m.remove(); }, 180);
+  }
+  document.addEventListener('click', function(e){
+    if(expMenu && !e.target.closest('.gv-export-pop') && !e.target.closest('[data-export]')) expClose();
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') expClose(); });
+  /* kaydırmada kapat — 'scroll' DEĞİL wheel/touchmove: programatik/smooth scroll
+     (ör. resize sonrası toparlanma) menüyü açılır açılmaz kapatmasın, yalnız kullanıcı niyeti kapatsın */
+  document.addEventListener('wheel', function(){ expClose(); }, {passive:true});
+  document.addEventListener('touchmove', function(){ expClose(); }, {passive:true});
+  document.addEventListener('click', function(e){
+    var el = e.target.closest('[data-export]'); if(!el) return;
+    e.preventDefault();
+    if(expBtn === el){ expClose(); return; }   /* aynı butona tekrar tıklama = kapat */
+    expClose();
+    var name = (el.getAttribute('data-export') || '').replace(/^1$/, '').trim();
+    var menu = document.createElement('div');
+    menu.className = 'gv-pop gv-export-pop';
+    var html = '<div class="gp-head"><b>Dışa Aktar</b><span></span></div>';
+    EXP_FMT.forEach(function(F){
+      html += '<a href="#" data-fmt="' + F.f + '"><i class="fa-solid ' + F.ic + '"></i> ' + F.lbl + '</a>';
+    });
+    menu.innerHTML = html;
+    menu.querySelector('.gp-head span').textContent = name || 'Format seçin (demo)';
+    document.body.appendChild(menu);   /* önce ekle: gerçek yükseklik ölçülür (görünmez — .gv-pop opacity:0) */
+    var r = el.getBoundingClientRect();
+    menu.style.position = 'fixed';
+    menu.style.minWidth = '188px';
+    menu.style.right = Math.max(8, window.innerWidth - r.right) + 'px';
+    var h = menu.offsetHeight || 200;
+    var top = r.bottom + 8;
+    if(top + h > window.innerHeight - 8){            /* aşağı sığmıyor → yukarı dene */
+      var upTop = r.top - 8 - h;
+      top = upTop >= 8 ? upTop : Math.max(8, window.innerHeight - h - 8);   /* yukarı da sığmazsa viewport'a kelepçele */
+    }
+    menu.style.top = top + 'px';                     /* tek eksen: inline top, temel .gv-pop top kuralını her dalda ezer */
+    menu.querySelectorAll('a[data-fmt]').forEach(function(a){
+      a.addEventListener('click', function(ev){
+        ev.preventDefault(); ev.stopPropagation();
+        var f = a.getAttribute('data-fmt');
+        expClose();
+        gvToast((name ? name + ' — ' : '') + f + ' formatında hazırlanıyor (demo)', {type:'info', icon:'fa-file-arrow-down'});
+      });
+    });
+    el.setAttribute('aria-haspopup','true');
+    el.setAttribute('aria-expanded','true');
+    expBtn = el; expMenu = menu;
+    requestAnimationFrame(function(){ menu.classList.add('open'); });
   });
 
   /* ---- HESAP DROPDOWN — persona çipi (içerik: window.GV_ACCOUNT_ITEMS) ---- */
