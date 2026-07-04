@@ -97,7 +97,17 @@ th.is-today .dh-d{color:var(--acc-ink)}
 .pt-legend .lg-sw.rt{background:var(--bg);color:var(--ink-2);border:1px dashed var(--line-2)}
 .pt-legend .lg-sw.ht{background:transparent;color:var(--line-2);border:1px dashed var(--line)}
 
+/* lejant altbilgi — geç giriş/erken çıkış notu (ikincil ton, çiplerle yarışmaz) */
+.pt-legend-note{
+  flex:1 1 100%;display:flex;align-items:flex-start;gap:8px;
+  margin-top:2px;padding-top:13px;border-top:1px dashed var(--line-2);
+  font-size:11.5px;font-weight:500;color:var(--muted);line-height:1.55;
+}
+.pt-legend-note i{margin-top:2px;font-size:11px;color:var(--muted)}
+
 /* ============ Günlük Giriş paneli (MOCK-SİM — sayfa-lokal, backend yok) ============ */
+.pg-bulk{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:14px;margin-bottom:6px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.pg-bulk-lbl{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
 .pg-row{display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .pg-row:last-child{border-bottom:none}
 .pg-name{flex:1 1 220px;min-width:0}
@@ -112,6 +122,8 @@ th.is-today .dh-d{color:var(--acc-ink)}
 @media(max-width:640px){
   .pt-toolbar{padding:14px 16px}
   .pt-legend{padding:14px 16px;gap:12px}
+  .pg-bulk{flex-direction:column;align-items:stretch}
+  .pg-bulk .btn{width:100%;justify-content:center}
   .pg-ctrl,.pg-status{min-width:0;flex:1 1 100%;justify-content:flex-start}
   .pg-foot{justify-content:stretch}
   .pg-foot .btn{flex:1 1 auto;justify-content:center}
@@ -226,6 +238,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
         <span class="lg-item"><span class="lg-sw em"><i class="fa-solid fa-arrow-trend-down"></i></span> Eksik mesai (EM)</span>
         <span class="lg-item"><span class="lg-sw rt"><i class="fa-solid fa-flag"></i></span> Resmî tatil (RT)</span>
         <span class="lg-item"><span class="lg-sw ht"><i class="fa-solid fa-moon"></i></span> Hafta tatili (HT)</span>
+        <div class="pt-legend-note"><i class="fa-solid fa-circle-info"></i> Geç giriş veya erken çıkış için ayrı bir puantaj kodu yoktur; bu durumlar mevcut kodlarla işlenir — gün yarıda kesiliyorsa "Yarım gün", tam gün içindeki kısa eksik ise "Eksik mesai (EM)" olarak kaydedilir.</div>
       </div>
     </div>
   </main>
@@ -395,6 +408,10 @@ th.is-today .dh-d{color:var(--acc-ink)}
 
     var tint = SANTIYE_TINT[santiye];
     var html = '';
+    if(editable){
+      html += '<div class="pg-bulk"><span class="pg-bulk-lbl"><i class="fa-solid fa-layer-group"></i> Toplu Aksiyon — '+SANTIYE_ADI[santiye]+'</span>'
+            + '<button type="button" class="btn btn-ghost btn-sm" id="btnGunlukTumTam" data-no-confirm><i class="fa-solid fa-check-double"></i> Tümünü Tam Gün İşaretle</button></div>';
+    }
     rows.forEach(function(p){
       var kayitli = rec && rec.entries && rec.entries[p.ad];
       var val = kayitli || p.gunler[TODAY_IDX] || 'tam';
@@ -435,6 +452,25 @@ th.is-today .dh-d{color:var(--acc-ink)}
     if(foot) gunlukBody.insertAdjacentHTML('beforeend', foot);
 
     if(editable){
+      document.getElementById('btnGunlukTumTam').addEventListener('click', function(){
+        var selects = Array.prototype.slice.call(gunlukBody.querySelectorAll('select[data-ad]'));
+        var degisecek = selects.filter(function(s){ return s.value !== 'tam'; });
+        function uygula(){
+          selects.forEach(function(s){ s.value = 'tam'; });
+          gvToast(selects.length + ' personel "Tam gün" olarak işaretlendi.', {type:'ok'});
+        }
+        if(!selects.length) return;
+        if(degisecek.length){
+          gvConfirm({
+            icon:'fa-check-double', ok:'Tümünü İşaretle', cancel:'Vazgeç',
+            title:'Tümü Tam Gün olarak işaretlensin mi?',
+            message: SANTIYE_ADI[santiye] + ' şantiyesinde ' + degisecek.length + ' personelin farklı işaretli durumu (yarım gün, izinli, raporlu vb.) "Tam gün" ile değiştirilecek. Bu değişiklik İK onayına gönderilene kadar kaydedilmez.',
+            onConfirm: uygula
+          });
+        } else {
+          uygula();
+        }
+      });
       document.getElementById('btnGunlukGonder').addEventListener('click', function(){
         var entries = {};
         Array.prototype.forEach.call(gunlukBody.querySelectorAll('select[data-ad]'), function(s){ entries[s.getAttribute('data-ad')] = s.value; });
