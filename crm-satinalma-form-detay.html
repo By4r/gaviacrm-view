@@ -47,7 +47,8 @@
 .kal-total .kal-tutar{color:var(--acc-ink)}
 
 .teklif-note{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:12px;display:flex;align-items:flex-start;gap:8px}
-.teklif-note i{color:var(--acc-ink);margin-top:2px}
+.teklif-note i{color:var(--acc-ink);margin-top:2px;flex:none}
+.teklif-note span{flex:1;min-width:0}
 .kal-teslim{font-size:11.5px;color:var(--muted);font-weight:500}
 
 /* belge ekleri */
@@ -200,6 +201,8 @@
                 <span>Hazır beton C30 + demir çubuk Ø12 talebi</span>
               </div>
             </div>
+            <!-- K6 fix: MLZ-2026-046 iki kaleme bölünerek iki forma çıktı; bu form yalnız beton kalemini kapsar. -->
+            <p class="teklif-note"><i class="fa-solid fa-circle-info"></i><span>Bu form, MLZ-2026-046'nın yalnız hazır beton kalemini kapsar. Demir Ø12 (2 ton) kalemi ayrı bir sipariş olarak <a href="crm-satinalma-formlar.html" style="color:var(--acc-ink);font-weight:700;white-space:nowrap">SAT-2026-013</a> (₺86.200, Marmara Demir Çelik) formunda işlenir.</span></p>
           </div>
           <div class="gd-block">
             <div class="ctx-row"><span class="ctx-lbl">Şantiye</span><span class="ctx-val">Vadi Konakları</span></div>
