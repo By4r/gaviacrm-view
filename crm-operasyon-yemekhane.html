@@ -99,7 +99,7 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
         <div class="ph-sub" id="ykSub">Yükleniyor…</div>
       </div>
       <div class="ph-actions">
-        <a class="btn btn-acc btn-sm" href="#" data-wip="1"><i class="fa-solid fa-plus"></i> Sayım Gir</a>
+        <a class="btn btn-acc btn-sm" href="crm-operasyon-yemekhane-sayim-form.html"><i class="fa-solid fa-plus"></i> Sayım Gir</a>
       </div>
     </div>
 
@@ -170,6 +170,27 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
         <span class="ph-sub" style="margin:0">29 Haziran – 5 Temmuz 2026</span>
       </div>
       <div class="week-strip" id="weekStrip"></div>
+    </div>
+
+    <div class="gv-card" style="margin-top:20px">
+      <div class="gc-head">
+        <div class="gc-title"><i class="fa-solid fa-clipboard-list"></i> Son Sayımlar</div>
+      </div>
+      <div class="gc-body flush">
+        <table class="gtable" id="tblSonSayim">
+          <thead>
+            <tr>
+              <th>Kayıt No</th>
+              <th>Tarih</th>
+              <th class="num">Toplam</th>
+            </tr>
+          </thead>
+          <tbody id="sonSayimBody"></tbody>
+        </table>
+      </div>
+      <div class="gc-foot">
+        <span><i class="fa-solid fa-circle-info"></i> Sayımlar haftalık özet şeridiyle aynı günlük toplamları listeler; yalnız YMK-2026-004 için temsili bir detay sayfası bulunur.</span>
+      </div>
     </div>
   </main>
 </div>
@@ -272,6 +293,26 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
         + '</div>';
   });
   strip.innerHTML = wh;
+
+  /* ---- Son Sayımlar — kayıt listesi (Y2), haftalık özet şeridiyle (HAFTA dizisi)
+     BİREBİR aynı günlük toplamlar (218/225/220/223). Yalnız YMK-2026-004 gerçekten var
+     olan crm-operasyon-yemekhane-sayim-detay.html'in temsil ettiği kayıtla eşleştiği
+     için tıklanabilir — crm-santiye-isg.html'deki tek-temsili-detay emseliyle aynı
+     gerekçe: diğer 3 kayda aynı detay sayfasını bağlarsak tarih/toplam uyuşmazlığı
+     doğar, bu yüzden yalnız 004 linklenir, kalanı düz metin kalır. ---- */
+  var SAYIMLAR = [
+    {no:'YMK-2026-001', tarih:'Pzt 29 Haz 2026', toplam:218},
+    {no:'YMK-2026-002', tarih:'Sal 30 Haz 2026',  toplam:225},
+    {no:'YMK-2026-003', tarih:'Çar 1 Tem 2026',   toplam:220},
+    {no:'YMK-2026-004', tarih:'Per 2 Tem 2026',   toplam:genelToplam, linkli:true}
+  ];
+  var sonSayimBody = document.getElementById('sonSayimBody');
+  var sh = '';
+  SAYIMLAR.forEach(function(s){
+    var noCell = s.linkli ? '<a href="crm-operasyon-yemekhane-sayim-detay.html">'+s.no+'</a>' : s.no;
+    sh += '<tr><td>'+noCell+'</td><td>'+s.tarih+'</td><td class="num t-strong">'+s.toplam+'</td></tr>';
+  });
+  sonSayimBody.innerHTML = sh;
 
   /* şef tek şantiye görür — kadro dışı satırlar kalıcı kaldırılır, toplamlar kendi sahasına daralır */
   if(GV.role === 'sef'){

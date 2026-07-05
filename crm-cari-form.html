@@ -127,6 +127,10 @@
                 <label class="tip-opt" data-t="tedarikci"><input type="radio" name="tur" value="tedarikci"> Tedarikçi</label>
               </div>
             </div>
+            <div class="gfield kisi-only" hidden>
+              <label for="fTc">TC Kimlik No <span class="gf-hint">(mock — maskeli)</span></label>
+              <input type="text" id="fTc" placeholder="123••••••67" maxlength="11" inputmode="numeric">
+            </div>
             <div class="gfield kurum-only">
               <label for="fVD">Vergi Dairesi</label>
               <input type="text" id="fVD" placeholder="örn. Kadıköy V.D.">
@@ -251,6 +255,7 @@
     kayitTuru = tip;
     var isKisi = tip === 'kisi';
     document.querySelectorAll('.kurum-only').forEach(function(el){ el.hidden = isKisi; });
+    document.querySelectorAll('.kisi-only').forEach(function(el){ el.hidden = !isKisi; });
     document.getElementById('lblAd').textContent = isKisi ? 'Ad Soyad' : 'Firma Adı';
     document.getElementById('fAd').placeholder = isKisi ? 'örn. Ahmet Yılmaz' : 'örn. Trakya Yalıtım San. Tic. Ltd.';
     document.getElementById('ficoTitle').className = 'fa-solid ' + (isKisi ? 'fa-user' : 'fa-building');
@@ -302,7 +307,17 @@
   ['fAd','fKisi','fUnvan','fTel'].forEach(function(id){
     document.getElementById(id).addEventListener('input', syncPreview);
   });
-  applyKayit('kurum');
+
+  /* K6: ?kayit=kisi ile açılışta form doğrudan Kişi moduna geçer (crm-cari-kisiler.html
+     "Yeni Kişi" linki bu parametreyle gelir) — Kayıt Türü chip'i de senkron işaretlenir.
+     Param yoksa mevcut varsayılan (kurum) korunur. */
+  var initialKayit = (new URLSearchParams(location.search)).get('kayit') === 'kisi' ? 'kisi' : 'kurum';
+  document.querySelectorAll('#kayitGroup .tip-opt').forEach(function(o){
+    var on = o.getAttribute('data-t') === initialKayit;
+    o.classList.toggle('is-on', on);
+    o.querySelector('input').checked = on;
+  });
+  applyKayit(initialKayit);
 
   /* çoğaltılabilir bloklar — Şube adresi (kurum-only) + Telefon + E-posta.
      cloneNode sayfa-lokal; Kurum→Kişi→Kurum round-trip'te klonlar yalnız
