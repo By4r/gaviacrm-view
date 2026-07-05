@@ -26,6 +26,8 @@
 .ig-mark{width:38px;height:38px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:14px;background:var(--bg);color:var(--ink-2);border:1px solid var(--line)}
 .ig-info{min-width:0;line-height:1.35}
 .ig-info b{display:block;font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap}
+.ig-info b a{color:inherit}
+.ig-info b a:hover{color:var(--acc-ink)}
 .ig-info span{font-size:11.5px;color:var(--muted)}
 
 .ig-konu{max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
@@ -70,7 +72,7 @@
         <div class="ph-sub" id="igSub">Yükleniyor…</div>
       </div>
       <div class="ph-actions">
-        <a class="btn btn-acc btn-sm" href="#" data-wip="1"><i class="fa-solid fa-plus"></i> Yeni Tutanak</a>
+        <a class="btn btn-acc btn-sm" href="crm-santiye-isg-form.html"><i class="fa-solid fa-plus"></i> Yeni Tutanak</a>
       </div>
     </div>
 
@@ -182,10 +184,16 @@
 
   var body = document.getElementById('igBody');
   var html = '';
+  /* Yalnız ISG-2026-008, gerçekten var olan crm-santiye-isg-detay.html'in temsil ettiği
+     kayıtla eşleştiği için tıklanabilir — Dalga 6A'da tek bir temsili detay sayfası
+     üretildi (bkz. crm-santiye-isg-detay.html). Diğer 10 kayıt için aynı detay sayfasına
+     bağlarsak numara/tarih/sorumlu uyuşmazlığı doğar (ör. ISG-2026-011 tıklanınca 008'in
+     verileri görünürdü); bu yüzden yalnız 008 linklenir, kalanı düz metin kalır. */
   KAYITLAR.forEach(function(k){
     var T = TUR[k.tur];
+    var noCell = (k.no === 'ISG-2026-008') ? '<a href="crm-santiye-isg-detay.html">'+k.no+'</a>' : k.no;
     html += '<tr data-san="'+k.santiye+'" data-tur="'+k.tur+'">';
-    html += '<td><div class="ig-cell"><div class="ig-mark"><i class="fa-solid '+T.ic+'"></i></div><div class="ig-info"><b>'+k.no+'</b><span>'+k.tarih+'</span></div></div></td>';
+    html += '<td><div class="ig-cell"><div class="ig-mark"><i class="fa-solid '+T.ic+'"></i></div><div class="ig-info"><b>'+noCell+'</b><span>'+k.tarih+'</span></div></div></td>';
     html += '<td>'+SANTIYE_ADI[k.santiye]+'</td>';
     html += '<td><span class="gtag"><i class="fa-solid '+T.ic+'"></i>'+T.lbl+'</span></td>';
     html += '<td><span class="ig-konu">'+k.konu+'</span></td>';
