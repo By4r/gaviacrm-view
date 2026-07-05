@@ -165,6 +165,42 @@ body{
 
 .kp-row-div{border-top:1px solid var(--hair)}
 
+/* stat satırı — tekil metrik (ikon + etiket/alt-metin + büyük sayı) [6D T-kiosk] */
+.stat-row{display:flex;align-items:center;gap:13px;padding:15px 22px}
+.stat-ico{width:34px;height:34px;flex:none;border-radius:9px;display:grid;place-items:center;font-size:13px}
+.stat-txt{flex:1;min-width:0;line-height:1.4}
+.stat-txt b{display:block;font-size:13.5px;font-weight:700;color:var(--on-dark)}
+.stat-txt span{display:block;font-size:11.5px;color:var(--on-dark-mut);margin-top:2px}
+.stat-num{flex:none;font-size:20px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+
+/* rol çipi — üst şeritte küçük persona etiketi [6D T-kiosk] */
+.k-role-chip{
+  display:inline-flex;align-items:center;margin-left:2px;
+  padding:4px 11px;border-radius:var(--r-pill);border:1px solid var(--gv-border-dark);
+  font-size:11px;font-weight:700;color:var(--on-dark-mut);letter-spacing:.02em;
+}
+.k-role-chip[hidden]{display:none}
+
+/* şef tekil şantiye kartı — 3'lü grid yerine ortalanmış tek kart [6D T-kiosk] */
+.site-grid.single{grid-template-columns:minmax(0,640px);justify-content:center}
+
+/* muhasebe 4 panelli gündem satırı [6D T-kiosk] */
+.bottom-grid.cols-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:1439px){.bottom-grid.cols-4{grid-template-columns:1fr 1fr}}
+@media(max-width:1099px){.bottom-grid.cols-4{grid-template-columns:1fr}}
+
+/* jenerik — tekil ajanda paneli + alt not [6D T-kiosk] */
+.bottom-grid.solo{grid-template-columns:minmax(0,620px);justify-content:center}
+.k-note-line{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:22px;font-size:12.5px;font-weight:600;color:var(--on-dark-faint);
+}
+.k-note-line i{color:var(--gv-mint);font-size:11px}
+
+@media(max-width:640px){
+  .site-grid.single{grid-template-columns:1fr}
+}
+
 /* alt imza şeridi */
 .kiosk-foot{
   flex:none;display:flex;align-items:center;gap:10px;
@@ -209,6 +245,8 @@ body{
   <div class="k-tenant"><i class="fa-solid fa-building"></i> Yapıtaş İnşaat A.Ş.
     <span class="k-live"><span class="dot"></span>CANLI</span>
   </div>
+  <!-- rol çipi: JS rol MAP'ine göre metni set eder, jenerik'te gizli [6D T-kiosk] -->
+  <span class="k-role-chip" id="kRoleChip" hidden></span>
   <div class="k-clockwrap">
     <div class="k-clock">
       <div class="hm" id="kHm">--:--<span class="s" id="kS">--</span></div>
@@ -220,6 +258,8 @@ body{
 
 <main class="kiosk-main">
 
+  <!-- ============ GM (superadmin/sahip/yonetim) — 4C onaylı içerik AYNEN [6D T-kiosk] ============ -->
+  <div class="k-view" data-view="gm">
   <div class="k-eyebrow"><i class="fa-solid fa-helmet-safety"></i> Şantiye Durumu</div>
   <div class="site-grid">
     <div class="site-card">
@@ -344,6 +384,518 @@ body{
     </div>
 
   </div>
+  </div><!-- /data-view="gm" -->
+
+  <!-- ============ TEKNIK (Teknik Müdür — Elif Sarıkaya bakışı) [6D T-kiosk]
+       Şantiye 3 kart GM ile AYNEN (kiosk mevcut :226-258). Açık İSG tutanak 4 =
+       ISG-007/008/009/010 açık durumlar (crm-santiye-isg.html:173-176). Geciken
+       görev 3 = crm-gorev.html:121 "Gecikenler" chip. Aktif makine 5/6, MKN-06
+       arızalı = assets/js/shell.js:44-51/144 (Merkez, Beko Loder JCB 3CX,
+       ARIZALI hidrolik, servis kaydı 2 Tem 2026 — 6 makineden 1'i arızalı).
+       Kritik Uyarılar + Ajanda: mevcut GM bloğundan seçilmiş alt küme. ============ -->
+  <div class="k-view" data-view="teknik" hidden>
+  <div class="k-eyebrow"><i class="fa-solid fa-helmet-safety"></i> Şantiye Durumu</div>
+  <div class="site-grid">
+    <div class="site-card">
+      <div class="ring" style="--pct:68;--ring-c:var(--gv-mint)">
+        <div class="ring-num"><b>%68</b><span>İlerleme</span></div>
+      </div>
+      <div class="site-info">
+        <div class="snm">Vadi Konakları</div>
+        <div class="sloc">Konut · Çekmeköy, İstanbul</div>
+        <div class="ssef"><i class="fa-solid fa-user"></i> Hasan Demirci</div>
+        <div class="snote ok"><i class="fa-solid fa-arrow-trend-up"></i> Programın 2 gün önünde</div>
+      </div>
+    </div>
+    <div class="site-card">
+      <div class="ring" style="--pct:41;--ring-c:var(--warn)">
+        <div class="ring-num"><b>%41</b><span>İlerleme</span></div>
+      </div>
+      <div class="site-info">
+        <div class="snm">Liman Lojistik Merkezi</div>
+        <div class="sloc">Ticari · Aliağa, İzmir</div>
+        <div class="ssef"><i class="fa-solid fa-user"></i> Aylin Koç</div>
+        <div class="snote warn"><i class="fa-solid fa-triangle-exclamation"></i> İş programı 6 gün geride</div>
+      </div>
+    </div>
+    <div class="site-card">
+      <div class="ring" style="--pct:86;--ring-c:var(--gv-mint)">
+        <div class="ring-num"><b>%86</b><span>İlerleme</span></div>
+      </div>
+      <div class="site-info">
+        <div class="snm">Merkez Şantiye</div>
+        <div class="sloc">Depo + atölye · Gebze, Kocaeli</div>
+        <div class="ssef"><i class="fa-solid fa-user"></i> Ömer Taşkın</div>
+        <div class="snote ok"><i class="fa-solid fa-circle-check"></i> Planlandığı gibi ilerliyor</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="k-eyebrow"><i class="fa-solid fa-chart-simple"></i> Gündem</div>
+  <div class="bottom-grid">
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-drafting-compass"></i><b>Teknik Gündem</b></div>
+      <div class="kp-body">
+        <div class="stat-row">
+          <div class="stat-ico" style="background:rgba(209,67,67,.16);color:var(--danger)"><i class="fa-solid fa-clipboard-list"></i></div>
+          <div class="stat-txt"><b>Açık İSG tutanağı</b><span>ISG-007 / 008 / 009 / 010 — aksiyon/incelemede</span></div>
+          <div class="stat-num">4</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(169,121,8,.16);color:var(--warn)"><i class="fa-solid fa-list-check"></i></div>
+          <div class="stat-txt"><b>Geciken görev</b><span>Vadesi geçmiş görevler</span></div>
+          <div class="stat-num">3</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(59,111,212,.16);color:var(--info)"><i class="fa-solid fa-truck-pickup"></i></div>
+          <div class="stat-txt"><b>Aktif makine</b><span>MKN-06 Beko Loder arızalı (hidrolik) · Merkez · servis 2 Tem</span></div>
+          <div class="stat-num">5/6</div>
+        </div>
+      </div>
+    </div>
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i><b>Kritik Uyarılar</b></div>
+      <div class="kp-body">
+        <div class="alert-row sev-danger">
+          <span class="alert-dot sev-danger"></span>
+          <div class="alert-txt"><b>ISG-2026-008 · İskele korkuluk eksikliği</b><span>Vadi Konakları · B Blok · aksiyon bekliyor</span></div>
+        </div>
+        <div class="alert-row sev-warn kp-row-div">
+          <span class="alert-dot sev-warn"></span>
+          <div class="alert-txt"><b>3 görev vadesini geçti</b><span>Perde betonu kür raporu · kalıp iskelesi sökümü…</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-calendar-day"></i><b>Ajanda</b></div>
+      <div class="kp-body">
+        <div class="ajd-row">
+          <span class="ajd-dot" style="background:var(--ok)"></span>
+          <div class="ajd-txt"><b>HKD-2026-006 · İşveren onay takibi</b><span>Körfez GYO · takipçi: Elif Sarıkaya</span></div>
+          <div class="ajd-time">14:00</div>
+        </div>
+        <div class="ajd-row kp-row-div">
+          <span class="ajd-dot" style="background:var(--on-dark-mut)"></span>
+          <div class="ajd-txt"><b>Haftalık saha koordinasyon toplantısı</b><span>Liman Lojistik Merkezi · Murat Denizli</span></div>
+          <div class="ajd-time">16:00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /data-view="teknik" -->
+
+  <!-- ============ ŞEF (Hasan Demirci — Vadi Konakları) [6D T-kiosk]
+       SIZINTI YASAĞI: bu blokta Liman/Merkez şantiye adı, diğer şantiye sayısı,
+       firma tutarı YOK — yalnız Vadi Konakları verisi. Kaynak: crm-panel.html
+       :334-353 (puantaj 49/51, açık görevim 7, bekleyen malzeme 3, %68),
+       :309-311 (ISG-2026-008), crm-panel.html:794-797 + crm-santiye-ajanda.html:229
+       (İç İSG denetimi — iskele kontrolü, Vadi, Hasan Demirci, "Yarın 11:00"),
+       SAT-2026-016 09:00 = kiosk mevcut GM ajanda satırı (Vadi'ye ait). ============ -->
+  <div class="k-view" data-view="sef" hidden>
+  <div class="k-eyebrow"><i class="fa-solid fa-helmet-safety"></i> Şantiye Durumu</div>
+  <div class="site-grid single">
+    <div class="site-card">
+      <div class="ring" style="--pct:68;--ring-c:var(--gv-mint)">
+        <div class="ring-num"><b>%68</b><span>İlerleme</span></div>
+      </div>
+      <div class="site-info">
+        <div class="snm">Vadi Konakları</div>
+        <div class="sloc">Konut · Çekmeköy, İstanbul</div>
+        <div class="ssef"><i class="fa-solid fa-user"></i> Hasan Demirci</div>
+        <div class="snote ok"><i class="fa-solid fa-arrow-trend-up"></i> Programın 2 gün önünde</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="k-eyebrow"><i class="fa-solid fa-chart-simple"></i> Gündem</div>
+  <div class="bottom-grid">
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-helmet-safety"></i><b>Bugün Sahada</b></div>
+      <div class="kp-body">
+        <div class="stat-row">
+          <div class="stat-ico" style="background:var(--gv-mint-glow);color:var(--gv-mint)"><i class="fa-solid fa-user-clock"></i></div>
+          <div class="stat-txt"><b>Bugünkü puantaj</b><span>2 raporlu</span></div>
+          <div class="stat-num">49/51</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(169,121,8,.16);color:var(--warn)"><i class="fa-solid fa-list-check"></i></div>
+          <div class="stat-txt"><b>Açık görevim</b><span>2'si gecikmede</span></div>
+          <div class="stat-num">7</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(59,111,212,.16);color:var(--info)"><i class="fa-solid fa-boxes-stacked"></i></div>
+          <div class="stat-txt"><b>Bekleyen malzeme talebim</b><span>1'i onayda</span></div>
+          <div class="stat-num">3</div>
+        </div>
+      </div>
+    </div>
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i><b>Kritik Uyarılar</b></div>
+      <div class="kp-body">
+        <div class="alert-row sev-danger">
+          <span class="alert-dot sev-danger"></span>
+          <div class="alert-txt"><b>ISG-2026-008 · İskele korkuluk eksikliği</b><span>B Blok · aksiyon bekliyor</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-calendar-day"></i><b>Ajanda</b></div>
+      <div class="kp-body">
+        <div class="ajd-row">
+          <span class="ajd-dot" style="background:var(--danger)"></span>
+          <div class="ajd-txt"><b>SAT-2026-016 · Kalıp kerestesi teslimi</b><span>Ege Hazır Beton</span></div>
+          <div class="ajd-time">09:00</div>
+        </div>
+        <div class="ajd-row kp-row-div">
+          <span class="ajd-dot" style="background:var(--info)"></span>
+          <div class="ajd-txt"><b>İç İSG denetimi — iskele kontrolü</b><span>Hasan Demirci</span></div>
+          <div class="ajd-time">Yarın 11:00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /data-view="sef" -->
+
+  <!-- ============ MUHASEBE (Nesrin Aydın) [6D T-kiosk]
+       Onayımdaki İşlemler = AVN-2026-014 ₺4.000 + TH-2026-014 ₺90.000 +
+       TH-2026-009 ₺76.200 (crm-panel.html:665-702, toplam ₺170.200). Kasa &
+       Cari = crm-operasyon-kasa.html:106-116 (girişi ₺60.000/1 kayıt, çıkışı
+       ₺28.150/2 rapor, onay bekleyen 2) + crm-panel.html:650-656 (vadesi geçen
+       cari 2, borç ₺822.450). Hakediş = crm-finans-kurum.html:95 (₺1.630.000) +
+       crm-finans-taseron.html:88 (₺166.200). Ajanda: HKD-006 14:00 (mevcut GM
+       ajanda satırı). ============ -->
+  <div class="k-view" data-view="muhasebe" hidden>
+  <div class="k-eyebrow"><i class="fa-solid fa-chart-simple"></i> Gündem</div>
+  <div class="bottom-grid cols-4">
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-stamp"></i><b>Onayımdaki İşlemler</b><span class="kp-cnt">3</span></div>
+      <div style="padding:0 22px 10px;margin-top:-6px;font-size:12px;font-weight:700;color:var(--on-dark-mut)">Toplam ₺170.200</div>
+      <div class="kp-body">
+        <div class="ajd-row">
+          <span class="ajd-dot" style="background:var(--ok)"></span>
+          <div class="ajd-txt"><b>AVN-2026-014 · Ali Vural</b><span>Avans talebi · maaşa mahsuben</span></div>
+          <div class="ajd-time">₺4.000</div>
+        </div>
+        <div class="ajd-row kp-row-div">
+          <span class="ajd-dot" style="background:var(--gv-mint)"></span>
+          <div class="ajd-txt"><b>TH-2026-014 · Demir-Beton İnş.</b><span>Taşeron hakediş · Haziran dönemi</span></div>
+          <div class="ajd-time">₺90.000</div>
+        </div>
+        <div class="ajd-row kp-row-div">
+          <span class="ajd-dot" style="background:var(--gv-mint)"></span>
+          <div class="ajd-txt"><b>TH-2026-009 · ElektroMek Taahhüt</b><span>Taşeron hakediş · Haziran dönemi</span></div>
+          <div class="ajd-time">₺76.200</div>
+        </div>
+      </div>
+    </div>
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-cash-register"></i><b>Kasa &amp; Cari</b></div>
+      <div class="kp-body">
+        <div class="stat-row">
+          <div class="stat-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-sack-dollar"></i></div>
+          <div class="stat-txt"><b>Kasa girişi</b><span>1 kayıt · Temmuz 2026</span></div>
+          <div class="stat-num">₺60.000</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(169,121,8,.16);color:var(--warn)"><i class="fa-solid fa-cash-register"></i></div>
+          <div class="stat-txt"><b>Kasa çıkışı</b><span>2 rapor · onay bekleyen 2</span></div>
+          <div class="stat-num">₺28.150</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(209,67,67,.16);color:var(--danger)"><i class="fa-solid fa-scale-balanced"></i></div>
+          <div class="stat-txt"><b>Vadesi geçen cari hesap</b><span>borç toplamı ₺822.450</span></div>
+          <div class="stat-num">2</div>
+        </div>
+      </div>
+    </div>
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-file-signature"></i><b>Hakediş</b></div>
+      <div class="kp-body">
+        <div class="stat-row">
+          <div class="stat-ico" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-building"></i></div>
+          <div class="stat-txt"><b>Kurum hakedişi onayda</b><span>HKD-2026-006 · Körfez GYO</span></div>
+          <div class="stat-num">₺1,63M</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)"><i class="fa-solid fa-people-arrows"></i></div>
+          <div class="stat-txt"><b>Taşeron hakedişi onayda</b><span>Demir-Beton, ElektroMek</span></div>
+          <div class="stat-num">₺166.200</div>
+        </div>
+      </div>
+    </div>
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-calendar-day"></i><b>Ajanda</b></div>
+      <div class="kp-body">
+        <div class="ajd-row">
+          <span class="ajd-dot" style="background:var(--ok)"></span>
+          <div class="ajd-txt"><b>HKD-2026-006 · İşveren onay takibi</b><span>Körfez GYO · Elif Sarıkaya</span></div>
+          <div class="ajd-time">14:00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /data-view="muhasebe" -->
+
+  <!-- ============ SATINALMA (Baran Yıldız) [6D T-kiosk]
+       Talep & Sipariş: onay bekleyen talep 7 (crm-satinalma-talepler.html:83,
+       "En eski 6 gündür bekliyor"), aktif form 5 (crm-satinalma-formlar.html:79),
+       bu ay verilen sipariş tutarı ₺347.200 (crm-satinalma-formlar.html:84 —
+       DÜZELTME: envanterde talepler.html:84 olarak anıldı, gerçek kaynak
+       formlar.html:84). Termin Takibi + Ajanda: crm-panel.html:607-621 /
+       kiosk mevcut GM ajanda satırı (SAT-016). ============ -->
+  <div class="k-view" data-view="satinalma" hidden>
+  <div class="k-eyebrow"><i class="fa-solid fa-chart-simple"></i> Gündem</div>
+  <div class="bottom-grid">
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-cart-shopping"></i><b>Talep &amp; Sipariş</b></div>
+      <div class="kp-body">
+        <div class="stat-row">
+          <div class="stat-ico" style="background:rgba(169,121,8,.16);color:var(--warn)"><i class="fa-solid fa-hourglass-half"></i></div>
+          <div class="stat-txt"><b>Onay sürecindeki talep</b><span>En eski 6 gündür bekliyor</span></div>
+          <div class="stat-num">7</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(59,111,212,.16);color:var(--info)"><i class="fa-solid fa-file-lines"></i></div>
+          <div class="stat-txt"><b>Aktif form</b><span>satın alma sürecinde</span></div>
+          <div class="stat-num">5</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:var(--gv-mint-glow);color:var(--gv-mint)"><i class="fa-solid fa-sack-dollar"></i></div>
+          <div class="stat-txt"><b>Bu ay verilen sipariş</b><span>tutar toplamı</span></div>
+          <div class="stat-num">₺347.200</div>
+        </div>
+      </div>
+    </div>
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-truck-ramp-box"></i><b>Termin Takibi</b></div>
+      <div class="kp-body">
+        <div class="ajd-row">
+          <span class="ajd-dot" style="background:var(--danger)"></span>
+          <div class="ajd-txt"><b>SAT-2026-011 · XPS yalıtım gecikti</b><span>Ege Hazır Beton · Merkez Şantiye</span></div>
+          <div class="ajd-time" style="color:var(--danger)">2 gün</div>
+        </div>
+        <div class="ajd-row kp-row-div">
+          <span class="ajd-dot" style="background:var(--warn)"></span>
+          <div class="ajd-txt"><b>SAT-2026-016 · Kalıp kerestesi teslimi</b><span>Vadi Konakları · Ege Hazır Beton</span></div>
+          <div class="ajd-time">Bugün</div>
+        </div>
+        <div class="ajd-row kp-row-div">
+          <span class="ajd-dot" style="background:var(--info)"></span>
+          <div class="ajd-txt"><b>SAT-2026-012 · Elektrik kablosu NYY</b><span>Merkez Şantiye · termin 3 Temmuz</span></div>
+          <div class="ajd-time">Yarın</div>
+        </div>
+      </div>
+    </div>
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-calendar-day"></i><b>Ajanda</b></div>
+      <div class="kp-body">
+        <div class="ajd-row">
+          <span class="ajd-dot" style="background:var(--danger)"></span>
+          <div class="ajd-txt"><b>SAT-2026-016 · Kalıp kerestesi teslimi</b><span>Vadi Konakları · Ege Hazır Beton</span></div>
+          <div class="ajd-time">09:00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /data-view="satinalma" -->
+
+  <!-- ============ İK (Seda Karaca) [6D T-kiosk]
+       İK Kuyruğum: puantaj onay bekleyen 3/Taslak (crm-panel.html:474),
+       İZN-2026-031 onay bekleyen 1 (crm-personel-izin.html:71/122/212), avans
+       bekleyen ₺7.500 (crm-personel-avans.html:70). Kadro & Evrak: toplam kadro
+       22/1 izinli (crm-personel.html:83), eksik evrak 4 / süresi yaklaşan 6
+       (crm-panel.html:481-487). Yaklaşan İzinler: Aylin Koç İZN-030 + Ali Vural
+       İZN-031 (crm-panel.html:807-815). ============ -->
+  <div class="k-view" data-view="ik" hidden>
+  <div class="k-eyebrow"><i class="fa-solid fa-chart-simple"></i> Gündem</div>
+  <div class="bottom-grid">
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-inbox"></i><b>İK Kuyruğum</b></div>
+      <div class="kp-body">
+        <div class="stat-row">
+          <div class="stat-ico" style="background:rgba(169,121,8,.16);color:var(--warn)"><i class="fa-solid fa-user-clock"></i></div>
+          <div class="stat-txt"><b>Onay bekleyen puantaj girişi</b><span>2 Temmuz · durum: Taslak</span></div>
+          <div class="stat-num">3</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-umbrella-beach"></i></div>
+          <div class="stat-txt"><b>İzin onay bekleyen</b><span>İZN-2026-031 · Ali Vural</span></div>
+          <div class="stat-num">1</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+          <div class="stat-txt"><b>Avans bekleyen</b><span>onay sürecinde</span></div>
+          <div class="stat-num">₺7.500</div>
+        </div>
+      </div>
+    </div>
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-folder-tree"></i><b>Kadro &amp; Evrak</b></div>
+      <div class="kp-body">
+        <div class="stat-row">
+          <div class="stat-ico" style="background:var(--gv-mint-glow);color:var(--gv-mint)"><i class="fa-solid fa-users"></i></div>
+          <div class="stat-txt"><b>Toplam kadro</b><span>1 bugün izinli</span></div>
+          <div class="stat-num">22</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(209,67,67,.16);color:var(--danger)"><i class="fa-solid fa-folder-open"></i></div>
+          <div class="stat-txt"><b>Eksik evrak</b><span>işe giriş evrakları tamamlanmalı</span></div>
+          <div class="stat-num">4</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(169,121,8,.16);color:var(--warn)"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <div class="stat-txt"><b>Süresi yaklaşan evrak</b><span>sertifika / sağlık raporu yenilemesi</span></div>
+          <div class="stat-num">6</div>
+        </div>
+      </div>
+    </div>
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-umbrella-beach"></i><b>Yaklaşan İzinler</b></div>
+      <div class="kp-body">
+        <div class="ajd-row">
+          <span class="ajd-dot" style="background:var(--info)"></span>
+          <div class="ajd-txt"><b>Aylin Koç · Yıllık izin</b><span>İZN-2026-030 · 1–3 Temmuz · son gün yarın</span></div>
+          <div class="ajd-time">İzinli</div>
+        </div>
+        <div class="ajd-row kp-row-div">
+          <span class="ajd-dot" style="background:var(--warn)"></span>
+          <div class="ajd-txt"><b>Ali Vural · Yıllık izin talebi</b><span>İZN-2026-031 · 6–10 Temmuz · şef onayında</span></div>
+          <div class="ajd-time" style="color:var(--warn)">Onayda</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /data-view="ik" -->
+
+  <!-- ============ SAHA (Ali Vural — Saha Personeli) [6D T-kiosk]
+       Bugünüm: açık görevim 2, izin bakiyem 14 gün/İZN-031 onayda, bekleyen
+       talebim 2 (crm-panel.html:413-434). Yemekhane: kahvaltı 84/öğle 93/akşam
+       46 öğün (assets/js/shell.js:126-127/145-146, crm-operasyon-yemekhane.html) —
+       tutar saha personeline gösterilmez. Ajanda: koordinasyon 16:00 (kiosk
+       mevcut GM ajanda satırı). ============ -->
+  <div class="k-view" data-view="saha" hidden>
+  <div class="k-eyebrow"><i class="fa-solid fa-chart-simple"></i> Gündem</div>
+  <div class="bottom-grid">
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-user"></i><b>Bugünüm</b></div>
+      <div class="kp-body">
+        <div class="stat-row">
+          <div class="stat-ico" style="background:rgba(169,121,8,.16);color:var(--warn)"><i class="fa-solid fa-list-check"></i></div>
+          <div class="stat-txt"><b>Açık görevim</b><span>puantaj defteri · 3 Temmuz</span></div>
+          <div class="stat-num">2</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(59,111,212,.16);color:var(--info)"><i class="fa-solid fa-stamp"></i></div>
+          <div class="stat-txt"><b>Bekleyen talebim</b><span>izin + avans onayda</span></div>
+          <div class="stat-num">2</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:var(--gv-mint-glow);color:var(--gv-mint)"><i class="fa-solid fa-umbrella-beach"></i></div>
+          <div class="stat-txt"><b>İzin bakiyem</b><span>İZN-2026-031 onayda</span></div>
+          <div class="stat-num">14 gün</div>
+        </div>
+      </div>
+    </div>
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-utensils"></i><b>Yemekhane (bugün)</b></div>
+      <div class="kp-body">
+        <div class="stat-row">
+          <div class="stat-ico" style="background:rgba(169,121,8,.16);color:var(--warn)"><i class="fa-solid fa-mug-saucer"></i></div>
+          <div class="stat-txt"><b>Kahvaltı</b><span>alınan öğün</span></div>
+          <div class="stat-num">84</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(59,111,212,.16);color:var(--info)"><i class="fa-solid fa-bowl-food"></i></div>
+          <div class="stat-txt"><b>Öğle</b><span>alınan öğün</span></div>
+          <div class="stat-num">93</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:var(--gv-mint-glow);color:var(--gv-mint)"><i class="fa-solid fa-moon"></i></div>
+          <div class="stat-txt"><b>Akşam</b><span>alınan öğün</span></div>
+          <div class="stat-num">46</div>
+        </div>
+      </div>
+    </div>
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-calendar-day"></i><b>Ajanda</b></div>
+      <div class="kp-body">
+        <div class="ajd-row">
+          <span class="ajd-dot" style="background:var(--on-dark-mut)"></span>
+          <div class="ajd-txt"><b>Haftalık saha koordinasyon toplantısı</b><span>Liman Lojistik Merkezi · Murat Denizli</span></div>
+          <div class="ajd-time">16:00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div><!-- /data-view="saha" -->
+
+  <!-- ============ JENERİK (rol tanınmıyor/boş) [6D T-kiosk]
+       Rol-nötr: şantiye 3 kart + Ajanda 3 olay GM ile AYNEN (onay/uyarı
+       panelleri rol-özel olduğu için YOK). Alt not tek satır, buton yok. ============ -->
+  <div class="k-view" data-view="jenerik" hidden>
+  <div class="k-eyebrow"><i class="fa-solid fa-helmet-safety"></i> Şantiye Durumu</div>
+  <div class="site-grid">
+    <div class="site-card">
+      <div class="ring" style="--pct:68;--ring-c:var(--gv-mint)">
+        <div class="ring-num"><b>%68</b><span>İlerleme</span></div>
+      </div>
+      <div class="site-info">
+        <div class="snm">Vadi Konakları</div>
+        <div class="sloc">Konut · Çekmeköy, İstanbul</div>
+        <div class="ssef"><i class="fa-solid fa-user"></i> Hasan Demirci</div>
+        <div class="snote ok"><i class="fa-solid fa-arrow-trend-up"></i> Programın 2 gün önünde</div>
+      </div>
+    </div>
+    <div class="site-card">
+      <div class="ring" style="--pct:41;--ring-c:var(--warn)">
+        <div class="ring-num"><b>%41</b><span>İlerleme</span></div>
+      </div>
+      <div class="site-info">
+        <div class="snm">Liman Lojistik Merkezi</div>
+        <div class="sloc">Ticari · Aliağa, İzmir</div>
+        <div class="ssef"><i class="fa-solid fa-user"></i> Aylin Koç</div>
+        <div class="snote warn"><i class="fa-solid fa-triangle-exclamation"></i> İş programı 6 gün geride</div>
+      </div>
+    </div>
+    <div class="site-card">
+      <div class="ring" style="--pct:86;--ring-c:var(--gv-mint)">
+        <div class="ring-num"><b>%86</b><span>İlerleme</span></div>
+      </div>
+      <div class="site-info">
+        <div class="snm">Merkez Şantiye</div>
+        <div class="sloc">Depo + atölye · Gebze, Kocaeli</div>
+        <div class="ssef"><i class="fa-solid fa-user"></i> Ömer Taşkın</div>
+        <div class="snote ok"><i class="fa-solid fa-circle-check"></i> Planlandığı gibi ilerliyor</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="k-eyebrow"><i class="fa-solid fa-chart-simple"></i> Gündem</div>
+  <div class="bottom-grid solo">
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-calendar-day"></i><b>Ajanda</b></div>
+      <div class="kp-body">
+        <div class="ajd-row">
+          <span class="ajd-dot" style="background:var(--danger)"></span>
+          <div class="ajd-txt"><b>SAT-2026-016 · Kalıp kerestesi teslimi</b><span>Vadi Konakları · Ege Hazır Beton</span></div>
+          <div class="ajd-time">09:00</div>
+        </div>
+        <div class="ajd-row kp-row-div">
+          <span class="ajd-dot" style="background:var(--ok)"></span>
+          <div class="ajd-txt"><b>HKD-2026-006 · İşveren onay takibi</b><span>Körfez GYO · Elif Sarıkaya</span></div>
+          <div class="ajd-time">14:00</div>
+        </div>
+        <div class="ajd-row kp-row-div">
+          <span class="ajd-dot" style="background:var(--on-dark-mut)"></span>
+          <div class="ajd-txt"><b>Haftalık saha koordinasyon toplantısı</b><span>Liman Lojistik Merkezi · Murat Denizli</span></div>
+          <div class="ajd-time">16:00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="k-note-line"><i class="fa-solid fa-circle-info"></i> Rolünüze özel görünüm için giriş yapın.</div>
+  </div><!-- /data-view="jenerik" -->
+
 </main>
 
 <footer class="kiosk-foot">
@@ -356,6 +908,37 @@ body{
 (function(){
   var m = location.search.match(/[?&]role=([^&]+)/);
   if(m) localStorage.setItem('gv_crm_role', decodeURIComponent(m[1]));
+})();
+
+/* 8-rol varyant MAP — shell.js ROLES anahtarlarından; şef/personel(=saha) ve
+   tanınmayan/boş rol → jenerik. Mekanizma crm-panel.html:858-878 deseni,
+   shell'siz sayfa-lokal kopya. [6D T-kiosk, envanter §1.1/§1.3] */
+(function(){
+  var MAP = {
+    superadmin:'gm', sahip:'gm', yonetim:'gm',
+    teknik:'teknik',
+    sef:'sef',
+    muhasebe:'muhasebe',
+    satinalma:'satinalma',
+    ik:'ik',
+    personel:'saha'
+  };
+  var CHIP = {
+    gm:'Genel Müdür', teknik:'Teknik Müdür', sef:'Vadi Konakları Şefi',
+    muhasebe:'Muhasebe', satinalma:'Satın Alma', ik:'İnsan Kaynakları',
+    saha:'Saha Personeli', jenerik:''
+  };
+  var role = localStorage.getItem('gv_crm_role') || '';
+  var view = MAP[role] || 'jenerik';
+  document.querySelectorAll('[data-view]').forEach(function(el){
+    el.hidden = el.getAttribute('data-view').split(' ').indexOf(view) === -1;
+  });
+  var chip = document.getElementById('kRoleChip');
+  if(chip){
+    var lbl = CHIP[view];
+    chip.textContent = lbl;
+    chip.hidden = !lbl;
+  }
 })();
 
 /* canlı saat — gerçek zaman; tarih kanonik mock bağlamına sabit [MOCK-SİM] */
