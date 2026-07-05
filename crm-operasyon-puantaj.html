@@ -156,6 +156,8 @@ th.is-today .dh-d{color:var(--acc-ink)}
 .tg-day.ht{background:transparent;color:var(--line-2);border:1px dashed var(--line)}
 .tg-total{font-size:13px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
 .tg-total span{display:block;font-size:10.5px;font-weight:600;color:var(--muted);margin-top:1px}
+.pt-arsiv-not{display:flex;align-items:center;gap:10px;margin-bottom:24px;padding:12px 16px;border:1px dashed var(--border);border-radius:10px;background:var(--bg);color:var(--ink-2);font-size:13px;font-weight:600}
+.pt-arsiv-not i{color:var(--muted)}
 </style>
 </head>
 <body data-sec="operasyon" data-screen="puantaj">
@@ -209,8 +211,8 @@ th.is-today .dh-d{color:var(--acc-ink)}
     <div class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-check"></i></div>
-        <div><div class="kpi-num num" id="kpiTam">—</div><div class="kpi-lbl">Tam gün (29 Haz–2 Tem)</div>
-        <div class="kpi-delta flat"><i class="fa-solid fa-calendar-check"></i> İşlenen 4 gün</div></div>
+        <div><div class="kpi-num num" id="kpiTam">—</div><div class="kpi-lbl" id="kpiTamLbl">Tam gün (29 Haz–2 Tem)</div>
+        <div class="kpi-delta flat" id="kpiGunDelta"><i class="fa-solid fa-calendar-check"></i> İşlenen 4 gün</div></div>
       </div>
       <div class="kpi-card warn">
         <div class="kpi-ico"><i class="fa-solid fa-circle-half-stroke"></i></div>
@@ -229,6 +231,9 @@ th.is-today .dh-d{color:var(--acc-ink)}
       </div>
     </div>
 
+    <!-- Geçmiş hafta arşiv kilidi — yalnız weekIdx=-1'de görünür [MOCK-SİM] -->
+    <div class="pt-arsiv-not" id="ptArsivNot" hidden><i class="fa-solid fa-box-archive"></i> Geçmiş hafta salt-okunur (arşiv) — günlük giriş yalnız güncel haftada yapılır.</div>
+
     <div class="gv-card">
       <div class="pt-toolbar">
         <div class="gfield" style="margin:0;min-width:230px">
@@ -240,7 +245,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
         </div>
         <div class="pt-weeknav">
           <button class="ia-btn" id="ptPrev" aria-label="Önceki hafta" data-no-confirm><i class="fa-solid fa-chevron-left"></i></button>
-          <span class="pt-week-lbl">29 Haziran – 5 Temmuz 2026</span>
+          <span class="pt-week-lbl" id="ptWeekLbl">29 Haziran – 5 Temmuz 2026</span>
           <button class="ia-btn" id="ptNext" aria-label="Sonraki hafta" data-no-confirm><i class="fa-solid fa-chevron-right"></i></button>
         </div>
       </div>
@@ -258,7 +263,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
               <th class="col-gun">Cmt <span style="display:block;font-weight:800;color:var(--ink)">4</span></th>
               <th class="col-gun">Paz <span style="display:block;font-weight:800;color:var(--ink)">5</span></th>
               <th class="col-hafta num">Haftalık</th>
-              <th class="col-ozet">Temmuz Özeti</th>
+              <th class="col-ozet" id="ptOzetTh">Temmuz Özeti</th>
             </tr>
           </thead>
           <tbody id="ptBody"></tbody>
@@ -329,6 +334,15 @@ th.is-today .dh-d{color:var(--acc-ink)}
   var TODAY_IDX = 3;             /* Perşembe 2 Temmuz — bugün */
   var RECORDED_UPTO = 3;         /* 0..3 işlenmiş, 4-5 henüz işlenmedi, 6 hafta tatili */
 
+  /* ---- R2 hafta gezinme (Dalga 6D) [MOCK-SİM] — weekIdx 0 = kanonik hafta (29 Haz–5 Tem),
+     -1 = önceki hafta (22–28 Haz) SALT-OKUNUR arşiv görünümü. İleri hafta YOK (toast kalır).
+     Hafta state'i localStorage'a YAZILMAZ (sayfa yenilenince kanonik haftaya döner) ve
+     'gv_pt_gunluk_2tem' günlük-giriş sim'ine DOKUNMAZ (kart -1'de tamamen gizli). ---- */
+  var WEEK = 0;
+  var PREV_DAYS = ['Pzt 22','Sal 23','Çar 24','Per 25','Cum 26','Cmt 27','Paz 28'];
+  var WEEK_LBL = {'0':'29 Haziran – 5 Temmuz 2026','-1':'22 – 28 Haziran 2026'};
+  function curDays(){ return WEEK === -1 ? PREV_DAYS : DAYS; }
+
   var PERSONEL = [
     {ad:'Hasan Demirci',  poz:'Şantiye Şefi',    santiye:'vadi',   gunler:['tam','tam','tam','tam']},
     {ad:'Ali Vural',      poz:'Saha Personeli',  santiye:'vadi',   gunler:['tam','tam','tam','tam']},
@@ -349,6 +363,30 @@ th.is-today .dh-d{color:var(--acc-ink)}
     {ad:'İlyas Kurt',     poz:'Marangoz',        santiye:'merkez', gunler:['tam','tam','tam','rapor']},
     {ad:'Sadık Öz',       poz:'Düz İşçi',        santiye:'merkez', gunler:['yarim','tam','tam','tam']}
   ];
+  /* ---- Önceki hafta (22–28 Haz) arşiv verisi [MOCK-SİM] — 7 gün tamamı işlenmiş.
+     Kanonik kısıtlar: Ömer Taşkın Pzt-Çar izin (İZN-2026-027, 20–24 Haz, crm-personel-izin.html);
+     Ramazan Kılıç Paz 28 izin (İZN-2026-029 tek gün kanonik kaydı Pazar'a denk — ht istisnası,
+     hücre kanonik kayda sadakatle 'izin' basılır); FM/EM kaydı YOK (FM/EM kanonikleri
+     29 Haz–2 Tem penceresinde, bkz. crm-panel-rapor-fm/-em.html). Kalanı kanonik seyreklikle
+     üretildi (ağırlıklı tam, seyrek yarım/devamsız). ---- */
+  var PREV = {
+    'Hasan Demirci':  ['tam','tam','tam','tam','tam','tam','ht'],
+    'Ali Vural':      ['tam','tam','tam','tam','yarim','tam','ht'],
+    'İbrahim Sönmez': ['tam','tam','tam','tam','tam','tam','ht'],
+    'Ramazan Kılıç':  ['tam','tam','tam','tam','tam','tam','izin'],
+    'Selim Doğan':    ['tam','tam','yok','tam','tam','tam','ht'],
+    'Musa Erdem':     ['tam','tam','tam','tam','tam','tam','ht'],
+    'Veli Şimşek':    ['tam','tam','tam','tam','tam','tam','ht'],
+    'Aylin Koç':      ['tam','tam','tam','tam','tam','tam','ht'],
+    'Şükrü Aslan':    ['tam','tam','tam','tam','tam','tam','ht'],
+    'Halil Güneş':    ['tam','yarim','tam','tam','tam','tam','ht'],
+    'Metin Çetin':    ['tam','tam','tam','tam','tam','tam','ht'],
+    'Osman Polat':    ['tam','tam','tam','yarim','tam','tam','ht'],
+    'Ömer Taşkın':    ['izin','izin','izin','tam','tam','tam','ht'],
+    'Recep Yaman':    ['tam','tam','tam','tam','tam','tam','ht'],
+    'İlyas Kurt':     ['tam','tam','tam','tam','tam','tam','ht'],
+    'Sadık Öz':       ['tam','tam','yarim','tam','tam','tam','ht']
+  };
   /* Temmuz özeti — grid indeks 2 (Çar 1 Tem) ve 3 (Per 2 Tem, bugün) TEK Temmuz günleri;
      0-1 (29-30 Haz) Haziran'a ait, ay özetine dahil edilmez. */
   var JULY_START_IDX = 2;
@@ -377,14 +415,16 @@ th.is-today .dh-d{color:var(--acc-ink)}
     return ad.split(' ').map(function(p){ return p.charAt(0); }).join('').slice(0,2).toUpperCase();
   }
   function statusOf(person, dayIdx){
+    if(WEEK === -1) return (PREV[person.ad] || [])[dayIdx] || 'ht';
     if(dayIdx === 6) return 'ht';
     if(dayIdx > RECORDED_UPTO) return 'gelecek';
     return person.gunler[dayIdx] || 'gelecek';
   }
+  function recordedCount(){ return WEEK === -1 ? 6 : RECORDED_UPTO + 1; }
   function weeklyTotal(person){
-    var tam = 0, half = 0;
-    for(var i = 0; i <= RECORDED_UPTO; i++){
-      var s = person.gunler[i];
+    var tam = 0, half = 0, upto = WEEK === -1 ? 6 : RECORDED_UPTO;
+    for(var i = 0; i <= upto; i++){
+      var s = statusOf(person, i);
       if(s === 'tam' || s === 'fm') tam++;
       else if(s === 'yarim' || s === 'em') half++;
     }
@@ -392,8 +432,12 @@ th.is-today .dh-d{color:var(--acc-ink)}
   }
   function monthlySummary(person){
     var c = {};
-    for(var i = JULY_START_IDX; i <= RECORDED_UPTO; i++){
-      var s = person.gunler[i];
+    /* -1 haftada tüm günler Haziran'a ait — özet 22–28 Haz işlenmiş günlerinden derlenir */
+    var from = WEEK === -1 ? 0 : JULY_START_IDX;
+    var to = WEEK === -1 ? 6 : RECORDED_UPTO;
+    for(var i = from; i <= to; i++){
+      var s = statusOf(person, i);
+      if(s === 'ht' || s === 'rt' || s === 'gelecek') continue;
       c[s] = (c[s] || 0) + 1;
     }
     var parts = [];
@@ -421,27 +465,31 @@ th.is-today .dh-d{color:var(--acc-ink)}
       for(var d = 0; d < 7; d++){
         var st = statusOf(p, d);
         var V = STATUS[st];
-        var todayCls = d === TODAY_IDX ? ' is-today' : '';
-        html += '<td class="col-gun'+todayCls+'"><div class="pt-mark '+st+'" data-tip="'+DAYS[d]+' · '+V.lbl+'" tabindex="0">'
+        var todayCls = (WEEK === 0 && d === TODAY_IDX) ? ' is-today' : '';
+        html += '<td class="col-gun'+todayCls+'"><div class="pt-mark '+st+'" data-tip="'+curDays()[d]+' · '+V.lbl+'" tabindex="0">'
               + (V.ic ? '<i class="fa-solid '+V.ic+'"></i>' : '') + '</div></td>';
       }
       var wt = weeklyTotal(p);
-      html += '<td class="num"><div class="pt-total">'+(wt % 1 === 0 ? wt : wt.toString().replace('.', ','))+' gün<span>'+(RECORDED_UPTO+1)+' gün işlendi</span></div></td>';
+      html += '<td class="num"><div class="pt-total">'+(wt % 1 === 0 ? wt : wt.toString().replace('.', ','))+' gün<span>'+recordedCount()+' gün işlendi</span></div></td>';
       html += '<td><div class="pt-ozet">'+monthlySummary(p)+'</div></td>';
       html += '</tr>';
     });
     body.innerHTML = html || '<tr><td colspan="11" style="text-align:center;color:var(--muted);padding:32px">Bu şantiyede kayıtlı personel yok.</td></tr>';
 
-    /* KPI özetleri — seçili şantiye, işlenen 4 gün toplamı */
+    /* KPI özetleri — seçili şantiye, görünen haftanın işlenen günleri */
     var c = {tam:0, yarim:0, yok:0, izin:0, rapor:0};
+    var upto = WEEK === -1 ? 6 : RECORDED_UPTO;
     rows.forEach(function(p){
-      for(var i = 0; i <= RECORDED_UPTO; i++){ var s = p.gunler[i]; if(c[s] !== undefined) c[s]++; }
+      for(var i = 0; i <= upto; i++){ var s = statusOf(p, i); if(c[s] !== undefined) c[s]++; }
     });
     kpiTam.textContent = c.tam;
     kpiYarim.textContent = c.yarim;
     kpiYok.textContent = c.yok;
     kpiIzin.textContent = (c.izin + c.rapor);
-    sub.textContent = rows.length + ' personel · ' + SANTIYE_ADI[santiye] + ' · 29 Haziran – 5 Temmuz 2026';
+    document.getElementById('kpiTamLbl').textContent = WEEK === -1 ? 'Tam gün (22–28 Haz)' : 'Tam gün (29 Haz–2 Tem)';
+    document.getElementById('kpiGunDelta').innerHTML = '<i class="fa-solid fa-calendar-check"></i> İşlenen ' + recordedCount() + ' gün';
+    document.getElementById('ptOzetTh').textContent = WEEK === -1 ? 'Haziran Özeti' : 'Temmuz Özeti';
+    sub.textContent = rows.length + ' personel · ' + SANTIYE_ADI[santiye] + ' · ' + WEEK_LBL[String(WEEK)] + (WEEK === -1 ? ' · arşiv' : '');
   }
 
   /* ============ Günlük Giriş — şef girişi + İK onay simülasyonu
@@ -577,6 +625,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
   }
 
   btnToggle.addEventListener('click', function(){
+    if(WEEK !== 0) return; /* arşiv haftasında buton zaten gizli — savunmacı guard */
     var opening = gunlukCard.hidden;
     gunlukCard.hidden = !opening;
     btnToggle.setAttribute('aria-expanded', opening ? 'true' : 'false');
@@ -594,11 +643,40 @@ th.is-today .dh-d{color:var(--acc-ink)}
     sel.disabled = true;
   }
 
+  /* ---- R2 hafta geçişi [MOCK-SİM] — thead günleri, hafta etiketi, arşiv kilidi ve
+     her iki grid weekIdx'e göre yeniden basılır. Yalnız -1 (arşiv) ve 0 (kanonik) var;
+     ileri hafta yok. Günlük-giriş sim'i yalnız kanonik haftada erişilebilir. ---- */
+  function updateHeads(){
+    var days = curDays();
+    ['tblPuantaj','tblTaseron'].forEach(function(tid){
+      var ths = document.querySelectorAll('#'+tid+' thead .col-gun');
+      Array.prototype.forEach.call(ths, function(th, i){
+        var today = WEEK === 0 && i === TODAY_IDX;
+        th.classList.toggle('is-today', today);
+        var parca = days[i].split(' ');
+        th.innerHTML = parca[0] + ' <span style="display:block;font-weight:800;color:' + (today ? 'var(--acc-ink)' : 'var(--ink)') + '">' + parca[1] + '</span>';
+      });
+    });
+  }
+  function applyWeek(){
+    document.getElementById('ptWeekLbl').textContent = WEEK_LBL[String(WEEK)];
+    document.getElementById('ptArsivNot').hidden = WEEK === 0;
+    btnToggle.hidden = WEEK !== 0;
+    if(WEEK !== 0 && !gunlukCard.hidden){
+      gunlukCard.hidden = true;
+      btnToggle.setAttribute('aria-expanded', 'false');
+    }
+    updateHeads();
+    render();
+    renderTaseron();
+  }
   document.getElementById('ptPrev').addEventListener('click', function(){
-    gvToast('Önceki haftaların kaydı bu prototipte gösterilmiyor.', {type:'info'});
+    if(WEEK === 0){ WEEK = -1; applyWeek(); }
+    else gvToast('Daha eski kayıtlar arşivde — prototip son iki haftayı gösteriyor.', {type:'info'});
   });
   document.getElementById('ptNext').addEventListener('click', function(){
-    gvToast('Gelecek haftanın puantajı henüz işlenmedi.', {type:'info'});
+    if(WEEK === -1){ WEEK = 0; applyWeek(); }
+    else gvToast('Gelecek haftanın puantajı henüz işlenmedi.', {type:'info'});
   });
 
   render();
@@ -608,9 +686,9 @@ th.is-today .dh-d{color:var(--acc-ink)}
      Demir-Beton 10 · ElektroMek 6 · Yalıtım Kardeşler 8. Geçmiş günler ekip büyüklüğü
      sınırını aşmayan hafif varyasyonla üretildi (bkz. crm-operasyon-yemekhane.html). ---- */
   var TASERON = [
-    {ad:'Demir-Beton İnş. Ltd.', santiye:'vadi',  ekip:10, gunler:[9,10,8,10]},
-    {ad:'ElektroMek Taahhüt',    santiye:'vadi',  ekip:6,  gunler:[6,5,6,6]},
-    {ad:'Yalıtım Kardeşler',     santiye:'liman', ekip:8,  gunler:[7,8,7,8]}
+    {ad:'Demir-Beton İnş. Ltd.', santiye:'vadi',  ekip:10, gunler:[9,10,8,10], prevToplam:58},
+    {ad:'ElektroMek Taahhüt',    santiye:'vadi',  ekip:6,  gunler:[6,5,6,6],  prevToplam:34},
+    {ad:'Yalıtım Kardeşler',     santiye:'liman', ekip:8,  gunler:[7,8,7,8],  prevToplam:44}
   ];
 
   var tgBody = document.getElementById('tgBody');
@@ -618,6 +696,17 @@ th.is-today .dh-d{color:var(--acc-ink)}
 
   function renderTaseron(){
     var rows = GV.role === 'sef' ? TASERON.filter(function(f){ return f.santiye === 'vadi'; }) : TASERON;
+    /* -1 haftada grid yerine arşiv özeti [MOCK-SİM] — firma toplamları ekip×6 gün tavanının
+       altında kurgulandı (Demir-Beton 58/60 · ElektroMek 34/36 · Yalıtım Kardeşler 44/48);
+       şef daraltması özet metnine de uygulanır (yalnız Vadi firmaları). */
+    if(WEEK === -1){
+      var ozet = rows.map(function(f){ return f.ad + ' ' + f.prevToplam; }).join(' · ');
+      tgBody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--ink-2);padding:36px 20px">'
+        + '<i class="fa-solid fa-box-archive" style="margin-right:8px;color:var(--muted)"></i>'
+        + '22–28 Haziran taşeron puantajı arşivde — haftalık özet: ' + ozet + ' adam-gün.</td></tr>';
+      tgSub.textContent = 'Arşiv · 22 – 28 Haziran 2026 · ' + rows.length + ' firma';
+      return;
+    }
     var html = '';
     var haftaToplam = 0, bugunToplam = 0;
     rows.forEach(function(f){

@@ -211,7 +211,7 @@
      bu yüzden sadece Vadi Konakları'na ait olaylara bağlanır. Karşılığı olmayan olay
      (Liman/Merkez Şantiye denetimi, Merkez Şantiye betonu, toplantı) LİNKSİZ kalır —
      yeni sayfa/veri UYDURULMADI. ---- */
-  var GUNLER = [
+  var GUNLER_0 = [
     {g:'Pazartesi', k:'Pzt', d:29, ay:'Haz', olay:[
       {saat:'07:00', tip:'beton', baslik:'Temel B Blok betonu', santiye:'Vadi Konakları', kisi:'İbrahim Sönmez, Ramazan Kılıç', href:'crm-santiye-detay.html'}
     ]},
@@ -234,81 +234,158 @@
     {g:'Pazar', k:'Paz', d:5, ay:'Tem', olay:[]}
   ];
 
-  var grid = document.getElementById('ajdGrid');
-  var gh = '';
-  var toplamOlay = 0;
-  GUNLER.forEach(function(gun){
-    gh += '<div class="ajd-day'+(gun.bugun?' is-today':'')+'">';
-    gh += '<div class="ajd-dhead"><div class="ajd-dname">'+gun.g+'</div><div class="ajd-ddate">'+gun.d+' '+gun.ay+'</div>'
-        + (gun.bugun ? '<span class="ajd-today-badge">Bugün</span>' : '') + '</div>';
-    if(gun.olay.length){
-      gh += '<div class="ajd-list">';
-      gun.olay.forEach(function(o){
-        var T = TIP[o.tip];
-        var tag = o.href ? 'a' : 'div';
-        toplamOlay++;
-        gh += '<div class="ajd-card-wrap">'
-            + '<'+tag+' class="ajd-card '+o.tip+'" data-santiye="'+o.santiye+'"'+(o.href?' href="'+o.href+'"':'')+'>'
-            +   '<span class="ajd-time">'+o.saat+'</span><span class="ajd-type"><i class="fa-solid '+T.ic+'"></i>'+T.lbl+'</span>'
-            +   '<div class="ajd-title">'+o.baslik+'</div>'
-            +   '<div class="ajd-meta"><span><i class="fa-solid fa-helmet-safety"></i>'+o.santiye+'</span><span><i class="fa-solid fa-user"></i>'+o.kisi+'</span></div>'
-            + '</'+tag+'>'
-            + '<div class="ajd-kebab-wrap">'
-            +   '<button type="button" class="ajd-kebab" aria-haspopup="true" aria-expanded="false" aria-label="İşlemler"><i class="fa-solid fa-ellipsis-vertical"></i></button>'
-            +   '<div class="gv-pop ajd-card-pop" role="menu">'
-            +     '<button type="button" data-cact="duzenle"><i class="fa-solid fa-pen"></i> Düzenle</button>'
-            +     '<button type="button" data-cact="tamamla"><i class="fa-solid fa-check"></i> Tamamlandı İşaretle</button>'
-            +     '<button type="button" data-cact="ertele"><i class="fa-solid fa-clock-rotate-left"></i> Ertele</button>'
-            +     '<button type="button" data-cact="hatirlatma"><i class="fa-solid fa-bell"></i> Hatırlatma Ekle</button>'
-            +     '<button type="button" data-cact="ata"><i class="fa-solid fa-user-plus"></i> İlgili Personele Ata</button>'
-            +     '<div class="gp-div"></div>'
-            +     '<button type="button" class="danger" data-cact="sil"><i class="fa-solid fa-trash"></i> Sil</button>'
-            +   '</div>'
-            + '</div>'
-            + '</div>';
-      });
-      gh += '</div>';
-    } else {
-      gh += '<div class="ajd-empty"><span>Planlı etkinlik yok</span></div>';
-    }
-    gh += '</div>';
-  });
-  grid.innerHTML = gh;
-  document.getElementById('ajdSub').textContent = toplamOlay + ' etkinlik · 29 Haziran – 5 Temmuz 2026 haftası';
+  /* [MOCK-SİM] ÖNCEKİ hafta (weekIdx -1, 22–28 Haziran) — kaynak: tasks/6d-kanonik-envanter.md §2.4.
+     ISG-005/006/007 kanonik (santiye-isg.html:176-178), koordinasyon toplantısı tekrarlı seri
+     (linksiz). Çar 24 + Cum 26: kanonik kayda çakışmayan LİNKSİZ mock beton/denetim doldurma
+     olayı (30 Haz Liman denetimi emsali — gerçek sayfa/veri UYDURULMADI, sadece iş programı
+     yoğunluğu göstermek için). */
+  var GUNLER_M1 = [
+    {g:'Pazartesi', k:'Pzt', d:22, ay:'Haz', olay:[
+      {saat:'08:30', tip:'isg', baslik:'ISG-2026-005 · Forklift-yaya güzergah ramak kala', santiye:'Merkez Şantiye', kisi:'Ömer Taşkın', href:'crm-santiye-isg.html'}
+    ]},
+    {g:'Salı', k:'Sal', d:23, ay:'Haz', olay:[]},
+    {g:'Çarşamba', k:'Çar', d:24, ay:'Haz', olay:[
+      {saat:'10:00', tip:'denetim', baslik:'Temel çukuru zemin iyileştirme kontrolü', santiye:'Merkez Şantiye', kisi:'Ömer Taşkın'}
+    ]},
+    {g:'Perşembe', k:'Per', d:25, ay:'Haz', olay:[
+      {saat:'09:00', tip:'isg', baslik:'ISG-2026-006 · Elektrik güvenliği toolbox eğitimi', santiye:'Vadi Konakları', kisi:'Hasan Demirci', href:'crm-santiye-isg.html'},
+      {saat:'16:00', tip:'toplanti', baslik:'Haftalık saha koordinasyon toplantısı', santiye:'Liman Lojistik Merkezi', kisi:'Murat Denizli'}
+    ]},
+    {g:'Cuma', k:'Cum', d:26, ay:'Haz', olay:[
+      {saat:'07:30', tip:'beton', baslik:'Perde betonu döküm hazırlığı', santiye:'Vadi Konakları', kisi:'İbrahim Sönmez, Ramazan Kılıç'}
+    ]},
+    {g:'Cumartesi', k:'Cmt', d:27, ay:'Haz', olay:[
+      {saat:'08:00', tip:'isg', baslik:'ISG-2026-007 · Forklift çarpması — hafif yaralanma', santiye:'Liman Lojistik Merkezi', kisi:'Aylin Koç', href:'crm-santiye-isg.html'}
+    ]},
+    {g:'Pazar', k:'Paz', d:28, ay:'Haz', olay:[]}
+  ];
 
-  /* şef tek şantiye görür — diğer etkinlik kartları kalıcı kaldırılır, boşalan gün boş durum gösterir */
-  if(GV.role === 'sef'){
-    document.querySelectorAll('.ajd-card-wrap').forEach(function(wrap){
-      var c = wrap.querySelector('.ajd-card');
-      if(c.getAttribute('data-santiye') !== 'Vadi Konakları') wrap.remove();
-    });
-    var kalan = 0;
-    document.querySelectorAll('.ajd-day').forEach(function(day){
-      var list = day.querySelector('.ajd-list');
-      if(list && !list.children.length){
-        list.outerHTML = '<div class="ajd-empty"><span>Planlı etkinlik yok</span></div>';
-      } else if(list){
-        kalan += list.children.length;
-      }
-    });
-    document.getElementById('ajdSub').textContent = kalan + ' etkinlik · Vadi Konakları · 29 Haziran – 5 Temmuz 2026 haftası';
+  /* [MOCK-SİM] SONRAKİ hafta (weekIdx +1, 6–12 Temmuz) — kaynak: §2.4. Cmt 11 "Haftalık İSG
+     turu" 4 Tem kanonik turun haftalık tekrarı — YENİ tutanak no ÜRETİLMEDİ, sade başlık.
+     Sal 7 + Çar 8: beton planı LİNKSİZ mock (1-2 olay yeterliliği). */
+  var GUNLER_P1 = [
+    {g:'Pazartesi', k:'Pzt', d:6, ay:'Tem', olay:[]},
+    {g:'Salı', k:'Sal', d:7, ay:'Tem', olay:[
+      {saat:'07:00', tip:'beton', baslik:'B Blok kolon betonu planlaması', santiye:'Vadi Konakları', kisi:'İbrahim Sönmez, Ramazan Kılıç'}
+    ]},
+    {g:'Çarşamba', k:'Çar', d:8, ay:'Tem', olay:[
+      {saat:'08:00', tip:'beton', baslik:'Merkez Şantiye zemin betonu planlaması', santiye:'Merkez Şantiye', kisi:'Recep Yaman'}
+    ]},
+    {g:'Perşembe', k:'Per', d:9, ay:'Tem', olay:[
+      {saat:'16:00', tip:'toplanti', baslik:'Haftalık saha koordinasyon toplantısı', santiye:'Liman Lojistik Merkezi', kisi:'Murat Denizli'}
+    ]},
+    {g:'Cuma', k:'Cum', d:10, ay:'Tem', olay:[]},
+    {g:'Cumartesi', k:'Cmt', d:11, ay:'Tem', olay:[
+      {saat:'09:00', tip:'isg', baslik:'Haftalık İSG turu', santiye:'Merkez Şantiye', kisi:'Ömer Taşkın', href:'crm-santiye-isg.html'}
+    ]},
+    {g:'Pazar', k:'Paz', d:12, ay:'Tem', olay:[]}
+  ];
+
+  var WEEKS = {'-1':GUNLER_M1, '0':GUNLER_0, '1':GUNLER_P1};
+  var WEEK_LABELS = {'-1':'22 – 28 Haziran 2026', '0':'29 Haziran – 5 Temmuz 2026', '1':'6 – 12 Temmuz 2026'};
+  var weekIdx = 0;
+
+  var grid = document.getElementById('ajdGrid');
+
+  function cardHTML(o){
+    var T = TIP[o.tip];
+    var tag = o.href ? 'a' : 'div';
+    return '<div class="ajd-card-wrap">'
+        + '<'+tag+' class="ajd-card '+o.tip+'" data-santiye="'+o.santiye+'"'+(o.href?' href="'+o.href+'"':'')+'>'
+        +   '<span class="ajd-time">'+o.saat+'</span><span class="ajd-type"><i class="fa-solid '+T.ic+'"></i>'+T.lbl+'</span>'
+        +   '<div class="ajd-title">'+o.baslik+'</div>'
+        +   '<div class="ajd-meta"><span><i class="fa-solid fa-helmet-safety"></i>'+o.santiye+'</span><span><i class="fa-solid fa-user"></i>'+o.kisi+'</span></div>'
+        + '</'+tag+'>'
+        + '<div class="ajd-kebab-wrap">'
+        +   '<button type="button" class="ajd-kebab" aria-haspopup="true" aria-expanded="false" aria-label="İşlemler"><i class="fa-solid fa-ellipsis-vertical"></i></button>'
+        +   '<div class="gv-pop ajd-card-pop" role="menu">'
+        +     '<button type="button" data-cact="duzenle"><i class="fa-solid fa-pen"></i> Düzenle</button>'
+        +     '<button type="button" data-cact="tamamla"><i class="fa-solid fa-check"></i> Tamamlandı İşaretle</button>'
+        +     '<button type="button" data-cact="ertele"><i class="fa-solid fa-clock-rotate-left"></i> Ertele</button>'
+        +     '<button type="button" data-cact="hatirlatma"><i class="fa-solid fa-bell"></i> Hatırlatma Ekle</button>'
+        +     '<button type="button" data-cact="ata"><i class="fa-solid fa-user-plus"></i> İlgili Personele Ata</button>'
+        +     '<div class="gp-div"></div>'
+        +     '<button type="button" class="danger" data-cact="sil"><i class="fa-solid fa-trash"></i> Sil</button>'
+        +   '</div>'
+        + '</div>'
+        + '</div>';
   }
 
+  function renderAll(){
+    document.querySelector('.ajd-week-lbl').textContent = WEEK_LABELS[String(weekIdx)];
+    var week = WEEKS[String(weekIdx)];
+    var gh = '';
+    var toplamOlay = 0;
+    week.forEach(function(gun){
+      var isToday = weekIdx === 0 && !!gun.bugun;
+      gh += '<div class="ajd-day'+(isToday?' is-today':'')+'">';
+      gh += '<div class="ajd-dhead"><div class="ajd-dname">'+gun.g+'</div><div class="ajd-ddate">'+gun.d+' '+gun.ay+'</div>'
+          + (isToday ? '<span class="ajd-today-badge">Bugün</span>' : '') + '</div>';
+      if(gun.olay.length){
+        gh += '<div class="ajd-list">';
+        gun.olay.forEach(function(o){ toplamOlay++; gh += cardHTML(o); });
+        gh += '</div>';
+      } else {
+        gh += '<div class="ajd-empty"><span>Planlı etkinlik yok</span></div>';
+      }
+      gh += '</div>';
+    });
+    grid.innerHTML = gh;
+
+    /* şef tek şantiye görür — diğer etkinlik kartları kalıcı kaldırılır, boşalan gün boş durum gösterir.
+       TÜM haftalarda çalışır (renderAll her weekIdx değişiminde baştan çağrılır). */
+    if(GV.role === 'sef'){
+      document.querySelectorAll('.ajd-card-wrap').forEach(function(wrap){
+        var c = wrap.querySelector('.ajd-card');
+        if(c.getAttribute('data-santiye') !== 'Vadi Konakları') wrap.remove();
+      });
+      var kalan = 0;
+      document.querySelectorAll('.ajd-day').forEach(function(day){
+        var list = day.querySelector('.ajd-list');
+        if(list && !list.children.length){
+          list.outerHTML = '<div class="ajd-empty"><span>Planlı etkinlik yok</span></div>';
+        } else if(list){
+          kalan += list.children.length;
+        }
+      });
+      document.getElementById('ajdSub').textContent = kalan + ' etkinlik · Vadi Konakları · ' + WEEK_LABELS[String(weekIdx)] + ' haftası';
+    } else {
+      document.getElementById('ajdSub').textContent = toplamOlay + ' etkinlik · ' + WEEK_LABELS[String(weekIdx)] + ' haftası';
+    }
+  }
+  renderAll();
+
   document.getElementById('ajdPrev').addEventListener('click', function(){
-    gvToast('Önceki haftaların programı bu prototipte gösterilmiyor.', {type:'info'});
+    if(weekIdx <= -1){
+      gvToast('Daha eski kayıtlar arşivde — prototip son iki haftayı gösteriyor.', {type:'info'});
+      return;
+    }
+    weekIdx--; renderAll();
   });
   document.getElementById('ajdNext').addEventListener('click', function(){
-    gvToast('Gelecek haftanın programı henüz planlanmadı.', {type:'info'});
+    if(weekIdx >= 1){
+      gvToast('Sonraki haftaların programı henüz planlanmadı.', {type:'info'});
+      return;
+    }
+    weekIdx++; renderAll();
   });
 
-  /* ---- "Etkinlik Ekle" split menü — data-wip yerine gerçek dropdown. "Görev
-     Hatırlatması Ekle" tek GERÇEK href (crm-gorev-form.html); diğerleri gvToast sim. ---- */
+  /* ---- "Etkinlik Ekle" split menü — data-wip yerine gerçek dropdown. weekIdx≠0'da açılmaz
+     (info toast — kesişim kuralı hafta-nav ortak spec'inde). "Görev Hatırlatması Ekle" tek
+     GERÇEK href (crm-gorev-form.html); diğerleri gvToast sim (santiye-ajanda'da CRUD YOK). ---- */
   (function(){
     var addBtn = document.getElementById('ajdAddBtn');
     var addPop = document.getElementById('ajdAddPop');
     if(!addBtn || !addPop) return;
     function setAddOpen(o){ addPop.classList.toggle('open', o); addBtn.setAttribute('aria-expanded', o ? 'true' : 'false'); }
-    addBtn.addEventListener('click', function(e){ e.stopPropagation(); setAddOpen(!addPop.classList.contains('open')); });
+    addBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      if(weekIdx !== 0){
+        gvToast('Yalnız güncel haftaya etkinlik eklenebilir (demo).', {type:'info'});
+        return;
+      }
+      setAddOpen(!addPop.classList.contains('open'));
+    });
     document.addEventListener('click', function(e){ if(!addPop.contains(e.target) && e.target !== addBtn) setAddOpen(false); });
     document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setAddOpen(false); });
     var ADD_MSG = {
@@ -328,7 +405,10 @@
   /* ---- kart işlem menüsü (⋯) [MOCK-SİM] — kart <a> olabildiği için tıklama
      preventDefault+stopPropagation ile linki TETİKLEMEZ. "Sil" ui.js'in global
      yıkıcı-aksiyon interceptor'ına (fa-trash ikonu → destrKind) düşer ve KENDİ
-     confirm akışını kullanır — burada AYRICA elle onaylanmaz. ---- */
+     confirm akışını kullanır — burada AYRICA elle onaylanmaz.
+     BONUS FIX: başlık artık item.closest('.ajd-card-wrap').querySelector('.ajd-card') ile
+     bulunuyor — eski `item.closest('.ajd-card')` kebab-wrap kart <a>'sının SIBLING'i
+     olduğu için hep null dönüyordu (toast'larda başlık hiç basılmıyordu). ---- */
   (function(){
     function closeAllCardMenus(){
       document.querySelectorAll('.ajd-card-pop.open').forEach(function(p){
@@ -359,7 +439,8 @@
       var item = e.target.closest('.ajd-card-pop [data-cact]');
       if(item){
         e.preventDefault(); e.stopPropagation();
-        var card = item.closest('.ajd-card');
+        var wrap = item.closest('.ajd-card-wrap');
+        var card = wrap ? wrap.querySelector('.ajd-card') : null;
         var title = card ? (card.querySelector('.ajd-title') || {}).textContent : '';
         var kind = item.getAttribute('data-cact');
         closeAllCardMenus();

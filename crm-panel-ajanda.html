@@ -123,6 +123,19 @@
   .ajd-today-badge{margin-top:0;margin-left:auto}
   .ajd-list{padding:0 16px 14px}
 }
+
+/* ---- Dalga 6D — eklenen (demo) kayıt rozeti + CRUD modalı form alanları ---- */
+.ajd-demo-tag{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--bg);border:1px solid var(--line-2);border-radius:var(--r-pill);padding:1px 7px;margin-left:7px;vertical-align:1px}
+.gv-field{margin-bottom:14px}
+.gv-field label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.gv-field input[type="text"],.gv-field input[type="time"],.gv-field select{
+  width:100%;font-family:inherit;font-size:13.5px;font-weight:500;color:var(--ink);
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:9px 12px;outline:none;transition:.2s var(--ease);
+}
+.gv-field input:focus,.gv-field select:focus{border-color:var(--acc);background:var(--paper);box-shadow:0 0 0 3px rgba(var(--acc-rgb),.12)}
+.gv-field-row{display:flex;gap:12px}
+.gv-field-row .gv-field{flex:1;min-width:0}
 </style>
 </head>
 <body data-sec="panel" data-screen="ajanda">
@@ -189,6 +202,43 @@
       <div class="ajd-grid" id="ajdGrid"></div>
     </div>
   </main>
+
+  <!-- ---- Dalga 6D — sayfa-lokal CRUD modalı (gv-modal idiyomu, ui.js'e dokunulmadı) ---- -->
+  <div class="gv-modal-ov" id="gvAjdModalOv">
+    <div class="gv-modal" style="width:min(460px,100%)" role="dialog" aria-modal="true" aria-labelledby="gvAjdModalTitle">
+      <h3 id="gvAjdModalTitle">Etkinlik Ekle</h3>
+      <div class="gv-field">
+        <label for="gvAjdBaslik">Başlık</label>
+        <input type="text" id="gvAjdBaslik" placeholder="Etkinlik başlığı">
+      </div>
+      <div class="gv-field-row">
+        <div class="gv-field">
+          <label for="gvAjdGun">Gün</label>
+          <select id="gvAjdGun"></select>
+        </div>
+        <div class="gv-field">
+          <label for="gvAjdSaat">Saat</label>
+          <input type="time" id="gvAjdSaat" value="09:00">
+        </div>
+      </div>
+      <div class="gv-field">
+        <label for="gvAjdTip">Tür</label>
+        <select id="gvAjdTip"></select>
+      </div>
+      <div class="gv-field">
+        <label for="gvAjdSantiye">Şantiye (opsiyonel)</label>
+        <input type="text" id="gvAjdSantiye" placeholder="Örn. Vadi Konakları">
+      </div>
+      <div class="gv-field">
+        <label for="gvAjdKisi">Not / Kişi (opsiyonel)</label>
+        <input type="text" id="gvAjdKisi" placeholder="Kısa not">
+      </div>
+      <div class="gv-modal-acts" style="margin-top:18px">
+        <button type="button" class="btn btn-ghost btn-sm" id="gvAjdModalCancel">Vazgeç</button>
+        <button type="button" class="btn btn-acc btn-sm" id="gvAjdModalSave">Kaydet</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -212,7 +262,8 @@
     termin:  {ic:'fa-truck-ramp-box',       lbl:'Malzeme Teslim'}
   };
 
-  var GUNLER = [
+  /* kanonik hafta (weekIdx 0) — DEĞİŞTİRİLMEDİ */
+  var GUNLER_0 = [
     {g:'Pazartesi', k:'Pzt', d:29, ay:'Haz', olay:[]},
     {g:'Salı', k:'Sal', d:30, ay:'Haz', olay:[
       {saat:'09:00', tip:'gorev', baslik:'Kalıp iskelesi söküm onayını al', santiye:'Liman Lojistik Merkezi', kisi:'Murat Denizli → Aylin Koç', href:'crm-gorev-detay.html', rel:[]},
@@ -246,39 +297,154 @@
     ]}
   ];
 
+  /* [MOCK-SİM] ÖNCEKİ hafta (weekIdx -1, 22–28 Haziran) — kaynak: tasks/6d-kanonik-envanter.md §2.2.
+     Tarihler/kayıt no'ları kanonik (kasa:235/254-256/266, isg:176-178, talepler:197/206,
+     satinalma form-detay:167, personel-izin:152/224, gorev-detay:321) — saat ataması serbest
+     (kanonik kayıtta saat yok), kayıt no ve tarih OYNATILMADI. */
+  var GUNLER_M1 = [
+    {g:'Pazartesi', k:'Pzt', d:22, ay:'Haz', olay:[
+      {saat:'08:30', tip:'gorev', baslik:'ISG-2026-005 · Forklift-yaya güzergah ramak kala', santiye:'Merkez Şantiye', kisi:'İSG kaydı · ramak kala bildirimi', href:'crm-santiye-isg.html', rel:[]},
+      {saat:'10:00', tip:'odeme', baslik:'KSA-2026-015 · Elektrik malzeme nakit alımı', kisi:'Kasa hareketi · nakit çıkış', href:'crm-operasyon-kasa.html', rel:['muhasebe']},
+      {saat:'14:00', tip:'termin', baslik:'SAT-2026-009 · PVC boru seti teslim alındı', santiye:'Vadi Konakları', kisi:'Teslim alındı · tamamlandı', href:'crm-satinalma-form-detay.html', rel:['satinalma']}
+    ]},
+    {g:'Salı', k:'Sal', d:23, ay:'Haz', olay:[]},
+    {g:'Çarşamba', k:'Çar', d:24, ay:'Haz', olay:[
+      {saat:'11:00', tip:'odeme', baslik:'KSG-2026-004 · Körfez GYO tahsilat (HKD-005)', santiye:'Vadi Konakları', kisi:'₺620.000 · tahsilat', href:'crm-operasyon-kasa.html', rel:['muhasebe']}
+    ]},
+    {g:'Perşembe', k:'Per', d:25, ay:'Haz', olay:[
+      {saat:'09:00', tip:'gorev', baslik:'ISG-2026-006 · Elektrik güvenliği toolbox eğitimi', santiye:'Vadi Konakları', kisi:'İSG eğitimi · toolbox talk', href:'crm-santiye-isg.html', rel:['sef']},
+      {saat:'11:30', tip:'termin', baslik:'MLZ-2026-038 · Malzeme talebi oluşturuldu', kisi:'Talep oluşturuldu · onay sürecinde', href:'crm-satinalma-talepler.html', rel:['satinalma']},
+      {saat:'16:00', tip:'toplanti', baslik:'Haftalık saha koordinasyon toplantısı', santiye:'Liman Lojistik Merkezi', kisi:'Murat Denizli', rel:[]}
+    ]},
+    {g:'Cuma', k:'Cum', d:26, ay:'Haz', olay:[
+      {saat:'10:00', tip:'termin', baslik:'MLZ-2026-039 · Malzeme talebi oluşturuldu', kisi:'Talep oluşturuldu · onay sürecinde', href:'crm-satinalma-talepler.html', rel:['satinalma']}
+    ]},
+    {g:'Cumartesi', k:'Cmt', d:27, ay:'Haz', olay:[
+      {saat:'08:00', tip:'gorev', baslik:'ISG-2026-007 · Forklift çarpması — hafif yaralanma', santiye:'Liman Lojistik Merkezi', kisi:'İSG kaydı · hafif yaralanma', href:'crm-santiye-isg.html', rel:[]},
+      {saat:'15:00', tip:'odeme', baslik:'KSA-2026-017 · Vinç operatörü nakit ödemesi', kisi:'Kasa hareketi · nakit çıkış', href:'crm-operasyon-kasa.html', rel:['muhasebe']}
+    ]},
+    {g:'Pazar', k:'Paz', d:28, ay:'Haz', olay:[
+      {saat:'Tüm gün', tip:'izin', baslik:'İZN-2026-029 · Ramazan Kılıç tek gün izni', santiye:'Vadi Konakları', kisi:'İZN-2026-029 · 28 Haziran', href:'crm-personel-izin.html', rel:['ik','sef']},
+      {saat:'09:00', tip:'gorev', baslik:'Haftalık İSG turu (tamamlandı)', santiye:'Merkez Şantiye', kisi:'Ömer Taşkın · tur tamamlandı', href:'crm-gorev-detay.html', rel:[]}
+    ]}
+  ];
+
+  /* [MOCK-SİM] SONRAKİ hafta (weekIdx +1, 6–12 Temmuz) — kaynak: tasks/6d-kanonik-envanter.md §2.3.
+     İZN-2026-031 (Ali Vural, 6–10 Tem onayda, personel-izin:126/212) + gorev-detay:153/180/198/247/265/283
+     + satinalma-talep-detay:192. ≤3/gün — Pzt 6'daki 4. aday (MLZ talep hızlandırma) bilinçli atlandı. */
+  var GUNLER_P1 = [
+    {g:'Pazartesi', k:'Pzt', d:6, ay:'Tem', olay:[
+      {saat:'Tüm gün', tip:'izin', baslik:'İZN-2026-031 · Ali Vural yıllık izni başlıyor', kisi:'İZN-2026-031 · 6–10 Temmuz · onayda', href:'crm-personel-izin.html', rel:['ik','personel']},
+      {saat:'09:00', tip:'gorev', baslik:'Çatı paneli montaj ekibini planla', santiye:'Merkez Şantiye', kisi:'Murat Denizli → ilgili ekip lideri', href:'crm-gorev-detay.html', rel:[]},
+      {saat:'10:00', tip:'termin', baslik:'Malzeme ihtiyaç tarihi · 2 Temmuz talebi', kisi:'Talep detayında ihtiyaç tarihi bugün', href:'crm-satinalma-talep-detay.html', rel:['satinalma']}
+    ]},
+    {g:'Salı', k:'Sal', d:7, ay:'Tem', olay:[
+      {saat:'10:00', tip:'gorev', baslik:'Vinç kiralama sözleşmesini incele', santiye:'Liman Lojistik Merkezi', kisi:'Murat Denizli → Aylin Koç', href:'crm-gorev-detay.html', rel:[]}
+    ]},
+    {g:'Çarşamba', k:'Çar', d:8, ay:'Tem', olay:[
+      {saat:'09:00', tip:'gorev', baslik:'Kalıp kereste stok sayımını yap', santiye:'Vadi Konakları', kisi:'Hasan Demirci → saha ekibi', href:'crm-gorev-detay.html', rel:['sef']}
+    ]},
+    {g:'Perşembe', k:'Per', d:9, ay:'Tem', olay:[
+      {saat:'10:00', tip:'gorev', baslik:'Aylık ilerleme raporunu hazırla', santiye:'Vadi Konakları', kisi:'Hasan Demirci → Murat Denizli', href:'crm-gorev-detay.html', rel:['sef']},
+      {saat:'16:00', tip:'toplanti', baslik:'Haftalık saha koordinasyon toplantısı', santiye:'Liman Lojistik Merkezi', kisi:'Murat Denizli', rel:[]}
+    ]},
+    {g:'Cuma', k:'Cum', d:10, ay:'Tem', olay:[
+      {saat:'09:00', tip:'gorev', baslik:'Ø12 demir teslim tarihini teyit et (Yüksek öncelik)', santiye:'Vadi Konakları', kisi:'Hasan Demirci → Baran Yıldız', href:'crm-gorev-detay.html', rel:['sef','satinalma']},
+      {saat:'Tüm gün', tip:'izin', baslik:'İZN-2026-031 · Ali Vural izni bitiyor', kisi:'İZN-2026-031 · 6–10 Temmuz · onayda', href:'crm-personel-izin.html', rel:['ik','personel']}
+    ]},
+    {g:'Cumartesi', k:'Cmt', d:11, ay:'Tem', olay:[]},
+    {g:'Pazar', k:'Paz', d:12, ay:'Tem', olay:[
+      {saat:'11:00', tip:'gorev', baslik:'Yeni personel oryantasyon planı hazırla', santiye:'Merkez Şantiye', kisi:'Seda Karaca → İK ekibi', href:'crm-gorev-detay.html', rel:['ik']}
+    ]}
+  ];
+
+  var WEEKS = {'-1':GUNLER_M1, '0':GUNLER_0, '1':GUNLER_P1};
+  var WEEK_LABELS = {'-1':'22 – 28 Haziran 2026', '0':'29 Haziran – 5 Temmuz 2026', '1':'6 – 12 Temmuz 2026'};
+  var weekIdx = 0;
+  var currentFilter = 'hepsi';
+  var TODAY_IDX = GUNLER_0.findIndex(function(g){ return !!g.bugun; }); if(TODAY_IDX < 0) TODAY_IDX = 0;
+
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  /* ---- R3+R4 — sayfa-lokal CRUD deposu (localStorage, TEK yeni key) ----
+     Kayıt: {id, gun(0-6, GUNLER_0 index'i), saat, tip, baslik, santiye?, kisi?}.
+     Yalnız kanonik haftada (weekIdx 0) eklenir/render edilir/taşınır. */
+  var STORE_KEY = 'gvAjandaPanel';
+  function loadStore(){
+    try{ var raw = JSON.parse(localStorage.getItem(STORE_KEY)); return Array.isArray(raw) ? raw : []; }
+    catch(e){ return []; }
+  }
+  function saveStore(){ localStorage.setItem(STORE_KEY, JSON.stringify(demoStore)); }
+  function genId(){ return 'demo-' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  var demoStore = loadStore();
+
   var grid = document.getElementById('ajdGrid');
 
-  function renderDay(gun){
-    var h = '<div class="ajd-day'+(gun.bugun?' is-today':'')+'" data-day="'+gun.d+gun.ay+'">';
+  function canonicalCardHTML(o){
+    var T = TIP[o.tip];
+    var tag = o.href ? 'a' : 'div';
+    return '<div class="ajd-card-wrap">'
+       + '<'+tag+' class="ajd-card '+o.tip+'" data-etype="'+o.tip+'" data-santiye="'+(o.santiye||'')+'" data-rel="'+o.rel.join(' ')+'"'+(o.href?' href="'+o.href+'"':'')+'>'
+       +   '<span class="ajd-time">'+o.saat+'</span><span class="ajd-type"><i class="fa-solid '+T.ic+'"></i>'+T.lbl+'</span>'
+       +   '<div class="ajd-title">'+o.baslik+'</div>'
+       +   '<div class="ajd-meta">'
+       +   (o.santiye ? '<span><i class="fa-solid fa-helmet-safety"></i>'+o.santiye+'</span>' : '')
+       +   '<span><i class="fa-solid fa-user"></i>'+o.kisi+'</span></div>'
+       + '</'+tag+'>'
+       + '<div class="ajd-kebab-wrap">'
+       +   '<button type="button" class="ajd-kebab" aria-haspopup="true" aria-expanded="false" aria-label="İşlemler"><i class="fa-solid fa-ellipsis-vertical"></i></button>'
+       +   '<div class="gv-pop ajd-card-pop" role="menu">'
+       +     '<button type="button" data-cact="duzenle"><i class="fa-solid fa-pen"></i> Düzenle</button>'
+       +     '<button type="button" data-cact="tamamla"><i class="fa-solid fa-check"></i> Tamamlandı İşaretle</button>'
+       +     '<button type="button" data-cact="ertele"><i class="fa-solid fa-clock-rotate-left"></i> Ertele</button>'
+       +     '<button type="button" data-cact="hatirlatma"><i class="fa-solid fa-bell"></i> Hatırlatma Ekle</button>'
+       +     '<button type="button" data-cact="ata"><i class="fa-solid fa-user-plus"></i> İlgili Personele Ata</button>'
+       +     '<div class="gp-div"></div>'
+       +     '<button type="button" class="danger" data-cact="sil"><i class="fa-solid fa-trash"></i> Sil</button>'
+       +   '</div>'
+       + '</div>'
+       + '</div>';
+  }
+
+  /* ---- eklenen (demo) kayıt kartı — kanonik görsel dil + ince "demo" rozeti;
+     kebab'ında yalnız Düzenle/Taşı/Sil (kanonik 6-item menüsü DEĞİL). ---- */
+  function demoCardHTML(r){
+    var T = TIP[r.tip] || TIP.gorev;
+    var metaBits = '';
+    if(r.santiye) metaBits += '<span><i class="fa-solid fa-helmet-safety"></i>'+esc(r.santiye)+'</span>';
+    if(r.kisi) metaBits += '<span><i class="fa-solid fa-user"></i>'+esc(r.kisi)+'</span>';
+    return '<div class="ajd-card-wrap is-demo">'
+       + '<div class="ajd-card '+r.tip+'" data-etype="'+r.tip+'" data-santiye="'+esc(r.santiye||'')+'">'
+       +   '<span class="ajd-time">'+esc(r.saat)+'</span><span class="ajd-type"><i class="fa-solid '+T.ic+'"></i>'+T.lbl+'</span><span class="ajd-demo-tag">demo</span>'
+       +   '<div class="ajd-title">'+esc(r.baslik)+'</div>'
+       +   (metaBits ? '<div class="ajd-meta">'+metaBits+'</div>' : '')
+       + '</div>'
+       + '<div class="ajd-kebab-wrap">'
+       +   '<button type="button" class="ajd-kebab" aria-haspopup="true" aria-expanded="false" aria-label="İşlemler"><i class="fa-solid fa-ellipsis-vertical"></i></button>'
+       +   '<div class="gv-pop ajd-card-pop" role="menu">'
+       +     '<button type="button" data-cact="duzenle" data-demo-id="'+r.id+'"><i class="fa-solid fa-pen"></i> Düzenle</button>'
+       +     '<button type="button" data-cact="tasi" data-demo-id="'+r.id+'"><i class="fa-solid fa-arrows-up-down-left-right"></i> Taşı</button>'
+       +     '<div class="gp-div"></div>'
+       +     '<button type="button" class="danger" data-cact="sil" data-demo-id="'+r.id+'" data-no-confirm><i class="fa-solid fa-trash"></i> Sil</button>'
+       +   '</div>'
+       + '</div>'
+       + '</div>';
+  }
+
+  function renderDay(gun, gunIdx){
+    var isToday = weekIdx === 0 && !!gun.bugun;
+    var h = '<div class="ajd-day'+(isToday?' is-today':'')+'" data-day="'+gun.d+gun.ay+'">';
     h += '<div class="ajd-dhead"><div class="ajd-dname">'+gun.g+'</div><div class="ajd-ddate">'+gun.d+' '+gun.ay+'</div>'
-       + (gun.bugun ? '<span class="ajd-today-badge">Bugün</span>' : '') + '</div>';
-    if(gun.olay.length){
+       + (isToday ? '<span class="ajd-today-badge">Bugün</span>' : '') + '</div>';
+    var demoItems = weekIdx === 0 ? demoStore.filter(function(r){ return r.gun === gunIdx; }) : [];
+    if(gun.olay.length || demoItems.length){
       h += '<div class="ajd-list">';
-      gun.olay.forEach(function(o){
-        var T = TIP[o.tip];
-        var tag = o.href ? 'a' : 'div';
-        h += '<div class="ajd-card-wrap">'
-           + '<'+tag+' class="ajd-card '+o.tip+'" data-etype="'+o.tip+'" data-santiye="'+(o.santiye||'')+'" data-rel="'+o.rel.join(' ')+'"'+(o.href?' href="'+o.href+'"':'')+'>'
-           +   '<span class="ajd-time">'+o.saat+'</span><span class="ajd-type"><i class="fa-solid '+T.ic+'"></i>'+T.lbl+'</span>'
-           +   '<div class="ajd-title">'+o.baslik+'</div>'
-           +   '<div class="ajd-meta">'
-           +   (o.santiye ? '<span><i class="fa-solid fa-helmet-safety"></i>'+o.santiye+'</span>' : '')
-           +   '<span><i class="fa-solid fa-user"></i>'+o.kisi+'</span></div>'
-           + '</'+tag+'>'
-           + '<div class="ajd-kebab-wrap">'
-           +   '<button type="button" class="ajd-kebab" aria-haspopup="true" aria-expanded="false" aria-label="İşlemler"><i class="fa-solid fa-ellipsis-vertical"></i></button>'
-           +   '<div class="gv-pop ajd-card-pop" role="menu">'
-           +     '<button type="button" data-cact="duzenle"><i class="fa-solid fa-pen"></i> Düzenle</button>'
-           +     '<button type="button" data-cact="tamamla"><i class="fa-solid fa-check"></i> Tamamlandı İşaretle</button>'
-           +     '<button type="button" data-cact="ertele"><i class="fa-solid fa-clock-rotate-left"></i> Ertele</button>'
-           +     '<button type="button" data-cact="hatirlatma"><i class="fa-solid fa-bell"></i> Hatırlatma Ekle</button>'
-           +     '<button type="button" data-cact="ata"><i class="fa-solid fa-user-plus"></i> İlgili Personele Ata</button>'
-           +     '<div class="gp-div"></div>'
-           +     '<button type="button" class="danger" data-cact="sil"><i class="fa-solid fa-trash"></i> Sil</button>'
-           +   '</div>'
-           + '</div>'
-           + '</div>';
-      });
+      gun.olay.forEach(function(o){ h += canonicalCardHTML(o); });
+      demoItems.forEach(function(r){ h += demoCardHTML(r); });
       h += '</div>';
     } else {
       h += '<div class="ajd-empty"><span>Planlı etkinlik yok</span></div>';
@@ -287,22 +453,17 @@
     return h;
   }
 
-  function renderAll(){
-    var gh = '';
-    GUNLER.forEach(function(gun){ gh += renderDay(gun); });
-    grid.innerHTML = gh;
-  }
-  renderAll();
-
   /* rol daraltması — şef=saha (kendi şantiyesi + kendine bağlı görev/ziyaret),
-     muhasebe/ik/satinalma=kendi işlevine bağlı kayıtlar, superadmin/sahip/yönetim=geniş görünüm */
+     muhasebe/ik/satinalma=kendi işlevine bağlı kayıtlar, superadmin/sahip/yönetim=geniş görünüm.
+     Eklenen (demo) kartlar rol daraltmasından İSTİSNA — kullanıcının kendi eklediği kayıt
+     oturumu boyunca rolden bağımsız görünür kalır. */
   var WIDE = ['superadmin','sahip','yonetim'];
   var ROLE_HOME = { sef:'Vadi Konakları' };
 
   function applyRoleScope(){
     if(WIDE.indexOf(GV.role) !== -1) return;
     var home = ROLE_HOME[GV.role];
-    document.querySelectorAll('.ajd-card-wrap').forEach(function(wrap){
+    document.querySelectorAll('.ajd-card-wrap:not(.is-demo)').forEach(function(wrap){
       var card = wrap.querySelector('.ajd-card');
       var rel = (card.getAttribute('data-rel')||'').split(' ').filter(Boolean);
       var santiye = card.getAttribute('data-santiye');
@@ -316,93 +477,243 @@
       }
     });
   }
-  applyRoleScope();
 
   var ROLE_SCOPE_LBL = { sef:'Vadi Konakları saha programınız', muhasebe:'Ödeme ve hakediş takviminiz', ik:'İzin takviminiz', satinalma:'Malzeme teslim takviminiz', personel:'Size ait görevler' };
 
-  function updateSub(){
-    var visible = document.querySelectorAll('.ajd-card').length;
-    var scope = ROLE_SCOPE_LBL[GV.role];
-    document.getElementById('ajdSub').textContent = visible + ' etkinlik · ' + (scope || 'Tüm ekip programı') + ' · 29 Haziran – 5 Temmuz 2026';
-  }
-  updateSub();
-
   /* tür filtresi — ui.js'in chip primitifi tablo satırlarına bağlı (tbody tr); burada
      tablo yok, bu yüzden sayfa-lokal filtre yazıldı (ui.js YENİDEN YAZILMADI, sadece
-     bu görsel bileşene uygulanmadığı için ayrı bir küçük handler eklendi). */
+     bu görsel bileşene uygulanmadığı için ayrı bir küçük handler eklendi). Hafta değişince
+     veya CRUD sonrası yeniden render'da da uygulanabilsin diye fonksiyona çıkarıldı. */
+  function applyFilter(f){
+    currentFilter = f;
+    document.querySelectorAll('#ajdChips .chip[data-etype]').forEach(function(c){
+      c.classList.toggle('is-on', c.getAttribute('data-etype') === f);
+    });
+    var shown = 0;
+    document.querySelectorAll('.ajd-day').forEach(function(day){
+      var vis = 0;
+      day.querySelectorAll('.ajd-card-wrap').forEach(function(wrap){
+        var card = wrap.querySelector('.ajd-card');
+        var ok = (f === 'hepsi') || card.getAttribute('data-etype') === f;
+        wrap.hidden = !ok;
+        if(ok){ vis++; shown++; }
+      });
+      var list = day.querySelector('.ajd-list');
+      var empty = day.querySelector('.ajd-empty');
+      if(vis === 0){
+        if(list) list.hidden = true;
+        if(!empty){
+          empty = document.createElement('div');
+          empty.className = 'ajd-empty';
+          empty.innerHTML = '<span></span>';
+          day.appendChild(empty);
+        }
+        empty.hidden = false;
+        empty.querySelector('span').textContent = list ? 'Bu türde etkinlik yok' : 'Planlı etkinlik yok';
+      } else {
+        if(list) list.hidden = false;
+        if(empty && list) empty.hidden = true;
+      }
+    });
+    var scope = ROLE_SCOPE_LBL[GV.role];
+    var chipEl = document.querySelector('#ajdChips .chip[data-etype="'+f+'"]');
+    var lbl = chipEl ? chipEl.textContent.trim() : f;
+    document.getElementById('ajdSub').textContent = shown + ' etkinlik · ' + (f === 'hepsi' ? (scope || 'Tüm ekip programı') : lbl + ' filtresi') + ' · ' + WEEK_LABELS[String(weekIdx)];
+  }
+
+  function renderAll(){
+    document.querySelector('.ajd-week-lbl').textContent = WEEK_LABELS[String(weekIdx)];
+    var gh = '';
+    WEEKS[String(weekIdx)].forEach(function(gun, i){ gh += renderDay(gun, i); });
+    grid.innerHTML = gh;
+    applyRoleScope();
+    applyFilter(currentFilter);
+  }
+  renderAll();
+
   var chips = document.querySelectorAll('#ajdChips .chip[data-etype]');
   chips.forEach(function(ch){
-    ch.addEventListener('click', function(){
-      chips.forEach(function(x){ x.classList.remove('is-on'); });
-      ch.classList.add('is-on');
-      var f = ch.getAttribute('data-etype');
-      var shown = 0;
-      document.querySelectorAll('.ajd-day').forEach(function(day){
-        var vis = 0;
-        day.querySelectorAll('.ajd-card-wrap').forEach(function(wrap){
-          var card = wrap.querySelector('.ajd-card');
-          var ok = (f === 'hepsi') || card.getAttribute('data-etype') === f;
-          wrap.hidden = !ok;
-          if(ok){ vis++; shown++; }
-        });
-        var list = day.querySelector('.ajd-list');
-        var empty = day.querySelector('.ajd-empty');
-        if(vis === 0){
-          if(list) list.hidden = true;
-          if(!empty){
-            empty = document.createElement('div');
-            empty.className = 'ajd-empty';
-            empty.innerHTML = '<span></span>';
-            day.appendChild(empty);
-          }
-          empty.hidden = false;
-          empty.querySelector('span').textContent = list ? 'Bu türde etkinlik yok' : 'Planlı etkinlik yok';
-        } else {
-          if(list) list.hidden = false;
-          if(empty && list) empty.hidden = true;
-        }
-      });
-      var scope = ROLE_SCOPE_LBL[GV.role];
-      var lbl = ch.textContent.trim();
-      document.getElementById('ajdSub').textContent = shown + ' etkinlik · ' + (f === 'hepsi' ? (scope || 'Tüm ekip programı') : lbl + ' filtresi') + ' · 29 Haziran – 5 Temmuz 2026';
-    });
+    ch.addEventListener('click', function(){ applyFilter(ch.getAttribute('data-etype')); });
   });
 
   document.getElementById('ajdPrev').addEventListener('click', function(){
-    gvToast('Önceki haftaların programı bu prototipte gösterilmiyor.', {type:'info'});
+    if(weekIdx <= -1){
+      gvToast('Daha eski kayıtlar arşivde — prototip son iki haftayı gösteriyor.', {type:'info'});
+      return;
+    }
+    weekIdx--; currentFilter = 'hepsi'; renderAll();
   });
   document.getElementById('ajdNext').addEventListener('click', function(){
-    gvToast('Gelecek haftanın programı henüz planlanmadı.', {type:'info'});
+    if(weekIdx >= 1){
+      gvToast('Sonraki haftaların programı henüz planlanmadı.', {type:'info'});
+      return;
+    }
+    weekIdx++; currentFilter = 'hepsi'; renderAll();
   });
 
-  /* ---- "Etkinlik Ekle" split menü — data-wip yerine gerçek dropdown. "Görev
-     Hatırlatması Ekle" tek GERÇEK href (crm-gorev-form.html); diğerleri gvToast sim. ---- */
+  /* ---- R3+R4 — CRUD modalı (ekle/düzenle) ---- */
+  var ADD_TYPE_MAP = { program:'gorev', isprogrami:'ziyaret', not:'gorev', toplanti:'toplanti' };
+  var ADD_TITLE_MAP = { program:'Program Ekle', isprogrami:'İş Programı Ekle', not:'Ajandaya Not Ekle', toplanti:'Toplantı Ekle' };
+  var modalOv = document.getElementById('gvAjdModalOv');
+  var modalTitleEl = document.getElementById('gvAjdModalTitle');
+  var baslikInp = document.getElementById('gvAjdBaslik');
+  var gunSel = document.getElementById('gvAjdGun');
+  var saatInp = document.getElementById('gvAjdSaat');
+  var tipSel = document.getElementById('gvAjdTip');
+  var santiyeInp = document.getElementById('gvAjdSantiye');
+  var kisiInp = document.getElementById('gvAjdKisi');
+  var editingId = null;
+
+  function fillGunSelect(selectedIdx){
+    gunSel.innerHTML = GUNLER_0.map(function(g, i){
+      return '<option value="'+i+'"'+(i === selectedIdx ? ' selected' : '')+'>'+g.g+' ('+g.d+' '+g.ay+')</option>';
+    }).join('');
+  }
+  function fillTipSelect(selectedTip){
+    tipSel.innerHTML = Object.keys(TIP).map(function(k){
+      return '<option value="'+k+'"'+(k === selectedTip ? ' selected' : '')+'>'+TIP[k].lbl+'</option>';
+    }).join('');
+  }
+  function openModal(){
+    modalOv.classList.add('open');
+    document.addEventListener('keydown', onModalEsc);
+  }
+  function closeModal(){
+    modalOv.classList.remove('open');
+    document.removeEventListener('keydown', onModalEsc);
+  }
+  function onModalEsc(e){ if(e.key === 'Escape') closeModal(); }
+  modalOv.addEventListener('click', function(e){ if(e.target === modalOv) closeModal(); });
+  document.getElementById('gvAjdModalCancel').addEventListener('click', closeModal);
+  baslikInp.addEventListener('input', function(){ baslikInp.style.borderColor = ''; });
+
+  function openAddModal(kind){
+    editingId = null;
+    modalTitleEl.textContent = ADD_TITLE_MAP[kind] || 'Etkinlik Ekle';
+    baslikInp.value = ''; baslikInp.style.borderColor = '';
+    fillGunSelect(TODAY_IDX);
+    saatInp.value = '09:00';
+    fillTipSelect(ADD_TYPE_MAP[kind] || 'gorev');
+    santiyeInp.value = '';
+    kisiInp.value = '';
+    openModal();
+  }
+  function openEditModal(id){
+    var rec = demoStore.filter(function(r){ return r.id === id; })[0];
+    if(!rec) return;
+    editingId = id;
+    modalTitleEl.textContent = 'Etkinliği Düzenle';
+    baslikInp.value = rec.baslik; baslikInp.style.borderColor = '';
+    fillGunSelect(rec.gun);
+    saatInp.value = rec.saat || '09:00';
+    fillTipSelect(rec.tip);
+    santiyeInp.value = rec.santiye || '';
+    kisiInp.value = rec.kisi || '';
+    openModal();
+  }
+  document.getElementById('gvAjdModalSave').addEventListener('click', function(){
+    var baslik = baslikInp.value.trim();
+    if(!baslik){ baslikInp.style.borderColor = 'var(--danger)'; baslikInp.focus(); return; }
+    var gun = parseInt(gunSel.value, 10);
+    var saat = saatInp.value || '09:00';
+    var tip = tipSel.value;
+    var santiye = santiyeInp.value.trim();
+    var kisi = kisiInp.value.trim();
+    if(editingId){
+      var rec = demoStore.filter(function(r){ return r.id === editingId; })[0];
+      if(rec){ rec.baslik = baslik; rec.gun = gun; rec.saat = saat; rec.tip = tip; rec.santiye = santiye; rec.kisi = kisi; }
+    } else {
+      demoStore.push({id:genId(), gun:gun, saat:saat, tip:tip, baslik:baslik, santiye:santiye, kisi:kisi});
+    }
+    saveStore();
+    closeModal();
+    renderAll();
+    gvToast(editingId ? ('“'+baslik+'” güncellendi.') : ('“'+baslik+'” ajandaya eklendi.'), {type:'ok'});
+  });
+
+  /* ---- "Taşı" mini gün-seçici popover (data-export desenindeki fixed-konum yaklaşımı) ---- */
+  function closeMovePopover(){
+    document.querySelectorAll('.ajd-move-pop').forEach(function(p){ p.remove(); });
+    document.removeEventListener('click', onDocClickCloseMove, true);
+    document.removeEventListener('keydown', onEscCloseMove);
+  }
+  function onDocClickCloseMove(e){ if(!e.target.closest('.ajd-move-pop')) closeMovePopover(); }
+  function onEscCloseMove(e){ if(e.key === 'Escape') closeMovePopover(); }
+  function openMovePopover(id, anchorBtn){
+    closeMovePopover();
+    var rec = demoStore.filter(function(r){ return r.id === id; })[0];
+    if(!rec) return;
+    var pop = document.createElement('div');
+    pop.className = 'gv-pop ajd-move-pop open';
+    var html = '<div class="gp-head"><b>Taşı</b><span>Yeni gün seçin</span></div>';
+    GUNLER_0.forEach(function(g, i){
+      html += '<button type="button" data-move-day="'+i+'"><i class="fa-solid '+(i === rec.gun ? 'fa-check' : 'fa-calendar-day')+'"></i> '+g.g+' ('+g.d+' '+g.ay+')</button>';
+    });
+    pop.innerHTML = html;
+    document.body.appendChild(pop);   /* önce ekle: gerçek yükseklik ölçülür (data-export deseni, ui.js) */
+    var r = anchorBtn.getBoundingClientRect();
+    pop.style.position = 'fixed';
+    pop.style.minWidth = '208px';
+    pop.style.right = Math.max(8, window.innerWidth - r.right) + 'px';
+    var h = pop.offsetHeight || 260;
+    var top = r.bottom + 6;
+    if(top + h > window.innerHeight - 8){         /* aşağı sığmıyor → yukarı dene (data-export flip mantığı) */
+      var upTop = r.top - 6 - h;
+      top = upTop >= 8 ? upTop : Math.max(8, window.innerHeight - h - 8);
+    }
+    pop.style.top = top + 'px';
+    pop.querySelectorAll('button[data-move-day]').forEach(function(b){
+      b.addEventListener('click', function(e){
+        e.stopPropagation();
+        var newGun = parseInt(b.getAttribute('data-move-day'), 10);
+        var gunAd = GUNLER_0[newGun].g;
+        rec.gun = newGun;
+        saveStore();
+        closeMovePopover();
+        renderAll();
+        gvToast('“'+rec.baslik+'” '+gunAd+' gününe taşındı.', {type:'ok'});
+      });
+    });
+    document.addEventListener('click', onDocClickCloseMove, true);
+    document.addEventListener('keydown', onEscCloseMove);
+  }
+
+  /* ---- "Etkinlik Ekle" split menü — weekIdx≠0'da açılmaz (info toast); weekIdx=0'da
+     4 sim seçeneği artık GERÇEK ekleme modalı açar. "Görev Hatırlatması Ekle" tek GERÇEK
+     href (crm-gorev-form.html) AYNEN kalır. ---- */
   (function(){
     var addBtn = document.getElementById('ajdAddBtn');
     var addPop = document.getElementById('ajdAddPop');
     if(!addBtn || !addPop) return;
     function setAddOpen(o){ addPop.classList.toggle('open', o); addBtn.setAttribute('aria-expanded', o ? 'true' : 'false'); }
-    addBtn.addEventListener('click', function(e){ e.stopPropagation(); setAddOpen(!addPop.classList.contains('open')); });
+    addBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      if(weekIdx !== 0){
+        gvToast('Yalnız güncel haftaya etkinlik eklenebilir (demo).', {type:'info'});
+        return;
+      }
+      setAddOpen(!addPop.classList.contains('open'));
+    });
     document.addEventListener('click', function(e){ if(!addPop.contains(e.target) && e.target !== addBtn) setAddOpen(false); });
     document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setAddOpen(false); });
-    var ADD_MSG = {
-      program:'Program ajandaya eklendi (demo).',
-      isprogrami:'İş programına eklendi (demo).',
-      not:'Not ajandaya eklendi (demo).',
-      toplanti:'Toplantı ajandaya eklendi (demo).'
-    };
     addPop.querySelectorAll('button[data-add]').forEach(function(b){
       b.addEventListener('click', function(){
         setAddOpen(false);
-        gvToast(ADD_MSG[b.getAttribute('data-add')] || 'Eklendi (demo).', {type:'ok'});
+        openAddModal(b.getAttribute('data-add'));
       });
     });
   })();
 
   /* ---- kart işlem menüsü (⋯) [MOCK-SİM] — kart <a> olabildiği için tıklama
-     preventDefault+stopPropagation ile linki TETİKLEMEZ. "Sil" ui.js'in global
-     yıkıcı-aksiyon interceptor'ına (fa-trash ikonu → destrKind) düşer ve KENDİ
-     confirm akışını kullanır — burada AYRICA elle onaylanmaz. ---- */
+     preventDefault+stopPropagation ile linki TETİKLEMEZ. Kanonik kartlarda "Sil" ui.js'in
+     global yıkıcı-aksiyon interceptor'ına (fa-trash ikonu → destrKind) düşer ve KENDİ
+     confirm akışını kullanır (data-no-confirm YOK, kasıtlı). Eklenen (demo) kartlarda
+     Düzenle/Taşı/Sil bu handler içinde GERÇEK CRUD yapar; Sil'de data-no-confirm VAR
+     (global interceptor'ı bypass eder) + sayfa-lokal gvConfirm çağrılır — ikisi ÜST ÜSTE
+     BİNMEZ (geçmişte 2 kez yaşanan tuzak).
+     BONUS FIX: başlık artık item.closest('.ajd-card-wrap').querySelector('.ajd-card') ile
+     bulunuyor — eski `item.closest('.ajd-card')` kebab-wrap kart <a>'sının SIBLING'i
+     olduğu için hep null dönüyordu (kanonik toast'larda başlık hiç basılmıyordu). ---- */
   (function(){
     function closeAllCardMenus(){
       document.querySelectorAll('.ajd-card-pop.open').forEach(function(p){
@@ -425,6 +736,7 @@
         var pop = kb.parentElement.querySelector('.ajd-card-pop');
         var willOpen = !pop.classList.contains('open');
         closeAllCardMenus();
+        closeMovePopover();
         pop.classList.toggle('open', willOpen);
         kb.classList.toggle('is-open', willOpen);
         kb.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
@@ -433,17 +745,40 @@
       var item = e.target.closest('.ajd-card-pop [data-cact]');
       if(item){
         e.preventDefault(); e.stopPropagation();
-        var card = item.closest('.ajd-card');
+        var wrap = item.closest('.ajd-card-wrap');
+        var isDemo = !!(wrap && wrap.classList.contains('is-demo'));
+        var card = wrap ? wrap.querySelector('.ajd-card') : null;
         var title = card ? (card.querySelector('.ajd-title') || {}).textContent : '';
         var kind = item.getAttribute('data-cact');
+        if(isDemo){
+          var id = item.getAttribute('data-demo-id');
+          closeAllCardMenus();
+          if(kind === 'duzenle'){ openEditModal(id); return; }
+          if(kind === 'tasi'){ openMovePopover(id, item); return; }
+          if(kind === 'sil'){
+            var rec = demoStore.filter(function(r){ return r.id === id; })[0];
+            gvConfirm({
+              danger:true, icon:'fa-trash', ok:'Sil', cancel:'Vazgeç', title:'Silinsin mi?',
+              message: rec ? ('“'+rec.baslik+'” kalıcı olarak silinecek. Bu işlem geri alınamaz.') : 'Bu kayıt kalıcı olarak silinecek.',
+              onConfirm:function(){
+                demoStore = demoStore.filter(function(x){ return x.id !== id; });
+                saveStore();
+                renderAll();
+                gvToast((rec ? ('“'+rec.baslik+'” ') : 'Kayıt ') + 'silindi.', {type:'danger'});
+              }
+            });
+            return;
+          }
+          return;
+        }
         closeAllCardMenus();
         var V = CACT_MSG[kind];
         if(V) gvToast((title ? '“' + title + '” ' : 'Etkinlik ') + V.msg, {type:V.type});
         return;
       }
-      if(!e.target.closest('.ajd-card-pop')) closeAllCardMenus();
+      if(!e.target.closest('.ajd-card-pop') && !e.target.closest('.ajd-move-pop')) closeAllCardMenus();
     });
-    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeAllCardMenus(); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ closeAllCardMenus(); closeMovePopover(); } });
   })();
 })();
 </script>
