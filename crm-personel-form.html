@@ -27,6 +27,21 @@
 
 .form-foot{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:18px 22px;border-top:1px solid var(--line)}
 
+/* sekme çubuğu — santiye-detay/personel-detay ile aynı desen, sayfa-lokal kopya */
+.form-grid .gv-card > .gv-tabs{padding:18px 22px 0}
+.gv-tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:22px;overflow-x:auto;scrollbar-width:none}
+.gv-tabs::-webkit-scrollbar{display:none}
+.gv-tab{display:inline-flex;align-items:center;gap:8px;padding:13px 4px;margin-right:26px;flex:none;
+  font-family:inherit;font-size:13.5px;font-weight:700;color:var(--muted);background:none;border:none;
+  border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;transition:.18s var(--ease)}
+.gv-tab i{font-size:13px}
+.gv-tab:hover{color:var(--ink)}
+.gv-tab.is-active{color:var(--acc-ink);border-color:var(--acc-ink)}
+.gv-tab .tb-cnt{font-size:10.5px;font-weight:700;background:var(--bg);color:var(--ink-2);padding:1px 6px;border-radius:var(--r-pill)}
+.gv-tab.is-active .tb-cnt{background:rgba(var(--acc-rgb),.16);color:var(--acc-deep)}
+.tab-panel{animation:tabIn .22s var(--ease)}
+@keyframes tabIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
 /* form içi bölüm başlıkları — tek gv-card, çok alt-bölüm */
 .fg-section{padding:20px 22px}
 .fg-section + .fg-section{border-top:1px solid var(--line)}
@@ -100,167 +115,224 @@
 
     <div class="form-grid">
       <div class="gv-card">
-        <div class="fg-section">
-          <div class="fg-section-head"><i class="fa-solid fa-id-card"></i><h3>Kimlik</h3></div>
-          <form class="gform" id="personelForm">
-            <div class="gfield full">
-              <label for="fAd">Ad Soyad</label>
-              <input type="text" id="fAd" placeholder="Örn. Kerem Aydın">
-            </div>
-            <div class="gfield">
-              <label for="fTc">TC Kimlik No <span class="gf-hint">(mock — maskeli)</span></label>
-              <input type="text" id="fTc" placeholder="123••••••67" maxlength="11" inputmode="numeric">
-            </div>
-            <div class="gfield">
-              <label for="fDogum">Doğum Tarihi</label>
-              <input type="date" id="fDogum">
-            </div>
-          </form>
+        <!-- 7 sekme: Kişisel · İletişim · Görev&Departman · SGK/Maaş · Evrak · Zimmet · İzin/Avans/Rapor
+             (K4 kararı — tasks/6d-kanonik-envanter.md §5/R5). Mevcut 6 bölümün alanları AYNEN korunur,
+             yalnız yeniden gruplanır; Zimmet + İzin/Avans/Rapor YENİ placeholder sekmelerdir. -->
+        <div class="gv-tabs" role="tablist" aria-label="Personel formu sekmeleri">
+          <button class="gv-tab is-active" data-tab="kisisel" role="tab" aria-selected="true"><i class="fa-solid fa-id-card"></i> Kişisel</button>
+          <button class="gv-tab" data-tab="iletisim" role="tab" aria-selected="false"><i class="fa-solid fa-address-book"></i> İletişim</button>
+          <button class="gv-tab" data-tab="gorev" role="tab" aria-selected="false"><i class="fa-solid fa-helmet-safety"></i> Görev &amp; Departman</button>
+          <button class="gv-tab" data-tab="sgk" role="tab" aria-selected="false" data-payroll-only><i class="fa-solid fa-sack-dollar"></i> SGK / Maaş</button>
+          <button class="gv-tab" data-tab="evrak" role="tab" aria-selected="false"><i class="fa-solid fa-paperclip"></i> Evrak</button>
+          <button class="gv-tab" data-tab="zimmet" role="tab" aria-selected="false"><i class="fa-solid fa-toolbox"></i> Zimmet</button>
+          <button class="gv-tab" data-tab="izinavans" role="tab" aria-selected="false"><i class="fa-solid fa-umbrella-beach"></i> İzin / Avans / Rapor</button>
         </div>
 
-        <div class="fg-section">
-          <div class="fg-section-head"><i class="fa-solid fa-helmet-safety"></i><h3>Pozisyon &amp; Atama</h3></div>
-          <div class="gform">
-            <div class="gfield">
-              <label for="fPozisyon">Pozisyon</label>
-              <select id="fPozisyon">
-                <option>Saha Personeli</option>
-                <option>Formen</option>
-                <option>Kalıpçı</option>
-                <option>Demir Ustası</option>
-                <option>Elektrik Ustası</option>
-                <option>Operatör</option>
-                <option>Kaynakçı</option>
-                <option>Marangoz</option>
-                <option>Düz İşçi</option>
-                <option>Şantiye Şefi</option>
-                <option>Muhasebe</option>
-                <option>Satın Alma</option>
-                <option>İnsan Kaynakları</option>
-                <option>Teknik Müdür</option>
-                <option>Genel Müdür</option>
-              </select>
-            </div>
-            <div class="gfield">
-              <label for="fSantiye">Şantiye / Birim</label>
-              <select id="fSantiye">
-                <option>Vadi Konakları</option>
-                <option>Liman Lojistik Merkezi</option>
-                <option>Merkez Şantiye</option>
-                <option>Kule Ofis B Blok</option>
-                <option>Göl Evleri 2. Etap</option>
-                <option>Merkez Ofis</option>
-              </select>
-            </div>
-            <div class="gfield">
-              <label for="fBaslama">İşe Başlama</label>
-              <input type="date" id="fBaslama" value="2026-07-13">
-            </div>
-          </div>
-        </div>
-
-        <div class="fg-section">
-          <div class="fg-section-head"><i class="fa-solid fa-address-book"></i><h3>İletişim</h3></div>
-          <div class="gform">
-            <div class="gfield">
-              <label for="fTel">Telefon</label>
-              <input type="tel" id="fTel" placeholder="05XX XXX XX XX">
-            </div>
-            <div class="gfield">
-              <label for="fEposta">E-posta <span class="gf-hint">(isteğe bağlı)</span></label>
-              <input type="email" id="fEposta" placeholder="ad.soyad@yapitas.example">
-            </div>
-            <div class="gfield full">
-              <label for="fAdres">Adres</label>
-              <textarea id="fAdres" rows="2" placeholder="İkametgah adresi…"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <div class="fg-section" data-admin-only>
-          <div class="fg-section-head"><i class="fa-solid fa-folder-open"></i><h3>İK Bilgileri</h3><span>Sadece İK ve yönetim görür</span></div>
-          <div class="gform">
-            <div class="gfield">
-              <label for="fMedeni">Medeni Durum</label>
-              <select id="fMedeni">
-                <option value="bekar">Bekar</option>
-                <option value="evli">Evli</option>
-              </select>
-            </div>
-            <div class="gfield">
-              <label for="fYakinlikBos">&nbsp;</label>
-              <span class="gf-hint">Evli seçilirse eş bilgileri aşağıda açılır.</span>
-            </div>
-            <div class="gf-sub" id="fEsWrap" hidden>
-              <div class="gfield">
-                <label for="fEsAd">Eş Ad Soyad</label>
-                <input type="text" id="fEsAd" placeholder="Eşin adı soyadı">
+        <section class="tab-panel" data-tab-panel="kisisel" role="tabpanel" aria-label="Kişisel">
+          <div class="fg-section">
+            <div class="fg-section-head"><i class="fa-solid fa-id-card"></i><h3>Kimlik</h3></div>
+            <form class="gform" id="personelForm">
+              <div class="gfield full">
+                <label for="fAd">Ad Soyad</label>
+                <input type="text" id="fAd" placeholder="Örn. Kerem Aydın">
               </div>
               <div class="gfield">
-                <label for="fEsCalisma">Eş Çalışma Durumu</label>
-                <select id="fEsCalisma">
-                  <option>Çalışıyor</option>
-                  <option>Çalışmıyor</option>
+                <label for="fTc">TC Kimlik No <span class="gf-hint">(mock — maskeli)</span></label>
+                <input type="text" id="fTc" placeholder="123••••••67" maxlength="11" inputmode="numeric">
+              </div>
+              <div class="gfield">
+                <label for="fDogum">Doğum Tarihi</label>
+                <input type="date" id="fDogum">
+              </div>
+            </form>
+          </div>
+
+          <div class="fg-section" data-admin-only>
+            <div class="fg-section-head"><i class="fa-solid fa-folder-open"></i><h3>Kişisel Bilgiler (İK)</h3><span>Sadece İK ve yönetim görür</span></div>
+            <div class="gform">
+              <div class="gfield">
+                <label for="fMedeni">Medeni Durum</label>
+                <select id="fMedeni">
+                  <option value="bekar">Bekar</option>
+                  <option value="evli">Evli</option>
+                </select>
+              </div>
+              <div class="gfield">
+                <label for="fYakinlikBos">&nbsp;</label>
+                <span class="gf-hint">Evli seçilirse eş bilgileri aşağıda açılır.</span>
+              </div>
+              <div class="gf-sub" id="fEsWrap" hidden>
+                <div class="gfield">
+                  <label for="fEsAd">Eş Ad Soyad</label>
+                  <input type="text" id="fEsAd" placeholder="Eşin adı soyadı">
+                </div>
+                <div class="gfield">
+                  <label for="fEsCalisma">Eş Çalışma Durumu</label>
+                  <select id="fEsCalisma">
+                    <option>Çalışıyor</option>
+                    <option>Çalışmıyor</option>
+                  </select>
+                </div>
+              </div>
+              <div class="gfield">
+                <label for="fOkul">Eğitim — Okul</label>
+                <input type="text" id="fOkul" placeholder="Örn. Yıldız Teknik Üniversitesi">
+              </div>
+              <div class="gfield">
+                <label for="fMezuniyet">Mezuniyet Yılı</label>
+                <input type="number" id="fMezuniyet" min="1970" max="2026" placeholder="2018">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="tab-panel" data-tab-panel="iletisim" role="tabpanel" aria-label="İletişim" hidden>
+          <div class="fg-section">
+            <div class="fg-section-head"><i class="fa-solid fa-address-book"></i><h3>İletişim</h3></div>
+            <div class="gform">
+              <div class="gfield">
+                <label for="fTel">Telefon</label>
+                <input type="tel" id="fTel" placeholder="05XX XXX XX XX">
+              </div>
+              <div class="gfield">
+                <label for="fEposta">E-posta <span class="gf-hint">(isteğe bağlı)</span></label>
+                <input type="email" id="fEposta" placeholder="ad.soyad@yapitas.example">
+              </div>
+              <div class="gfield full">
+                <label for="fAdres">Adres</label>
+                <textarea id="fAdres" rows="2" placeholder="İkametgah adresi…"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="fg-section" data-admin-only>
+            <div class="fg-section-head"><i class="fa-solid fa-phone-volume"></i><h3>Acil Durum Kişisi</h3><span>Sadece İK ve yönetim görür</span></div>
+            <div class="gform">
+              <div class="gfield">
+                <label for="fAcilAd">Acil Durum Kişisi — Ad Soyad</label>
+                <input type="text" id="fAcilAd" placeholder="Örn. Meltem Demirci">
+              </div>
+              <div class="gfield">
+                <label for="fAcilTel">Acil Durum Kişisi — Telefon</label>
+                <input type="tel" id="fAcilTel" placeholder="05XX XXX XX XX">
+              </div>
+              <div class="gfield">
+                <label for="fAcilYakinlik">Acil Durum Kişisi — Yakınlık</label>
+                <select id="fAcilYakinlik">
+                  <option>Eş</option>
+                  <option>Anne</option>
+                  <option>Baba</option>
+                  <option>Kardeş</option>
+                  <option>Diğer</option>
                 </select>
               </div>
             </div>
-            <div class="gfield">
-              <label for="fOkul">Eğitim — Okul</label>
-              <input type="text" id="fOkul" placeholder="Örn. Yıldız Teknik Üniversitesi">
-            </div>
-            <div class="gfield">
-              <label for="fMezuniyet">Mezuniyet Yılı</label>
-              <input type="number" id="fMezuniyet" min="1970" max="2026" placeholder="2018">
-            </div>
-            <div class="gfield">
-              <label for="fAcilAd">Acil Durum Kişisi — Ad Soyad</label>
-              <input type="text" id="fAcilAd" placeholder="Örn. Meltem Demirci">
-            </div>
-            <div class="gfield">
-              <label for="fAcilTel">Acil Durum Kişisi — Telefon</label>
-              <input type="tel" id="fAcilTel" placeholder="05XX XXX XX XX">
-            </div>
-            <div class="gfield">
-              <label for="fAcilYakinlik">Acil Durum Kişisi — Yakınlık</label>
-              <select id="fAcilYakinlik">
-                <option>Eş</option>
-                <option>Anne</option>
-                <option>Baba</option>
-                <option>Kardeş</option>
-                <option>Diğer</option>
-              </select>
-            </div>
           </div>
-        </div>
+        </section>
 
-        <div class="fg-section" data-payroll-only>
-          <div class="fg-section-head"><i class="fa-solid fa-sack-dollar"></i><h3>Ücret &amp; SGK</h3><span>Sadece yönetim görür</span></div>
-          <div class="gform">
-            <div class="gfield">
-              <label for="fBrutUcret">Brüt Ücret</label>
-              <input type="text" id="fBrutUcret" placeholder="₺25.000" inputmode="decimal">
+        <section class="tab-panel" data-tab-panel="gorev" role="tabpanel" aria-label="Görev &amp; Departman" hidden>
+          <div class="fg-section">
+            <div class="fg-section-head"><i class="fa-solid fa-helmet-safety"></i><h3>Pozisyon &amp; Atama</h3></div>
+            <div class="gform">
+              <div class="gfield">
+                <label for="fPozisyon">Pozisyon</label>
+                <select id="fPozisyon">
+                  <option>Saha Personeli</option>
+                  <option>Formen</option>
+                  <option>Kalıpçı</option>
+                  <option>Demir Ustası</option>
+                  <option>Elektrik Ustası</option>
+                  <option>Operatör</option>
+                  <option>Kaynakçı</option>
+                  <option>Marangoz</option>
+                  <option>Düz İşçi</option>
+                  <option>Şantiye Şefi</option>
+                  <option>Muhasebe</option>
+                  <option>Satın Alma</option>
+                  <option>İnsan Kaynakları</option>
+                  <option>Teknik Müdür</option>
+                  <option>Genel Müdür</option>
+                </select>
+              </div>
+              <div class="gfield">
+                <label for="fSantiye">Şantiye / Birim</label>
+                <select id="fSantiye">
+                  <option>Vadi Konakları</option>
+                  <option>Liman Lojistik Merkezi</option>
+                  <option>Merkez Şantiye</option>
+                  <option>Kule Ofis B Blok</option>
+                  <option>Göl Evleri 2. Etap</option>
+                  <option>Merkez Ofis</option>
+                </select>
+              </div>
+              <div class="gfield">
+                <label for="fBaslama">İşe Başlama</label>
+                <input type="date" id="fBaslama" value="2026-07-13">
+              </div>
             </div>
-            <div class="gfield">
-              <label for="fSgkSicil">SGK Sicil No</label>
-              <input type="text" id="fSgkSicil" placeholder="Örn. 2905163842" inputmode="numeric">
-            </div>
-            <div class="gfield">
-              <label for="fSgkTarih">SGK Giriş Tarihi</label>
-              <input type="date" id="fSgkTarih" value="2026-07-13">
-            </div>
-            <div class="fg-note"><i class="fa-solid fa-circle-info"></i><span>Bordro hesaplama Faz 2 kapsamındadır.</span></div>
           </div>
-        </div>
+        </section>
 
-        <div class="fg-section">
-          <div class="fg-section-head"><i class="fa-solid fa-paperclip"></i><h3>Evrak</h3></div>
-          <div class="attach-zone" id="attachZone" tabindex="0" role="button" aria-label="Evrak ekle">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
-            <b>Evrak eklemek için tıklayın</b>
-            <span>Kimlik fotokopisi, ikametgah, sağlık raporu, sözleşme (PDF/JPG, mock)</span>
+        <section class="tab-panel" data-tab-panel="sgk" role="tabpanel" aria-label="SGK / Maaş" data-payroll-only hidden>
+          <div class="fg-section">
+            <div class="fg-section-head"><i class="fa-solid fa-sack-dollar"></i><h3>Ücret &amp; SGK</h3><span>Sadece yönetim görür</span></div>
+            <div class="gform">
+              <div class="gfield">
+                <label for="fBrutUcret">Brüt Ücret</label>
+                <input type="text" id="fBrutUcret" placeholder="₺25.000" inputmode="decimal">
+              </div>
+              <div class="gfield">
+                <label for="fSgkSicil">SGK Sicil No</label>
+                <input type="text" id="fSgkSicil" placeholder="Örn. 2905163842" inputmode="numeric">
+              </div>
+              <div class="gfield">
+                <label for="fSgkTarih">SGK Giriş Tarihi</label>
+                <input type="date" id="fSgkTarih" value="2026-07-13">
+              </div>
+              <div class="fg-note"><i class="fa-solid fa-circle-info"></i><span>Bordro hesaplama Faz 2 kapsamındadır.</span></div>
+            </div>
           </div>
-          <div class="attach-list" id="attachList"></div>
-        </div>
+        </section>
+
+        <section class="tab-panel" data-tab-panel="evrak" role="tabpanel" aria-label="Evrak" hidden>
+          <div class="fg-section">
+            <div class="fg-section-head"><i class="fa-solid fa-paperclip"></i><h3>Evrak</h3></div>
+            <div class="attach-zone" id="attachZone" tabindex="0" role="button" aria-label="Evrak ekle">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <b>Evrak eklemek için tıklayın</b>
+              <span>Kimlik fotokopisi, ikametgah, sağlık raporu, sözleşme (PDF/JPG, mock)</span>
+            </div>
+            <div class="attach-list" id="attachList"></div>
+          </div>
+        </section>
+
+        <section class="tab-panel" data-tab-panel="zimmet" role="tabpanel" aria-label="Zimmet" hidden>
+          <div class="fg-section">
+            <div class="fg-section-head"><i class="fa-solid fa-toolbox"></i><h3>Zimmet</h3></div>
+            <div class="gv-empty" style="padding:32px 24px">
+              <div class="ge-ico"><i class="fa-solid fa-toolbox"></i></div>
+              <h4>Zimmet kaydı henüz yok</h4>
+              <p>Zimmet kayıtları personel kaydı oluşturulduktan sonra bu sekmede listelenir.</p>
+              <a class="btn btn-ghost btn-sm" href="crm-operasyon-demirbas.html" style="margin-top:14px"><i class="fa-solid fa-arrow-right"></i> Demirbaş / Zimmet modülü</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="tab-panel" data-tab-panel="izinavans" role="tabpanel" aria-label="İzin, Avans, Rapor" hidden>
+          <div class="fg-section">
+            <div class="fg-section-head"><i class="fa-solid fa-umbrella-beach"></i><h3>İzin / Avans / Rapor</h3></div>
+            <div class="gv-empty" style="padding:32px 24px">
+              <div class="ge-ico"><i class="fa-solid fa-folder-open"></i></div>
+              <h4>Kayıtlar personel oluşturulduktan sonra açılır</h4>
+              <p>İzin, avans ve rapor süreçleri personel kaydı tamamlandıktan sonra ilgili modüllerden yürütülür.</p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px">
+                <a class="btn btn-ghost btn-sm" href="crm-personel-izin.html"><i class="fa-solid fa-umbrella-beach"></i> İzin</a>
+                <a class="btn btn-ghost btn-sm" href="crm-personel-avans.html"><i class="fa-solid fa-hand-holding-dollar"></i> Avans</a>
+                <a class="btn btn-ghost btn-sm" href="crm-personel-rapor.html"><i class="fa-solid fa-file-medical"></i> Rapor</a>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <div class="form-foot">
           <a class="btn btn-ghost btn-sm" href="crm-personel.html">Vazgeç</a>
@@ -323,6 +395,24 @@
       setTimeout(function(){ location.href = 'crm-personel.html'; }, 900);
     });
   }
+})();
+</script>
+<script>
+/* sekme motoru — personel-detay ile aynı desen, form sayfasında hash/replaceState YOK (sade activate) */
+(function(){
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.gv-tab'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
+  function activate(id){
+    tabs.forEach(function(t){
+      var on = t.getAttribute('data-tab') === id;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    panels.forEach(function(p){ p.hidden = p.getAttribute('data-tab-panel') !== id; });
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ if(t.hidden) return; activate(t.getAttribute('data-tab')); });
+  });
 })();
 </script>
 </body>

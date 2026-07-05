@@ -57,6 +57,15 @@
 .fh-mark.tedarikci{background:var(--warn-tint);color:var(--warn)}
 .fh-info{min-width:0}
 .fh-info b{display:block;font-size:14.5px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* çoğaltılabilir satırlar — telefon/e-posta/şube adresi (satinalma-talep-form kal-row dilinin sadeleştirilmiş hali) */
+.extra-row{display:flex;gap:8px;align-items:center;margin-top:8px}
+.extra-row input{flex:1;min-width:0}
+.row-remove{width:34px;height:34px;flex:none;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--paper);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:.18s var(--ease)}
+.row-remove:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-tint)}
+.sube-row{display:grid;grid-template-columns:1fr 1fr 34px;gap:10px;align-items:center;margin-top:8px}
+.sube-row input{min-width:0}
+@media(max-width:640px){.sube-row{grid-template-columns:1fr 1fr;row-gap:8px}.sube-row .row-remove{grid-column:1/-1;justify-self:end}}
 </style>
 </head>
 <body data-sec="cari" data-screen="rehber">
@@ -137,10 +146,14 @@
             <div class="gfield">
               <label for="fTel">Telefon</label>
               <input type="tel" id="fTel" placeholder="05xx xxx xx xx">
+              <div id="telExtraList"></div>
+              <button type="button" class="btn btn-ghost btn-sm" id="btnTelEkle" data-no-confirm style="align-self:flex-start;margin-top:8px"><i class="fa-solid fa-plus"></i> Telefon ekle</button>
             </div>
             <div class="gfield">
               <label for="fEposta">E-posta</label>
               <input type="email" id="fEposta" placeholder="ornek@firma.example">
+              <div id="epostaExtraList"></div>
+              <button type="button" class="btn btn-ghost btn-sm" id="btnEpostaEkle" data-no-confirm style="align-self:flex-start;margin-top:8px"><i class="fa-solid fa-plus"></i> E-posta ekle</button>
             </div>
             <div class="gfield full">
               <label>Adres</label>
@@ -149,9 +162,22 @@
                 <input type="text" id="fSehir" placeholder="Şehir — örn. İstanbul">
               </div>
             </div>
+            <div class="gfield full kurum-only" id="subeWrap">
+              <label>Şube Adresleri <span class="gf-hint">(isteğe bağlı)</span></label>
+              <div id="subeList"></div>
+              <button type="button" class="btn btn-ghost btn-sm" id="btnSubeEkle" data-no-confirm style="align-self:flex-start;margin-top:8px"><i class="fa-solid fa-plus"></i> Şube adresi ekle</button>
+            </div>
             <div class="gfield full">
               <label for="fIban">IBAN <span class="gf-hint">(isteğe bağlı)</span></label>
               <input type="text" id="fIban" placeholder="TR__ ____ ____ ____ ____ ____ __">
+            </div>
+            <div class="gfield">
+              <label for="fBankaAd">Banka Adı <span class="gf-hint">(isteğe bağlı)</span></label>
+              <input type="text" id="fBankaAd" placeholder="örn. Garanti BBVA">
+            </div>
+            <div class="gfield">
+              <label for="fBankaSube">Banka Şubesi <span class="gf-hint">(isteğe bağlı)</span></label>
+              <input type="text" id="fBankaSube" placeholder="örn. Kadıköy Şubesi">
             </div>
             <div class="gfield full">
               <label for="fNot">Notlar <span class="gf-hint">(isteğe bağlı)</span></label>
@@ -277,6 +303,53 @@
     document.getElementById(id).addEventListener('input', syncPreview);
   });
   applyKayit('kurum');
+
+  /* çoğaltılabilir bloklar — Şube adresi (kurum-only) + Telefon + E-posta.
+     cloneNode sayfa-lokal; Kurum→Kişi→Kurum round-trip'te klonlar yalnız
+     .kurum-only sarmalayıcı üzerinden gizlenir/gösterilir, hiç silinmez/çoğalmaz.
+     Kaldır butonu fa-trash — data-no-confirm ŞART (ui.js destr-interceptor tuzağı). */
+  var subeList = document.getElementById('subeList');
+  document.getElementById('btnSubeEkle').addEventListener('click', function(){
+    var row = document.createElement('div');
+    row.className = 'sube-row';
+    row.innerHTML = '<input type="text" placeholder="Şube adresi — cadde, mahalle, bina">'
+      + '<input type="text" placeholder="Şehir">'
+      + '<button type="button" class="row-remove" data-no-confirm aria-label="Şube adresini kaldır"><i class="fa-solid fa-trash"></i></button>';
+    subeList.appendChild(row);
+    row.querySelector('input').focus();
+  });
+  subeList.addEventListener('click', function(e){
+    var btn = e.target.closest('.row-remove'); if(!btn) return;
+    btn.closest('.sube-row').remove();
+  });
+
+  var telExtraList = document.getElementById('telExtraList');
+  document.getElementById('btnTelEkle').addEventListener('click', function(){
+    var row = document.createElement('div');
+    row.className = 'extra-row';
+    row.innerHTML = '<input type="tel" placeholder="05xx xxx xx xx">'
+      + '<button type="button" class="row-remove" data-no-confirm aria-label="Telefonu kaldır"><i class="fa-solid fa-trash"></i></button>';
+    telExtraList.appendChild(row);
+    row.querySelector('input').focus();
+  });
+  telExtraList.addEventListener('click', function(e){
+    var btn = e.target.closest('.row-remove'); if(!btn) return;
+    btn.closest('.extra-row').remove();
+  });
+
+  var epostaExtraList = document.getElementById('epostaExtraList');
+  document.getElementById('btnEpostaEkle').addEventListener('click', function(){
+    var row = document.createElement('div');
+    row.className = 'extra-row';
+    row.innerHTML = '<input type="email" placeholder="ornek@firma.example">'
+      + '<button type="button" class="row-remove" data-no-confirm aria-label="E-postayı kaldır"><i class="fa-solid fa-trash"></i></button>';
+    epostaExtraList.appendChild(row);
+    row.querySelector('input').focus();
+  });
+  epostaExtraList.addEventListener('click', function(e){
+    var btn = e.target.closest('.row-remove'); if(!btn) return;
+    btn.closest('.extra-row').remove();
+  });
 
   document.getElementById('cariSubmit').addEventListener('click', function(){
     if(this.disabled) return;
