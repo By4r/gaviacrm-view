@@ -47,6 +47,16 @@
 .saat-range input{flex:1;min-width:0}
 .saat-range span{color:var(--muted);font-weight:700}
 #fGun[readonly]{background:var(--bg);color:var(--ink-2);cursor:not-allowed}
+
+/* vekil bilgilendirme e-postası — medeni→esWrap deseninin uyarlaması */
+.vek-mail{grid-column:1/-1;display:flex;flex-direction:column;gap:12px;padding:16px;margin-top:2px;border-left:2px solid rgba(var(--acc-rgb),.35);background:var(--bg)}
+.vek-mail-head{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:800;color:var(--ink-2);letter-spacing:.01em}
+.vek-mail-head i{color:var(--acc-ink);font-size:12px}
+.vek-mail-field{display:flex;flex-direction:column;gap:4px}
+.vek-mail-field label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+.vek-mail-field .vm-val{font-size:13px;font-weight:700;color:var(--ink)}
+.vek-mail-field .vm-val span{font-weight:500;color:var(--muted);margin-left:6px}
+.vek-mail-foot{display:flex;align-items:center;justify-content:flex-end;gap:10px}
 </style>
 </head>
 <body data-sec="personel" data-screen="izin">
@@ -89,7 +99,7 @@
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-umbrella-beach"></i> Talep Bilgileri</div></div>
         <div class="gc-body">
           <form class="gform" id="izinForm">
-            <div class="gfield full" data-admin-only>
+            <div class="gfield full" data-admin-only id="fPersonelWrap">
               <label for="fPersonel">Personel</label>
               <select id="fPersonel">
                 <option>Kendi adıma (oturum açan kullanıcı)</option>
@@ -154,6 +164,20 @@
                 <option>Hasan Demirci — Şantiye Şefi (Vadi Konakları)</option>
               </select>
               <span class="gf-hint">Saha personeli/şef izinleri için görev devri önerilir.</span>
+            </div>
+            <div class="gfield full" id="vekMailWrap" hidden>
+              <div class="vek-mail">
+                <div class="vek-mail-head"><i class="fa-solid fa-envelope"></i> Vekâlet Bilgilendirme E-postası</div>
+                <div class="vek-mail-field"><label>Alıcı</label><div class="vm-val" id="vmAlici">—</div></div>
+                <div class="vek-mail-field"><label>Konu</label><div class="vm-val" id="vmKonu">—</div></div>
+                <div class="vek-mail-field">
+                  <label for="vmMetin">Bilgilendirme Metni <span class="gf-hint">(düzenlenebilir)</span></label>
+                  <textarea id="vmMetin" rows="4"></textarea>
+                </div>
+                <div class="vek-mail-foot">
+                  <button type="button" class="btn btn-acc btn-sm" id="vmGonder" data-no-confirm><i class="fa-solid fa-paper-plane"></i> Gönder</button>
+                </div>
+              </div>
             </div>
           </form>
         </div>
@@ -250,6 +274,64 @@
     elYol.addEventListener('change', function(){ elYolHint.hidden = !elYol.checked; });
   }
   uygula();
+
+  /* ---- Vekil / Devir → bilgilendirme e-postası kartı (R5, medeni→esWrap deseninin uyarlaması) ---- */
+  var VEKIL_MAIL = {
+    'Ömer Taşkın — Şantiye Şefi (Merkez Şantiye)': {ad:'Ömer Taşkın', mail:'omer.taskin@yapitas.com.tr'},
+    'Hasan Demirci — Şantiye Şefi (Vadi Konakları)': {ad:'Hasan Demirci', mail:'hasan.demirci@yapitas.com.tr'}
+  };
+  var AY_KISA = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+  function fmtTarihAraligi(baslaVal, bitisVal){
+    if(!baslaVal || !bitisVal) return '';
+    var b = baslaVal.split('-'), e = bitisVal.split('-');
+    var by = +b[0], bm = +b[1] - 1, bd = +b[2], ey = +e[0], em = +e[1] - 1, ed = +e[2];
+    if(by === ey && bm === em) return bd + '–' + ed + ' ' + AY_KISA[bm] + ' ' + by;
+    return bd + ' ' + AY_KISA[bm] + ' ' + by + ' – ' + ed + ' ' + AY_KISA[em] + ' ' + ey;
+  }
+  function izinliAdi(){
+    var wrap = document.getElementById('fPersonelWrap');
+    if(wrap && !wrap.hidden && elPersonel.value.indexOf('Kendi adıma') === -1){
+      return elPersonel.value.split(' — ')[0];
+    }
+    var gv = document.getElementById('gvName');
+    return (gv && gv.textContent.trim()) || 'Talep sahibi';
+  }
+  function vekilMetin(vekilAd, izinliAd, tarihAraligi){
+    return 'Merhaba ' + vekilAd + ',\n\n'
+      + izinliAd + ', ' + tarihAraligi + ' tarihleri arasında izinli olacaktır. Bu süre boyunca '
+      + 'saha/şantiye sorumluluğu ve acil durum kararları size devredilmiştir. Görev devri '
+      + 'kapsamındaki açık işler ayrıca ilgili modülden iletilecektir.\n\n'
+      + 'Bilgilerinize sunarız.';
+  }
+
+  var elPersonel = document.getElementById('fPersonel'),
+      elVekil = document.getElementById('fVekil'),
+      elBasla = document.getElementById('fBasla'),
+      elBitis = document.getElementById('fBitis'),
+      vekMailWrap = document.getElementById('vekMailWrap'),
+      vmAlici = document.getElementById('vmAlici'),
+      vmKonu = document.getElementById('vmKonu'),
+      vmMetin = document.getElementById('vmMetin');
+
+  function guncelleVekilKarti(){
+    var v = VEKIL_MAIL[elVekil.value];
+    if(!v){ vekMailWrap.hidden = true; return; }
+    var tarihAraligi = fmtTarihAraligi(elBasla.value, elBitis.value);
+    var izinliAd = izinliAdi();
+    vmAlici.innerHTML = v.ad + ' <span>' + v.mail + '</span>';
+    vmKonu.textContent = 'Vekâlet Bilgilendirmesi — ' + tarihAraligi;
+    vmMetin.value = vekilMetin(v.ad, izinliAd, tarihAraligi);
+    vekMailWrap.hidden = false;
+  }
+  if(elVekil){
+    elVekil.addEventListener('change', guncelleVekilKarti);
+  }
+  var vmGonderBtn = document.getElementById('vmGonder');
+  if(vmGonderBtn){
+    vmGonderBtn.addEventListener('click', function(){
+      gvToast('Bilgilendirme e-postası gönderildi (demo).');
+    });
+  }
 
   var btn = document.getElementById('izinSubmit');
   if(btn){

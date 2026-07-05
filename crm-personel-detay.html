@@ -69,6 +69,11 @@
 .doc-info{flex:1;min-width:0;line-height:1.35}
 .doc-info b{display:block;font-size:13px;font-weight:700;color:var(--ink)}
 .doc-info span{font-size:11.5px;color:var(--muted)}
+.doc-acts{flex:none}
+@media(max-width:640px){
+  .doc-row{flex-wrap:wrap}
+  .doc-acts{flex:1 1 100%;justify-content:flex-end;margin-top:6px}
+}
 
 .chief-row{display:flex;align-items:center;gap:14px}
 .chief-row .per-hero-mark{width:44px;height:44px;font-size:14px}
@@ -113,7 +118,7 @@
           <dl class="per-hero-meta">
             <div><dt>Şantiye</dt><dd><a href="crm-santiye-detay.html">Vadi Konakları</a></dd></div>
             <div><dt>Telefon</dt><dd>0532 407 28 11</dd></div>
-            <div><dt>E-posta</dt><dd>hasan.demirci@yapitas.example</dd></div>
+            <div><dt>E-posta</dt><dd>hasan.demirci@yapitas.com.tr</dd></div>
             <div><dt>İşe Başlama</dt><dd>15 Şubat 2017</dd></div>
           </dl>
         </div>
@@ -142,11 +147,21 @@
             <a class="gc-link" href="crm-personel-ozluk.html">Tüm matris <i class="fa-solid fa-arrow-right"></i></a>
           </div>
           <div class="gc-body">
-            <div class="doc-row"><div class="doc-ico"><i class="fa-solid fa-id-card"></i></div><div class="doc-info"><b>Kimlik Fotokopisi</b><span>Dosyalandı — 15 Şubat 2017</span></div><span class="gstat ok">Tamam</span></div>
-            <div class="doc-row"><div class="doc-ico"><i class="fa-solid fa-file-signature"></i></div><div class="doc-info"><b>İş Sözleşmesi</b><span>İmzalı — süresiz</span></div><span class="gstat ok">Tamam</span></div>
-            <div class="doc-row"><div class="doc-ico"><i class="fa-solid fa-shield-halved"></i></div><div class="doc-info"><b>İSG Eğitim Sertifikası</b><span>Yenileme: 4 Şubat 2027</span></div><span class="gstat ok">Tamam</span></div>
-            <div class="doc-row"><div class="doc-ico"><i class="fa-solid fa-notes-medical"></i></div><div class="doc-info"><b>Sağlık Raporu</b><span>Geçerli — periyodik muayene tamam</span></div><span class="gstat ok">Tamam</span></div>
-            <div class="doc-row"><div class="doc-ico"><i class="fa-solid fa-building-columns"></i></div><div class="doc-info"><b>SGK İşe Giriş Bildirgesi</b><span>Bildirildi — 15 Şubat 2017</span></div><span class="gstat ok">Tamam</span></div>
+            <!-- 12 kanonik evrak kategorisi (personel-form Evrak sekmesiyle aynı set ve sıra).
+                 Mevcut 5 satırın adı/durumu/tarihi AYNEN korunmuştur; yeni 7 satır Liste-A adlarıyla
+                 eklenmiştir (özlük matrisi crm-personel-ozluk.html yalnız 5 tip içerdiğinden çelişki yok). -->
+            <div class="doc-row"><div class="doc-ico"><i class="fa-solid fa-id-card"></i></div><div class="doc-info"><b>Kimlik Fotokopisi</b><span>Dosyalandı — 15 Şubat 2017</span></div><span class="gstat ok">Tamam</span><div class="row-acts doc-acts"><button type="button" class="ia-btn" data-act="goruntule" data-no-confirm aria-label="Görüntüle"><i class="fa-solid fa-eye"></i></button><button type="button" class="ia-btn" data-act="indir" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button><button type="button" class="ia-btn" data-act="degistir" data-no-confirm aria-label="Değiştir"><i class="fa-solid fa-rotate"></i></button><button type="button" class="ia-btn" data-act="sil" data-no-confirm aria-label="Sil"><i class="fa-solid fa-trash"></i></button></div></div>
+            <div class="doc-row"><div class="doc-ico"><i class="fa-solid fa-file-signature"></i></div><div class="doc-info"><b>İş Sözleşmesi</b><span>İmzalı — süresiz</span></div><span class="gstat ok">Tamam</span><div class="row-acts doc-acts"><button type="button" class="ia-btn" data-act="goruntule" data-no-confirm aria-label="Görüntüle"><i class="fa-solid fa-eye"></i></button><button type="button" class="ia-btn" data-act="indir" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button><button type="button" class="ia-btn" data-act="degistir" data-no-confirm aria-label="Değiştir"><i class="fa-solid fa-rotate"></i></button><button type="button" class="ia-btn" data-act="sil" data-no-confirm aria-label="Sil"><i class="fa-solid fa-trash"></i></button></div></div>
+            <div class="doc-row"><div class="doc-ico"><i class="fa-solid fa-shield-halved"></i></div><div class="doc-info"><b>İSG Eğitim Sertifikası</b><span>Yenileme: 4 Şubat 2027</span></div><span class="gstat ok">Tamam</span><div class="row-acts doc-acts"><button type="button" class="ia-btn" data-act="goruntule" data-no-confirm aria-label="Görüntüle"><i class="fa-solid fa-eye"></i></button><button type="button" class="ia-btn" data-act="indir" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button><button type="button" class="ia-btn" data-act="degistir" data-no-confirm aria-label="Değiştir"><i class="fa-solid fa-rotate"></i></button><button type="button" class="ia-btn" data-act="sil" data-no-confirm aria-label="Sil"><i class="fa-solid fa-trash"></i></button></div></div>
+            <div class="doc-row"><div class="doc-ico"><i class="fa-solid fa-notes-medical"></i></div><div class="doc-info"><b>Sağlık Raporu</b><span>Geçerli — periyodik muayene tamam</span></div><span class="gstat ok">Tamam</span><div class="row-acts doc-acts"><button type="button" class="ia-btn" data-act="goruntule" data-no-confirm aria-label="Görüntüle"><i class="fa-solid fa-eye"></i></button><button type="button" class="ia-btn" data-act="indir" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button><button type="button" class="ia-btn" data-act="degistir" data-no-confirm aria-label="Değiştir"><i class="fa-solid fa-rotate"></i></button><button type="button" class="ia-btn" data-act="sil" data-no-confirm aria-label="Sil"><i class="fa-solid fa-trash"></i></button></div></div>
+            <div class="doc-row"><div class="doc-ico"><i class="fa-solid fa-file-shield"></i></div><div class="doc-info"><b>İSG bildirgesi</b><span>Bildirildi — 15 Şubat 2017</span></div><span class="gstat ok">Tamam</span><div class="row-acts doc-acts"><button type="button" class="ia-btn" data-act="goruntule" data-no-confirm aria-label="Görüntüle"><i class="fa-solid fa-eye"></i></button><button type="button" class="ia-btn" data-act="indir" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button><button type="button" class="ia-btn" data-act="degistir" data-no-confirm aria-label="Değiştir"><i class="fa-solid fa-rotate"></i></button><button type="button" class="ia-btn" data-act="sil" data-no-confirm aria-label="Sil"><i class="fa-solid fa-trash"></i></button></div></div>
+            <div class="doc-row warn"><div class="doc-ico"><i class="fa-solid fa-truck-front"></i></div><div class="doc-info"><b>SRC belgesi</b><span>Şantiye şefi kadrosu için zorunlu değil — yüklenmedi</span></div><span class="gstat off">Yüklenmedi</span><div class="row-acts doc-acts"><button type="button" class="ia-btn" data-act="yukle" data-no-confirm aria-label="Yükle"><i class="fa-solid fa-cloud-arrow-up"></i></button></div></div>
+            <div class="doc-row"><div class="doc-ico"><i class="fa-solid fa-id-card-clip"></i></div><div class="doc-info"><b>Ehliyet belgesi</b><span>Geçerli — B sınıfı</span></div><span class="gstat ok">Tamam</span><div class="row-acts doc-acts"><button type="button" class="ia-btn" data-act="goruntule" data-no-confirm aria-label="Görüntüle"><i class="fa-solid fa-eye"></i></button><button type="button" class="ia-btn" data-act="indir" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button><button type="button" class="ia-btn" data-act="degistir" data-no-confirm aria-label="Değiştir"><i class="fa-solid fa-rotate"></i></button><button type="button" class="ia-btn" data-act="sil" data-no-confirm aria-label="Sil"><i class="fa-solid fa-trash"></i></button></div></div>
+            <div class="doc-row"><div class="doc-ico"><i class="fa-solid fa-scale-balanced"></i></div><div class="doc-info"><b>Adli sicil kaydı</b><span>Dosyalandı — 15 Şubat 2017</span></div><span class="gstat ok">Tamam</span><div class="row-acts doc-acts"><button type="button" class="ia-btn" data-act="goruntule" data-no-confirm aria-label="Görüntüle"><i class="fa-solid fa-eye"></i></button><button type="button" class="ia-btn" data-act="indir" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button><button type="button" class="ia-btn" data-act="degistir" data-no-confirm aria-label="Değiştir"><i class="fa-solid fa-rotate"></i></button><button type="button" class="ia-btn" data-act="sil" data-no-confirm aria-label="Sil"><i class="fa-solid fa-trash"></i></button></div></div>
+            <div class="doc-row warn"><div class="doc-ico"><i class="fa-solid fa-house-chimney"></i></div><div class="doc-info"><b>İkametgâh belgesi</b><span>Henüz yüklenmedi</span></div><span class="gstat off">Yüklenmedi</span><div class="row-acts doc-acts"><button type="button" class="ia-btn" data-act="yukle" data-no-confirm aria-label="Yükle"><i class="fa-solid fa-cloud-arrow-up"></i></button></div></div>
+            <div class="doc-row"><div class="doc-ico"><i class="fa-solid fa-building-columns"></i></div><div class="doc-info"><b>SGK İşe Giriş Bildirgesi</b><span>Bildirildi — 15 Şubat 2017</span></div><span class="gstat ok">Tamam</span><div class="row-acts doc-acts"><button type="button" class="ia-btn" data-act="goruntule" data-no-confirm aria-label="Görüntüle"><i class="fa-solid fa-eye"></i></button><button type="button" class="ia-btn" data-act="indir" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button><button type="button" class="ia-btn" data-act="degistir" data-no-confirm aria-label="Değiştir"><i class="fa-solid fa-rotate"></i></button><button type="button" class="ia-btn" data-act="sil" data-no-confirm aria-label="Sil"><i class="fa-solid fa-trash"></i></button></div></div>
+            <div class="doc-row"><div class="doc-ico"><i class="fa-solid fa-graduation-cap"></i></div><div class="doc-info"><b>Diploma / sertifika belgeleri</b><span>İnşaat Teknikerliği diploması — dosyalandı</span></div><span class="gstat ok">Tamam</span><div class="row-acts doc-acts"><button type="button" class="ia-btn" data-act="goruntule" data-no-confirm aria-label="Görüntüle"><i class="fa-solid fa-eye"></i></button><button type="button" class="ia-btn" data-act="indir" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button><button type="button" class="ia-btn" data-act="degistir" data-no-confirm aria-label="Değiştir"><i class="fa-solid fa-rotate"></i></button><button type="button" class="ia-btn" data-act="sil" data-no-confirm aria-label="Sil"><i class="fa-solid fa-trash"></i></button></div></div>
+            <div class="doc-row"><div class="doc-ico"><i class="fa-solid fa-folder-open"></i></div><div class="doc-info"><b>Diğer özlük evrakları</b><span>Kayıt yok</span></div><span class="gstat off">—</span><div class="row-acts doc-acts"><button type="button" class="ia-btn" data-act="yukle" data-no-confirm aria-label="Yükle"><i class="fa-solid fa-cloud-arrow-up"></i></button></div></div>
           </div>
         </div>
         <div class="gv-card">
@@ -344,6 +359,22 @@
   if(['superadmin','sahip'].indexOf(GV.role) === -1){
     document.querySelectorAll('[data-payroll-only]').forEach(function(el){ el.hidden = true; });
   }
+
+  /* Evrak Durumu kartı — mock görüntüle/indir/değiştir/sil aksiyonları (R4, ia-btn idiyomu). */
+  var ACT_MSG = {
+    goruntule: ' görüntüleniyor (mock).',
+    indir: ' indiriliyor (mock).',
+    degistir: ' için değiştirme başlatıldı (mock).',
+    yukle: ' yüklendi (mock).',
+    sil: ' kaldırıldı (mock).'
+  };
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('.doc-acts .ia-btn'); if(!b) return;
+    var row = b.closest('.doc-row');
+    var name = row.querySelector('.doc-info b').textContent;
+    var act = b.getAttribute('data-act');
+    gvToast(name + (ACT_MSG[act] || ' (mock).'), {type: act === 'sil' ? 'danger' : 'info'});
+  });
 })();
 </script>
 <script>
