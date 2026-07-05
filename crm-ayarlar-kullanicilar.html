@@ -90,7 +90,7 @@
         <h1>Kullanıcılar</h1>
         <div class="ph-sub">Yapıtaş İnşaat A.Ş. — hesap erişimi ve koltuk yönetimi</div>
       </div>
-      <button class="btn btn-acc btn-sm" id="inviteBtn"><i class="fa-solid fa-user-plus"></i> Kullanıcı davet et</button>
+      <a class="btn btn-acc btn-sm" href="crm-ayarlar-kullanici-davet.html" id="inviteBtn"><i class="fa-solid fa-user-plus"></i> Kullanıcı davet et</a>
     </div>
 
     <!-- koltuk / paket vitrini -->
@@ -314,11 +314,6 @@
   var role = GV.role;
   document.querySelectorAll('[data-view="su-only"]').forEach(function(el){ el.hidden = role !== 'superadmin'; });
   document.querySelectorAll('[data-view="sahip-only"]').forEach(function(el){ el.hidden = role !== 'sahip'; });
-
-  var inv = document.getElementById('inviteBtn');
-  if(inv) inv.addEventListener('click', function(){
-    gvToast('Kullanıcı davet akışı bir sonraki sürümde eklenecek.', {type:'info', icon:'fa-user-plus'});
-  });
 })();
 </script>
 </body>
