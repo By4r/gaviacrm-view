@@ -95,12 +95,12 @@
     <div class="rr-mast">
       <div class="rr-mast-l">
         <div class="rr-mast-eyebrow"><i class="fa-solid fa-chart-column"></i> Rapor Merkezi</div>
-        <h2>14 rapor tanımlı, 8'i bu sürümde canlı.</h2>
-        <p>Canlı raporlar mevcut kayıtlardan derlenir; izin, avans, çalışma ve FM/EM raporları da eklendi. Diğerleri sonraki dalgada.</p>
+        <h2>14 rapor tanımlı, tamamı bu sürümde canlı.</h2>
+        <p>Canlı raporlar mevcut kayıtlardan derlenir; şantiye, demirbaş, makine, hakediş, talep ve cari raporlarıyla set tamamlandı.</p>
       </div>
       <div class="rr-mast-r">
-        <div class="rr-mstat"><b>8</b><span>canlı rapor</span></div>
-        <div class="rr-mstat"><b>6</b><span>planlanan rapor</span></div>
+        <div class="rr-mstat"><b>14</b><span>canlı rapor</span></div>
+        <div class="rr-mstat"><b>0</b><span>planlanan rapor</span></div>
         <div class="rr-mstat"><b>3</b><span>şantiye kapsamı</span></div>
       </div>
     </div>
@@ -119,7 +119,7 @@
           <div class="rpc-ico"><i class="fa-solid fa-helmet-safety"></i></div>
           <div class="rpc-hd"><b>Şantiye Raporu</b><p>Şantiye bazında ilerleme yüzdesi, personel sayısı ve program durumu.</p></div>
         </div>
-        <div class="rpc-foot"><a class="rpc-btn" href="#" data-wip="1">Görüntüle <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="rpc-foot"><a class="rpc-btn" href="crm-panel-rapor-santiye.html">Görüntüle <i class="fa-solid fa-arrow-right"></i></a></div>
       </div>
 
       <div class="rpc-card">
@@ -151,7 +151,7 @@
           <div class="rpc-ico"><i class="fa-solid fa-toolbox"></i></div>
           <div class="rpc-hd"><b>Demirbaş Raporu</b><p>Zimmetli, depoda ve serviste demirbaş envanterinin dökümü.</p></div>
         </div>
-        <div class="rpc-foot"><a class="rpc-btn" href="#" data-wip="1">Görüntüle <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="rpc-foot"><a class="rpc-btn" href="crm-panel-rapor-demirbas.html">Görüntüle <i class="fa-solid fa-arrow-right"></i></a></div>
       </div>
 
       <div class="rpc-card">
@@ -159,23 +159,23 @@
           <div class="rpc-ico"><i class="fa-solid fa-truck-pickup"></i></div>
           <div class="rpc-hd"><b>Makine Raporu</b><p>Makine parkının çalışma saati, yakıt ve bakım durumu özeti.</p></div>
         </div>
-        <div class="rpc-foot"><a class="rpc-btn" href="#" data-wip="1">Görüntüle <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="rpc-foot"><a class="rpc-btn" href="crm-panel-rapor-makine.html">Görüntüle <i class="fa-solid fa-arrow-right"></i></a></div>
       </div>
 
-      <div class="rpc-card">
+      <div class="rpc-card" data-sef-hidden="1">
         <div class="rpc-top">
           <div class="rpc-ico"><i class="fa-solid fa-file-signature"></i></div>
           <div class="rpc-hd"><b>Hakediş Raporu</b><p>Kurum ve taşeron hakedişlerinin ödeme durumu özeti.</p></div>
         </div>
-        <div class="rpc-foot"><a class="rpc-btn" href="#" data-wip="1">Görüntüle <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="rpc-foot"><a class="rpc-btn" href="crm-panel-rapor-hakedis.html">Görüntüle <i class="fa-solid fa-arrow-right"></i></a></div>
       </div>
 
-      <div class="rpc-card">
+      <div class="rpc-card" data-sef-hidden="1">
         <div class="rpc-top">
           <div class="rpc-ico"><i class="fa-solid fa-address-book"></i></div>
           <div class="rpc-hd"><b>Cari Raporu</b><p>Firma bazında bakiye, tahsilat ve ödeme durumu.</p></div>
         </div>
-        <div class="rpc-foot"><a class="rpc-btn" href="#" data-wip="1">Görüntüle <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="rpc-foot"><a class="rpc-btn" href="crm-panel-rapor-cari.html">Görüntüle <i class="fa-solid fa-arrow-right"></i></a></div>
       </div>
 
       <div class="rpc-card">
@@ -183,7 +183,7 @@
           <div class="rpc-ico"><i class="fa-solid fa-boxes-stacked"></i></div>
           <div class="rpc-hd"><b>Talep Raporu</b><p>Malzeme taleplerinin süreç ve tedarik durumu özeti.</p></div>
         </div>
-        <div class="rpc-foot"><a class="rpc-btn" href="#" data-wip="1">Görüntüle <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="rpc-foot"><a class="rpc-btn" href="crm-panel-rapor-talep.html">Görüntüle <i class="fa-solid fa-arrow-right"></i></a></div>
       </div>
 
       <div class="rpc-card">
@@ -223,5 +223,18 @@
 
 <script src="assets/js/shell.js"></script>
 <script src="assets/js/ui.js"></script>
+<script>
+/* RBAC (6C2 K-kararı): Hakediş + Cari raporları şefe kapalı — kaynak finans/cari
+   bölümleri sef rolünde yok (shell.js ROLES); kartlar DOM'dan kaldırılır ve
+   mast sayıları şef için yeniden yazılır. Sayfa guard'ları rapor dosyalarında ayrıca var. */
+(function(){
+  if(GV.role!=='sef') return;
+  document.querySelectorAll('.rpc-card[data-sef-hidden]').forEach(function(c){ c.remove(); });
+  var h2=document.querySelector('.rr-mast-l h2');
+  if(h2) h2.textContent='12 rapor tanımlı, tamamı bu sürümde canlı.';
+  var st=document.querySelector('.rr-mast-r .rr-mstat b');
+  if(st) st.textContent='12';
+})();
+</script>
 </body>
 </html>
