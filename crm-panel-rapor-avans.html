@@ -155,35 +155,35 @@
             </tr>
           </thead>
           <tbody>
-            <tr data-donem="temmuz" data-santiye="vadi" data-durum="bekliyor" data-chain="standart" data-chain-label="Standart (Şef → Muhasebe)" data-tutar="3500" data-personel="Musa Erdem">
+            <tr data-donem="temmuz" data-santiye="vadi" data-durum="bekliyor" data-zincir="standart" data-zincir-label="Standart (Şef → Muhasebe)" data-tutar="3500" data-personel="Musa Erdem">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">ME</div><div class="gcell-info"><div class="gcell-name"><a href="crm-personel-avans.html" style="color:inherit;text-decoration:none">Musa Erdem</a></div><span class="gcell-sub">AVN-2026-015</span></div></div></td>
               <td class="num t-strong">₺3.500</td>
               <td>1 Temmuz 2026</td>
               <td>Vadi Konakları</td>
               <td><span class="gstat warn">Bekliyor</span></td>
             </tr>
-            <tr data-donem="haziran" data-santiye="vadi" data-durum="bekliyor" data-chain="standart" data-chain-label="Standart (Şef → Muhasebe)" data-tutar="4000" data-personel="Ali Vural">
+            <tr data-donem="haziran" data-santiye="vadi" data-durum="bekliyor" data-zincir="standart" data-zincir-label="Standart (Şef → Muhasebe)" data-tutar="4000" data-personel="Ali Vural">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">AV</div><div class="gcell-info"><div class="gcell-name"><a href="crm-personel-avans.html" style="color:inherit;text-decoration:none">Ali Vural</a></div><span class="gcell-sub">AVN-2026-014</span></div></div></td>
               <td class="num t-strong">₺4.000</td>
               <td>29 Haziran 2026</td>
               <td>Vadi Konakları</td>
               <td><span class="gstat warn">Bekliyor</span></td>
             </tr>
-            <tr data-donem="haziran" data-santiye="vadi" data-durum="onaylandi" data-chain="gm" data-chain-label="GM Onaylı (+ Genel Müdür)" data-tutar="8000" data-personel="Hasan Demirci">
+            <tr data-donem="haziran" data-santiye="vadi" data-durum="onaylandi" data-zincir="gm" data-zincir-label="GM Onaylı (+ Genel Müdür)" data-tutar="8000" data-personel="Hasan Demirci">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">HD</div><div class="gcell-info"><div class="gcell-name"><a href="crm-personel-avans.html" style="color:inherit;text-decoration:none">Hasan Demirci</a></div><span class="gcell-sub">AVN-2026-013</span></div></div></td>
               <td class="num t-strong">₺8.000</td>
               <td>18 Haziran 2026</td>
               <td>Vadi Konakları</td>
               <td><span class="gstat ok">Onaylandı</span></td>
             </tr>
-            <tr data-donem="haziran" data-santiye="merkez" data-durum="reddedildi" data-chain="gm" data-chain-label="GM Onaylı (+ Genel Müdür)" data-tutar="6500" data-personel="Baran Yıldız">
+            <tr data-donem="haziran" data-santiye="merkez" data-durum="reddedildi" data-zincir="gm" data-zincir-label="GM Onaylı (+ Genel Müdür)" data-tutar="6500" data-personel="Baran Yıldız">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--warn-tint);color:var(--warn)">BY</div><div class="gcell-info"><div class="gcell-name"><a href="crm-personel-avans.html" style="color:inherit;text-decoration:none">Baran Yıldız</a></div><span class="gcell-sub">AVN-2026-012</span></div></div></td>
               <td class="num t-strong">₺6.500</td>
               <td>10 Haziran 2026</td>
               <td>Merkez Ofis</td>
               <td><span class="gstat danger">Reddedildi</span></td>
             </tr>
-            <tr data-donem="haziran" data-santiye="liman" data-durum="revize" data-chain="gm" data-chain-label="GM Onaylı (+ Genel Müdür)" data-tutar="10000" data-personel="Aylin Koç">
+            <tr data-donem="haziran" data-santiye="liman" data-durum="revize" data-zincir="gm" data-zincir-label="GM Onaylı (+ Genel Müdür)" data-tutar="10000" data-personel="Aylin Koç">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">AK</div><div class="gcell-info"><div class="gcell-name"><a href="crm-personel-avans.html" style="color:inherit;text-decoration:none">Aylin Koç</a></div><span class="gcell-sub">AVN-2026-011</span></div></div></td>
               <td class="num t-strong">₺10.000</td>
               <td>3 Haziran 2026</td>
@@ -295,8 +295,8 @@
       var ad = tr.getAttribute('data-personel');
       toplamTutar += tutar;
       if(durumlar[d]){ durumlar[d].n++; durumlar[d].tutar += tutar; durumlar[d].ad.push(ad); }
-      var z = tr.getAttribute('data-chain');
-      if(!zincirler[z]) zincirler[z] = {n:0, tutar:0, label: tr.getAttribute('data-chain-label')};
+      var z = tr.getAttribute('data-zincir');
+      if(!zincirler[z]) zincirler[z] = {n:0, tutar:0, label: tr.getAttribute('data-zincir-label')};
       zincirler[z].n++; zincirler[z].tutar += tutar;
     });
 
