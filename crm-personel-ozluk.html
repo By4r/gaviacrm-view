@@ -16,24 +16,30 @@
 <link rel="stylesheet" href="assets/css/shell.css">
 <link rel="stylesheet" href="assets/css/ui.css">
 <style>
-/* ============ SAYFAYA ÖZEL — Özlük & Evrak Matrisi ============ */
-#tblMatris{min-width:900px}
-#tblMatris th.doc-col{text-align:center;width:130px}
+/* ============ SAYFAYA ÖZEL — Özlük & Evrak Matrisi (12 kanonik belge, SAYFA-LOKAL) ============ */
+.mtx-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+#tblMatris{min-width:1560px}
+#tblMatris th.doc-col{text-align:center;width:118px;vertical-align:top;padding-top:14px}
 #tblMatris td.doc-cell{text-align:center;padding-top:10px;padding-bottom:10px}
-#tblMatris th:first-child,#tblMatris td:first-child{position:sticky;left:0;background:var(--paper);z-index:2}
+#tblMatris th:first-child,#tblMatris td:first-child{position:sticky;left:0;background:var(--paper);z-index:2;min-width:216px}
+#tblMatris thead th:first-child{z-index:3}
 #tblMatris tbody tr:hover td:first-child{background:var(--bg)}
 
-.doc-col-head{display:flex;flex-direction:column;align-items:center;gap:4px;white-space:normal;line-height:1.25}
+.doc-col-head{display:flex;flex-direction:column;align-items:center;gap:6px;white-space:normal;line-height:1.25;min-height:44px}
 .doc-col-head i{font-size:13px;color:var(--acc-ink)}
+.doc-col-num{font-size:9.5px;font-weight:800;letter-spacing:.04em;color:var(--muted);font-variant-numeric:tabular-nums}
 
 .doc-dot{
   width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
   font-size:13px;background:var(--ok-tint);color:var(--ok);
 }
 .doc-dot.warn{background:var(--warn-tint);color:var(--warn)}
+.doc-dot.info{background:var(--info-tint);color:var(--info)}
 .doc-dot.danger{background:var(--danger-tint);color:var(--danger)}
-.doc-cap{display:block;margin-top:5px;font-size:10px;font-weight:700;color:var(--muted);max-width:110px;margin-left:auto;margin-right:auto;line-height:1.3}
+.doc-dot.expired{background:var(--danger);color:#fff}
+.doc-cap{display:block;margin-top:5px;font-size:10px;font-weight:700;color:var(--muted);max-width:104px;margin-left:auto;margin-right:auto;line-height:1.3}
 .doc-cap.warn{color:var(--warn)}
+.doc-cap.info{color:var(--info)}
 .doc-cap.danger{color:var(--danger)}
 
 .legend-row{display:flex;align-items:center;gap:20px;padding:14px 22px;border-top:1px solid var(--line);flex-wrap:wrap;font-size:12px;color:var(--muted)}
@@ -41,7 +47,9 @@
 .legend-dot{width:16px;height:16px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:8.5px}
 .legend-dot.ok{background:var(--ok-tint);color:var(--ok)}
 .legend-dot.warn{background:var(--warn-tint);color:var(--warn)}
+.legend-dot.info{background:var(--info-tint);color:var(--info)}
 .legend-dot.danger{background:var(--danger-tint);color:var(--danger)}
+.legend-dot.expired{background:var(--danger);color:#fff}
 </style>
 </head>
 <body data-sec="personel" data-screen="ozluk">
@@ -69,7 +77,7 @@
       <div>
         <div class="ph-eyebrow">İnsan Kaynağı</div>
         <h1>Özlük &amp; Evrak</h1>
-        <div class="ph-sub" id="phSub"><span data-table-count>22</span> personel · evrak uygunluk matrisi</div>
+        <div class="ph-sub" id="phSub"><span data-table-count>22</span> personel · 12 evrak türü · uygunluk matrisi</div>
       </div>
     </div>
 
@@ -86,13 +94,13 @@
       </div>
       <div class="kpi-card danger">
         <div class="kpi-ico"><i class="fa-solid fa-file-circle-xmark"></i></div>
-        <div><div class="kpi-num num" id="kpiEksikNum">4</div><div class="kpi-lbl">Eksik evrak</div>
-        <div class="kpi-delta flat" id="kpiEksikDelta"><i class="fa-solid fa-user"></i> 4 saha personelinde</div></div>
+        <div><div class="kpi-num num" id="kpiEksikNum">6</div><div class="kpi-lbl">Eksik evrak</div>
+        <div class="kpi-delta flat" id="kpiEksikDelta"><i class="fa-solid fa-user"></i> 5 personelde — 2 belge süresi dolmuş</div></div>
       </div>
       <div class="kpi-card">
         <div class="kpi-ico"><i class="fa-solid fa-file-shield"></i></div>
-        <div><div class="kpi-num num" id="kpiToplamKayitNum">110</div><div class="kpi-lbl">Toplam evrak kaydı</div>
-        <div class="kpi-delta flat" id="kpiToplamKayitDelta"><i class="fa-solid fa-layer-group"></i> 5 evrak türü × 22 personel</div></div>
+        <div><div class="kpi-num num" id="kpiToplamKayitNum">264</div><div class="kpi-lbl">Toplam evrak kaydı</div>
+        <div class="kpi-delta flat" id="kpiToplamKayitDelta"><i class="fa-solid fa-layer-group"></i> 12 evrak türü × 22 personel</div></div>
       </div>
     </div>
 
@@ -109,226 +117,410 @@
         </div>
       </div>
       <div class="gc-body flush">
+        <div class="mtx-wrap">
         <table class="gtable" id="tblMatris">
           <thead>
             <tr>
               <th>Personel</th>
-              <th class="doc-col"><div class="doc-col-head"><i class="fa-solid fa-id-card"></i> Kimlik</div></th>
-              <th class="doc-col"><div class="doc-col-head"><i class="fa-solid fa-file-signature"></i> İş Sözleşmesi</div></th>
-              <th class="doc-col"><div class="doc-col-head"><i class="fa-solid fa-shield-halved"></i> İSG Eğitimi</div></th>
-              <th class="doc-col"><div class="doc-col-head"><i class="fa-solid fa-notes-medical"></i> Sağlık Raporu</div></th>
-              <th class="doc-col"><div class="doc-col-head"><i class="fa-solid fa-building-columns"></i> SGK Bildirgesi</div></th>
+              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">01</span><i class="fa-solid fa-id-card"></i> Kimlik fotokopisi</div></th>
+              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">02</span><i class="fa-solid fa-file-signature"></i> İş sözleşmesi</div></th>
+              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">03</span><i class="fa-solid fa-building-columns"></i> SGK işe giriş bildirgesi</div></th>
+              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">04</span><i class="fa-solid fa-house-chimney"></i> İkametgâh</div></th>
+              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">05</span><i class="fa-solid fa-scale-balanced"></i> Adli sicil kaydı</div></th>
+              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">06</span><i class="fa-solid fa-notes-medical"></i> Sağlık raporu</div></th>
+              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">07</span><i class="fa-solid fa-shield-halved"></i> İSG eğitim sertifikası</div></th>
+              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">08</span><i class="fa-solid fa-award"></i> Mesleki yeterlilik belgesi</div></th>
+              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">09</span><i class="fa-solid fa-id-card-clip"></i> Ehliyet / SRC belgesi</div></th>
+              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">10</span><i class="fa-solid fa-graduation-cap"></i> Diploma / sertifika</div></th>
+              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">11</span><i class="fa-solid fa-phone-volume"></i> Acil durum kişi formu</div></th>
+              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">12</span><i class="fa-solid fa-user-shield"></i> KVKK / açık rıza metni</div></th>
             </tr>
           </thead>
           <tbody>
             <tr data-f="tam">
               <td><div class="gcell"><div class="gcell-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">KY</div><div class="gcell-info"><div class="gcell-name">Kemal Yapıcıoğlu</div><span class="gcell-sub">Firma Sahibi</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="tam">
               <td><div class="gcell"><div class="gcell-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">MD</div><div class="gcell-info"><div class="gcell-name">Murat Denizli</div><span class="gcell-sub">Genel Müdür</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="tam">
               <td><div class="gcell"><div class="gcell-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">ES</div><div class="gcell-info"><div class="gcell-name">Elif Sarıkaya</div><span class="gcell-sub">Teknik Müdür</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="tam" data-santiye="vadi-konaklari">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">HD</div><div class="gcell-info"><div class="gcell-name">Hasan Demirci</div><span class="gcell-sub">Şantiye Şefi</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Yenileme: 4 Şubat 2027"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="eksik">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">AK</div><div class="gcell-info"><div class="gcell-name">Aylin Koç</div><span class="gcell-sub">Şantiye Şefi</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell">
                 <span class="doc-dot warn" data-tip="Yenileme süresi 12 gün içinde doluyor"><i class="fa-solid fa-clock"></i></span>
                 <span class="doc-cap warn">12 gün kaldı</span>
               </td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="tam">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">ÖT</div><div class="gcell-info"><div class="gcell-name">Ömer Taşkın</div><span class="gcell-sub">Şantiye Şefi</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="tam">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--warn-tint);color:var(--warn)">NA</div><div class="gcell-info"><div class="gcell-name">Nesrin Aydın</div><span class="gcell-sub">Muhasebe</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="eksik">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--warn-tint);color:var(--warn)">BY</div><div class="gcell-info"><div class="gcell-name">Baran Yıldız</div><span class="gcell-sub">Satın Alma Sorumlusu</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell">
                 <span class="doc-dot warn" data-tip="Periyodik muayene süresi 20 gün içinde doluyor"><i class="fa-solid fa-clock"></i></span>
                 <span class="doc-cap warn">20 gün kaldı</span>
               </td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="tam">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--warn-tint);color:var(--warn)">SK</div><div class="gcell-info"><div class="gcell-name">Seda Karaca</div><span class="gcell-sub">İK Uzmanı</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="eksik" data-santiye="vadi-konaklari">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">AV</div><div class="gcell-info"><div class="gcell-name">Ali Vural</div><span class="gcell-sub">Saha Personeli · yeni</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell">
+                <span class="doc-dot info" data-tip="SGK işe giriş bildirgesi yüklendi, onay bekliyor"><i class="fa-solid fa-hourglass-half"></i></span>
+                <span class="doc-cap info">Onayda</span>
+              </td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell">
                 <span class="doc-dot danger" data-tip="Sağlık raporu henüz teslim edilmedi"><i class="fa-solid fa-xmark"></i></span>
                 <span class="doc-cap danger">Eksik</span>
               </td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell">
-                <span class="doc-dot warn" data-tip="SGK işe giriş bildirgesi işlemde"><i class="fa-solid fa-hourglass-half"></i></span>
-                <span class="doc-cap warn">İşlemde</span>
+                <span class="doc-dot danger" data-tip="KVKK açık rıza metni imzalanmadı"><i class="fa-solid fa-xmark"></i></span>
+                <span class="doc-cap danger">Eksik</span>
               </td>
             </tr>
             <tr data-f="tam" data-santiye="vadi-konaklari">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">İS</div><div class="gcell-info"><div class="gcell-name">İbrahim Sönmez</div><span class="gcell-sub">Formen</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="eksik" data-santiye="vadi-konaklari">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">RK</div><div class="gcell-info"><div class="gcell-name">Ramazan Kılıç</div><span class="gcell-sub">Kalıpçı</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell">
                 <span class="doc-dot danger" data-tip="İSG eğitim sertifikası teslim edilmedi"><i class="fa-solid fa-xmark"></i></span>
                 <span class="doc-cap danger">Eksik</span>
               </td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell">
+                <span class="doc-dot expired" data-tip="Mesleki yeterlilik belgesinin geçerlilik süresi doldu"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                <span class="doc-cap danger">Süresi doldu</span>
+              </td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="eksik" data-santiye="vadi-konaklari">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">SD</div><div class="gcell-info"><div class="gcell-name">Selim Doğan</div><span class="gcell-sub">Demir Ustası</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell">
                 <span class="doc-dot warn" data-tip="Periyodik muayene süresi 25 gün içinde doluyor"><i class="fa-solid fa-clock"></i></span>
                 <span class="doc-cap warn">25 gün kaldı</span>
               </td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell">
+                <span class="doc-dot warn" data-tip="SRC belgesi yenileme süresi 18 gün içinde doluyor"><i class="fa-solid fa-clock"></i></span>
+                <span class="doc-cap warn">18 gün kaldı</span>
+              </td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="eksik" data-santiye="vadi-konaklari">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">ME</div><div class="gcell-info"><div class="gcell-name">Musa Erdem</div><span class="gcell-sub">Düz İşçi</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell">
-                <span class="doc-dot warn" data-tip="SGK işe giriş bildirgesi işlemde"><i class="fa-solid fa-hourglass-half"></i></span>
-                <span class="doc-cap warn">İşlemde</span>
+                <span class="doc-dot info" data-tip="SGK işe giriş bildirgesi yüklendi, onay bekliyor"><i class="fa-solid fa-hourglass-half"></i></span>
+                <span class="doc-cap info">Onayda</span>
               </td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell">
+                <span class="doc-dot danger" data-tip="Adli sicil kaydı teslim edilmedi"><i class="fa-solid fa-xmark"></i></span>
+                <span class="doc-cap danger">Eksik</span>
+              </td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="tam" data-santiye="vadi-konaklari">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">VŞ</div><div class="gcell-info"><div class="gcell-name">Veli Şimşek</div><span class="gcell-sub">Elektrik Ustası</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="tam">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">ŞA</div><div class="gcell-info"><div class="gcell-name">Şükrü Aslan</div><span class="gcell-sub">Formen</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="eksik">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">HG</div><div class="gcell-info"><div class="gcell-name">Halil Güneş</div><span class="gcell-sub">Operatör</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell">
                 <span class="doc-dot warn" data-tip="Yenileme süresi 18 gün içinde doluyor"><i class="fa-solid fa-clock"></i></span>
                 <span class="doc-cap warn">18 gün kaldı</span>
               </td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell">
+                <span class="doc-dot expired" data-tip="Operatör SRC belgesinin geçerlilik süresi doldu"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                <span class="doc-cap danger">Süresi doldu</span>
+              </td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="eksik">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">MÇ</div><div class="gcell-info"><div class="gcell-name">Metin Çetin</div><span class="gcell-sub">Kaynakçı</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell">
                 <span class="doc-dot danger" data-tip="Sağlık raporu henüz teslim edilmedi"><i class="fa-solid fa-xmark"></i></span>
                 <span class="doc-cap danger">Eksik</span>
               </td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell">
+                <span class="doc-dot warn" data-tip="Mesleki yeterlilik belgesi yenileme süresi 10 gün içinde doluyor"><i class="fa-solid fa-clock"></i></span>
+                <span class="doc-cap warn">10 gün kaldı</span>
+              </td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="tam">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">OP</div><div class="gcell-info"><div class="gcell-name">Osman Polat</div><span class="gcell-sub">Düz İşçi</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="tam">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">RY</div><div class="gcell-info"><div class="gcell-name">Recep Yaman</div><span class="gcell-sub">Formen</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="eksik">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">İK</div><div class="gcell-info"><div class="gcell-name">İlyas Kurt</div><span class="gcell-sub">Marangoz</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell">
                 <span class="doc-dot danger" data-tip="İSG eğitim sertifikası teslim edilmedi"><i class="fa-solid fa-xmark"></i></span>
                 <span class="doc-cap danger">Eksik</span>
               </td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell">
+                <span class="doc-dot info" data-tip="Diploma / sertifika yüklendi, onay bekliyor"><i class="fa-solid fa-hourglass-half"></i></span>
+                <span class="doc-cap info">Onayda</span>
+              </td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
             <tr data-f="tam">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">SÖ</div><div class="gcell-info"><div class="gcell-name">Sadık Öz</div><span class="gcell-sub">Düz İşçi</span></div></div></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
-              <td class="doc-cell"><span class="doc-dot" data-tip="Tamam"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
           </tbody>
         </table>
+        </div>
         <div class="gv-empty" data-table-empty hidden>
           <div class="ge-ico"><i class="fa-solid fa-folder-open"></i></div>
           <h4>Eşleşen personel yok</h4>
@@ -336,9 +528,11 @@
         </div>
       </div>
       <div class="legend-row">
-        <span class="legend-item"><span class="legend-dot ok"><i class="fa-solid fa-check"></i></span> Tamam</span>
-        <span class="legend-item"><span class="legend-dot warn"><i class="fa-solid fa-clock"></i></span> Süresi yaklaşıyor / işlemde</span>
+        <span class="legend-item"><span class="legend-dot ok"><i class="fa-solid fa-check"></i></span> Tamamlandı</span>
+        <span class="legend-item"><span class="legend-dot warn"><i class="fa-solid fa-clock"></i></span> Süresi doluyor</span>
+        <span class="legend-item"><span class="legend-dot info"><i class="fa-solid fa-hourglass-half"></i></span> Onay bekliyor</span>
         <span class="legend-item"><span class="legend-dot danger"><i class="fa-solid fa-xmark"></i></span> Eksik</span>
+        <span class="legend-item"><span class="legend-dot expired"><i class="fa-solid fa-triangle-exclamation"></i></span> Süresi doldu</span>
       </div>
     </div>
   </main>
@@ -369,14 +563,15 @@
     /* KPI kartları da ekibe göre daraltılır — kalan DOM satırlarından hesaplanır, global veri sızmaz */
     var warnCells = document.querySelectorAll('#tblMatris tbody .doc-dot.warn').length;
     var dangerCells = document.querySelectorAll('#tblMatris tbody .doc-dot.danger').length;
+    var expiredCells = document.querySelectorAll('#tblMatris tbody .doc-dot.expired').length;
     var tamN = document.getElementById('kpiTamNum'), tamD = document.getElementById('kpiTamDelta');
     if(tamN){ tamN.textContent = counts.tam; tamD.innerHTML = '<i class="fa-solid fa-users"></i> ' + counts.hepsi + ' personelin ' + counts.tam + '\'ü'; }
     var yakN = document.getElementById('kpiYaklasanNum'), yakD = document.getElementById('kpiYaklasanDelta');
     if(yakN){ yakN.textContent = warnCells; yakD.innerHTML = '<i class="fa-solid fa-clock"></i> 30 gün içinde'; }
     var ekN = document.getElementById('kpiEksikNum'), ekD = document.getElementById('kpiEksikDelta');
-    if(ekN){ ekN.textContent = dangerCells; ekD.innerHTML = '<i class="fa-solid fa-user"></i> Ali Vural, Ramazan Kılıç'; }
+    if(ekN){ ekN.textContent = dangerCells; ekD.innerHTML = '<i class="fa-solid fa-user"></i> Ali Vural, Ramazan Kılıç · ' + expiredCells + ' belge süresi dolmuş'; }
     var tkN = document.getElementById('kpiToplamKayitNum'), tkD = document.getElementById('kpiToplamKayitDelta');
-    if(tkN){ tkN.textContent = counts.hepsi * 5; tkD.innerHTML = '<i class="fa-solid fa-layer-group"></i> 5 evrak türü × ' + counts.hepsi + ' personel'; }
+    if(tkN){ tkN.textContent = counts.hepsi * 12; tkD.innerHTML = '<i class="fa-solid fa-layer-group"></i> 12 evrak türü × ' + counts.hepsi + ' personel'; }
   }
 })();
 </script>

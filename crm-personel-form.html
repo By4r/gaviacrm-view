@@ -388,20 +388,20 @@
     medeni.addEventListener('change', function(){ esWrap.hidden = medeni.value !== 'evli'; });
   }
 
-  /* ---- Evrak — 12 kanonik kategori (R2, Liste-A sırası) ---- */
+  /* ---- Evrak — 12 kanonik kategori (özlük matrisi + detay ile birebir aynı set/sıra) ---- */
   var EVRAK_KATEGORI = [
-    {ad:'Kimlik belgesi',                ic:'fa-id-card'},
-    {ad:'İş sözleşmesi',                 ic:'fa-file-signature'},
-    {ad:'İSG eğitimi belgesi',           ic:'fa-shield-halved'},
-    {ad:'Sağlık raporu',                 ic:'fa-notes-medical'},
-    {ad:'İSG bildirgesi',                ic:'fa-file-shield'},
-    {ad:'SRC belgesi',                   ic:'fa-truck-front'},
-    {ad:'Ehliyet belgesi',               ic:'fa-id-card-clip'},
-    {ad:'Adli sicil kaydı',              ic:'fa-scale-balanced'},
-    {ad:'İkametgâh belgesi',             ic:'fa-house-chimney'},
-    {ad:'SGK işe giriş bildirgesi',      ic:'fa-building-columns'},
-    {ad:'Diploma / sertifika belgeleri', ic:'fa-graduation-cap'},
-    {ad:'Diğer özlük evrakları',         ic:'fa-folder-open'}
+    {ad:'Kimlik fotokopisi',           ic:'fa-id-card'},
+    {ad:'İş sözleşmesi',               ic:'fa-file-signature'},
+    {ad:'SGK işe giriş bildirgesi',    ic:'fa-building-columns'},
+    {ad:'İkametgâh',                   ic:'fa-house-chimney'},
+    {ad:'Adli sicil kaydı',            ic:'fa-scale-balanced'},
+    {ad:'Sağlık raporu',               ic:'fa-notes-medical'},
+    {ad:'İSG eğitim sertifikası',      ic:'fa-shield-halved'},
+    {ad:'Mesleki yeterlilik belgesi',  ic:'fa-award'},
+    {ad:'Ehliyet / SRC belgesi',       ic:'fa-id-card-clip'},
+    {ad:'Diploma / sertifika',         ic:'fa-graduation-cap'},
+    {ad:'Acil durum kişi formu',       ic:'fa-phone-volume'},
+    {ad:'KVKK / açık rıza metni',      ic:'fa-user-shield'}
   ];
   var evrList = document.getElementById('evrList');
   if(evrList){
