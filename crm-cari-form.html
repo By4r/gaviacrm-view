@@ -66,6 +66,11 @@
 .sube-row{display:grid;grid-template-columns:1fr 1fr 34px;gap:10px;align-items:center;margin-top:8px}
 .sube-row input{min-width:0}
 @media(max-width:640px){.sube-row{grid-template-columns:1fr 1fr;row-gap:8px}.sube-row .row-remove{grid-column:1/-1;justify-self:end}}
+
+/* varsayılan iletişim kişisi onayı — personel-izin-form chk-line dilinin sadeleştirilmiş hali
+   (.gfield label 0,1,1 spesifikliğini yenmek için .gfield .chk-line ile kapsanır) */
+.gfield .chk-line{display:flex;align-items:flex-start;gap:9px;font-size:13px;font-weight:600;color:var(--ink);letter-spacing:0;cursor:pointer;line-height:1.4}
+.gfield .chk-line input{width:16px;height:16px;flex:none;margin-top:1px;accent-color:var(--acc-ink);cursor:pointer}
 </style>
 </head>
 <body data-sec="cari" data-screen="rehber">
@@ -130,6 +135,41 @@
             <div class="gfield kisi-only" hidden>
               <label for="fTc">TC Kimlik No <span class="gf-hint">(mock — maskeli)</span></label>
               <input type="text" id="fTc" placeholder="123••••••67" maxlength="11" inputmode="numeric">
+            </div>
+            <div class="gfield kisi-only" hidden>
+              <label for="fBagliFirma">Bağlı Firma</label>
+              <select id="fBagliFirma">
+                <option value="">Bağımsız — firmaya bağlı değil</option>
+                <option>Körfez GYO</option>
+                <option>Aliağa Liman İşletmeleri</option>
+                <option>Sapanca Belediyesi</option>
+                <option>Demir-Beton İnş. Ltd.</option>
+                <option>Yalıtım Kardeşler</option>
+                <option>ElektroMek Taahhüt</option>
+                <option>Ege Hazır Beton</option>
+                <option>Marmara Demir Çelik</option>
+                <option>Anadolu Hırdavat</option>
+              </select>
+            </div>
+            <div class="gfield kisi-only" hidden>
+              <label for="fKisiUnvan">Görev / Unvan</label>
+              <input type="text" id="fKisiUnvan" placeholder="örn. Satın Alma Müdürü">
+            </div>
+            <div class="gfield kisi-only" hidden>
+              <label for="fYetkiTipi">Yetki / İlişki Tipi</label>
+              <select id="fYetkiTipi">
+                <option value="">Belirtilmedi</option>
+                <option>Yetkili kişi</option>
+                <option>Muhatap</option>
+                <option>Teknik irtibat</option>
+                <option>Mali işler</option>
+                <option>İmza yetkilisi</option>
+                <option>Diğer</option>
+              </select>
+            </div>
+            <div class="gfield full kisi-only" hidden>
+              <label class="chk-line"><input type="checkbox" id="fVarsayilan"> Bu kişiyi bağlı firmanın varsayılan iletişim kişisi yap</label>
+              <span class="gf-hint">Firma rehberinde bu kişi ilk muhatap olarak öne çıkar.</span>
             </div>
             <div class="gfield kurum-only">
               <label for="fVD">Vergi Dairesi</label>
@@ -206,6 +246,14 @@
             <div class="tsum-row kurum-only" id="sumKisiRow">
               <div class="tsum-ico"><i class="fa-solid fa-id-card"></i></div>
               <div class="tsum-body"><div class="tsum-lbl">İlgili Kişi</div><div class="tsum-val muted" id="sumKisi">Girilmedi</div></div>
+            </div>
+            <div class="tsum-row kisi-only" id="sumFirmaRow" hidden>
+              <div class="tsum-ico"><i class="fa-solid fa-building-user"></i></div>
+              <div class="tsum-body"><div class="tsum-lbl">Bağlı Firma</div><div class="tsum-val muted" id="sumFirma">Bağımsız</div></div>
+            </div>
+            <div class="tsum-row kisi-only" id="sumRolRow" hidden>
+              <div class="tsum-ico"><i class="fa-solid fa-user-tag"></i></div>
+              <div class="tsum-body"><div class="tsum-lbl">Görev / Yetki</div><div class="tsum-val muted" id="sumRol">Girilmedi</div></div>
             </div>
             <div class="tsum-row">
               <div class="tsum-ico"><i class="fa-solid fa-phone"></i></div>
@@ -291,6 +339,21 @@
     kEl.textContent = kisi ? (kisi + (unvan ? ' · ' + unvan : '')) : 'Girilmedi';
     kEl.classList.toggle('muted', !kisi);
 
+    /* kişi modu özeti — bağlı firma + görev/yetki (kurum-only sumKisiRow hidden iken görünür) */
+    var firma = document.getElementById('fBagliFirma').value;
+    var fEl = document.getElementById('sumFirma');
+    fEl.textContent = firma || 'Bağımsız';
+    fEl.classList.toggle('muted', !firma);
+
+    var kUnvan = document.getElementById('fKisiUnvan').value.trim();
+    var yetki = document.getElementById('fYetkiTipi').value;
+    var rolParts = [];
+    if(kUnvan) rolParts.push(kUnvan);
+    if(yetki) rolParts.push(yetki);
+    var rEl = document.getElementById('sumRol');
+    rEl.textContent = rolParts.length ? rolParts.join(' · ') : 'Girilmedi';
+    rEl.classList.toggle('muted', !rolParts.length);
+
     var tel = document.getElementById('fTel').value.trim();
     var tEl = document.getElementById('sumTel');
     tEl.textContent = tel || 'Girilmedi';
@@ -304,8 +367,11 @@
     syncPreview();
   });
 
-  ['fAd','fKisi','fUnvan','fTel'].forEach(function(id){
+  ['fAd','fKisi','fUnvan','fTel','fKisiUnvan'].forEach(function(id){
     document.getElementById(id).addEventListener('input', syncPreview);
+  });
+  ['fBagliFirma','fYetkiTipi'].forEach(function(id){
+    document.getElementById(id).addEventListener('change', syncPreview);
   });
 
   /* K6: ?kayit=kisi ile açılışta form doğrudan Kişi moduna geçer (crm-cari-kisiler.html
