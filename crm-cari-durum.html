@@ -60,6 +60,33 @@
 #emptyPick.show{display:block}
 #acctDetail{display:none}
 #acctDetail.show{display:block}
+
+/* kritik cariler triage listesi — bakiye büyüklüğüne göre sıralı */
+.crit-list{display:flex;flex-direction:column}
+.crit-row{
+  display:flex;align-items:center;gap:14px;width:100%;text-align:left;
+  padding:14px 22px;background:none;border:none;border-top:1px solid var(--line);
+  font-family:inherit;cursor:pointer;transition:.18s var(--ease);position:relative;
+}
+.crit-row:first-child{border-top:none}
+.crit-row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:.18s var(--ease)}
+.crit-row:hover{background:var(--bg)}
+.crit-row.is-active{background:rgba(var(--acc-rgb),.06)}
+.crit-row.is-active::before{background:var(--acc)}
+.crit-row:focus-visible{outline:none;box-shadow:inset 0 0 0 2px rgba(var(--acc-rgb),.45)}
+.crit-mark{width:40px;height:40px;flex:none;border-radius:var(--r-md);display:grid;place-items:center;font-size:13px;font-weight:800}
+.crit-main{flex:1;min-width:0}
+.crit-name{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:-.01em;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crit-sub{font-size:11.5px;color:var(--muted);display:block;margin:1px 0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crit-bar{display:block;height:4px;border-radius:var(--r-circle);background:var(--line);overflow:hidden;max-width:240px}
+.crit-bar-fill{display:block;height:100%;border-radius:inherit}
+.crit-amt{flex:none;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.crit-val{font-size:14.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+@media(max-width:640px){
+  .crit-row{padding:14px 16px;gap:12px}
+  .crit-mark{width:36px;height:36px}
+  .crit-bar{max-width:120px}
+}
 </style>
 </head>
 <body data-sec="cari" data-screen="durum">
@@ -119,6 +146,17 @@
           </select>
         </div>
         <div class="picker-hint"><i class="fa-solid fa-circle-info"></i> Firma Rehberi'ndeki 9 cari burada listelenir.</div>
+      </div>
+    </div>
+
+    <!-- kritik cariler — bakiye büyüklüğüne göre triage -->
+    <div class="gv-card" id="critCard" style="margin-bottom:16px">
+      <div class="gc-head">
+        <div class="gc-title"><i class="fa-solid fa-triangle-exclamation"></i> Kritik Cariler</div>
+        <span class="gc-link" style="color:var(--muted);cursor:default">Bakiye büyüklüğüne göre · en yüksek 5</span>
+      </div>
+      <div class="gc-body flush">
+        <div class="crit-list" id="critList"></div>
       </div>
     </div>
 
@@ -281,16 +319,39 @@
 
   function fmt(n){ return '₺' + n.toLocaleString('tr-TR'); }
 
+  /* Kanonik net bakiye — ekstredeki running mantığının BİREBİR aynısı
+     (drift olmasın diye tek kaynak). Dönüş: {amount, dir}
+     dir: 'alacak' = bize borçlu · 'borc' = biz borçluyuz · 'sifir' = kapalı */
+  function balanceOf(C){
+    var running = 0;
+    C.hareketler.forEach(function(h){
+      if(C.tur === 'musteri') running += h.borc - h.alacak;
+      else running += h.alacak - h.borc;
+    });
+    var dir = running === 0 ? 'sifir'
+      : (C.tur === 'musteri' ? (running > 0 ? 'alacak' : 'borc')
+                             : (running > 0 ? 'borc'   : 'alacak'));
+    return { amount: Math.abs(running), dir: dir };
+  }
+
   var sel = document.getElementById('cariSelect');
   var emptyPick = document.getElementById('emptyPick');
   var detail = document.getElementById('acctDetail');
   var ekBody = document.getElementById('ekstreBody');
   var ekEmpty = document.getElementById('ekstreEmpty');
   var tbl = document.getElementById('tblEkstre');
+  var critList = document.getElementById('critList');
+
+  function setActive(key){
+    Array.prototype.forEach.call(critList.querySelectorAll('.crit-row'), function(r){
+      r.classList.toggle('is-active', r.dataset.key === key);
+    });
+  }
 
   function render(key){
     if(!key){
       emptyPick.classList.add('show'); detail.classList.remove('show');
+      setActive('');
       return;
     }
     var C = CARI[key];
@@ -347,14 +408,59 @@
     kNet.className = 'kpi-card' + (net < 0 ? ' danger' : '');
     kNet.querySelector('.kpi-ico').style.background = net > 0 ? 'var(--ok-tint)' : '';
     kNet.querySelector('.kpi-ico').style.color = net > 0 ? 'var(--ok)' : '';
+
+    setActive(key);
   }
 
-  sel.addEventListener('change', function(){ render(sel.value); });
-  render('');
+  /* Kritik cariler listesi — havuzu kanonik bakiyeye göre sırala, en büyük 5'i göster.
+     "Vadesi geçmiş" gibi bir etiket YOK: mock'ta gerçek vade tarihi olmadığından
+     kriticklik, bakiye büyüklüğü + yön (borç/alacak) ile gösterilir. */
+  var ranked = Object.keys(CARI)
+    .map(function(k){ return { key:k, C:CARI[k], b:balanceOf(CARI[k]) }; })
+    .filter(function(x){ return x.b.amount > 0; })
+    .sort(function(a,b){ return b.b.amount - a.b.amount; });
+  var critTop = ranked.slice(0, 5);
+  var maxAmt = critTop.length ? critTop[0].b.amount : 1;
 
-  /* URL ?cari= ile doğrudan durum gösterimi (rehberden çapraz gezinme için hazır) */
+  critList.innerHTML = critTop.map(function(x){
+    var C = x.C, b = x.b, st = TUR_STYLE[C.tur];
+    var badgeCls = b.dir === 'borc' ? 'danger' : 'ok';
+    var badgeLbl = b.dir === 'borc' ? 'Borç' : 'Alacak';
+    var barCol   = b.dir === 'borc' ? 'var(--danger)' : 'var(--ok)';
+    var w = Math.max(6, Math.round(b.amount / maxAmt * 100));
+    return '<button type="button" class="crit-row" data-key="' + x.key + '">'
+      + '<span class="crit-mark" style="background:' + st.bg + ';color:' + st.fg + '">' + C.ini + '</span>'
+      + '<span class="crit-main">'
+        + '<span class="crit-name">' + C.ad + '</span>'
+        + '<span class="crit-sub">' + TUR_LBL[C.tur] + ' · ' + C.santiye + '</span>'
+        + '<span class="crit-bar"><span class="crit-bar-fill" style="width:' + w + '%;background:' + barCol + '"></span></span>'
+      + '</span>'
+      + '<span class="crit-amt">'
+        + '<span class="crit-val">' + fmt(b.amount) + '</span>'
+        + '<span class="gstat ' + badgeCls + '">' + badgeLbl + '</span>'
+      + '</span>'
+    + '</button>';
+  }).join('');
+
+  critList.addEventListener('click', function(e){
+    var row = e.target.closest('.crit-row');
+    if(!row) return;
+    sel.value = row.dataset.key;
+    render(row.dataset.key);
+    if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      detail.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  });
+
+  sel.addEventListener('change', function(){ render(sel.value); });
+
+  /* Açılış: ekran boş açılmasın → en yüksek bakiyeli cari önseçili (Körfez GYO).
+     URL ?cari= varsa (rehber/cari-detay çapraz gezinmesi) o cari default'u ezer. */
   var qCari = new URLSearchParams(location.search).get('cari');
-  if(qCari && CARI[qCari]){ sel.value = qCari; render(qCari); }
+  var initial = (qCari && CARI[qCari]) ? qCari
+              : (critTop.length ? critTop[0].key : '');
+  sel.value = initial;
+  render(initial);
 })();
 </script>
 </body>
