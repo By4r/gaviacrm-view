@@ -155,8 +155,15 @@ a.sc-row:hover{background:var(--bg)}
 .pool-row .gpri.high{background:var(--danger-tint);color:var(--danger)}
 .pool-row .gpri.med{background:var(--warn-tint);color:var(--warn)}
 .pool-row .gpri.low{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+/* D15 — Üzerime Al: satır yükseklik+opaklık animasyonuyla bloktan düşer (JS ölçülü height verir) */
+.pool-row.is-claiming{height:0 !important;padding-top:0 !important;padding-bottom:0 !important;
+  opacity:0;overflow:hidden;border-top-width:0;
+  transition:height .3s var(--ease),padding .3s var(--ease),opacity .2s var(--ease)}
+.pool-empty{padding:16px 22px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);line-height:1.5}
+.pool-empty i{margin-right:7px;color:var(--ok)}
 @media(max-width:640px){
   .pool-row{flex-wrap:wrap;padding:11px 16px}
+  .pool-empty{padding:14px 16px}
 }
 </style>
 </head>
@@ -221,7 +228,7 @@ a.sc-row:hover{background:var(--bg)}
               <span>Göl Evleri 2. Etap · termini geçti · 3 gündür</span>
             </div>
             <span class="gpri high">Yüksek</span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="gvToast('Görev üzerinize alındı.')"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-claim="gol-evleri-ruhsat-evrak" data-no-confirm><i class="fa-solid fa-hand"></i> Üzerime Al</button>
           </div>
           <div class="pool-row">
             <div class="pool-info">
@@ -229,7 +236,7 @@ a.sc-row:hover{background:var(--bg)}
               <span>Kule Ofis B Blok · 1 gündür havuzda</span>
             </div>
             <span class="gpri high">Yüksek</span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="gvToast('Görev üzerinize alındı.')"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-claim="kule-kesin-hesap-kontrolu" data-no-confirm><i class="fa-solid fa-hand"></i> Üzerime Al</button>
           </div>
           <div class="pool-row">
             <div class="pool-info">
@@ -237,7 +244,7 @@ a.sc-row:hover{background:var(--bg)}
               <span>Liman Lojistik Merkezi · 2 gündür havuzda</span>
             </div>
             <span class="gpri med">Orta</span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="gvToast('Görev üzerinize alındı.')"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-claim="liman-cevre-aydinlatma-kesfi" data-no-confirm><i class="fa-solid fa-hand"></i> Üzerime Al</button>
           </div>
           <div class="pool-row">
             <div class="pool-info">
@@ -245,7 +252,7 @@ a.sc-row:hover{background:var(--bg)}
               <span>Merkez Şantiye · 1 gündür havuzda</span>
             </div>
             <span class="gpri med">Orta</span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="gvToast('Görev üzerinize alındı.')"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-claim="merkez-yil-ortasi-sayim" data-no-confirm><i class="fa-solid fa-hand"></i> Üzerime Al</button>
           </div>
         </div>
       </div>
@@ -402,7 +409,7 @@ a.sc-row:hover{background:var(--bg)}
               <span>Vadi Konakları · bugün havuza bırakıldı</span>
             </div>
             <span class="gpri low">Düşük</span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="gvToast('Görev üzerinize alındı.')"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-claim="vadi-numune-daire-fotograf" data-no-confirm><i class="fa-solid fa-hand"></i> Üzerime Al</button>
           </div>
           <div class="pool-row">
             <div class="pool-info">
@@ -410,7 +417,7 @@ a.sc-row:hover{background:var(--bg)}
               <span>Merkez Şantiye · bugün havuza bırakıldı</span>
             </div>
             <span class="gpri low">Düşük</span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="gvToast('Görev üzerinize alındı.')"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-claim="arac-takip-cizelgesi" data-no-confirm><i class="fa-solid fa-hand"></i> Üzerime Al</button>
           </div>
         </div>
       </div>
@@ -506,7 +513,7 @@ a.sc-row:hover{background:var(--bg)}
               <span>Vadi Konakları · bugün havuza bırakıldı</span>
             </div>
             <span class="gpri low">Düşük</span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="gvToast('Görev üzerinize alındı.')"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-claim="vadi-numune-daire-fotograf" data-no-confirm><i class="fa-solid fa-hand"></i> Üzerime Al</button>
           </div>
         </div>
       </div>
@@ -575,7 +582,7 @@ a.sc-row:hover{background:var(--bg)}
               <span>Kule Ofis B Blok · 1 gündür havuzda</span>
             </div>
             <span class="gpri high">Yüksek</span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="gvToast('Görev üzerinize alındı.')"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-claim="kule-kesin-hesap-kontrolu" data-no-confirm><i class="fa-solid fa-hand"></i> Üzerime Al</button>
           </div>
           <div class="pool-row">
             <div class="pool-info">
@@ -583,7 +590,7 @@ a.sc-row:hover{background:var(--bg)}
               <span>Merkez Şantiye · 1 gündür havuzda</span>
             </div>
             <span class="gpri med">Orta</span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="gvToast('Görev üzerinize alındı.')"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-claim="merkez-yil-ortasi-sayim" data-no-confirm><i class="fa-solid fa-hand"></i> Üzerime Al</button>
           </div>
           <div class="pool-row">
             <div class="pool-info">
@@ -591,7 +598,7 @@ a.sc-row:hover{background:var(--bg)}
               <span>Merkez Şantiye · bugün havuza bırakıldı</span>
             </div>
             <span class="gpri low">Düşük</span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="gvToast('Görev üzerinize alındı.')"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-claim="arac-takip-cizelgesi" data-no-confirm><i class="fa-solid fa-hand"></i> Üzerime Al</button>
           </div>
         </div>
       </div>
@@ -694,7 +701,7 @@ a.sc-row:hover{background:var(--bg)}
               <span>Merkez Şantiye · 1 gündür havuzda</span>
             </div>
             <span class="gpri med">Orta</span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="gvToast('Görev üzerinize alındı.')"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-claim="merkez-yil-ortasi-sayim" data-no-confirm><i class="fa-solid fa-hand"></i> Üzerime Al</button>
           </div>
           <div class="pool-row">
             <div class="pool-info">
@@ -702,7 +709,7 @@ a.sc-row:hover{background:var(--bg)}
               <span>Merkez Şantiye · bugün havuza bırakıldı</span>
             </div>
             <span class="gpri low">Düşük</span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="gvToast('Görev üzerinize alındı.')"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-claim="arac-takip-cizelgesi" data-no-confirm><i class="fa-solid fa-hand"></i> Üzerime Al</button>
           </div>
           <div class="pool-row">
             <div class="pool-info">
@@ -710,7 +717,7 @@ a.sc-row:hover{background:var(--bg)}
               <span>Liman Lojistik Merkezi · 2 gündür havuzda</span>
             </div>
             <span class="gpri med">Orta</span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="gvToast('Görev üzerinize alındı.')"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-claim="liman-cevre-aydinlatma-kesfi" data-no-confirm><i class="fa-solid fa-hand"></i> Üzerime Al</button>
           </div>
         </div>
       </div>
@@ -827,7 +834,7 @@ a.sc-row:hover{background:var(--bg)}
               <span>Kule Ofis B Blok · 1 gündür havuzda</span>
             </div>
             <span class="gpri high">Yüksek</span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="gvToast('Görev üzerinize alındı.')"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-claim="kule-kesin-hesap-kontrolu" data-no-confirm><i class="fa-solid fa-hand"></i> Üzerime Al</button>
           </div>
           <div class="pool-row late">
             <div class="pool-info">
@@ -835,7 +842,7 @@ a.sc-row:hover{background:var(--bg)}
               <span>Göl Evleri 2. Etap · termini geçti · 3 gündür</span>
             </div>
             <span class="gpri high">Yüksek</span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="gvToast('Görev üzerinize alındı.')"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-claim="gol-evleri-ruhsat-evrak" data-no-confirm><i class="fa-solid fa-hand"></i> Üzerime Al</button>
           </div>
         </div>
       </div>
@@ -1096,6 +1103,77 @@ a.sc-row:hover{background:var(--bg)}
   /* F2: sağ kolon tarih satırı tek kaynaktan (shell.js STR) */
   var nd = document.getElementById('nowDate');
   if(nd) nd.textContent = GV.STR.greetDate;
+})();
+
+/* D15 — Bekleyen Görevler "Üzerime Al": crm-gorev'in localStorage(gv_gorev_claims)
+   mekanizmasına bağlı (slug'lar data-claim ile birebir). Onaylanınca satır animasyonla
+   düşer, blok sayacı azalır, toast TEK sefer atar (satır `claimed` guard'ı + butonun
+   satırla birlikte kalkması tekrarlı tetiklemeyi keser); yenilemede claim kalıcıdır ve
+   görev crm-gorev "Bana Verilenler"de görünür. */
+(function(){
+  if(!window.GV || !window.gvConfirm) return;
+  var KEY = 'gv_gorev_claims';
+  function claims(){
+    try{ return JSON.parse(localStorage.getItem(KEY)) || []; }catch(e){ return []; }
+  }
+  function saveClaim(slug){
+    var arr = claims();
+    if(arr.indexOf(slug) === -1){ arr.push(slug); localStorage.setItem(KEY, JSON.stringify(arr)); }
+  }
+  /* blok sayacı evreni = rolün gördüğü havuz (personel yalnız Vadi görevini görür) */
+  var POOL = GV.role === 'personel'
+    ? ['vadi-numune-daire-fotograf']
+    : ['liman-cevre-aydinlatma-kesfi','kule-kesin-hesap-kontrolu','vadi-numune-daire-fotograf',
+       'merkez-yil-ortasi-sayim','gol-evleri-ruhsat-evrak','arac-takip-cizelgesi'];
+  function syncBloklar(){
+    var kalan = POOL.length - claims().filter(function(s){ return POOL.indexOf(s) !== -1; }).length;
+    document.querySelectorAll('.gc-link[href="crm-gorev.html?f=havuz"]').forEach(function(a){
+      a.innerHTML = 'Tümü (' + kalan + ') <i class="fa-solid fa-arrow-right"></i>';
+      var card = a.closest('.gv-card');
+      if(card && !card.querySelector('.pool-row') && !card.querySelector('.pool-empty')){
+        var d = document.createElement('div');
+        d.className = 'pool-empty';
+        d.innerHTML = '<i class="fa-solid fa-circle-check"></i> Havuzda sizi bekleyen görev kalmadı.';
+        card.appendChild(d);
+      }
+    });
+  }
+  /* yüklemede: daha önce alınan görevlerin satırları hiç gösterilmez */
+  claims().forEach(function(slug){
+    document.querySelectorAll('[data-claim="' + slug + '"]').forEach(function(btn){
+      var row = btn.closest('.pool-row'); if(row) row.remove();
+    });
+  });
+  syncBloklar();
+
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('.pool-row [data-claim]'); if(!btn) return;
+    var row = btn.closest('.pool-row');
+    if(row.dataset.claimed) return;   /* animasyon sürerken ikinci tık → ikinci toast YOK */
+    var slug = btn.getAttribute('data-claim');
+    var link = row.querySelector('.pool-info a');
+    var title = link ? link.textContent.trim() : 'Görev';
+    gvConfirm({
+      title:'Görevi üzerine al',
+      message:'“' + title + '” görevini üzerinize almak istiyor musunuz? Sorumluluk size geçer.',
+      ok:'Üzerime Al', cancel:'Vazgeç',
+      onConfirm:function(){
+        if(row.dataset.claimed) return;
+        saveClaim(slug);
+        gvToast('Görev üzerinize alındı');
+        /* aynı görev başka rol görünümlerinde de listeli — hepsi düşer */
+        document.querySelectorAll('[data-claim="' + slug + '"]').forEach(function(b){
+          var r = b.closest('.pool-row'); if(!r || r.dataset.claimed) return;
+          r.dataset.claimed = '1';
+          r.style.height = r.offsetHeight + 'px';
+          r.getBoundingClientRect();   /* ölçülen height uygulanmadan sınıf eklenmesin (reflow) */
+          r.classList.add('is-claiming');
+          setTimeout(function(){ r.remove(); syncBloklar(); }, 320);
+        });
+        if(GV.syncGorevBadges) GV.syncGorevBadges();
+      }
+    });
+  });
 })();
 
 /* F2 — canlı saat: saat GERÇEK zamandır; tarih kanonik mock bağlamına sabittir [MOCK-SİM] */

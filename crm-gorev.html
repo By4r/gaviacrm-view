@@ -504,6 +504,7 @@
             recomputeCounts();
             updateSub(document.body.dataset.screen || 'bana');
             applyCompound();
+            if(GV.syncGorevBadges) GV.syncGorevBadges();   /* D15: menü Havuz/Bana rozeti anında düşer */
           }
         });
       });

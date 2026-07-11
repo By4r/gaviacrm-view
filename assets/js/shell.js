@@ -173,6 +173,10 @@
          5 Göl Evleri 2. Etap ruhsat evrak listesi       · Göl E.  · yüksek · termin 1 Tem GEÇTİ (geciken) · 3 gündür
          6 Şantiye araç takip çizelgesi güncelleme       · Merkez  · düşük  · termin 12 Tem · bugün
        Saha personeli (Ali Vural) havuzda YALNIZ kendi şantiyesini (Vadi → #3) görür.
+       D15: panel "Bekleyen Görevler" Üzerime Al butonları da AYNI claim mekanizmasına
+       bağlı (slug'lar crm-gorev data-claim ile birebir); Havuz/Bana menü rozetleri
+       claim'lere göre düzelir (GV.syncGorevBadges). Kiosk "Aldığım İşler" şeridi
+       BİLİNÇLİ statik — havuz-DIŞI eski claim'leri anlatır, senkron beklenmez.
      · PLUXEE KART (Talep 3 — kasa mantığı, kart bazlı; PLX-2026-### serisi):
        12 aktif kart = kanonik saha kadrosu (Vadi 6: Vural/Sönmez/Kılıç/Doğan/Erdem/Şimşek ·
        Liman 4: Aslan/Güneş/Çetin/Polat · Merkez 2: Yaman/Kurt) + 1 pasif (Sadık Öz — kayıp).
@@ -827,6 +831,20 @@
     if(_hv) _hv.cnt = '1';
   }
 
+  /* D15: görev havuzu "Üzerime Al" claim'leri (localStorage gv_gorev_claims —
+     crm-gorev + crm-panel yazar) menü rozetlerine yansır: Havuz düşer, Bana
+     Verilenler artar. Slug listesi kanonik 6 havuz göreviyle birebir; personel
+     havuzda yalnız Vadi görevini gördüğünden onun evreni tek slug'dır. */
+  var GOREV_POOL = ['liman-cevre-aydinlatma-kesfi','kule-kesin-hesap-kontrolu',
+    'vadi-numune-daire-fotograf','merkez-yil-ortasi-sayim',
+    'gol-evleri-ruhsat-evrak','arac-takip-cizelgesi'];
+  function gorevClaims(){
+    var arr;
+    try{ arr = JSON.parse(localStorage.getItem('gv_gorev_claims')) || []; }catch(e){ arr = []; }
+    var uni = role === 'personel' ? ['vadi-numune-daire-fotograf'] : GOREV_POOL;
+    return arr.filter(function(s){ return uni.indexOf(s) !== -1; });
+  }
+
   /* D12: şef sipariş listesinde yalnız kendi şantiyesini (Vadi) görür — menü sayacı
      budanmış açık sipariş sayısıyla tutarlı (5 → 2: SIP-05 kısmi + SIP-07 onaylandı) */
   if(role === 'sef'){
@@ -898,6 +916,26 @@
         + '</div>';
     menuEl.innerHTML = mh;
   }
+
+  /* D15: Havuz/Bana Verilenler rozetlerini claim'lere göre düzeltir; claim anında
+     (sayfa yenilenmeden) düşmesi için crm-gorev/crm-panel de çağırır. Yalnız görev
+     menüsünde iş yapar — panel menüsündeki "Görevlerim" çapraz linkine dokunmaz. */
+  GV.syncGorevBadges = function(){
+    if(sec !== 'gorev' || !menuEl) return;
+    var n = gorevClaims().length;
+    function setCnt(link, val){
+      if(!link) return;
+      var sp = link.querySelector('.ml-cnt');
+      if(val <= 0){ if(sp) sp.remove(); return; }
+      if(!sp){ sp = document.createElement('span'); sp.className = 'ml-cnt'; link.appendChild(sp); }
+      sp.textContent = val;
+    }
+    setCnt(menuEl.querySelector('.gv-mlink[href^="crm-gorev.html?f=havuz"]'),
+      (role === 'personel' ? 1 : 6) - n);
+    /* personel'in "Bana Verilenler" rozeti global 7 kanoniği — claim'le artmaz (kendi listesi ayrı) */
+    if(role !== 'personel') setCnt(menuEl.querySelector('.gv-mlink[href^="crm-gorev.html?f=bana"]'), 7 + n);
+  };
+  GV.syncGorevBadges();
 
   /* ---- 3) topbar: persona + tenant çipi + dil çipi ---- */
   var nameEl = document.getElementById('gvName'), roleEl = document.getElementById('gvRole'), avaEl = document.getElementById('gvAva');
