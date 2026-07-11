@@ -120,7 +120,7 @@
       <div>
         <div class="ph-eyebrow">Analiz</div>
         <h1>Cari Raporu</h1>
-        <div class="ph-sub">9 cari · borç ₺822.450 · alacak ₺2.830.000</div>
+        <div class="ph-sub">10 cari · borç ₺1.240.650 · alacak ₺2.830.000</div>
       </div>
       <div class="ph-actions">
         <a class="btn btn-ghost btn-sm rp-back" href="crm-panel-raporlar.html"><i class="fa-solid fa-arrow-left"></i> Rapor Merkezi</a>
@@ -133,10 +133,10 @@
       <div class="filter-bar">
         <span class="frow-lbl">Tür</span>
         <div class="chips" id="turChips">
-          <button class="chip is-on" data-tur="tumu">Tümü <span class="ch-cnt">9</span></button>
+          <button class="chip is-on" data-tur="tumu">Tümü <span class="ch-cnt">10</span></button>
           <button class="chip" data-tur="musteri">Müşteri-Kurum <span class="ch-cnt">3</span></button>
           <button class="chip" data-tur="taseron">Taşeron <span class="ch-cnt">3</span></button>
-          <button class="chip" data-tur="tedarikci">Tedarikçi <span class="ch-cnt">3</span></button>
+          <button class="chip" data-tur="tedarikci">Tedarikçi <span class="ch-cnt">4</span></button>
         </div>
       </div>
       <div class="filtre-ozet" style="padding:14px 22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-2)" id="filtreOzet"><i class="fa-solid fa-circle-info"></i> <span>—</span></div>
@@ -165,7 +165,7 @@
       </div>
     </div>
 
-    <!-- kaynak: crm-cari.html tbody :150-304, 9 firma birebir. Bakiye/vade etiketleri :161-303. -->
+    <!-- kaynak: crm-cari.html tbody, 10 firma birebir (satış carileri kapsam dışı). Bakiye/vade etiketleri :161-303. -->
     <div class="gv-card" style="margin-bottom:24px">
       <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-address-book"></i> Cari Listesi</div><span class="ph-sub" style="margin:0">crm-cari.html</span></div>
       <div class="gc-body flush">
@@ -237,6 +237,13 @@
               <td class="num"><div class="bal borc"><b>₺9.850</b><span>Borç</span></div></td>
               <td><div class="lastmove"><span class="lm-date">29 Haz</span>Hırdavat malzeme alımı</div></td>
             </tr>
+            <tr data-tur="tedarikci" data-borc="418200" data-alacak="0" data-vadesi="0">
+              <td><div class="gcell"><div class="gcell-mark" style="background:var(--warn-tint);color:var(--warn)">BY</div><div class="gcell-info"><div class="gcell-name">Boğaziçi Yapı Market</div></div></div></td>
+              <td><span class="gtag" style="background:var(--warn-tint);color:var(--warn);border-color:transparent">Tedarikçi</span></td>
+              <td>Vadi Konakları</td>
+              <td class="num"><div class="bal borc"><b>₺418.200</b><span>Borç</span></div></td>
+              <td><div class="lastmove"><span class="lm-date">12 Haz</span>PVC doğrama faturası · vade 15 Tem</div></td>
+            </tr>
           </tbody>
         </table>
         <div class="gv-empty" id="cariEmpty" hidden>
@@ -254,9 +261,9 @@
         <div class="tur-list">
           <div class="tur-row"><span class="tur-name">Müşteri-Kurum</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:100%"></div></div></div><span class="tur-vals"><b>₺2.830.000</b> alacak · 3 firma</span></div>
           <div class="tur-row"><span class="tur-name">Taşeron</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill warn" style="width:19%"></div></div></div><span class="tur-vals"><b>₺546.700</b> borç · 3 firma</span></div>
-          <div class="tur-row"><span class="tur-name">Tedarikçi</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill danger" style="width:10%"></div></div></div><span class="tur-vals"><b>₺275.750</b> borç · 3 firma</span></div>
+          <div class="tur-row"><span class="tur-name">Tedarikçi</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill danger" style="width:25%"></div></div></div><span class="tur-vals"><b>₺693.950</b> borç · 4 firma</span></div>
         </div>
-        <div class="rep-src"><i class="fa-solid fa-circle-info"></i> Taşeron borcu 342.000+128.500+76.200=546.700 · Tedarikçi borcu 54.900+211.000+9.850=275.750 · toplam borç 822.450 (crm-cari.html KPI ile birebir).</div>
+        <div class="rep-src"><i class="fa-solid fa-circle-info"></i> Taşeron borcu 342.000+128.500+76.200=546.700 · Tedarikçi borcu 54.900+211.000+9.850+418.200=693.950 · toplam borç 1.240.650 (crm-cari.html KPI ile birebir).</div>
       </div>
     </div>
 

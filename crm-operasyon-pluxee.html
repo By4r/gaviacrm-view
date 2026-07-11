@@ -266,7 +266,7 @@
   body.innerHTML = html;
 
   /* Yeni Kayıt — oluşturabilen roller (İK dahil: kasa mantığından farklı, D8 rol notu) */
-  var OLUSTURABILIR = ['superadmin','sahip','yonetim','muhasebe','ik'];
+  var OLUSTURABILIR = ['superadmin','sahip','yonetim','muhasebe'];
   document.querySelectorAll('[data-view="olusturabilir"]').forEach(function(el){
     el.hidden = OLUSTURABILIR.indexOf(GV.role) === -1;
   });
