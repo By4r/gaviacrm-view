@@ -311,6 +311,115 @@
        localStorage['gv_kiosk_theme'] ('dark' varsayılan | 'light'), body.k-light + sayfa-lokal
        --k-* değişkenleri; tokens.css'e DOKUNULMADI. Desktop: 1200–1679px 12 kolon düzen
        (sol 8 içerik + sağ 4 özet rayı, .k-rail); 1920 TV düzeni AYNEN korunur.
+   ─ DALGA 11 KANONİK TANIMLAR (2026-07-11 — satış bölümü: müşteri + pipeline + birimler +
+       teklif + sözleşme/teslimat + satış sonrası; portal/gavia/tenant-chip D13'te):
+     · Yeni prefix'ler: MST- müşteri · FRS- fırsat · TKF- teklif · ODP- ödeme planı ·
+       SSZ- satış sözleşmesi · TSL- teslim tutanağı · SST- satış sonrası talep ·
+       CAR-2026-0## cari hesap no (D11'de doğdu — satış müşterisi cari kartlarında görünür).
+       Birim kodu şeması: VK-{A..D}-{01..24} · GE2-V{01..40} · KO-B-{kat 1..5}{01..12}.
+     · YENİ ROLLER (9→11): satistemsilci Selin Acar (SA) — secs [panel,gorev,satis], panel
+       scr kısıtlı (Raporlar YOK), indirim yetkisi %0–3, satis liste sayfalarında YALNIZ
+       kendi kayıtları (data-tems budaması; birim stoku ve SST tam görünür) ·
+       satismudur Okan Eren (OE) — secs [panel,gorev,satis,cari], panel scr kısıtlı
+       (Raporlar YOK), indirim onayı %3–7, tüm pipeline. %7+ indirim → GM (yonetim; K11).
+       teknik satis'te YALNIZ Satış Sonrası (scr:[talepler]). İndirim onay zinciri gvChain:
+       %0–3 temsilci · %3–7 satış müdürü · %7+ genel müdür.
+     · SATIŞ EVRENİ (birim stoku — birimler/pipeline/teklif/sözleşme sayfaları BİREBİR):
+       Vadi Konakları 96 birim (4 blok A–D × 24 = 6 kat × 4 daire; kat 1-2 2+1 ₺4.200.000 ·
+         kat 3-5 3+1 ₺6.120.000 · kat 6 dubleks ₺9.800.000):
+         44 Satıldı · 6 Opsiyonlu · 3 Rezerve · 39 Satışta · 4 Kapalı
+         (A-01/A-02 arsa sahibi Halil Sancak kat karşılığı · B-24 satış ofisi · D-24 numune daire)
+       Göl Evleri 2. Etap 40 villa (V-01..V-40, lansman öncesi ön-satış; ₺12,8M–₺16,4M):
+         12 Opsiyonlu ön-talep (V-05 Onaran · V-07 Karaduman · V-12 Us · V-21/V-22 Toprak ·
+         V-25..V-30 Nova bayi · V-33 bağımsız ön-talep) · 28 Satışta
+       Kule Ofis B Blok 60 ofis (teslim 03/2026): 52 Satıldı (50 Teslim Edildi · 2 teslim
+         sürecinde: B-311, B-406) · 8 Kiralandı (B-207 kira bitişi 31 Tem — Ferda Yücel aday)
+       Opsiyon bitişi YAKLAŞAN 2 birim uyarılı: VK-B-11 (14 Tem, Şahinoğlu) · GE2-V12 (13 Tem, Us).
+       Rezerve 3: VK-B-19 (Kavukçu, teklif onayda) · VK-C-24 (Toprak, kapora) ·
+       VK-D-05 (Korkut, sözleşme imzada). Satılmış birimde teklif butonu DISABLED + tooltip
+       ("aynı birim iki müşteriye satılamaz").
+     · MÜŞTERİLER (10 kayıt; temsilci S=Selin Acar · O=Okan Eren):
+       MST-2026-001 Selçuk Onaran      kurumsal    referans     O — KO-B-304 teslim + VK-C-18
+         taksitli; PORTAL demo müşterisi (portal sayfaları D13; rozet ŞİMDİDEN) · cari CAR-2026-021
+       MST-2026-002 Derya Toprak       yatırımcı   satış ofisi  O — VK-A-03/A-09/C-21 aldı;
+         5. taksit 12 GÜN GECİKMEDE (D13 risk uyarısıyla senkron) · cari CAR-2026-022;
+         ayrıca VK-C-24 kapora + GE2 V-21/V-22 görüşme
+       MST-2026-003 Aylin Şahinoğlu    bireysel    web          S — VK-B-11 OPSİYON (bitiş 14 Tem);
+         TKF-2026-003 onaylı %3 + ODP-2026-001 örnek ödeme planı; ayrıca VK-B-12 sunum
+       MST-2026-004 Mert Kavukçu       bireysel    sosyal medya S — VK-B-19 TEKLİF
+         (TKF-2026-006 %5, müdür onayında; birim rezerve)
+       MST-2026-005 Baha & Zeynep Korkut bireysel  referans     S — VK-D-05 SÖZLEŞME
+         (SSZ-2026-007 imza bekliyor)
+       MST-2026-006 Nova Gayrimenkul   bayi        fuar         O — GE2 6 villa MÜZAKERE
+         (TKF-2026-007 %9, GM onayında) + VK 3 daire (A-11/A-12/A-14) teklif taslak
+       MST-2026-007 Halil Sancak       arsa sahibi satış ofisi  O — VK A-01/A-02 kat karşılığı;
+         GE2 3. etap arsa GÖRÜŞME
+       MST-2026-008 Ferda Yücel        kiracı adayı WhatsApp    S — KO-B-207 kiralama GÖRÜŞME
+         (TKF-2026-005 süresi dolmuş)
+       MST-2026-009 Tuncay Ilgaz       bireysel    web          S — KAYBEDİLDİ (neden: Fiyat;
+         TKF-2026-004 %12 talebi RED)
+       MST-2026-010 Nihat Karaduman    bireysel    web          O — GE2 V-07 YENİ
+       Kaynak dağılımı: web 3 · referans 2 · satış ofisi 2 · sosyal 1 · WhatsApp 1 · fuar 1.
+       HAM LEAD idiyomu (müşteri kartı AÇILMAMIŞ, yalnız pipeline kartında "kart açılmadı"
+       rozeti): Gökhan Sepetçi (web, S) · Pınar Us (fuar, O) · İlker Baysal (satış ofisi, S).
+       ARŞİV adları (liste DIŞI — satılan 44 birimin eski alıcı örnekleri): Volkan Demirel
+       (VK-D-14) · Serdar Tokgöz (kayıp) · Rıza Kalkan (KO-B-311) · Meltem Işık (KO-B-406) ·
+       Ejder Balcı (KO-B-107) · Seray Ünal (KO-B-212).
+     · PİPELİNE (7 aktif kolon: Yeni · Görüşme · Sunum/Gezi · Teklif · Müzakere · Opsiyon ·
+       Kapora + özet şerit Sözleşme/Kazanıldı/Kaybedildi — K10). 14 AÇIK FIRSAT:
+         Yeni(2):     FRS-2026-016 Karaduman GE2-V07 · FRS-2026-017 Sepetçi VK 2+1 (lead)
+         Görüşme(2):  FRS-2026-012 Yücel KO-B-207 kira · FRS-2026-013 Sancak GE2 arsa
+         Sunum(3):    FRS-2026-014 Baysal VK-D-23 dubleks gezisi (lead) ·
+                      FRS-2026-015 Toprak GE2 V-21+V-22 · FRS-2026-018 Şahinoğlu VK-B-12
+         Teklif(2):   FRS-2026-009 Kavukçu VK-B-19 · FRS-2026-010 Nova VK 3 daire
+         Müzakere(2): FRS-2026-007 Nova GE2 6 villa · FRS-2026-008 Onaran GE2-V05
+         Opsiyon(2):  FRS-2026-005 Şahinoğlu VK-B-11 (14 Tem UYARI) ·
+                      FRS-2026-006 Us GE2-V12 (13 Tem UYARI)
+         Kapora(1):   FRS-2026-011 Toprak VK-C-24
+       Özet şerit — Sözleşme 1: Korkut VK-D-05 · KAZANILDI 5 (son 90 gün): Onaran VK-C-18 ·
+       Toprak A-03/A-09/C-21 (3 fırsat) · Demirel VK-D-14 · KAYBEDİLDİ 3 (neden rozeti ZORUNLU):
+       Ilgaz VK-B-07 (Fiyat) · Kavukçu GE2-V15 (Finansman — VK'da aktif teklifle döndü) ·
+       Tokgöz VK-A-21 (Rakip proje). satistemsilci açık fırsatı 6 (Şahinoğlu×2, Kavukçu,
+       Yücel, Sepetçi, Baysal) — menü cnt override'ı ile senkron.
+     · TEKLİFLER (9; gvChain indirim zinciri):
+       TKF-2026-001 Onaran VK-C-18 %2 Onaylı (→SSZ-2026-003) ·
+       TKF-2026-002 Toprak 3 daire paketi %6 Onaylı (→SSZ-2026-004) ·
+       TKF-2026-003 Şahinoğlu VK-B-11 %3 Onaylı + ODP-2026-001 ·
+       TKF-2026-004 Ilgaz VK-B-07 %12 RED (GM) · TKF-2026-005 Yücel KO-B-207 kira SÜRESİ DOLDU ·
+       TKF-2026-006 Kavukçu VK-B-19 %5 MÜDÜR ONAYINDA · TKF-2026-007 Nova GE2 %9 GM ONAYINDA ·
+       TKF-2026-008 Nova VK 3 daire TASLAK · TKF-2026-009 Baysal VK-D-23 TASLAK
+       ODP-2026-001 (Şahinoğlu B-11): liste ₺6.120.000 → %3 indirim → ₺5.940.000 =
+       peşinat ₺1.485.000 (%25) + 36 × ₺103.750 + teslimde ₺720.000.
+     · SÖZLEŞME & TESLİMAT (7 SSZ + 3 TSL; 12 kalemli teslim checklist):
+       SSZ-2025-042 Onaran KO-B-304 İmzalı (→TSL-2026-001 teslim edildi) ·
+       SSZ-2026-003 Onaran VK-C-18 İmzalı — bedel ₺6.120.000: peşinat ₺918.000 (%15) +
+         36 × ₺115.000 + teslimde ₺1.062.000; 14/36 taksit ödendi, KALAN ₺3.592.000
+         (D13 portal + cari kartı AYNI sayıyı kullanır) ·
+       SSZ-2026-004 Toprak 3 daire paketi İmzalı — ₺13.665.000 (%6 ind.): %50 peşin
+         ₺6.825.000 + 12 × ₺570.000; 4 ödendi, 5. taksit 12 GÜN GECİKMEDE, kalan ₺4.560.000 ·
+       SSZ-2026-005 Demirel VK-D-14 İmzalı ·
+       SSZ-2025-051 Kalkan KO-B-311 TESLİM SÜRECİNDE — checklist 12 kalem: 9 tamam /
+         2 eksik iş (→SST-2026-001 mutfak dolap kapağı ayarı · SST-2026-002 banyo silikon
+         yenileme) / 1 bekliyor ·
+       SSZ-2025-058 Işık KO-B-406 TESLİM SÜRECİNDE · SSZ-2026-007 Korkut VK-D-05 İMZA BEKLİYOR.
+       TSL-2026-001 Onaran KO-B-304 · TSL-2026-002 Balcı KO-B-107 · TSL-2026-003 Ünal KO-B-212.
+     · SATIŞ SONRASI (11 SST; tür: eksik iş 4 · garanti 2 · bakım 2 · şikayet 1 · bilgi 1 ·
+       teslimat problemi 1; durum: açık 3 · işlemde 3 · tamamlandı 4 · reddedildi 1 —
+       menü cnt 6 = açık+işlemde). PORTAL kaynaklı 2 kayıt "Portal" rozetli (portal D13):
+       SST-2026-007 Onaran KO-B-304 klima drenaj GARANTİ (Portal) · SST-2026-010 Onaran
+       VK-C-18 taksit planı BİLGİ (Portal). Eksik iş 4: SST-001/002 (B-311 checklist) +
+       Balcı B-107 süpürgelik + Ünal B-212 kapı zili. Garanti 2.: Ünal B-212 pencere contası.
+       Bakım 2: KO ortak alan klima · asansör periyodik. Şikayet: Işık B-406 otopark su
+       birikintisi. Teslimat problemi: Işık B-406 randevu ertelenmesi. teknik rolü satis'te
+       YALNIZ bu ekranı görür; SST'de temsilci budaması YOK (matris: tam erişim).
+     · CARİ ÇAPRAZ LİNK (2.0.2): satışı tamamlanan müşteri kartında "Cari Hesabı → CAR-…";
+       cari kartında geri link "CRM Kartı → MST-…". CAR-2026-021 Onaran (bakiye ₺3.592.000
+       borç) · CAR-2026-022 Toprak (bakiye ₺4.560.000 borç; ₺570.000 vadesi 12 gün geçmiş).
+       crm-cari-detay.html ?cari= param şablonu (demirbaş ?zmt= idiyomu; parametresiz
+       default Demir-Beton AYNEN korunur).
+     · satis menü cnt: Pipeline 14 · Teklifler 2 (onay bekleyen) · Satış Sonrası 6.
+       satistemsilci override: Pipeline 6 · Teklifler 1. SATIŞ UNLOCK KURALI: locked:true
+       ancak 14 crm-satis-*.html dosyasının TAMAMI diskte varken kaldırılır (ölü link yasağı).
    ===================================================================== */
 (function(){
   'use strict';
@@ -406,13 +515,20 @@
       {ic:'fa-sliders',        lbl:'Hesap Ayarları',      href:'crm-ayarlar-hesap.html',           screen:'hesap'},
       {ic:'fa-bell',           lbl:'Bildirim Tercihleri', href:'crm-ayarlar-bildirim-tercih.html', screen:'bildirim'}
     ]},
-    /* Faz 2 genişleme noktası — rail'de kilitli görünür, inşa edilmez */
-    satis:{ ic:'fa-chart-line', eyebrow:'Satış', title:'Satış CRM', locked:true, menu:[] }
+    /* [D11] satış bölümü — 14 ekranın tamamı diskte, kilit dalga sonunda kaldırıldı */
+    satis:{ ic:'fa-chart-line', eyebrow:'Satış', title:'Satış CRM', menu:[
+      {ic:'fa-address-card',          lbl:'Müşteriler',          href:'crm-satis-musteriler.html',  screen:'musteriler'},
+      {ic:'fa-table-columns',         lbl:'Pipeline',            href:'crm-satis-pipeline.html',    screen:'pipeline', cnt:'14'},
+      {ic:'fa-building-circle-check', lbl:'Bağımsız Bölümler',   href:'crm-satis-birimler.html',    screen:'birimler'},
+      {ic:'fa-file-invoice-dollar',   lbl:'Teklifler',           href:'crm-satis-teklifler.html',   screen:'teklifler', cnt:'2'},
+      {ic:'fa-handshake',             lbl:'Sözleşme & Teslimat', href:'crm-satis-sozlesmeler.html', screen:'sozlesmeler'},
+      {ic:'fa-headset',               lbl:'Satış Sonrası',       href:'crm-satis-talepler.html',    screen:'talepler', cnt:'6'}
+    ]}
   };
   var RAIL_ORDER = ['panel','santiye','gorev','personel','operasyon','satinalma','cari','finans','satis','ayarlar'];
 
   /* ---- ROL config (patron cevabı #5: superadmin + sahip demo öncelikli) ---- */
-  var ALL = ['panel','santiye','gorev','personel','operasyon','satinalma','cari','finans'];
+  var ALL = ['panel','santiye','gorev','personel','operasyon','satinalma','cari','finans','satis'];
   var ROLES = {
     superadmin:{ name:'Deniz Aksoy',      role:'Gavia Platform Yöneticisi', ini:'DA',
                  secs:ALL.concat(['ayarlar']), land:'crm-panel.html', tenantChip:true },
@@ -421,7 +537,8 @@
     yonetim:   { name:'Murat Denizli',    role:'Genel Müdür',               ini:'MD',
                  secs:ALL, land:'crm-panel.html' },
     teknik:    { name:'Elif Sarıkaya',    role:'Teknik Müdür',              ini:'ES',
-                 secs:['panel','santiye','gorev','operasyon','finans'], land:'crm-panel.html' },
+                 secs:['panel','santiye','gorev','operasyon','finans','satis'], land:'crm-panel.html',
+                 scr:{ satis:['talepler'] } },
     sef:       { name:'Hasan Demirci',    role:'Şantiye Şefi — Vadi Konakları', ini:'HD',
                  secs:['panel','santiye','gorev','personel','operasyon','satinalma'], land:'crm-panel.html' },
     muhasebe:  { name:'Nesrin Aydın',     role:'Muhasebe',                  ini:'NA',
@@ -434,6 +551,13 @@
                  scr:{ operasyon:['kasa','pluxee','puantaj','demirbas','arac'] } },
     personel:  { name:'Ali Vural',        role:'Saha Personeli',            ini:'AV',
                  secs:['panel','gorev'], land:'crm-panel.html',
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } },
+    /* [D11] satış personaları (9→11) — indirim zinciri: %0–3 temsilci · %3–7 müdür · %7+ GM */
+    satistemsilci:{ name:'Selin Acar',    role:'Satış Temsilcisi',          ini:'SA',
+                 secs:['panel','gorev','satis'], land:'crm-panel.html',
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } },
+    satismudur:{ name:'Okan Eren',        role:'Satış Müdürü',              ini:'OE',
+                 secs:['panel','gorev','satis','cari'], land:'crm-panel.html',
                  scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } }
   };
   /* scr = ekran-seviyesi budama (4C): bölüm İÇİNDE rolün görebildiği data-screen
@@ -455,6 +579,15 @@
   if(role === 'personel'){
     var _hv = SECTIONS.gorev.menu.filter(function(m){ return m.screen === 'havuz'; })[0];
     if(_hv) _hv.cnt = '1';
+  }
+
+  /* D11: satış temsilcisi liste sayfalarında yalnız kendi kayıtlarını görür —
+     menü sayaçları budanmış setle tutarlı (açık fırsat 6 · onay bekleyen teklif 1) */
+  if(role === 'satistemsilci'){
+    SECTIONS.satis.menu.forEach(function(m){
+      if(m.screen === 'pipeline')  m.cnt = '6';
+      if(m.screen === 'teklifler') m.cnt = '1';
+    });
   }
 
   /* ---- bölüm çöz + yetki guard'ı ---- */

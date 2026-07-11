@@ -139,12 +139,14 @@ tr.is-owner .rc-mark{background:var(--acc-ink);color:#fff}
       </div>
     </div>
 
-    <!-- Faz 2 genişleme — matrise kolon eklenmez, not olarak durur -->
-    <div class="phase-note">
-      <div class="pn-ico"><i class="fa-solid fa-chart-line"></i></div>
+    <!-- [D11] satış indirim onay zinciri — rol yetki bandları -->
+    <div class="phase-note" style="border-style:solid;background:var(--paper)">
+      <div class="pn-ico" style="background:rgba(var(--acc-rgb),.1);border-color:transparent;color:var(--acc-ink)"><i class="fa-solid fa-percent"></i></div>
       <div class="pn-b">
-        <b>Satış CRM <span class="gtag">Faz 2</span></b>
-        <p>Satış bölümü Faz 2'de açılır. Şu an rail'de yalnız Firma Sahibi ve Gavia platform yöneticisine kilitli çip olarak görünür; rol matrisine Faz 2'de sütun olarak eklenecektir.</p>
+        <b>Satış İndirim Onay Zinciri <span class="gtag mint">Yeni</span></b>
+        <p>Tekliflerde indirim yetkisi kademelidir: <b>%0–3</b> Satış Temsilcisi yetkisinde ·
+        <b>%3–7</b> Satış Müdürü onayına gider · <b>%7 üzeri</b> Genel Müdür onayı gerektirir.
+        Onay akışı <a href="crm-satis-teklifler.html" style="color:var(--acc-ink);font-weight:700">Satış &gt; Teklifler</a> ekranındaki zincir rozetlerinde izlenir.</p>
       </div>
     </div>
   </main>
@@ -166,13 +168,15 @@ tr.is-owner .rc-mark{background:var(--acc-ink);color:#fff}
     {k:'satinalma', ic:'fa-cart-flatbed',   lbl:'Satın Alma'},
     {k:'cari',      ic:'fa-address-book',   lbl:'Cari'},
     {k:'finans',    ic:'fa-file-signature', lbl:'Finans'},
+    {k:'satis',     ic:'fa-chart-line',     lbl:'Satış'},
     {k:'ayarlar',   ic:'fa-sliders',        lbl:'Ayarlar', admin:true}
   ];
   var ROLES = [
-    {ini:'DA', role:'Gavia Platform Yöneticisi', user:'Deniz Aksoy',      cls:'is-plat',  secs:['panel','santiye','gorev','personel','operasyon','satinalma','cari','finans','ayarlar']},
-    {ini:'KY', role:'Firma Sahibi',              user:'Kemal Yapıcıoğlu',  cls:'is-owner', secs:['panel','santiye','gorev','personel','operasyon','satinalma','cari','finans','ayarlar']},
-    {ini:'MD', role:'Genel Müdür',               user:'Murat Denizli',     secs:['panel','santiye','gorev','personel','operasyon','satinalma','cari','finans']},
-    {ini:'ES', role:'Teknik Müdür',              user:'Elif Sarıkaya',     secs:['panel','santiye','gorev','operasyon','finans']},
+    {ini:'DA', role:'Gavia Platform Yöneticisi', user:'Deniz Aksoy',      cls:'is-plat',  secs:['panel','santiye','gorev','personel','operasyon','satinalma','cari','finans','satis','ayarlar']},
+    {ini:'KY', role:'Firma Sahibi',              user:'Kemal Yapıcıoğlu',  cls:'is-owner', secs:['panel','santiye','gorev','personel','operasyon','satinalma','cari','finans','satis','ayarlar']},
+    {ini:'MD', role:'Genel Müdür',               user:'Murat Denizli',     secs:['panel','santiye','gorev','personel','operasyon','satinalma','cari','finans','satis']},
+    {ini:'ES', role:'Teknik Müdür',              user:'Elif Sarıkaya',     secs:['panel','santiye','gorev','operasyon','finans','satis'],
+     part:{satis:'Satış: yalnız Satış Sonrası talepleri'}},
     {ini:'HD', role:'Şantiye Şefi',              user:'Hasan Demirci',     secs:['panel','santiye','gorev','personel','operasyon','satinalma']},
     {ini:'NA', role:'Muhasebe',                  user:'Nesrin Aydın',      secs:['panel','personel','operasyon','cari','finans']},
     {ini:'BY', role:'Satın Alma Sorumlusu',      user:'Baran Yıldız',      secs:['panel','gorev','satinalma','cari'],
@@ -180,9 +184,14 @@ tr.is-owner .rc-mark{background:var(--acc-ink);color:#fff}
     {ini:'SK', role:'İK Uzmanı',                 user:'Seda Karaca',       secs:['panel','gorev','personel','operasyon'],
      part:{operasyon:'Operasyon: yalnız Kasa (okuma) + Pluxee + Puantaj + Demirbaş'}},
     {ini:'AV', role:'Saha Personeli',            user:'Ali Vural',         secs:['panel','gorev'],
-     part:{panel:'Panel: Raporlar hariç'}}
+     part:{panel:'Panel: Raporlar hariç'}},
+    {ini:'OE', role:'Satış Müdürü',              user:'Okan Eren',         secs:['panel','gorev','satis','cari'],
+     part:{panel:'Panel: Raporlar hariç'}},
+    {ini:'SA', role:'Satış Temsilcisi',          user:'Selin Acar',        secs:['panel','gorev','satis'],
+     part:{panel:'Panel: Raporlar hariç', satis:'Satış: yalnız kendi müşteri, fırsat ve teklifleri'}}
   ];
-  /* part = ekran-seviyesi kısıt (shell.js ROLES[r].scr ile BİREBİR senkron — 4C) */
+  /* part = ekran-seviyesi kısıt (shell.js ROLES[r].scr ile BİREBİR senkron — 4C;
+     satış içi budama sayfa-lokal data-tems filtresidir — D11) */
 
   var head = document.getElementById('mtxHead');
   var hh = '<th class="mtx-rolehead">Rol</th>';
@@ -206,7 +215,7 @@ tr.is-owner .rc-mark{background:var(--acc-ink);color:#fff}
           + '</td>';
     });
     var n = r.secs.length;
-    bh += '<td class="cntcell"><span class="cnt'+(n===9?' full':'')+'">'+n+' / 9</span></td>';
+    bh += '<td class="cntcell"><span class="cnt'+(n===SECS.length?' full':'')+'">'+n+' / '+SECS.length+'</span></td>';
     bh += '</tr>';
   });
   body.innerHTML = bh;
