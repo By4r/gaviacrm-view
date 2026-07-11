@@ -106,6 +106,30 @@ th.is-today .dh-d{color:var(--acc-ink)}
 }
 .pt-legend-note i{margin-top:2px;font-size:11px;color:var(--muted)}
 
+/* ============ Geçmiş gün kilidi (D9 — saat revize) ============
+   Haftalık grid'de aynı-gün dışındaki işlenmiş günler + tüm arşiv haftası
+   kilitli görünür: köşede kilit rozeti + tıklanınca gvToast uyarısı. ---- */
+.pt-mark.is-locked{cursor:not-allowed}
+.pt-mark.is-locked .pt-lock{
+  position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:var(--r-circle);
+  background:var(--paper);border:1px solid var(--line-2);display:grid;place-items:center;
+  font-size:7.5px;color:var(--muted);box-shadow:var(--sh-sm)
+}
+.tg-day.is-locked{cursor:not-allowed}
+
+/* ============ Puantaj saat revize (D9) ============ */
+.pg-saat{display:flex;align-items:center;gap:6px;flex:none}
+.pg-saat .gfield{margin:0;width:92px}
+.pg-saat input[type="time"]{padding:8px 8px;font-size:12px}
+.pg-saat-sep{color:var(--muted);font-size:12px;font-weight:700}
+.pg-saat-badge{display:inline-flex;min-width:0}
+.pg-saat-badge .gstat{font-size:10.5px;padding:4px 8px;gap:5px}
+.pg-saat-ro{font-size:11.5px;font-weight:700;color:var(--ink-2);margin-left:2px;font-variant-numeric:tabular-nums}
+
+@media(max-width:640px){
+  .pg-saat{flex:1 1 100%;justify-content:flex-start;flex-wrap:wrap}
+}
+
 /* ============ Günlük Giriş paneli (MOCK-SİM — sayfa-lokal, backend yok) ============ */
 .pg-bulk{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:14px;margin-bottom:6px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .pg-bulk-lbl{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
@@ -188,6 +212,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
         <div class="ph-sub" id="ptSub">Yükleniyor…</div>
       </div>
       <div class="ph-actions" data-tab-panel-actions="bireysel">
+        <a class="btn btn-ghost btn-sm" id="btnHaftalikCikti" href="crm-operasyon-puantaj-cikti.html?santiye=vadi&amp;hafta=2026-06-29"><i class="fa-solid fa-print"></i> Haftalık Çıktı Al</a>
         <button class="btn btn-acc btn-sm" id="btnGunlukToggle" type="button" data-no-confirm aria-expanded="false" aria-controls="gunlukCard"><i class="fa-solid fa-list-check"></i> Günlük Giriş</button>
       </div>
     </div>
@@ -345,8 +370,8 @@ th.is-today .dh-d{color:var(--acc-ink)}
 
   var PERSONEL = [
     {ad:'Hasan Demirci',  poz:'Şantiye Şefi',    santiye:'vadi',   gunler:['tam','tam','tam','tam']},
-    {ad:'Ali Vural',      poz:'Saha Personeli',  santiye:'vadi',   gunler:['tam','tam','tam','tam']},
-    {ad:'İbrahim Sönmez', poz:'Formen',          santiye:'vadi',   gunler:['fm','tam','yarim','tam']},
+    {ad:'Ali Vural',      poz:'Saha Personeli',  santiye:'vadi',   gunler:['tam','tam','em','tam']},
+    {ad:'İbrahim Sönmez', poz:'Formen',          santiye:'vadi',   gunler:['fm','tam','yarim','fm']},
     {ad:'Ramazan Kılıç',  poz:'Kalıpçı',         santiye:'vadi',   gunler:['tam','tam','tam','izin']},
     {ad:'Selim Doğan',    poz:'Demir Ustası',    santiye:'vadi',   gunler:['tam','yok','tam','em']},
     {ad:'Musa Erdem',     poz:'Düz İşçi',        santiye:'vadi',   gunler:['izin','izin','tam','tam']},
@@ -451,6 +476,14 @@ th.is-today .dh-d{color:var(--acc-ink)}
   var kpiTam = document.getElementById('kpiTam'), kpiYarim = document.getElementById('kpiYarim'),
       kpiYok = document.getElementById('kpiYok'), kpiIzin = document.getElementById('kpiIzin');
 
+  /* ---- D9 saat revize demo notu — Ali Vural'ın Çar (EM) ve İbrahim Sönmez'in Per (FM)
+     hücreleri crm-santiye-detay.html Puantaj sekmesindeki saat detayıyla birebir. ---- */
+  var SAAT_TIP = {
+    'Ali Vural':      {2: '08:00–15:00 · −3 saat'},
+    'İbrahim Sönmez': {3: '08:00–21:00 · +3 saat'}
+  };
+  var LOCK_MSG = 'Geçmiş güne revize yapılamaz — puantaj yalnız aynı gün içinde düzeltilebilir.';
+
   function render(){
     var santiye = sel.value;
     var rows = PERSONEL.filter(function(p){ return p.santiye === santiye; });
@@ -466,8 +499,13 @@ th.is-today .dh-d{color:var(--acc-ink)}
         var st = statusOf(p, d);
         var V = STATUS[st];
         var todayCls = (WEEK === 0 && d === TODAY_IDX) ? ' is-today' : '';
-        html += '<td class="col-gun'+todayCls+'"><div class="pt-mark '+st+'" data-tip="'+curDays()[d]+' · '+V.lbl+'" tabindex="0">'
-              + (V.ic ? '<i class="fa-solid '+V.ic+'"></i>' : '') + '</div></td>';
+        /* geçmiş gün kilidi: arşiv haftasında tüm işlenmiş günler, kanonik haftada
+           bugünden önceki işlenmiş günler kilitli — revize yalnız aynı gün içinde. */
+        var locked = (st !== 'ht' && st !== 'gelecek') && (WEEK === -1 || (WEEK === 0 && d < TODAY_IDX));
+        var extraTip = (SAAT_TIP[p.ad] && SAAT_TIP[p.ad][d]) ? ' — ' + SAAT_TIP[p.ad][d] : '';
+        var tip = curDays()[d] + ' · ' + V.lbl + extraTip;
+        html += '<td class="col-gun'+todayCls+'"><div class="pt-mark '+st+(locked?' is-locked':'')+'" data-tip="'+tip+'" data-locked="'+(locked?'1':'0')+'" tabindex="0">'
+              + (V.ic ? '<i class="fa-solid '+V.ic+'"></i>' : '') + (locked ? '<span class="pt-lock"><i class="fa-solid fa-lock"></i></span>' : '') + '</div></td>';
       }
       var wt = weeklyTotal(p);
       html += '<td class="num"><div class="pt-total">'+(wt % 1 === 0 ? wt : wt.toString().replace('.', ','))+' gün<span>'+recordedCount()+' gün işlendi</span></div></td>';
@@ -490,6 +528,52 @@ th.is-today .dh-d{color:var(--acc-ink)}
     document.getElementById('kpiGunDelta').innerHTML = '<i class="fa-solid fa-calendar-check"></i> İşlenen ' + recordedCount() + ' gün';
     document.getElementById('ptOzetTh').textContent = WEEK === -1 ? 'Haziran Özeti' : 'Temmuz Özeti';
     sub.textContent = rows.length + ' personel · ' + SANTIYE_ADI[santiye] + ' · ' + WEEK_LBL[String(WEEK)] + (WEEK === -1 ? ' · arşiv' : '');
+  }
+
+  /* geçmiş gün kilidi — tıklama/klavye ile toast (tek delegasyon, #ptBody her render'da
+     innerHTML ile yenilense de container node'un kendisi sabit kalır) */
+  body.addEventListener('click', function(e){
+    var m = e.target.closest('.pt-mark.is-locked');
+    if(m) gvToast(LOCK_MSG);
+  });
+  body.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter' && e.key !== ' ') return;
+    var m = e.target.closest && e.target.closest('.pt-mark.is-locked');
+    if(m){ e.preventDefault(); gvToast(LOCK_MSG); }
+  });
+
+  /* ============ Puantaj saat revize (D9 — Talep 7) [MOCK-SİM] ============
+     Varsayılan mesai 08:00–18:00 (10 saat); fark = çalışılan saat − 10.
+     Yalnız BUGÜN (Günlük Giriş panelindeki kişiler) revize edilebilir —
+     localStorage: gv_pt_saat_<santiye>_<ad>. Ali Vural'ın geçmiş Çar kaydı
+     (−3) yalnız haftalık grid'de salt-okunur görünür (yukarıdaki SAAT_TIP). ---- */
+  var SAAT_PREFIX = 'gv_pt_saat_';
+  var SAAT_STD_SAAT = 10; /* 08:00–18:00 standart mesai */
+  var SAAT_SEED = { vadi: { 'İbrahim Sönmez': {giris:'08:00', cikis:'21:00'} } };
+  function saatKey(santiye, ad){ return SAAT_PREFIX + santiye + '_' + ad; }
+  function loadSaat(santiye, ad){
+    try{ var raw = localStorage.getItem(saatKey(santiye, ad)); if(raw) return JSON.parse(raw); }catch(e){}
+    return null;
+  }
+  function saveSaat(santiye, ad, val){
+    try{ localStorage.setItem(saatKey(santiye, ad), JSON.stringify(val)); }catch(e){}
+  }
+  /* demo tohumu — yalnız ilk yüklemede, kullanıcı değerini ezmez */
+  Object.keys(SAAT_SEED).forEach(function(santiye){
+    Object.keys(SAAT_SEED[santiye]).forEach(function(ad){
+      if(!loadSaat(santiye, ad)) saveSaat(santiye, ad, SAAT_SEED[santiye][ad]);
+    });
+  });
+  function minutesOf(hhmm){ var p = (hhmm || '08:00').split(':'); return (+p[0])*60 + (+p[1]); }
+  function saatDelta(giris, cikis){
+    var worked = (minutesOf(cikis) - minutesOf(giris)) / 60;
+    var diff = Math.round((worked - SAAT_STD_SAAT) * 10) / 10;
+    return diff;
+  }
+  function saatBadgeHtml(diff){
+    if(!diff) return '';
+    if(diff > 0) return '<span class="gstat info pg-badge"><i class="fa-solid fa-arrow-trend-up"></i> +' + diff + ' saat</span>';
+    return '<span class="gstat warn pg-badge"><i class="fa-solid fa-arrow-trend-down"></i> ' + diff + ' saat</span>';
   }
 
   /* ============ Günlük Giriş — şef girişi + İK onay simülasyonu
@@ -535,20 +619,42 @@ th.is-today .dh-d{color:var(--acc-ink)}
     rows.forEach(function(p){
       var kayitli = rec && rec.entries && rec.entries[p.ad];
       var val = kayitli || p.gunler[TODAY_IDX] || 'tam';
+      var saat = loadSaat(santiye, p.ad) || {giris:'08:00', cikis:'18:00'};
+      var diff = saatDelta(saat.giris, saat.cikis);
       html += '<div class="pg-row">';
       html += '<div class="pg-name"><div class="pp-cell"><div class="pp-mark" style="background:'+tint.bg+';color:'+tint.fg+'">'+initials(p.ad)+'</div>'
             + '<div class="pp-info"><b>'+p.ad+'</b><span>'+p.poz+'</span></div></div></div>';
       if(editable){
+        html += '<div class="pg-saat"><div class="gfield"><input type="time" class="pg-saat-in" data-role="giris" data-ad="'+p.ad+'" value="'+saat.giris+'" aria-label="'+p.ad+' giriş saati"></div>'
+              + '<span class="pg-saat-sep">–</span>'
+              + '<div class="gfield"><input type="time" class="pg-saat-in" data-role="cikis" data-ad="'+p.ad+'" value="'+saat.cikis+'" aria-label="'+p.ad+' çıkış saati"></div>'
+              + '<span class="pg-saat-badge" data-badge-ad="'+p.ad+'">'+saatBadgeHtml(diff)+'</span></div>';
         html += '<div class="pg-ctrl"><div class="gfield"><select data-ad="'+p.ad+'" aria-label="'+p.ad+' — bugünkü durum">'
               + SEL_DURUMLAR.map(function(k){ return '<option value="'+k+'"'+(k===val?' selected':'')+'>'+STATUS[k].lbl+'</option>'; }).join('')
               + '</select></div></div>';
       } else {
         var V = STATUS[val];
-        html += '<div class="pg-status"><span class="pt-mark '+val+'">'+(V.ic ? '<i class="fa-solid '+V.ic+'"></i>' : '')+'</span>'+V.lbl+'</div>';
+        var saatTxt = diff ? '<span class="pg-saat-ro">'+saat.giris+'–'+saat.cikis+'</span>' + saatBadgeHtml(diff) : '';
+        html += '<div class="pg-status"><span class="pt-mark '+val+'">'+(V.ic ? '<i class="fa-solid '+V.ic+'"></i>' : '')+'</span>'+V.lbl+saatTxt+'</div>';
       }
       html += '</div>';
     });
     gunlukBody.innerHTML = html || '<div class="pg-empty">Bu şantiyede kayıtlı personel yok.</div>';
+
+    if(editable){
+      Array.prototype.forEach.call(gunlukBody.querySelectorAll('.pg-saat-in'), function(inp){
+        inp.addEventListener('change', function(){
+          var wrap = inp.closest('.pg-saat');
+          var ad = inp.getAttribute('data-ad');
+          var g = wrap.querySelector('[data-role="giris"]').value || '08:00';
+          var c = wrap.querySelector('[data-role="cikis"]').value || '18:00';
+          saveSaat(santiye, ad, {giris:g, cikis:c});
+          var diffNow = saatDelta(g, c);
+          var badgeEl = wrap.querySelector('.pg-saat-badge');
+          badgeEl.innerHTML = saatBadgeHtml(diffNow);
+        });
+      });
+    }
 
     var foot = '';
     if(editable){
@@ -632,9 +738,20 @@ th.is-today .dh-d{color:var(--acc-ink)}
     if(opening) renderGunluk();
   });
 
+  /* Haftalık Çıktı Al — yalnız sef/ik/yonetim/sahip/superadmin görür; yalnız kanonik
+     haftada (WEEK 0) anlamlı olduğundan arşivde gizlenir; href seçili şantiyeye göre. */
+  var CIKTI_ROLLER = ['sef','ik','yonetim','sahip','superadmin'];
+  var btnCikti = document.getElementById('btnHaftalikCikti');
+  var ciktiRolYetkili = CIKTI_ROLLER.indexOf(GV.role) !== -1;
+  function updateCiktiBtn(){
+    btnCikti.hidden = !ciktiRolYetkili || WEEK !== 0;
+    btnCikti.href = 'crm-operasyon-puantaj-cikti.html?santiye=' + sel.value + '&hafta=2026-06-29';
+  }
+
   sel.addEventListener('change', function(){
     render();
     if(!gunlukCard.hidden) renderGunluk();
+    updateCiktiBtn();
   });
 
   /* şef tek şantiye görür — seçici kendi sahasına sabitlenir */
@@ -642,6 +759,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
     sel.value = 'vadi';
     sel.disabled = true;
   }
+  updateCiktiBtn();
 
   /* ---- R2 hafta geçişi [MOCK-SİM] — thead günleri, hafta etiketi, arşiv kilidi ve
      her iki grid weekIdx'e göre yeniden basılır. Yalnız -1 (arşiv) ve 0 (kanonik) var;
@@ -669,6 +787,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
     updateHeads();
     render();
     renderTaseron();
+    updateCiktiBtn();
   }
   document.getElementById('ptPrev').addEventListener('click', function(){
     if(WEEK === 0){ WEEK = -1; applyWeek(); }
