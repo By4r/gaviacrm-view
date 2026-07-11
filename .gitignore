@@ -9,6 +9,9 @@ docs/brief/
 # Brief'ten türetilen iç planlama dokümanları da public repoya girmez
 tasks/
 
+# QA ekran görüntüleri (yerel öz-doğrulama çıktıları)
+docs/screenshots/
+
 # Claude Code yerel ayarları
 .claude/settings.local.json
 
