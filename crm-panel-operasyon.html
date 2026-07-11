@@ -21,35 +21,79 @@
    ===================================================================== */
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
+
+/* ---------- [D10 1.11 / K5] kiosk tema değişkenleri — YALNIZ bu sayfada ----------
+   Dark varsayılan; body.k-light açık tema. tokens.css'e DOKUNULMAZ: light değerleri
+   tokens'ın mevcut açık skalasından okunur, dark-token adları (--gv-night, --on-dark…)
+   yalnız bu sayfanın body.k-light kapsamında yeniden değerlenir (inline stiller dahil
+   tüm var() referansları tek yerden döner). localStorage: gv_kiosk_theme. */
 body{
-  background:var(--gv-deep);
+  --k-bg:var(--gv-deep);
+  --k-card:var(--gv-night);
+  --k-border:var(--gv-border-dark);
+  --k-ink:#fff;                       /* güçlü metin */
+  --k-mut:var(--on-dark-mut);
+  --k-faint:var(--on-dark-faint);
+  --k-hair:var(--hair);
+  --k-soft:rgba(255,255,255,.03);
+  --k-hover:rgba(255,255,255,.04);
+  --k-soft-2:rgba(255,255,255,.05);
+  --k-info:#8FB4FF;                   /* koyu zeminde okunur info metni */
+}
+body.k-light{
+  --k-bg:var(--bg);
+  --k-card:var(--paper);
+  --k-border:var(--line);
+  --k-ink:var(--ink);
+  --k-mut:var(--muted);
+  --k-faint:var(--muted);
+  --k-hair:var(--line);
+  --k-soft:rgba(17,21,40,.03);
+  --k-hover:rgba(17,21,40,.04);
+  --k-soft-2:rgba(17,21,40,.06);
+  --k-info:var(--info);
+  /* sayfa-kapsamlı dark-token override'ları (inline stiller bunlardan okur) */
+  --gv-mint:var(--acc-ink);
+  --gv-mint-bright:var(--acc-deep);
+  --gv-mint-glow:rgba(63,213,173,.16);
+  --gv-night:var(--paper);
+  --gv-border-dark:var(--line);
+  --on-dark:var(--ink-2);
+  --on-dark-mut:var(--muted);
+  --on-dark-faint:var(--muted);
+  --hair:var(--line);
+}
+body{
+  background:var(--k-bg);
   color:var(--on-dark);
   font-family:var(--font);
   min-height:100vh;
   overflow-x:hidden;
   display:flex;flex-direction:column;
   background-image:
-    radial-gradient(1100px 620px at 100% -10%, var(--gv-mint-glow), transparent 60%),
+    radial-gradient(1100px 620px at 100% -10%, rgba(63,213,173,.10), transparent 60%),
     radial-gradient(900px 500px at -10% 110%, rgba(63,213,173,.07), transparent 55%);
   background-repeat:no-repeat;
 }
+/* açık temada kartlar gölgeyle ayrışır (koyu temada border yeter) */
+body.k-light .site-card, body.k-light .k-panel, body.k-light .me-strip{box-shadow:var(--sh-sm)}
 
 /* ---------- üst şerit ---------- */
 .kiosk-top{
   display:flex;align-items:center;gap:20px;
   padding:20px clamp(20px,3vw,44px);
-  border-bottom:1px solid var(--gv-border-dark);
+  border-bottom:1px solid var(--k-border);
 }
 .k-mark{
   width:44px;height:44px;flex:none;border-radius:12px;
-  background:linear-gradient(155deg,var(--gv-mint),var(--gv-mint-bright));
+  background:linear-gradient(155deg,#3FD5AD,#4FE5BD);   /* marka işareti iki temada SABİT */
   display:grid;place-items:center;
-  font-weight:800;font-size:19px;color:var(--gv-deep);letter-spacing:-.5px;
+  font-weight:800;font-size:19px;color:#020837;letter-spacing:-.5px;
 }
 .k-brand{display:flex;flex-direction:column;line-height:1.25}
-.k-brand b{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.2px}
+.k-brand b{font-size:17px;font-weight:800;color:var(--k-ink);letter-spacing:-.2px}
 .k-brand span{font-size:11.5px;font-weight:600;color:var(--on-dark-mut)}
-.k-div{width:1px;align-self:stretch;background:var(--gv-border-dark);margin:0 2px}
+.k-div{width:1px;align-self:stretch;background:var(--k-border);margin:0 2px}
 .k-tenant{display:flex;align-items:center;gap:9px;font-size:14.5px;font-weight:700;color:var(--on-dark)}
 .k-tenant i{color:var(--gv-mint);font-size:13px}
 .k-live{
@@ -63,18 +107,29 @@ body{
   margin-left:auto;display:flex;align-items:center;gap:22px;
 }
 .k-clock{text-align:right;line-height:1}
-.k-clock .hm{font-size:clamp(26px,2.4vw,34px);font-weight:800;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.k-clock .hm{font-size:clamp(26px,2.4vw,34px);font-weight:800;color:var(--k-ink);font-variant-numeric:tabular-nums;letter-spacing:-.5px}
 .k-clock .hm .s{font-size:.5em;font-weight:700;color:var(--gv-mint);margin-left:4px}
 .k-clock .dt{margin-top:5px;font-size:12.5px;color:var(--on-dark-mut);font-weight:600}
 .k-back{
   flex:none;display:inline-flex;align-items:center;gap:9px;
   padding:11px 18px;border-radius:var(--r-md);
-  background:transparent;border:1px solid var(--gv-border-dark);
+  background:transparent;border:1px solid var(--k-border);
   color:var(--on-dark);font-family:var(--font);font-size:13.5px;font-weight:700;
   text-decoration:none;transition:border-color .18s var(--ease),background .18s var(--ease);
 }
-.k-back:hover{background:rgba(255,255,255,.04);border-color:var(--gv-mint)}
+.k-back:hover{background:var(--k-hover);border-color:var(--gv-mint)}
 .k-back i{color:var(--gv-mint);font-size:12px}
+
+/* tema anahtarı — güneş/ay [D10 1.11 / K5] */
+.k-theme{
+  flex:none;width:42px;height:42px;border-radius:var(--r-md);
+  background:transparent;border:1px solid var(--k-border);
+  color:var(--gv-mint);font-size:15px;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:border-color .18s var(--ease),background .18s var(--ease),transform .18s var(--ease);
+}
+.k-theme:hover{background:var(--k-hover);border-color:var(--gv-mint);transform:translateY(-1px)}
+.k-theme:focus-visible{outline:2px solid var(--gv-mint);outline-offset:2px}
 
 @keyframes pulse-mint{
   0%,100%{box-shadow:0 0 0 0 rgba(79,229,189,.55)}
@@ -97,24 +152,24 @@ body{
 /* şantiye durum satırı */
 .site-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:36px}
 .site-card{
-  background:var(--gv-night);border:1px solid var(--gv-border-dark);border-radius:var(--r-lg);
+  background:var(--k-card);border:1px solid var(--k-border);border-radius:var(--r-lg);
   padding:30px;display:flex;align-items:center;gap:26px;
 }
 .ring{
   --pct:0;--ring-c:var(--gv-mint);
   width:140px;height:140px;flex:none;border-radius:50%;position:relative;
-  background:conic-gradient(var(--ring-c) calc(var(--pct)*3.6deg), var(--gv-border-dark) 0deg);
+  background:conic-gradient(var(--ring-c) calc(var(--pct)*3.6deg), var(--k-border) 0deg);
 }
 .ring::after{
-  content:"";position:absolute;inset:13px;border-radius:50%;background:var(--gv-night);
+  content:"";position:absolute;inset:13px;border-radius:50%;background:var(--k-card);
 }
 .ring-num{
   position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1;
 }
-.ring-num b{font-size:29px;font-weight:800;color:#fff;line-height:1;font-variant-numeric:tabular-nums}
+.ring-num b{font-size:29px;font-weight:800;color:var(--k-ink);line-height:1;font-variant-numeric:tabular-nums}
 .ring-num span{font-size:10px;font-weight:700;color:var(--on-dark-faint);letter-spacing:.04em;margin-top:4px;text-transform:uppercase}
 .site-info{flex:1;min-width:0}
-.site-info .snm{font-size:19px;font-weight:800;color:#fff;line-height:1.25}
+.site-info .snm{font-size:19px;font-weight:800;color:var(--k-ink);line-height:1.25}
 .site-info .sloc{font-size:13px;color:var(--on-dark-mut);margin-top:4px}
 .site-info .ssef{display:flex;align-items:center;gap:7px;margin-top:16px;font-size:13px;color:var(--on-dark);font-weight:600}
 .site-info .ssef i{color:var(--gv-mint);font-size:11px;flex:none}
@@ -126,22 +181,22 @@ body{
 /* alt üç kolon */
 .bottom-grid{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:20px;align-items:stretch}
 .k-panel{
-  background:var(--gv-night);border:1px solid var(--gv-border-dark);border-radius:var(--r-lg);
+  background:var(--k-card);border:1px solid var(--k-border);border-radius:var(--r-lg);
   display:flex;flex-direction:column;min-width:0;
 }
 .kp-head{display:flex;align-items:center;gap:10px;padding:18px 22px 14px}
 .kp-head i{font-size:13.5px;color:var(--gv-mint)}
-.kp-head b{font-size:14px;font-weight:800;color:#fff;letter-spacing:.01em}
-.kp-head .kp-cnt{margin-left:auto;font-size:22px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+.kp-head b{font-size:14px;font-weight:800;color:var(--k-ink);letter-spacing:.01em}
+.kp-head .kp-cnt{margin-left:auto;font-size:22px;font-weight:800;color:var(--k-ink);font-variant-numeric:tabular-nums}
 .kp-body{padding:6px 0 14px;flex:1;display:flex;flex-direction:column;justify-content:center}
 
 /* onay dağılımı satırı */
 .onay-row{display:flex;align-items:center;gap:13px;padding:15px 22px}
 .onay-ico{width:34px;height:34px;flex:none;border-radius:9px;display:grid;place-items:center;font-size:13px}
 .onay-lbl{flex:1;min-width:0;font-size:13.5px;font-weight:700;color:var(--on-dark)}
-.onay-bar{flex:none;width:96px;height:5px;border-radius:99px;background:var(--gv-border-dark);overflow:hidden;margin-right:12px}
+.onay-bar{flex:none;width:96px;height:5px;border-radius:99px;background:var(--k-border);overflow:hidden;margin-right:12px}
 .onay-bar span{display:block;height:100%;border-radius:99px;background:var(--gv-mint)}
-.onay-num{flex:none;width:22px;text-align:right;font-size:15.5px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+.onay-num{flex:none;width:22px;text-align:right;font-size:15.5px;font-weight:800;color:var(--k-ink);font-variant-numeric:tabular-nums}
 
 /* kritik uyarı satırı */
 .alert-row{display:flex;align-items:flex-start;gap:12px;padding:16px 22px;border-left:3px solid transparent}
@@ -161,7 +216,7 @@ body{
 .ajd-txt{flex:1;min-width:0;line-height:1.4}
 .ajd-txt b{display:block;font-size:12.8px;font-weight:700;color:var(--on-dark)}
 .ajd-txt span{display:block;font-size:11.5px;color:var(--on-dark-mut);margin-top:2px}
-.ajd-time{flex:none;font-size:12.5px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;background:rgba(255,255,255,.05);padding:4px 9px;border-radius:7px}
+.ajd-time{flex:none;font-size:12.5px;font-weight:800;color:var(--k-ink);font-variant-numeric:tabular-nums;background:var(--k-soft-2);padding:4px 9px;border-radius:7px}
 
 .kp-row-div{border-top:1px solid var(--hair)}
 
@@ -171,12 +226,12 @@ body{
 .stat-txt{flex:1;min-width:0;line-height:1.4}
 .stat-txt b{display:block;font-size:13.5px;font-weight:700;color:var(--on-dark)}
 .stat-txt span{display:block;font-size:11.5px;color:var(--on-dark-mut);margin-top:2px}
-.stat-num{flex:none;font-size:20px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+.stat-num{flex:none;font-size:20px;font-weight:800;color:var(--k-ink);font-variant-numeric:tabular-nums}
 
 /* rol çipi — üst şeritte küçük persona etiketi [6D T-kiosk] */
 .k-role-chip{
   display:inline-flex;align-items:center;margin-left:2px;
-  padding:4px 11px;border-radius:var(--r-pill);border:1px solid var(--gv-border-dark);
+  padding:4px 11px;border-radius:var(--r-pill);border:1px solid var(--k-border);
   font-size:11px;font-weight:700;color:var(--on-dark-mut);letter-spacing:.02em;
 }
 .k-role-chip[hidden]{display:none}
@@ -209,18 +264,18 @@ body{
 .me-strip{
   background:
     linear-gradient(90deg,rgba(63,213,173,.08),rgba(63,213,173,.02) 45%,transparent 70%),
-    var(--gv-night);
+    var(--k-card);
   border:1px solid rgba(63,213,173,.26);border-radius:var(--r-lg);
-  display:flex;align-items:center;gap:26px;
+  display:flex;flex-wrap:wrap;align-items:center;gap:16px 26px;  /* [D10 1.11] me-works alt satırı için wrap */
   padding:20px 26px;margin-bottom:20px;min-width:0;
 }
 .me-title{flex:none;display:flex;align-items:center;gap:13px;min-width:0;max-width:220px}
 .me-title .mt-ico{width:40px;height:40px;flex:none;border-radius:12px;background:var(--gv-mint-glow);color:var(--gv-mint-bright);display:grid;place-items:center;font-size:15px}
-.me-title b{display:block;font-size:14.5px;font-weight:800;color:#fff;letter-spacing:.01em;line-height:1.3}
+.me-title b{display:block;font-size:14.5px;font-weight:800;color:var(--k-ink);letter-spacing:.01em;line-height:1.3}
 .me-title span{display:block;font-size:11px;font-weight:700;color:var(--on-dark-mut);margin-top:2px}
 .me-cnts{flex:1;min-width:0;display:flex;gap:10px;flex-wrap:wrap}
-.me-cnt{flex:1 1 130px;min-width:118px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--hair)}
-.me-cnt b{display:block;font-size:23px;font-weight:800;color:#fff;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+.me-cnt{flex:1 1 130px;min-width:118px;padding:12px 14px;border-radius:12px;background:var(--k-soft);border:1px solid var(--hair)}
+.me-cnt b{display:block;font-size:23px;font-weight:800;color:var(--k-ink);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
 .me-cnt b small{font-size:12px;font-weight:700;color:var(--on-dark-mut);margin-left:2px}
 .me-cnt>span{display:block;margin-top:6px;font-size:10.5px;font-weight:700;color:var(--on-dark-mut);line-height:1.4}
 .me-cnt.warn b{color:var(--warn)}
@@ -233,7 +288,36 @@ body{
 .ms-line span{color:var(--on-dark-mut);font-weight:600}
 a.ms-line:hover b{color:var(--gv-mint-bright)}
 a.ajd-row{color:inherit;text-decoration:none}
-a.ajd-row:hover{background:rgba(255,255,255,.03)}
+a.ajd-row:hover{background:var(--k-soft)}
+
+/* [D10 1.11] Aldığım / Yaptığım İşler — R8 şeridinin 2 bölmeli alt satırı.
+   Havuz kanonuyla tutarlı: "havuzdan" rozeti havuz listesi DIŞI eski claim'ler,
+   "atandı" rozeti mevcut görev kanonundan; Yaptığım = Tamamlananlar kanonu. */
+.me-works{
+  flex:1 1 100%;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:10px 26px;
+  border-top:1px solid var(--k-hair);padding-top:15px;
+}
+.mw-col{min-width:0}
+.mw-head{
+  display:flex;align-items:center;gap:8px;margin-bottom:8px;
+  font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--k-faint);
+}
+.mw-head i{color:var(--gv-mint);font-size:10px}
+.mw-head .mw-cnt{margin-left:auto;font-size:10.5px;font-weight:800;letter-spacing:0;color:var(--k-mut);font-variant-numeric:tabular-nums}
+.mw-row{display:flex;align-items:center;gap:9px;padding:5px 0;font-size:12.5px;line-height:1.4;min-width:0}
+.mw-row .mw-t{flex:1;min-width:0;font-weight:700;color:var(--on-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mw-row .mw-t span{font-weight:600;color:var(--k-mut)}
+.mw-src{
+  flex:none;font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+  padding:2.5px 8px;border-radius:var(--r-pill);
+}
+.mw-src.havuz{background:var(--gv-mint-glow);color:var(--gv-mint-bright)}
+.mw-src.atandi{background:rgba(59,111,212,.16);color:var(--k-info)}
+.mw-due{flex:none;font-size:11px;font-weight:700;color:var(--k-mut);font-variant-numeric:tabular-nums;white-space:nowrap}
+.mw-due.late{color:var(--danger);font-weight:800}
+.mw-row .mw-ok{flex:none;width:17px;height:17px;border-radius:50%;display:grid;place-items:center;
+  background:var(--gv-mint-glow);color:var(--gv-mint-bright);font-size:9px}
+@media(max-width:900px){.me-works{grid-template-columns:1fr}}
 /* saha: Bugünüm kartı R8 şeridine evrildi → alt satır 2 panel [7E T-kiosk] */
 .bottom-grid.cols-2{grid-template-columns:1fr 1fr}
 .bottom-grid.cols-2 .k-panel:first-child{grid-column:auto}
@@ -249,7 +333,7 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
 /* alt imza şeridi */
 .kiosk-foot{
   flex:none;display:flex;align-items:center;gap:10px;
-  padding:14px clamp(20px,3vw,44px);border-top:1px solid var(--gv-border-dark);
+  padding:14px clamp(20px,3vw,44px);border-top:1px solid var(--k-border);
   font-size:11.5px;color:var(--on-dark-faint);
 }
 .kiosk-foot .kf-mark{color:var(--gv-mint);font-weight:800}
@@ -278,12 +362,35 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
   .onay-bar{width:64px}
 }
 
+/* =====================================================================
+   [D10 1.11] DESKTOP DÜZENİ — 1200–1679px: alt panel bölgesi 12 kolon;
+   sol 8 kolon 2'li panel ızgarası + sağ 4 kolon sabit özet rayı (.k-rail).
+   Sarmalayıcılar (.k-cols-main / .k-rail) TV (≥1680) ve mobilde display:contents
+   olduğundan 1920 kiosk düzeni ve mevcut kırılımlar AYNEN korunur.
+   ===================================================================== */
+.k-cols-main,.k-rail{display:contents}
+@media (min-width:1200px) and (max-width:1679px){
+  .kiosk-main{justify-content:flex-start}
+  .bottom-grid,.bottom-grid.cols-4,.bottom-grid.cols-2{grid-template-columns:repeat(12,minmax(0,1fr));align-items:start}
+  .k-cols-main{display:grid;grid-column:1/9;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:stretch}
+  .k-cols-main>.k-panel:first-child{grid-column:auto}
+  .k-cols-main>.k-panel:last-child:nth-child(odd){grid-column:1/-1}
+  .k-rail{display:flex;grid-column:9/13;flex-direction:column;gap:20px;position:sticky;top:20px}
+  .bottom-grid.solo{grid-template-columns:minmax(0,620px)}
+}
+
 @media (prefers-reduced-motion:reduce){
   .k-live .dot,.alert-dot.sev-danger{animation:none}
 }
 </style>
 </head>
 <body data-sec="panel" data-screen="operasyon-kiosk">
+<script>
+/* tema erken uygulama — ilk boyamadan önce, parlama (FOUC) olmasın [D10 1.11 / K5] */
+(function(){
+  try{ if(localStorage.getItem('gv_kiosk_theme') === 'light') document.body.classList.add('k-light'); }catch(e){}
+})();
+</script>
 
 <header class="kiosk-top">
   <div class="k-mark">G</div>
@@ -299,6 +406,7 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
       <div class="hm" id="kHm">--:--<span class="s" id="kS">--</span></div>
       <div class="dt">2 Temmuz 2026, Perşembe</div>
     </div>
+    <button class="k-theme" id="kTheme" type="button" aria-label="Açık/koyu tema değiştir" title="Açık/koyu tema"><i class="fa-solid fa-sun"></i></button>
     <a class="k-back" href="crm-panel.html"><i class="fa-solid fa-arrow-left"></i> Panele Dön</a>
   </div>
 </header>
@@ -367,9 +475,24 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
       <div class="ms-line"><i class="fa-solid fa-calendar-day"></i><div><b>Bugün 3 olay</b> <span>· 09:00 teslim · 14:00 hakediş · 16:00 koordinasyon</span></div></div>
       <a class="ms-line" href="crm-panel-bildirimler.html"><i class="fa-solid fa-bell"></i><div><b>3 okunmamış bildirim</b></div></a>
     </div>
+    <!-- [D10 1.11] Aldığım / Yaptığım İşler — GM: TH-014 GM onayı + KSA-017 kararı
+         işlem kayıtları (LOG-0813/0810) ile senkron; havuzdan alınan iş, havuz 6'sı DIŞI eski claim -->
+    <div class="me-works">
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-inbox"></i> Aldığım İşler <span class="mw-cnt">2 açık</span></div>
+        <div class="mw-row"><span class="mw-src havuz">Havuzdan</span><span class="mw-t">Liman Lojistik gecikme aksiyon planı</span><span class="mw-due">4 Tem</span></div>
+        <div class="mw-row"><span class="mw-src atandi">Atandı</span><span class="mw-t">HKD-2026-006 işveren onay takibi <span>· Körfez GYO</span></span><span class="mw-due">bugün 14:00</span></div>
+      </div>
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-circle-check"></i> Yaptığım İşler <span class="mw-cnt">bu hafta 2</span></div>
+        <div class="mw-row"><span class="mw-ok"><i class="fa-solid fa-check"></i></span><span class="mw-t">TH-2026-014 hakedişinin GM onayı <span>· muhasebeye yönlendi</span></span><span class="mw-due">dün</span></div>
+        <div class="mw-row"><span class="mw-ok"><i class="fa-solid fa-check"></i></span><span class="mw-t">KSA-2026-017 kasa gideri kararı <span>· gerekçeli red</span></span><span class="mw-due">30 Haz</span></div>
+      </div>
+    </div>
   </div>
 
   <div class="bottom-grid cols-4">
+    <div class="k-cols-main">
 
     <!-- Bekleyen Onaylar -->
     <div class="k-panel">
@@ -431,6 +554,8 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    </div><!-- /k-cols-main (gm) -->
+    <aside class="k-rail">
 
     <!-- Ajanda -->
     <div class="k-panel">
@@ -476,6 +601,7 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    </aside><!-- /k-rail (gm) -->
 
   </div>
   </div><!-- /data-view="gm" -->
@@ -550,9 +676,24 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
       <div class="ms-line"><i class="fa-solid fa-calendar-day"></i><div><b>Bugün 3 olay</b> <span>· 09:00 teslim · 14:00 hakediş · 16:00 koordinasyon</span></div></div>
       <a class="ms-line" href="crm-panel-bildirimler.html"><i class="fa-solid fa-bell"></i><div><b>3 okunmamış bildirim</b></div></a>
     </div>
+    <!-- [D10 1.11] sahip varyantı: kişisel sayaç yerine firma dili — havuza bıraktıkları
+         (kanonik 6 görevin 2 örneği, crm-gorev ?f=havuz BİREBİR) + firma genelinde son tamamlananlar -->
+    <div class="me-works">
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-layer-group"></i> Havuza Bıraktıklarım <span class="mw-cnt">6 görev</span></div>
+        <div class="mw-row"><span class="mw-src havuz">Havuzda</span><span class="mw-t">Göl Evleri 2. Etap ruhsat evrak listesi</span><span class="mw-due late">termin geçti</span></div>
+        <div class="mw-row"><span class="mw-src havuz">Havuzda</span><span class="mw-t">Vadi Konakları numune daire fotoğraf çekimi</span><span class="mw-due">10 Tem</span></div>
+      </div>
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-circle-check"></i> Son Tamamlananlar <span class="mw-cnt">firma geneli</span></div>
+        <div class="mw-row"><span class="mw-ok"><i class="fa-solid fa-check"></i></span><span class="mw-t">Haftalık İSG turu <span>· Hasan Demirci · Vadi</span></span><span class="mw-due">dün</span></div>
+        <div class="mw-row"><span class="mw-ok"><i class="fa-solid fa-check"></i></span><span class="mw-t">Avans ödemeleri banka listesi <span>· Nesrin Aydın</span></span><span class="mw-due">dün</span></div>
+      </div>
+    </div>
   </div>
 
   <div class="bottom-grid cols-4">
+    <div class="k-cols-main">
 
     <!-- Bekleyen Onaylar — GM klonu -->
     <div class="k-panel">
@@ -710,6 +851,9 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
       </div>
     </div>
 
+    </div><!-- /k-cols-main (sahip) -->
+    <aside class="k-rail">
+
     <!-- Ajanda — GM klonu -->
     <div class="k-panel">
       <div class="kp-head"><i class="fa-solid fa-calendar-day"></i><b>Ajanda</b></div>
@@ -731,6 +875,7 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    </aside><!-- /k-rail (sahip) -->
 
   </div>
   </div><!-- /data-view="sahip" -->
@@ -800,9 +945,23 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
       <div class="ms-line"><i class="fa-solid fa-calendar-day"></i><div><b>Bugün 2 olay</b> <span>· 14:00 hakediş takibi · 16:00 koordinasyon</span></div></div>
       <a class="ms-line" href="crm-panel-bildirimler.html"><i class="fa-solid fa-bell"></i><div><b>Elif Sarıkaya, Ömer Taşkın'a yeni görev verdi</b></div></a>
     </div>
+    <!-- [D10 1.11] teknik: TH-009 kontrolü + HKD-006 notu işlem kayıtları (LOG-0805/0830) ile senkron -->
+    <div class="me-works">
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-inbox"></i> Aldığım İşler <span class="mw-cnt">2 açık</span></div>
+        <div class="mw-row"><span class="mw-src atandi">Atandı</span><span class="mw-t">HKD-2026-006 işveren onay takibi <span>· Körfez GYO</span></span><span class="mw-due">bugün 14:00</span></div>
+        <div class="mw-row"><span class="mw-src atandi">Atandı</span><span class="mw-t">MKN-06 Beko Loder servis takibi <span>· Merkez</span></span><span class="mw-due">4 Tem</span></div>
+      </div>
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-circle-check"></i> Yaptığım İşler <span class="mw-cnt">bu hafta 2</span></div>
+        <div class="mw-row"><span class="mw-ok"><i class="fa-solid fa-check"></i></span><span class="mw-t">HKD-2026-006 işveren takip notu</span><span class="mw-due">bugün 14:20</span></div>
+        <div class="mw-row"><span class="mw-ok"><i class="fa-solid fa-check"></i></span><span class="mw-t">TH-2026-009 teknik kontrolü <span>· ElektroMek</span></span><span class="mw-due">30 Haz</span></div>
+      </div>
+    </div>
   </div>
 
   <div class="bottom-grid cols-4">
+    <div class="k-cols-main">
     <div class="k-panel">
       <div class="kp-head"><i class="fa-solid fa-drafting-compass"></i><b>Teknik Gündem</b></div>
       <div class="kp-body">
@@ -867,6 +1026,8 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    </div><!-- /k-cols-main (teknik) -->
+    <aside class="k-rail">
     <div class="k-panel">
       <div class="kp-head"><i class="fa-solid fa-calendar-day"></i><b>Ajanda</b></div>
       <div class="kp-body">
@@ -905,6 +1066,7 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    </aside><!-- /k-rail (teknik) -->
   </div>
   </div><!-- /data-view="teknik" -->
 
@@ -956,9 +1118,23 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
       <div class="ms-line"><i class="fa-solid fa-calendar-day"></i><div><b>Bugün 09:00 kereste teslimi</b> <span>· Yarın 11:00 İSG denetimi</span></div></div>
       <a class="ms-line" href="crm-panel-bildirimler.html"><i class="fa-solid fa-bell"></i><div><b>Murat Denizli size yeni görev verdi</b> <span>· A Blok elektrik şaft kontrolü · termin 3 Tem</span></div></a>
     </div>
+    <!-- [D10 1.11] şef: geciken görev + İSG turu görev kanonuyla, KSA-021 gönderimi log (LOG-0827) ile senkron -->
+    <div class="me-works">
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-inbox"></i> Aldığım İşler <span class="mw-cnt">7 açık · 2 gecikmede</span></div>
+        <div class="mw-row"><span class="mw-src atandi">Atandı</span><span class="mw-t">A Blok elektrik şaft kontrolü <span>· ElektroMek ile</span></span><span class="mw-due">3 Tem</span></div>
+        <div class="mw-row"><span class="mw-src atandi">Atandı</span><span class="mw-t">Perde betonu kür takibini raporla <span>· Murat Denizli</span></span><span class="mw-due late">gecikti</span></div>
+      </div>
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-circle-check"></i> Yaptığım İşler <span class="mw-cnt">bu hafta 2</span></div>
+        <div class="mw-row"><span class="mw-ok"><i class="fa-solid fa-check"></i></span><span class="mw-t">KSA-2026-021 kasa kaydını onaya gönderdim <span>· ₺18.400</span></span><span class="mw-due">bugün 10:05</span></div>
+        <div class="mw-row"><span class="mw-ok"><i class="fa-solid fa-check"></i></span><span class="mw-t">Haftalık İSG turu <span>· Vadi Konakları</span></span><span class="mw-due">dün</span></div>
+      </div>
+    </div>
   </div>
 
   <div class="bottom-grid">
+    <div class="k-cols-main">
     <div class="k-panel">
       <div class="kp-head"><i class="fa-solid fa-helmet-safety"></i><b>Bugün Sahada</b></div>
       <div class="kp-body">
@@ -1060,6 +1236,8 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    </div><!-- /k-cols-main (sef) -->
+    <aside class="k-rail">
     <div class="k-panel">
       <div class="kp-head"><i class="fa-solid fa-calendar-day"></i><b>Ajanda</b></div>
       <div class="kp-body">
@@ -1098,6 +1276,7 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    </aside><!-- /k-rail (sef) -->
   </div>
   </div><!-- /data-view="sef" -->
 
@@ -1131,9 +1310,23 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
       <div class="ms-line"><i class="fa-solid fa-calendar-day"></i><div><b>Bugün 14:00</b> <span>· HKD-2026-006 işveren onay takibi</span></div></div>
       <a class="ms-line" href="crm-panel-bildirimler.html"><i class="fa-solid fa-bell"></i><div><b>TH-2026-014 muhasebe onayında</b> <span>· ₺90.000</span></div></a>
     </div>
+    <!-- [D10 1.11] muhasebe: görev adları crm-gorev kanonu; KSG-008 kaydı log (LOG-0825) ile senkron -->
+    <div class="me-works">
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-inbox"></i> Aldığım İşler <span class="mw-cnt">2 açık · 1 gecikmede</span></div>
+        <div class="mw-row"><span class="mw-src atandi">Atandı</span><span class="mw-t">Haziran kasa mutabakatını tamamla</span><span class="mw-due late">gecikti</span></div>
+        <div class="mw-row"><span class="mw-src atandi">Atandı</span><span class="mw-t">Temmuz hakediş taslağı hazırlığı</span><span class="mw-due">5 Tem</span></div>
+      </div>
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-circle-check"></i> Yaptığım İşler <span class="mw-cnt">bu hafta 2</span></div>
+        <div class="mw-row"><span class="mw-ok"><i class="fa-solid fa-check"></i></span><span class="mw-t">KSG-2026-008 tahsilat kaydı <span>· Körfez GYO ₺66.400</span></span><span class="mw-due">bugün 09:12</span></div>
+        <div class="mw-row"><span class="mw-ok"><i class="fa-solid fa-check"></i></span><span class="mw-t">Avans ödemelerini banka listesine aktar</span><span class="mw-due">dün</span></div>
+      </div>
+    </div>
   </div>
 
   <div class="bottom-grid">
+    <div class="k-cols-main">
     <div class="k-panel">
       <div class="kp-head"><i class="fa-solid fa-stamp"></i><b>Onayımdaki İşlemler</b><span class="kp-cnt">3</span></div>
       <div style="padding:0 22px 10px;margin-top:-6px;font-size:12px;font-weight:700;color:var(--on-dark-mut)">Toplam ₺170.200</div>
@@ -1237,6 +1430,8 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    </div><!-- /k-cols-main (muhasebe) -->
+    <aside class="k-rail">
     <div class="k-panel">
       <div class="kp-head"><i class="fa-solid fa-file-signature"></i><b>Hakediş</b></div>
       <div class="kp-body">
@@ -1262,6 +1457,7 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    </aside><!-- /k-rail (muhasebe) -->
   </div>
   </div><!-- /data-view="muhasebe" -->
 
@@ -1293,9 +1489,23 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
       <div class="ms-line"><i class="fa-solid fa-calendar-day"></i><div><b>Bugün 09:00</b> <span>· SAT-2026-016 kalıp kerestesi teslimi</span></div></div>
       <a class="ms-line" href="crm-panel-bildirimler.html"><i class="fa-solid fa-bell"></i><div><b>SAT-2026-012 termin tarihi yaklaşıyor</b> <span>· Elektrik kablosu NYY · termin 3 Tem</span></div></a>
     </div>
+    <!-- [D10 1.11] satinalma: SAT-018 gönderimi + MLZ-030 icmal hazırlığı log (LOG-0832/0816) ile senkron -->
+    <div class="me-works">
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-inbox"></i> Aldığım İşler <span class="mw-cnt">2 açık</span></div>
+        <div class="mw-row"><span class="mw-src atandi">Atandı</span><span class="mw-t">Malzeme onay süreci <span>· Murat Denizli</span></span><span class="mw-due">6 Tem</span></div>
+        <div class="mw-row"><span class="mw-src atandi">Atandı</span><span class="mw-t">SAT-2026-012 termin takibi <span>· elektrik kablosu NYY</span></span><span class="mw-due">yarın</span></div>
+      </div>
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-circle-check"></i> Yaptığım İşler <span class="mw-cnt">bu hafta 2</span></div>
+        <div class="mw-row"><span class="mw-ok"><i class="fa-solid fa-check"></i></span><span class="mw-t">SAT-2026-018 icmali GM onayına gönderildi <span>· ₺742.300</span></span><span class="mw-due">bugün 15:52</span></div>
+        <div class="mw-row"><span class="mw-ok"><i class="fa-solid fa-check"></i></span><span class="mw-t">MLZ-2026-030 icmal hazırlığı <span>· 5 tedarikçi teklifi</span></span><span class="mw-due">dün</span></div>
+      </div>
+    </div>
   </div>
 
   <div class="bottom-grid cols-4">
+    <div class="k-cols-main">
     <div class="k-panel">
       <div class="kp-head"><i class="fa-solid fa-cart-shopping"></i><b>Talep &amp; Sipariş</b></div>
       <div class="kp-body">
@@ -1359,6 +1569,8 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    </div><!-- /k-cols-main (satinalma) -->
+    <aside class="k-rail">
     <div class="k-panel">
       <div class="kp-head"><i class="fa-solid fa-calendar-day"></i><b>Ajanda</b></div>
       <div class="kp-body">
@@ -1369,6 +1581,7 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    </aside><!-- /k-rail (satinalma) -->
   </div>
   </div><!-- /data-view="satinalma" -->
 
@@ -1403,9 +1616,23 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
       <div class="ms-line"><i class="fa-solid fa-calendar-day"></i><div><span>Bugün ajandanızda İK olayı yok</span></div></div>
       <a class="ms-line" href="crm-panel-bildirimler.html"><i class="fa-solid fa-bell"></i><div><b>Bugün 2 yeni saha bildirimi paylaşıldı</b></div></a>
     </div>
+    <!-- [D10 1.11] ik: puantaj onayları log (LOG-0822/0804), YMK-004 sayımı şef view kanonuyla senkron -->
+    <div class="me-works">
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-inbox"></i> Aldığım İşler <span class="mw-cnt">2 açık</span></div>
+        <div class="mw-row"><span class="mw-src atandi">Atandı</span><span class="mw-t">Yeni personel oryantasyon planı <span>· Murat Denizli</span></span><span class="mw-due">12 Tem</span></div>
+        <div class="mw-row"><span class="mw-src atandi">Atandı</span><span class="mw-t">Süresi yaklaşan 6 evrakın yenileme takibi</span><span class="mw-due">8 Tem</span></div>
+      </div>
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-circle-check"></i> Yaptığım İşler <span class="mw-cnt">bugün 2</span></div>
+        <div class="mw-row"><span class="mw-ok"><i class="fa-solid fa-check"></i></span><span class="mw-t">1 Temmuz puantaj onayı <span>· 3 şantiye</span></span><span class="mw-due">bugün 08:05</span></div>
+        <div class="mw-row"><span class="mw-ok"><i class="fa-solid fa-check"></i></span><span class="mw-t">YMK-2026-004 yemekhane sayımı <span>· 223 öğün</span></span><span class="mw-due">bugün</span></div>
+      </div>
+    </div>
   </div>
 
   <div class="bottom-grid cols-4">
+    <div class="k-cols-main">
     <div class="k-panel">
       <div class="kp-head"><i class="fa-solid fa-inbox"></i><b>İK Kuyruğum</b></div>
       <div class="kp-body">
@@ -1460,6 +1687,8 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    </div><!-- /k-cols-main (ik) -->
+    <aside class="k-rail">
     <div class="k-panel">
       <div class="kp-head"><i class="fa-solid fa-folder-tree"></i><b>Kadro &amp; Evrak</b></div>
       <div class="kp-body">
@@ -1495,6 +1724,7 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    </aside><!-- /k-rail (ik) -->
   </div>
   </div><!-- /data-view="ik" -->
 
@@ -1526,9 +1756,22 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
       <div class="ms-line"><i class="fa-solid fa-calendar-day"></i><div><b>Bugün 16:00</b> <span>· haftalık saha koordinasyon toplantısı</span></div></div>
       <a class="ms-line" href="crm-panel-bildirimler.html"><i class="fa-solid fa-bell"></i><div><b>Bugün 2 yeni saha bildirimi paylaşıldı</b></div></a>
     </div>
+    <!-- [D10 1.11] saha: açık 2 + tamamlanan 1 crm-gorev data-actor="personel" satırlarıyla BİREBİR -->
+    <div class="me-works">
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-inbox"></i> Aldığım İşler <span class="mw-cnt">2 açık</span></div>
+        <div class="mw-row"><span class="mw-src atandi">Atandı</span><span class="mw-t">Puantaj defterini güncelle <span>· Hasan Demirci</span></span><span class="mw-due">3 Tem</span></div>
+        <div class="mw-row"><span class="mw-src atandi">Atandı</span><span class="mw-t">Kalıp kereste stok sayımı</span><span class="mw-due">7 Tem</span></div>
+      </div>
+      <div class="mw-col">
+        <div class="mw-head"><i class="fa-solid fa-circle-check"></i> Yaptığım İşler <span class="mw-cnt">bu hafta 1</span></div>
+        <div class="mw-row"><span class="mw-ok"><i class="fa-solid fa-check"></i></span><span class="mw-t">Kalıp kereste stok sayımı ön kontrolü</span><span class="mw-due">29 Haz</span></div>
+      </div>
+    </div>
   </div>
 
   <div class="bottom-grid cols-2">
+    <div class="k-cols-main">
     <div class="k-panel">
       <div class="kp-head"><i class="fa-solid fa-utensils"></i><b>Yemekhane (bugün)</b></div>
       <div class="kp-body">
@@ -1549,6 +1792,8 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    </div><!-- /k-cols-main (saha) -->
+    <aside class="k-rail">
     <div class="k-panel">
       <div class="kp-head"><i class="fa-solid fa-calendar-day"></i><b>Ajanda</b></div>
       <div class="kp-body">
@@ -1559,6 +1804,7 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    </aside><!-- /k-rail (saha) -->
   </div>
   </div><!-- /data-view="saha" -->
 
@@ -1675,6 +1921,26 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
     chip.textContent = lbl;
     chip.hidden = !lbl;
   }
+})();
+
+/* tema anahtarı — dark varsayılan, tercih localStorage'da kalıcı [D10 1.11 / K5] */
+(function(){
+  var btn = document.getElementById('kTheme');
+  if(!btn) return;
+  var ic = btn.querySelector('i');
+  function sync(){
+    var light = document.body.classList.contains('k-light');
+    /* koyu temada güneş göster (açığa geçir), açık temada ay */
+    ic.className = 'fa-solid ' + (light ? 'fa-moon' : 'fa-sun');
+    btn.title = light ? 'Koyu temaya geç' : 'Açık temaya geç';
+    btn.setAttribute('aria-label', btn.title);
+  }
+  btn.addEventListener('click', function(){
+    var light = document.body.classList.toggle('k-light');
+    try{ localStorage.setItem('gv_kiosk_theme', light ? 'light' : 'dark'); }catch(e){}
+    sync();
+  });
+  sync();
 })();
 
 /* canlı saat — gerçek zaman; tarih kanonik mock bağlamına sabit [MOCK-SİM] */
