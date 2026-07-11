@@ -266,6 +266,51 @@
        Vadi Konakları: programında (kaba inşaat +2 gün önde — santiye-detay hero ile senkron) ·
        Merkez Şantiye: programında (%86). Rapor kartı panel-raporlar hub'ında; şantiye listesi
        satır aksiyonunda rapor ikonu YALNIZ 3 aktif şantiyede (ölü link yasağı).
+   ─ DALGA 10 KANONİK TANIMLAR (2026-07-11 — firma profili + kiosk işler/light + işlem kayıtları + süpürme part-1):
+     · FİRMA PROFİLİ KANONİK ALAN SETİ (crm-ayarlar-firma.html 5 sekme; D13 gavia-firma-detay
+       "Genel" sekmesi BU seti BİREBİR kullanır — yapısal ikiz ŞARTI):
+         [Firma Kimliği]  logo alanı (div+background-image kuralı) · marka rengi (mint sabit,
+           Faz 1 tek accent) · kurumsal kimlik önizleme (evrak antet kartı)
+         [Firma Bilgileri] unvan "Yapıtaş İnşaat A.Ş." · vergi dairesi "Ümraniye VD" ·
+           vergi no "935 041 7768" · ticaret sicil no "İST-254891" · MERSİS "0935 0417 7680 0015" ·
+           NACE "41.20.02 — İkamet amaçlı olmayan binaların inşaatı" · kuruluş 2011 ·
+           merkez adres "İnşaatçılar Cad. No:12, Ümraniye / İstanbul" ·
+           şube "Gebze Depo & Atölye — Merkez Şantiye sahası" · tel 0216 000 00 00 ·
+           e-posta info@yapitas.example · IBAN listesi (3, tamamı kurgusal):
+             TR12 0006 2000 4560 0006 2988 91 · Garanti BBVA — Ana hesap
+             TR44 0004 6000 3288 8000 1594 07 · Akbank — Hakediş tahsilat
+             TR73 0001 0002 3812 3456 7850 02 · Ziraat — Maaş ödeme
+           yetkililer: Kemal Yapıcıoğlu (Firma Sahibi — 1. derece imza, sirküler NOT-2025/8817) ·
+             Murat Denizli (Genel Müdür — 2. derece imza, ₺500.000 üstü çift imza kuralı)
+         [Aidiyet & Tercihler] dil: Türkçe (K6 — gerçek alan, topbar çipi KALDIRILDI) ·
+           para birimi ₺ TRY · hafta başlangıcı Pazartesi · tarih biçimi GG.AA.YYYY ·
+           evrak önekleri tablosu (KSA/KSG/MLZ/SAT/TH/HKD/AVN/İZN/ISG/ZMT/ARC/PLX/KKR/LOG)
+         [Paket & Kullanım] plan-card (Profesyonel ₺14.900/ay) + limitler (18/25 kullanıcı ·
+           3/5 şantiye · 34/50 GB · 2.400/5.000 SMS) + fatura geçmişi (Tem/Haz ₺14.900, May ₺13.400)
+         [Modüller] mod-row listesi — moduller sayfasıyla senkron (7 açık + 3 kilitli üst-paket)
+     · SÜPÜRME PART-1 (1.13 / K6 / K7): topbar TR dil çipi KALDIRILDI (dil tercihi artık
+       Aidiyet & Tercihler'de gerçek alan); Faz 3 "Gavia Asistan" modül satırı TAMAMEN GİZLENDİ
+       (K7 — teaser bırakılmaz); "Çok Dil" modül satırı da kaldırıldı (K6 — çok-dil Faz 2
+       kapsamı DIŞI; modül sayacı 7/10). Hesap dropdown'u 3 GERÇEK sayfaya bağlandı:
+       crm-ayarlar-profil.html · crm-ayarlar-hesap.html · crm-ayarlar-bildirim-tercih.html —
+       SECTIONS.hesap (rail-DIŞI bölüm, tüm roller erişir; içerik aktif personadan okunur).
+       Kurgusal e-posta idiyomu: ad.soyad@yapitas.example (superadmin: deniz.aksoy@gavia.example).
+       satis kilidi + tenant-chip + modül toggle unlock D13'te süpürülür — bu dalgada DOKUNULMADI.
+     · İŞLEM KAYITLARI (1.12 — LOG-2026-#### serisi, yalnız superadmin+sahip):
+       crm-ayarlar-log.html; 32 kayıt / son 3 gün (bugün 14 · dün 10 · 30 Haz 8);
+       KPI: bugün 14 işlem · onay 5 · red/revize 2 · kritik değişiklik 3. Modül kırılımı:
+       kasa 7 · görev 6 · satınalma 4 · puantaj 5 · hakediş 4 · ayarlar 6. En üst kayıt
+       LOG-2026-0834 (firma sayfası önek örneğiyle senkron).
+       Kayıtlar mevcut kanonik belge no'larından DERLENİR (KSA-021 gönderim, KSG-008 tahsilat,
+       TH-014 muhasebe adımı, SAT-018 icmal seçimi, İZN-031 şef onayı, ISG-008 aksiyon…);
+       kritik değişiklik örneği: "Kemal Yapıcıoğlu kasa onay eşiğini ₺25.000→₺40.000 değiştirdi".
+     · KİOSK (1.11): "Benim İşlerim" şeridi 2 bölmeye genişledi — Aldığım İşler (kaynak rozeti
+       havuzdan/atandı + termin; HAVUZ 6 kaydına DOKUNULMAZ, havuzdan-alınmış örnekler havuz
+       listesi DIŞI eski claim'lerdir) ve Yaptığım İşler (bugün/bu hafta; tamamlananlar
+       crm-gorev.html Tamamlananlar kanonuyla tutarlı). Light mode K5: yalnız kiosk,
+       localStorage['gv_kiosk_theme'] ('dark' varsayılan | 'light'), body.k-light + sayfa-lokal
+       --k-* değişkenleri; tokens.css'e DOKUNULMADI. Desktop: 1200–1679px 12 kolon düzen
+       (sol 8 içerik + sağ 4 özet rayı, .k-rail); 1920 TV düzeni AYNEN korunur.
    ===================================================================== */
 (function(){
   'use strict';
@@ -278,8 +323,6 @@
     tenantPlan:'Profesyonel Paket',
     search:'Ara — şantiye, kişi, talep, hakediş…',
     notif:'Bildirimler',
-    langTip:'Çok dil desteği — Faz 2',
-    langSoon:'Çok dil desteği Faz 2 kapsamında eklenecek.',
     switchTenant:'Firma değiştir',
     phase2:'Faz 2',
     firmSettings:'Firma Ayarları',
@@ -353,7 +396,15 @@
       {ic:'fa-users-gear',     lbl:'Kullanıcılar',     href:'crm-ayarlar-kullanicilar.html', screen:'kullanicilar'},
       {ic:'fa-user-shield',    lbl:'Roller & Yetkiler',href:'crm-ayarlar-roller.html',       screen:'roller'},
       {ic:'fa-diagram-project',lbl:'Onay Akışları',    href:'crm-ayarlar-onay.html',         screen:'onay'},
-      {ic:'fa-puzzle-piece',   lbl:'Modüller',         href:'crm-ayarlar-moduller.html',     screen:'moduller'}
+      {ic:'fa-puzzle-piece',   lbl:'Modüller',         href:'crm-ayarlar-moduller.html',     screen:'moduller'},
+      {ic:'fa-clock-rotate-left', lbl:'İşlem Kayıtları', href:'crm-ayarlar-log.html',        screen:'log'}
+    ]},
+    /* [D10 1.13] hesap — rail-DIŞI kişisel bölüm (RAIL_ORDER'da YOK, tüm roller erişir);
+       hesap dropdown'undaki Profil / Hesap Ayarları / Bildirim Tercihleri buraya bağlanır */
+    hesap:{ ic:'fa-circle-user', eyebrow:'Hesabım', title:'Hesap', menu:[
+      {ic:'fa-user',           lbl:'Profil',              href:'crm-ayarlar-profil.html',          screen:'profil'},
+      {ic:'fa-sliders',        lbl:'Hesap Ayarları',      href:'crm-ayarlar-hesap.html',           screen:'hesap'},
+      {ic:'fa-bell',           lbl:'Bildirim Tercihleri', href:'crm-ayarlar-bildirim-tercih.html', screen:'bildirim'}
     ]},
     /* Faz 2 genişleme noktası — rail'de kilitli görünür, inşa edilmez */
     satis:{ ic:'fa-chart-line', eyebrow:'Satış', title:'Satış CRM', locked:true, menu:[] }
@@ -409,7 +460,8 @@
   /* ---- bölüm çöz + yetki guard'ı ---- */
   var sec = document.body.dataset.sec || 'panel';
   var screen = document.body.dataset.screen || null;
-  if(sec !== 'giris' && R.secs.indexOf(sec) === -1){ location.replace(R.land); return; }
+  /* 'hesap' rail-dışı kişisel bölüm — her rol kendi profiline erişir (D10 1.13) */
+  if(sec !== 'giris' && sec !== 'hesap' && R.secs.indexOf(sec) === -1){ location.replace(R.land); return; }
   /* ekran-seviyesi guard (scr) — kısıtlı bölümde liste-dışı ekran landing'e döner */
   function scrOk(secKey, m){
     var lim = R.scr && R.scr[secKey];
@@ -514,28 +566,19 @@
     }
   }
 
-  /* pasif dil çipi — tıklanabilir değil, bilgi verir */
+  /* topbar zili → bildirim merkezi (Dalga 3)
+     [D10 1.13/K6] TR dil çipi KALDIRILDI — dil tercihi Ayarlar > Firma > Aidiyet & Tercihler */
   var tools = document.querySelector('.gv-top-tools');
   if(tools){
-    var lang = document.createElement('button');
-    lang.type = 'button';
-    lang.className = 'gv-iconbtn gv-lang';
-    lang.setAttribute('data-tip', STR.langTip);
-    lang.setAttribute('aria-label', STR.langTip);
-    lang.textContent = 'TR';
-    lang.addEventListener('click', function(){ if(window.gvToast) gvToast(STR.langSoon, {type:'info'}); });
-    tools.insertBefore(lang, tools.firstChild);
-
-    /* topbar zili → bildirim merkezi (Dalga 3) */
     var bell = tools.querySelector('.gv-iconbtn[data-tip="'+STR.notif+'"]');
     if(bell){ bell.addEventListener('click', function(){ location.href = 'crm-panel-bildirimler.html'; }); }
   }
 
-  /* ---- hesap menüsü içeriği (ui.js tüketir) ---- */
+  /* ---- hesap menüsü içeriği (ui.js tüketir) — [D10 1.13] 3 gerçek sayfa ---- */
   window.GV_ACCOUNT_ITEMS = [
-    {ic:'fa-regular fa-user',  lbl:'Profil',         soon:true},
-    {ic:'fa-solid fa-sliders', lbl:'Hesap Ayarları', soon:true},
-    {ic:'fa-regular fa-bell',  lbl:'Bildirim Tercihleri', soon:true},
+    {ic:'fa-regular fa-user',  lbl:'Profil',              href:'crm-ayarlar-profil.html'},
+    {ic:'fa-solid fa-sliders', lbl:'Hesap Ayarları',      href:'crm-ayarlar-hesap.html'},
+    {ic:'fa-regular fa-bell',  lbl:'Bildirim Tercihleri', href:'crm-ayarlar-bildirim-tercih.html'},
     {div:true},
     {ic:'fa-solid fa-right-from-bracket', lbl:STR.logout, href:'index.html', danger:true}
   ];
