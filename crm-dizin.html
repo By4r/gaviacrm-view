@@ -150,14 +150,14 @@
     <div class="h-txt">
       <div class="eyebrow">Gaviaworks · Statik Prototip</div>
       <h1>Ekran Dizini</h1>
-      <p class="sub">Faz 1 operasyon çekirdeğinin tüm ekranları — modül modül, tıklanabilir.
+      <p class="sub">Operasyon çekirdeği + Satış CRM'in tüm ekranları — modül modül, tıklanabilir.
         Sıralama ürünün sol rail'iyle birebir; Raporlar ve Operasyon Ekranı panel bölümünün altında yaşar.</p>
     </div>
     <div class="h-side">
       <div class="stat-chips">
-        <span class="schip"><b>86</b> ekran</span>
-        <span class="schip"><b>11</b> modül grubu</span>
-        <span class="schip">Faz 1 <b>komplet</b></span>
+        <span class="schip"><b>100</b> ekran</span>
+        <span class="schip"><b>12</b> modül grubu</span>
+        <span class="schip">Satış CRM <b>canlı</b></span>
       </div>
       <a class="back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Giriş / rol seçimi</a>
     </div>
@@ -174,6 +174,7 @@
     <a class="rn" href="#satinalma"><i class="fa-solid fa-cart-flatbed"></i>Satın Alma</a>
     <a class="rn" href="#cari"><i class="fa-solid fa-address-book"></i>Cari</a>
     <a class="rn" href="#finans"><i class="fa-solid fa-file-signature"></i>Finans</a>
+    <a class="rn" href="#satis"><i class="fa-solid fa-chart-line"></i>Satış</a>
     <a class="rn" href="#ayarlar"><i class="fa-solid fa-sliders"></i>Ayarlar</a>
   </nav>
 
@@ -588,6 +589,72 @@
           <span class="r-top"><b>Yeni Sözleşme</b><em class="t t-form">form</em></span>
           <span class="r-desc">Kurum / taşeron sözleşme girişi — tutar, süre, onay durumu</span>
           <code class="r-file">crm-finans-sozlesme-form.html</code></a></li>
+      </ul>
+    </article>
+
+    <article class="cat" id="satis">
+      <div class="c-head">
+        <div class="c-ico"><i class="fa-solid fa-chart-line"></i></div>
+        <div class="c-tit"><b>Satış CRM</b><span>Satış · Faz 2</span></div>
+        <span class="c-cnt">14 ekran</span>
+      </div>
+      <ul class="rows">
+        <li><a class="row" href="crm-satis-musteriler.html">
+          <span class="r-top"><b>Müşteriler</b><em class="t">liste</em></span>
+          <span class="r-desc">MST-2026-### kayıtları — tür, kaynak ve temsilci filtreleri</span>
+          <code class="r-file">crm-satis-musteriler.html</code></a></li>
+        <li><a class="row" href="crm-satis-musteri-detay.html">
+          <span class="r-top"><b>Müşteri Kartı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">18 alanlı künye + görüşme notları, teklifler, cari çapraz link</span>
+          <code class="r-file">crm-satis-musteri-detay.html</code></a></li>
+        <li><a class="row" href="crm-satis-musteri-form.html">
+          <span class="r-top"><b>Yeni Müşteri</b><em class="t t-form">form</em></span>
+          <span class="r-desc">Tür, kaynak, temsilci ataması ve KVKK onayı</span>
+          <code class="r-file">crm-satis-musteri-form.html</code></a></li>
+        <li><a class="row" href="crm-satis-pipeline.html">
+          <span class="r-top"><b>Pipeline</b><em class="t">kanban</em></span>
+          <span class="r-desc">7 kolonlu satış hunisi + Sözleşme/Kazanıldı/Kaybedildi şeridi</span>
+          <code class="r-file">crm-satis-pipeline.html</code></a></li>
+        <li><a class="row" href="crm-satis-firsat-detay.html">
+          <span class="r-top"><b>Fırsat Detayı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">FRS aşama geçmişi zinciri + müşteri/birim/teklif ilişkileri</span>
+          <code class="r-file">crm-satis-firsat-detay.html</code></a></li>
+        <li><a class="row" href="crm-satis-birimler.html">
+          <span class="r-top"><b>Bağımsız Bölümler</b><em class="t">liste</em></span>
+          <span class="r-desc">196 birim — tablo ↔ blok/kat grid matrisi (VK · GE2 · KO)</span>
+          <code class="r-file">crm-satis-birimler.html</code></a></li>
+        <li><a class="row" href="crm-satis-birim-detay.html">
+          <span class="r-top"><b>Birim Kartı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">Künye, fiyat, süreç durumu; satılmışta teklif kilidi</span>
+          <code class="r-file">crm-satis-birim-detay.html</code></a></li>
+        <li><a class="row" href="crm-satis-teklifler.html">
+          <span class="r-top"><b>Teklifler</b><em class="t">liste</em></span>
+          <span class="r-desc">TKF kayıtları — indirim onay zinciri %0-3 / %3-7 / %7+</span>
+          <code class="r-file">crm-satis-teklifler.html</code></a></li>
+        <li><a class="row" href="crm-satis-teklif-detay.html">
+          <span class="r-top"><b>Teklif Detayı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">Ödeme planı taksit tablosu + imza alanlı çıktı önizleme</span>
+          <code class="r-file">crm-satis-teklif-detay.html</code></a></li>
+        <li><a class="row" href="crm-satis-teklif-form.html">
+          <span class="r-top"><b>Yeni Teklif</b><em class="t t-form">form</em></span>
+          <span class="r-desc">İndirim slider'ı — onay eşiği rozeti canlı değişir</span>
+          <code class="r-file">crm-satis-teklif-form.html</code></a></li>
+        <li><a class="row" href="crm-satis-sozlesmeler.html">
+          <span class="r-top"><b>Sözleşme &amp; Teslimat</b><em class="t">liste</em></span>
+          <span class="r-desc">SSZ sözleşmeleri + TSL teslim tutanakları, iki sekme</span>
+          <code class="r-file">crm-satis-sozlesmeler.html</code></a></li>
+        <li><a class="row" href="crm-satis-sozlesme-detay.html">
+          <span class="r-top"><b>Sözleşme Detayı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">Ödeme planı + 12 kalemli teslim checklist'i</span>
+          <code class="r-file">crm-satis-sozlesme-detay.html</code></a></li>
+        <li><a class="row" href="crm-satis-talepler.html">
+          <span class="r-top"><b>Satış Sonrası</b><em class="t">liste</em></span>
+          <span class="r-desc">SST talepleri — tür/durum filtreleri, Portal rozetleri</span>
+          <code class="r-file">crm-satis-talepler.html</code></a></li>
+        <li><a class="row" href="crm-satis-talep-detay.html">
+          <span class="r-top"><b>Talep Detayı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">Yorum akışı + durum geçmişi zinciri</span>
+          <code class="r-file">crm-satis-talep-detay.html</code></a></li>
       </ul>
     </article>
 
