@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Kredi Kartı — Gavia CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+<link rel="stylesheet" href="assets/css/ui.css">
+<style>
+/* ============ SAYFAYA ÖZEL — Kredi Kartı ============ */
+
+/* kart seçici şerit — tıklanınca tabloyu filtreler (bkz. script) */
+.kk-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:24px}
+.kk-card{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-sm);
+  padding:18px;text-align:left;font-family:inherit;cursor:pointer;transition:.22s var(--ease);
+}
+.kk-card:hover{transform:translateY(-2px);box-shadow:var(--sh-md)}
+.kk-card.is-on{border-color:var(--acc-ink);box-shadow:0 0 0 3px rgba(var(--acc-rgb),.14)}
+.kk-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.kk-mark{width:40px;height:40px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:15px;font-weight:800}
+.kk-id{min-width:0;line-height:1.35}
+.kk-bank{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kk-no{font-size:11.5px;color:var(--muted)}
+.kk-owner{font-size:12px;color:var(--muted);margin-bottom:10px}
+.kk-avail{font-size:12px;color:var(--ink-2);font-weight:600;margin-top:8px}
+.kk-ekstre{font-size:11px;color:var(--muted);margin-top:9px;padding-top:9px;border-top:1px solid var(--line);display:flex;align-items:center;gap:6px}
+
+/* "Tümü" seçeneği — kart karosuyla aynı sırada, sade */
+.kk-all{
+  background:var(--paper);border:1px dashed var(--line);border-radius:var(--r-lg);
+  display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+  font-family:inherit;font-size:13px;font-weight:700;color:var(--muted);transition:.22s var(--ease);
+}
+.kk-all:hover{border-color:var(--acc-ink);color:var(--acc-ink)}
+.kk-all.is-on{border-style:solid;border-color:var(--acc-ink);color:var(--acc-ink);background:rgba(var(--acc-rgb),.06)}
+
+/* hareket tablosu */
+#tblKK{min-width:940px}
+.col-kart{width:170px}
+.col-taksit{width:110px}
+.col-tutar{width:110px}
+.col-durum{width:150px}
+
+.rp-cell{display:flex;align-items:center;gap:12px;min-width:0}
+.rp-mark{width:38px;height:38px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:14px;background:rgba(var(--acc-rgb),.1);color:var(--acc-ink)}
+.rp-info{min-width:0;line-height:1.35}
+.rp-info b{display:block;font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap}
+.rp-info span{font-size:11.5px;color:var(--muted)}
+
+.kk-kart-cell{line-height:1.35}
+.kk-kart-cell b{display:block;font-size:13px;font-weight:700;color:var(--ink)}
+.kk-kart-cell span{font-size:11.5px;color:var(--muted)}
+
+.filter-bar.stack{flex-direction:column;align-items:stretch;gap:12px}
+.filter-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.filter-row .frow-lbl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);flex:none;min-width:64px}
+
+@media(max-width:980px){.kk-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){
+  .kk-strip{grid-template-columns:1fr}
+  .filter-row .frow-lbl{min-width:0;width:100%}
+}
+</style>
+</head>
+<body data-sec="operasyon" data-screen="kredikarti">
+<div class="gv-app">
+  <aside class="gv-rail" id="gvRail"></aside>
+  <nav class="gv-menu" id="gvMenu"></nav>
+  <div class="gv-divider" id="gvDivider" role="separator" aria-label="Menüyü daralt/genişlet"><span class="gv-grip"></span></div>
+  <div class="gv-overlay" id="gvOverlay"></div>
+
+  <header class="gv-top">
+    <button class="gv-burger" id="gvBurger" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+    <div class="gv-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Ara"></div>
+    <div class="gv-top-tools">
+      <button class="gv-iconbtn" data-tip="Bildirimler" aria-label="Bildirimler"><i class="fa-regular fa-bell"></i><span class="gb-dot"></span></button>
+      <div class="gv-me">
+        <div class="me-ava" id="gvAva">·</div>
+        <div class="me-id"><div class="me-name" id="gvName">—</div><div class="me-role" id="gvRole">—</div></div>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="gv-main">
+    <div class="gv-page-head">
+      <div>
+        <div class="ph-eyebrow">Günlük Kayıt</div>
+        <h1>Kredi Kartı</h1>
+        <div class="ph-sub">4 firma kartı · kart bazlı harcama, limit ve ekstre takibi</div>
+      </div>
+      <div class="ph-actions">
+        <a class="btn btn-acc btn-sm" href="crm-operasyon-kredikarti-form.html" data-view="olusturabilir" hidden><i class="fa-solid fa-plus"></i> Harcama Kaydı</a>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-ico"><i class="fa-solid fa-building-columns"></i></div>
+        <div><div class="kpi-num num" id="kpiLimitNum">₺525.000</div><div class="kpi-lbl">Toplam limit</div>
+        <div class="kpi-delta flat" id="kpiLimitSub"><i class="fa-solid fa-credit-card"></i> 4 firma kartı</div></div>
+      </div>
+      <div class="kpi-card warn">
+        <div class="kpi-ico"><i class="fa-solid fa-chart-pie"></i></div>
+        <div><div class="kpi-num num" id="kpiBorcNum">₺234.650</div><div class="kpi-lbl">Toplam dönem borcu</div>
+        <div class="kpi-delta down" id="kpiBorcSub"><i class="fa-solid fa-arrow-trend-up"></i> Limitin %45'i</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-wallet"></i></div>
+        <div><div class="kpi-num num" id="kpiKullanilabilirNum">₺290.350</div><div class="kpi-lbl">Kullanılabilir</div>
+        <div class="kpi-delta flat" id="kpiKullanilabilirSub"><i class="fa-solid fa-calendar"></i> Dönem sonu itibarıyla</div></div>
+      </div>
+      <div class="kpi-card warn">
+        <div class="kpi-ico"><i class="fa-solid fa-hourglass-half"></i></div>
+        <div><div class="kpi-num num">1</div><div class="kpi-lbl">Onay bekleyen</div>
+        <div class="kpi-delta down"><i class="fa-solid fa-clock"></i> ₺8.400 · muhasebe onayında</div></div>
+      </div>
+    </div>
+
+    <!-- kart seçici şerit — tıklanınca alttaki tablo filtrelenir -->
+    <div class="kk-strip" id="kkStrip"></div>
+
+    <div class="gv-card">
+      <div class="filter-bar stack">
+        <div class="filter-row">
+          <div class="fb-search" style="max-width:360px">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="kkSearch" placeholder="Kayıt no, banka veya satıcı ara">
+          </div>
+        </div>
+        <div class="filter-row">
+          <span class="frow-lbl">Banka</span>
+          <div class="chips" id="kkBankaChips">
+            <button class="chip is-on" data-banka="hepsi">Tümü <span class="ch-cnt">14</span></button>
+            <button class="chip" data-banka="garanti">Garanti BBVA <span class="ch-cnt">6</span></button>
+            <button class="chip" data-banka="akbank">Akbank <span class="ch-cnt">3</span></button>
+            <button class="chip" data-banka="is">İş Bankası <span class="ch-cnt">3</span></button>
+            <button class="chip" data-banka="ykb">Yapı Kredi <span class="ch-cnt">2</span></button>
+          </div>
+        </div>
+        <div class="filter-row">
+          <span class="frow-lbl">Durum</span>
+          <div class="chips" id="kkDurumChips">
+            <button class="chip is-on" data-durum="hepsi">Tümü</button>
+            <button class="chip" data-durum="ok">Kayıtlı</button>
+            <button class="chip" data-durum="onaylandi">Onaylandı</button>
+            <button class="chip" data-durum="bekliyor">Onay Bekliyor</button>
+          </div>
+        </div>
+      </div>
+      <div class="gc-body flush">
+        <table class="gtable" id="tblKK">
+          <thead>
+            <tr>
+              <th>Kayıt</th>
+              <th class="col-kart">Kart</th>
+              <th>Firma / Satıcı</th>
+              <th>Açıklama</th>
+              <th class="col-taksit">Taksit</th>
+              <th class="num col-tutar">Tutar</th>
+              <th class="col-durum">Durum</th>
+            </tr>
+          </thead>
+          <tbody id="kkBody"></tbody>
+        </table>
+        <div class="gv-empty" id="kkEmpty" hidden>
+          <div class="ge-ico"><i class="fa-solid fa-building-columns"></i></div>
+          <h4>Eşleşen hareket yok</h4>
+          <p>Aramayı temizleyin veya farklı bir kart/durum filtresi seçin.</p>
+        </div>
+      </div>
+      <div class="gc-foot"><span id="kkFoot">—</span></div>
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/ui.js"></script>
+<script>
+(function(){
+  if(!window.GV) return;
+
+  /* ---- mock veri — shell.js DALGA 8 kanonik bloğu BİREBİR (Kredi Kartı) ----
+     4 firma kartı; dönem borcu görünür hareketlerden BÜYÜK (dönem öncesi devir borcu
+     var sayılır — madde D8: "kuruş kuruş şart değil"). Garanti'nin hem limit doluluğu
+     (%78, warn) hem görünür hareket toplamı en yüksek — kabaca tutarlı. */
+  var KARTLAR = {
+    garanti: {banka:'Garanti BBVA', no:'4512', sahip:'Hasan Demirci',        limit:150000, borc:117400, ekstre:"Ayın 8'i",  mark:'G', bg:'rgba(var(--acc-rgb),.12)', fg:'var(--acc-ink)'},
+    akbank:  {banka:'Akbank',       no:'7789', sahip:'Baran Yıldız',         limit:100000, borc:41300,  ekstre:"Ayın 15'i", mark:'A', bg:'var(--info-tint)', fg:'var(--info)'},
+    is:      {banka:'İş Bankası',   no:'2301', sahip:'Merkez (Nesrin Aydın)',limit:200000, borc:63800,  ekstre:"Ayın 20'si", mark:'İ', bg:'var(--ok-tint)', fg:'var(--ok)'},
+    ykb:     {banka:'Yapı Kredi',   no:'9944', sahip:'Elif Sarıkaya',        limit:75000,  borc:12150,  ekstre:"Ayın 25'i", mark:'Y', bg:'var(--bg)', fg:'var(--ink-2)'}
+  };
+  var KART_ORDER = ['garanti','akbank','is','ykb'];
+
+  var HAREKET = [
+    {no:'KKR-2026-014', tarih:'2 Temmuz 2026',    banka:'garanti', firma:'Otel — Liman şantiye ekibi konaklama', desc:'Konaklama (3 gece, 4 kişi)',   taksit:'tek', tutar:8400, durum:'bekliyor'},
+    {no:'KKR-2026-013', tarih:'1 Temmuz 2026',     banka:'akbank',  firma:'Petrol Ofisi',           desc:'Akaryakıt',                    taksit:'tek', tutar:2850, durum:'ok'},
+    {no:'KKR-2026-012', tarih:'30 Haziran 2026',   banka:'garanti', firma:'Anadolu Hırdavat',        desc:'Hırdavat malzeme',              taksit:3,     tutar:6200, durum:'onaylandi'},
+    {no:'KKR-2026-011', tarih:'29 Haziran 2026',   banka:'is',      firma:'Ofix',                    desc:'Ofis sarf malzemesi',           taksit:'tek', tutar:1180, durum:'onaylandi'},
+    {no:'KKR-2026-010', tarih:'28 Haziran 2026',   banka:'ykb',     firma:'Petrol Ofisi',            desc:'Akaryakıt',                    taksit:'tek', tutar:1950, durum:'ok'},
+    {no:'KKR-2026-009', tarih:'27 Haziran 2026',   banka:'garanti', firma:'Lastik Center',           desc:'Araç lastik değişimi',          taksit:3,     tutar:9600, durum:'onaylandi'},
+    {no:'KKR-2026-008', tarih:'26 Haziran 2026',   banka:'akbank',  firma:'Hepsiburada',             desc:'E-ticaret sarf malzeme',        taksit:'tek', tutar:740,  durum:'ok'},
+    {no:'KKR-2026-007', tarih:'25 Haziran 2026',   banka:'garanti', firma:'Petrol Ofisi',            desc:'Akaryakıt',                    taksit:'tek', tutar:3100, durum:'onaylandi'},
+    {no:'KKR-2026-006', tarih:'24 Haziran 2026',   banka:'is',      firma:'Anadolu Hırdavat',        desc:'Hırdavat malzeme',              taksit:'tek', tutar:2450, durum:'onaylandi'},
+    {no:'KKR-2026-005', tarih:'23 Haziran 2026',   banka:'ykb',     firma:'Ofix',                    desc:'Ofis sarf malzemesi',           taksit:'tek', tutar:890,  durum:'ok'},
+    {no:'KKR-2026-004', tarih:'22 Haziran 2026',   banka:'garanti', firma:'Petrol Ofisi',            desc:'Akaryakıt',                    taksit:'tek', tutar:3400, durum:'onaylandi'},
+    {no:'KKR-2026-003', tarih:'21 Haziran 2026',   banka:'akbank',  firma:'Lastik Center',           desc:'Araç lastik değişimi',          taksit:3,     tutar:7800, durum:'onaylandi'},
+    {no:'KKR-2026-002', tarih:'19 Haziran 2026',   banka:'is',      firma:'Petrol Ofisi',            desc:'Akaryakıt',                    taksit:'tek', tutar:2900, durum:'onaylandi'},
+    {no:'KKR-2026-001', tarih:'18 Haziran 2026',   banka:'garanti', firma:'Anadolu Hırdavat',        desc:'Hırdavat malzeme',              taksit:'tek', tutar:1650, durum:'onaylandi'}
+  ];
+  var DURUM_LBL = {ok:'Kayıtlı', onaylandi:'Onaylandı', bekliyor:null};
+
+  function fmtTL(n){ return '₺' + n.toLocaleString('tr-TR'); }
+  function pct(borc, limit){ return Math.round(borc / limit * 100); }
+
+  /* ---- kart şeridi render ---- */
+  var strip = document.getElementById('kkStrip');
+  var sh = '';
+  KART_ORDER.forEach(function(key){
+    var K = KARTLAR[key];
+    var p = pct(K.borc, K.limit);
+    var barCls = p >= 70 ? 'warn' : '';
+    var avail = K.limit - K.borc;
+    sh += '<button type="button" class="kk-card" data-banka="'+key+'">'
+        +   '<div class="kk-top"><div class="kk-mark" style="background:'+K.bg+';color:'+K.fg+'">'+K.mark+'</div>'
+        +   '<div class="kk-id"><div class="kk-bank">'+K.banka+'</div><span class="kk-no">•'+K.no+'</span></div></div>'
+        +   '<div class="kk-owner">'+K.sahip+'</div>'
+        +   '<div class="gbar"><div class="gbar-track"><div class="gbar-fill '+barCls+'" style="width:'+p+'%"></div></div><span class="gbar-val">%'+p+'</span></div>'
+        +   '<div class="kk-avail">Kullanılabilir '+fmtTL(avail)+'</div>'
+        +   '<div class="kk-ekstre"><i class="fa-regular fa-calendar"></i> Ekstre kesim: '+K.ekstre+'</div>'
+        + '</button>';
+  });
+  strip.innerHTML = sh;
+  var allBtn = document.createElement('button');
+  allBtn.type = 'button'; allBtn.className = 'kk-all is-on'; allBtn.setAttribute('data-banka','hepsi');
+  allBtn.innerHTML = '<i class="fa-solid fa-layer-group"></i> Tümünü Göster';
+  strip.appendChild(allBtn);
+
+  /* ---- hareket tablosu render ---- */
+  var body = document.getElementById('kkBody');
+  var html = '';
+  HAREKET.forEach(function(h){
+    var K = KARTLAR[h.banka];
+    var durLbl = h.durum === 'bekliyor' ? '' : DURUM_LBL[h.durum];
+    var durHtml = h.durum === 'bekliyor'
+      ? gvChainBadge('bekliyor').replace('Onay bekliyor', 'Muhasebe onayında')
+      : '<span class="gstat ok">'+durLbl+'</span>';
+    var taksitHtml = h.taksit === 'tek'
+      ? '<span class="gtag">Tek Çekim</span>'
+      : '<span class="gtag" style="background:var(--info-tint);color:var(--info);border-color:transparent">'+h.taksit+' Taksit</span>';
+    html += '<tr data-banka="'+h.banka+'" data-durum="'+h.durum+'">';
+    html += '<td><div class="rp-cell"><div class="rp-mark"><i class="fa-solid fa-receipt"></i></div>'
+          + '<div class="rp-info"><b>'+h.no+'</b><span>'+h.tarih+'</span></div></div></td>';
+    html += '<td><div class="kk-kart-cell"><b>'+K.banka+'</b><span>•'+K.no+'</span></div></td>';
+    html += '<td>'+h.firma+'</td>';
+    html += '<td>'+h.desc+'</td>';
+    html += '<td>'+taksitHtml+'</td>';
+    html += '<td class="num t-strong">'+fmtTL(h.tutar)+'</td>';
+    html += '<td>'+durHtml+'</td>';
+    html += '</tr>';
+  });
+  body.innerHTML = html;
+
+  /* Harcama Kaydı — oluşturabilen roller */
+  var OLUSTURABILIR = ['superadmin','sahip','yonetim','muhasebe','sef'];
+  document.querySelectorAll('[data-view="olusturabilir"]').forEach(function(el){
+    el.hidden = OLUSTURABILIR.indexOf(GV.role) === -1;
+  });
+
+  /* şef yalnız kendi kartını (Garanti BBVA) görür — kart şeridi + tablo kalıcı budanır.
+     KPI'lar da firma geneli DEĞİL, kendi kartına iner (kasa.html sef KPI-override idiyomu). */
+  if(GV.role === 'sef'){
+    strip.querySelectorAll('.kk-card').forEach(function(c){
+      if(c.getAttribute('data-banka') !== 'garanti') c.remove();
+    });
+    var kkAll = strip.querySelector('.kk-all');
+    if(kkAll) kkAll.remove();   /* gösterecek başka kart yok — "Tümünü Göster" anlamsız */
+    document.querySelectorAll('#tblKK tbody tr').forEach(function(tr){
+      if(tr.getAttribute('data-banka') !== 'garanti') tr.remove();
+    });
+    document.querySelectorAll('#kkBankaChips .chip').forEach(function(ch){
+      var b = ch.getAttribute('data-banka');
+      if(b !== 'hepsi' && b !== 'garanti') ch.remove();
+    });
+    /* "Tümü" sayacı da budanmış (Garanti-only) toplama iner — 14 firma geneli kalmaz */
+    var hepsiCnt = document.querySelector('#kkBankaChips [data-banka="hepsi"] .ch-cnt');
+    if(hepsiCnt) hepsiCnt.textContent = document.querySelectorAll('#tblKK tbody tr').length;
+    var G = KARTLAR.garanti, gp = pct(G.borc, G.limit), gAvail = G.limit - G.borc;
+    document.getElementById('kpiLimitNum').textContent = fmtTL(G.limit);
+    document.getElementById('kpiLimitSub').innerHTML = '<i class="fa-solid fa-credit-card"></i> Garanti BBVA •'+G.no;
+    document.getElementById('kpiBorcNum').textContent = fmtTL(G.borc);
+    document.getElementById('kpiBorcSub').innerHTML = '<i class="fa-solid fa-arrow-trend-up"></i> Limitin %'+gp+"'i";
+    document.getElementById('kpiKullanilabilirNum').textContent = fmtTL(gAvail);
+    document.getElementById('kpiKullanilabilirSub').innerHTML = '<i class="fa-solid fa-calendar"></i> Dönem sonu itibarıyla';
+  }
+
+  /* rol budamasından SONRA ölçülür — sef görünümünde toplam da 6'ya iner (14 değil) */
+  var TOPLAM_KAYIT = document.querySelectorAll('#tblKK tbody tr').length;
+
+  /* ---- üç boyutlu filtre (Banka + Durum + serbest metin) — kart şeridi ve Banka
+     chip'leri AYNI curBanka durumunu sürer, ikisi görsel olarak senkron tutulur ---- */
+  var curBanka = 'hepsi', curDurum = 'hepsi';
+  function syncBankaUI(){
+    strip.querySelectorAll('.kk-card,.kk-all').forEach(function(el){
+      el.classList.toggle('is-on', el.getAttribute('data-banka') === curBanka);
+    });
+    document.querySelectorAll('#kkBankaChips .chip').forEach(function(ch){
+      ch.classList.toggle('is-on', ch.getAttribute('data-banka') === curBanka);
+    });
+  }
+  function applyFilter(){
+    var term = document.getElementById('kkSearch').value.trim().toLocaleLowerCase('tr');
+    var shown = 0;
+    document.querySelectorAll('#tblKK tbody tr').forEach(function(tr){
+      var okBanka = curBanka === 'hepsi' || tr.getAttribute('data-banka') === curBanka;
+      var okDurum = curDurum === 'hepsi' || tr.getAttribute('data-durum') === curDurum;
+      var okTerm = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
+      var show = okBanka && okDurum && okTerm;
+      tr.hidden = !show;
+      if(show) shown++;
+    });
+    document.getElementById('kkEmpty').hidden = shown !== 0;
+    document.getElementById('kkFoot').textContent = shown + ' hareket gösteriliyor · toplam ' + TOPLAM_KAYIT + ' kayıt';
+  }
+  strip.addEventListener('click', function(e){
+    var el = e.target.closest('[data-banka]'); if(!el) return;
+    curBanka = el.getAttribute('data-banka');
+    syncBankaUI();
+    applyFilter();
+  });
+  document.getElementById('kkBankaChips').addEventListener('click', function(e){
+    var ch = e.target.closest('.chip[data-banka]'); if(!ch) return;
+    curBanka = ch.getAttribute('data-banka');
+    syncBankaUI();
+    applyFilter();
+  });
+  document.getElementById('kkDurumChips').addEventListener('click', function(e){
+    var ch = e.target.closest('.chip[data-durum]'); if(!ch) return;
+    this.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('is-on'); });
+    ch.classList.add('is-on');
+    curDurum = ch.getAttribute('data-durum');
+    applyFilter();
+  });
+  document.getElementById('kkSearch').addEventListener('input', applyFilter);
+
+  applyFilter();
+})();
+</script>
+</body>
+</html>

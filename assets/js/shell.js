@@ -145,6 +145,50 @@
      · Yemekhane birim maliyet (madde 11 — mock, KDV dahil): kahvaltı ₺50 · öğle ₺90 ·
        akşam ₺75. 2 Tem günlük toplam: 84×50 + 93×90 + 46×75 = ₺16.020; taşeron payı
        58 öğün = ₺4.185 (ayrı gösterilir; firmaya yansıtma/faturalama Faz 2 — UI notu).
+   ─ DALGA 8 KANONİK TANIMLAR (2026-07-11 — kasa defteri + havuz + Pluxee + kredi kartı):
+     · KASA DEFTERİ (şantiye-bazlı; dönem = yarım ay pencereleri; cari dönem 01–15 Tem 2026):
+         Vadi Konakları : devir ₺48.250 · giriş ₺186.400 · çıkış ₺152.730 · MEVCUT ₺81.920
+           (18 hareket: KSG-007/008 giriş + 16 gider — KSA-021 dahil, KSA-023..037 yeni)
+         Liman Lojistik : devir ₺31.750 · giriş ₺0       · çıkış ₺13.230  · MEVCUT ₺18.520
+           (KSA-020 ₺9.750 + KSA-038 ₺3.480)
+         Merkez Şantiye : devir ₺12.860 · giriş ₺60.000  · çıkış ₺8.170   · MEVCUT ₺64.690
+           (KSG-006 kanonik + KSA-039 ₺5.490 + KSA-040 ₺2.680)
+         Kule Ofis B Blok: kasa KAPALI (proje teslim 03/2026, kapanış bakiyesi ₺0)
+         Göl Evleri 2.Etap: kasa AÇILMADI (planlama)
+         TOPLAM KASA BAKİYESİ: 81.920+18.520+64.690 = ₺165.130
+       KSG serisi devamı: KSG-2026-007 · 1 Tem · Giriş · Genel merkez beslemesi → Vadi ₺120.000
+                          KSG-2026-008 · 2 Tem · Tahsilat · Körfez GYO ek iş bedeli → Vadi ₺66.400
+       KSA 023..032 = 1 Tem Vadi gün-sonu toplu girişi (2 Tem sabahı işlendi — geriye tarihli
+       kayıt idiyomu); 033..037 = 2 Tem Vadi; 038 Liman; 039 (1 Tem, geriye tarihli)+040 Merkez.
+       Çıktı ekranı (crm-operasyon-kasa-cikti.html) KASA_FORMATI düzenini birebir verir;
+       imza dörtlüsü: Hasan Demirci (Kasa Tutan/Şantiye Şefi) · Nesrin Aydın (Kontrol/Muhasebe) ·
+       Elif Sarıkaya (Teknik Ofis/Teknik Müdür) · Murat Denizli (Onaylayan/Genel Müd.)
+     · GÖREV HAVUZU (Talep 1 + Not A): atanmadan kaydedilen görev ortak havuza düşer;
+       "Üzerime Al" = localStorage(gv_gorev_claims) simülasyonu. KANONİK HAVUZ (6 görev,
+       tümünü Kemal Yapıcıoğlu bıraktı; panel "Bekleyen Görevler" blokları AYNI listeyi kullanır):
+         1 Liman Lojistik çevre aydınlatma keşfi        · Liman   · orta   · termin 8 Tem · 2 gündür
+         2 Kule Ofis kesin hesap dosyası kontrolü        · Kule    · yüksek · termin 6 Tem · 1 gündür
+         3 Vadi Konakları numune daire fotoğraf çekimi   · Vadi    · düşük  · termin 10 Tem · bugün
+         4 Merkez depo yıl ortası sayım planı            · Merkez  · orta   · termin 9 Tem · 1 gündür
+         5 Göl Evleri 2. Etap ruhsat evrak listesi       · Göl E.  · yüksek · termin 1 Tem GEÇTİ (geciken) · 3 gündür
+         6 Şantiye araç takip çizelgesi güncelleme       · Merkez  · düşük  · termin 12 Tem · bugün
+       Saha personeli (Ali Vural) havuzda YALNIZ kendi şantiyesini (Vadi → #3) görür.
+     · PLUXEE KART (Talep 3 — kasa mantığı, kart bazlı; PLX-2026-### serisi):
+       12 aktif kart = kanonik saha kadrosu (Vadi 6: Vural/Sönmez/Kılıç/Doğan/Erdem/Şimşek ·
+       Liman 4: Aslan/Güneş/Çetin/Polat · Merkez 2: Yaman/Kurt) + 1 pasif (Sadık Öz — kayıp).
+       Aylık toplu yükleme 1 Tem: 12 × ₺1.250 = ₺15.000 (PLX-2026-041 toplu kayıt).
+       Toplam yüklü bakiye ₺11.240 · Tem yükleme ₺15.000 · Tem harcama ₺3.760.
+     · KREDİ KARTI (Talep 4 — kasa mantığı + banka seçimi; KKR-2026-### serisi):
+         Garanti BBVA  •4512 · Hasan Demirci · limit ₺150.000 · dönem borcu ₺117.400 (%78 — warn)
+         Akbank        •7789 · Baran Yıldız  · limit ₺100.000 · dönem borcu ₺41.300
+         İş Bankası    •2301 · Merkez (Nesrin Aydın) · limit ₺200.000 · dönem borcu ₺63.800
+         Yapı Kredi    •9944 · Elif Sarıkaya · limit ₺75.000  · dönem borcu ₺12.150
+       14 hareket (akaryakıt, hırdavat, e-ticaret sarf, konaklama); KKR-2026-014 muhasebe
+       onayında. Ekstre kesim: Garanti 8'i · Akbank 15'i · İş 20'si · YKB 25'i.
+     · Rol notları (D8): İK operasyon scr += kasa, pluxee (salt-okunur içerik idiyomu —
+       oluştur butonları OLUSTURABILIR dizileriyle zaten gizli). Kredi kartı sayfası
+       sef'e KENDİ kartını gösterir (sayfa-lokal filtre, kasa sef idiyomu).
+       Saha personeli operasyon bölümünü hiç görmez (secs) — kasa/pluxee/KK otomatik kapalı.
    ===================================================================== */
 (function(){
   'use strict';
@@ -189,6 +233,7 @@
     ]},
     gorev:{ ic:'fa-list-check', eyebrow:'İş Takibi', title:'Görevler', menu:[
       /* tek liste + görünüm: sayfa ?f= paramını shell.js'ten ÖNCE body[data-screen]'e yazar */
+      {ic:'fa-layer-group',    lbl:'Havuz',            href:'crm-gorev.html?f=havuz',    screen:'havuz', cnt:'6'},
       {ic:'fa-inbox',          lbl:'Bana Verilenler',  href:'crm-gorev.html?f=bana',     screen:'bana', cnt:'7'},
       {ic:'fa-paper-plane',    lbl:'Verdiklerim',      href:'crm-gorev.html?f=verdigim', screen:'verdigim'},
       {ic:'fa-triangle-exclamation', lbl:'Gecikenler', href:'crm-gorev.html?f=geciken',  screen:'geciken', cnt:'3'},
@@ -202,7 +247,9 @@
       {ic:'fa-folder-open',    lbl:'Özlük & Evrak',    href:'crm-personel-ozluk.html', screen:'ozluk'}
     ]},
     operasyon:{ ic:'fa-clipboard-list', eyebrow:'Günlük Kayıt', title:'Saha Kayıtları', menu:[
-      {ic:'fa-cash-register',  lbl:'Kasa Raporu',      href:'crm-operasyon-kasa.html',    screen:'kasa'},
+      {ic:'fa-cash-register',  lbl:'Kasa Yönetimi',    href:'crm-operasyon-kasa.html',    screen:'kasa'},
+      {ic:'fa-credit-card',    lbl:'Pluxee Kart',      href:'crm-operasyon-pluxee.html',  screen:'pluxee'},
+      {ic:'fa-building-columns',lbl:'Kredi Kartı',     href:'crm-operasyon-kredikarti.html', screen:'kredikarti'},
       {ic:'fa-user-clock',     lbl:'Puantaj',          href:'crm-operasyon-puantaj.html', screen:'puantaj'},
       {ic:'fa-truck-pickup',   lbl:'Makine Puantajı',  href:'crm-operasyon-makine.html',    screen:'makine'},
       {ic:'fa-utensils',       lbl:'Yemekhane',        href:'crm-operasyon-yemekhane.html', screen:'yemekhane'},
@@ -255,7 +302,7 @@
                  scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } },
     ik:        { name:'Seda Karaca',      role:'İK Uzmanı',                 ini:'SK',
                  secs:['panel','personel','gorev','operasyon'], land:'crm-panel.html',
-                 scr:{ operasyon:['puantaj','demirbas'] } },
+                 scr:{ operasyon:['kasa','pluxee','puantaj','demirbas'] } },
     personel:  { name:'Ali Vural',        role:'Saha Personeli',            ini:'AV',
                  secs:['panel','gorev'], land:'crm-panel.html',
                  scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } }
@@ -273,6 +320,13 @@
   else { try{role = localStorage.getItem('gv_crm_role');}catch(e){} }
   if(!ROLES[role]) role = 'superadmin';
   var R = ROLES[role];
+
+  /* D8: saha personeli havuzda yalnız kendi şantiyesini (Vadi → 1 görev) görür —
+     menü sayacı sayfadaki budanmış satır sayısıyla tutarlı kalır */
+  if(role === 'personel'){
+    var _hv = SECTIONS.gorev.menu.filter(function(m){ return m.screen === 'havuz'; })[0];
+    if(_hv) _hv.cnt = '1';
+  }
 
   /* ---- bölüm çöz + yetki guard'ı ---- */
   var sec = document.body.dataset.sec || 'panel';

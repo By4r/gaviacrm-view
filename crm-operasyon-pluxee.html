@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Pluxee Kart — Gavia CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+<link rel="stylesheet" href="assets/css/ui.css">
+<style>
+/* ============ SAYFAYA ÖZEL — Pluxee Kart ============ */
+
+/* kart ızgarası — KPI altı, tablo üstü (Dalga 8, kasa/demirbas mark idiyomunun kart-karo uyarlaması) */
+.plx-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:24px}
+.plx-card{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-sm);
+  padding:16px 18px;transition:.22s var(--ease);
+}
+.plx-card:hover{transform:translateY(-2px);box-shadow:var(--sh-md)}
+.plx-card.is-off{opacity:.6}
+.plx-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px}
+.plx-who{min-width:0;line-height:1.35}
+.plx-name{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plx-no{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.plx-mark{width:34px;height:34px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:13px;background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)}
+.plx-card.is-off .plx-mark{background:var(--bg);color:var(--muted)}
+.plx-santiye{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:10px}
+.plx-bakiye{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+.plx-bakiye-lbl{font-size:11px;color:var(--muted);margin-top:3px}
+.plx-foot{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted)}
+@media(max-width:980px){.plx-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.plx-grid{grid-template-columns:1fr}}
+
+/* hareket tablosu */
+#tblPluxee{min-width:920px}
+.col-santiye{width:130px}
+.col-tur{width:110px}
+.col-tutar{width:110px}
+.col-durum{width:150px}
+
+.rp-cell{display:flex;align-items:center;gap:12px;min-width:0}
+.rp-mark{width:38px;height:38px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:14px;background:var(--ok-tint);color:var(--ok)}
+.rp-info{min-width:0;line-height:1.35}
+.rp-info b{display:block;font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap}
+.rp-info span{font-size:11.5px;color:var(--muted)}
+
+.plx-kart-cell{line-height:1.35}
+.plx-kart-cell b{display:block;font-size:13.5px;font-weight:700;color:var(--ink)}
+.plx-kart-cell span{font-size:11.5px;color:var(--muted)}
+
+.filter-bar.stack{flex-direction:column;align-items:stretch;gap:12px}
+.filter-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.filter-row .frow-lbl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);flex:none;min-width:64px}
+
+@media(max-width:640px){
+  .filter-row .frow-lbl{min-width:0;width:100%}
+}
+</style>
+</head>
+<body data-sec="operasyon" data-screen="pluxee">
+<div class="gv-app">
+  <aside class="gv-rail" id="gvRail"></aside>
+  <nav class="gv-menu" id="gvMenu"></nav>
+  <div class="gv-divider" id="gvDivider" role="separator" aria-label="Menüyü daralt/genişlet"><span class="gv-grip"></span></div>
+  <div class="gv-overlay" id="gvOverlay"></div>
+
+  <header class="gv-top">
+    <button class="gv-burger" id="gvBurger" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+    <div class="gv-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Ara"></div>
+    <div class="gv-top-tools">
+      <button class="gv-iconbtn" data-tip="Bildirimler" aria-label="Bildirimler"><i class="fa-regular fa-bell"></i><span class="gb-dot"></span></button>
+      <div class="gv-me">
+        <div class="me-ava" id="gvAva">·</div>
+        <div class="me-id"><div class="me-name" id="gvName">—</div><div class="me-role" id="gvRole">—</div></div>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="gv-main">
+    <div class="gv-page-head">
+      <div>
+        <div class="ph-eyebrow">Günlük Kayıt</div>
+        <h1>Pluxee Kart</h1>
+        <div class="ph-sub">13 kart · personel yemek kartı yükleme ve harcama takibi</div>
+      </div>
+      <div class="ph-actions">
+        <a class="btn btn-ghost btn-sm" href="#" data-export="Pluxee hareketleri"><i class="fa-solid fa-download"></i> Dışa Aktar</a>
+        <a class="btn btn-acc btn-sm" href="crm-operasyon-pluxee-form.html" data-view="olusturabilir" hidden><i class="fa-solid fa-plus"></i> Yükleme / Harcama Kaydı</a>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card" style="--kpi-ok:1">
+        <div class="kpi-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-wallet"></i></div>
+        <div><div class="kpi-num num">₺11.240</div><div class="kpi-lbl">Toplam yüklü bakiye</div>
+        <div class="kpi-delta flat"><i class="fa-solid fa-credit-card"></i> 12 aktif kart · 2 Temmuz 2026</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-ico" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
+        <div><div class="kpi-num num">₺15.000</div><div class="kpi-lbl">Temmuz yükleme</div>
+        <div class="kpi-delta flat"><i class="fa-solid fa-calendar"></i> 1 toplu kayıt · 12 kart × ₺1.250</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-ico"><i class="fa-solid fa-cart-shopping"></i></div>
+        <div><div class="kpi-num num">₺3.760</div><div class="kpi-lbl">Temmuz harcama</div>
+        <div class="kpi-delta flat"><i class="fa-solid fa-calendar"></i> 10 işlem · 1–2 Temmuz</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-ico"><i class="fa-solid fa-id-card"></i></div>
+        <div><div class="kpi-num num">12</div><div class="kpi-lbl">Aktif kart</div>
+        <div class="kpi-delta flat"><i class="fa-solid fa-triangle-exclamation"></i> +1 pasif (kayıp bildirimi)</div></div>
+      </div>
+    </div>
+
+    <!-- kart ızgarası — 12 aktif + 1 pasif, statik özet (filtrelerden bağımsız) -->
+    <div class="plx-grid" id="plxGrid"></div>
+
+    <div class="gv-card">
+      <div class="filter-bar stack">
+        <div class="filter-row">
+          <div class="fb-search" style="max-width:360px">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="plxSearch" placeholder="Kart no, personel veya açıklama ara">
+          </div>
+        </div>
+        <div class="filter-row">
+          <span class="frow-lbl">Tür</span>
+          <div class="chips" id="plxTurChips">
+            <button class="chip is-on" data-tur="hepsi">Tümü <span class="ch-cnt">13</span></button>
+            <button class="chip" data-tur="yukleme">Yükleme <span class="ch-cnt">1</span></button>
+            <button class="chip" data-tur="harcama">Harcama <span class="ch-cnt">11</span></button>
+          </div>
+        </div>
+        <div class="filter-row">
+          <span class="frow-lbl">Şantiye</span>
+          <div class="chips" id="plxSantiyeChips">
+            <button class="chip is-on" data-santiye="hepsi">Tümü <span class="ch-cnt">13</span></button>
+            <button class="chip" data-santiye="vadi">Vadi <span class="ch-cnt">5</span></button>
+            <button class="chip" data-santiye="liman">Liman <span class="ch-cnt">4</span></button>
+            <button class="chip" data-santiye="merkez">Merkez <span class="ch-cnt">3</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="gc-body flush">
+        <table class="gtable" id="tblPluxee">
+          <thead>
+            <tr>
+              <th>Kayıt</th>
+              <th>Kart / Personel</th>
+              <th class="col-santiye">Şantiye</th>
+              <th class="col-tur">Tür</th>
+              <th>Açıklama</th>
+              <th class="num col-tutar">Tutar</th>
+              <th class="col-durum">Durum</th>
+            </tr>
+          </thead>
+          <tbody id="plxBody"></tbody>
+        </table>
+        <div class="gv-empty" id="plxEmpty" hidden>
+          <div class="ge-ico"><i class="fa-solid fa-credit-card"></i></div>
+          <h4>Eşleşen hareket yok</h4>
+          <p>Aramayı temizleyin veya farklı bir tür/şantiye filtresi seçin.</p>
+        </div>
+      </div>
+      <div class="gc-foot"><span id="plxFoot">—</span></div>
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/ui.js"></script>
+<script>
+(function(){
+  if(!window.GV) return;
+
+  /* ---- mock veri — shell.js DALGA 8 kanonik bloğu BİREBİR (Pluxee Kart) ----
+     Kart bakiyeleri ₺580–₺1.180 arası, 12 aktif kart toplamı ₺11.240 (KPI ile birebir).
+     Hareket tablosu: 041 toplu yükleme (kanonik) + 10 Temmuz harcaması (toplam ₺3.760,
+     KPI ile birebir) + 1 Haziran-sonu harcaması (KPI dışı) + 1 kayıp bildirimi. */
+  var SANTIYE_ADI = {vadi:'Vadi Konakları', liman:'Liman Lojistik Merkezi', merkez:'Merkez Şantiye'};
+  var KARTLAR = [
+    {no:'4471', ad:'Ali Vural',       santiye:'vadi',   bakiye:980,  son:'1 Tem 2026'},
+    {no:'4482', ad:'İbrahim Sönmez',  santiye:'vadi',   bakiye:1050, son:'1 Tem 2026'},
+    {no:'4493', ad:'Ramazan Kılıç',   santiye:'vadi',   bakiye:860,  son:'1 Tem 2026'},
+    {no:'4504', ad:'Selim Doğan',     santiye:'vadi',   bakiye:1180, son:'2 Tem 2026'},
+    {no:'4515', ad:'Musa Erdem',      santiye:'vadi',   bakiye:720,  son:'1 Tem 2026'},
+    {no:'4526', ad:'Veli Şimşek',     santiye:'vadi',   bakiye:990,  son:'2 Tem 2026'},
+    {no:'5871', ad:'Şükrü Aslan',     santiye:'liman',  bakiye:1100, son:'1 Tem 2026'},
+    {no:'5882', ad:'Halil Güneş',     santiye:'liman',  bakiye:640,  son:'30 Haz 2026'},
+    {no:'5893', ad:'Metin Çetin',     santiye:'liman',  bakiye:950,  son:'1 Tem 2026'},
+    {no:'5904', ad:'Osman Polat',     santiye:'liman',  bakiye:820,  son:'2 Tem 2026'},
+    {no:'6231', ad:'Recep Yaman',     santiye:'merkez', bakiye:1140, son:'1 Tem 2026'},
+    {no:'6242', ad:'İlyas Kurt',      santiye:'merkez', bakiye:810,  son:'2 Tem 2026'}
+  ];
+  var PASIF = {no:'6253', ad:'Sadık Öz', santiye:'merkez', son:'30 Haz 2026'};
+
+  var HAREKET = [
+    {no:'PLX-2026-051', tarih:'2 Temmuz 2026',   kart:'Veli Şimşek',    kartno:'4526', santiye:'vadi',   tur:'harcama', tag:'Market', desc:'Sarf malzeme',                 tutar:340,   durum:'ok',  durumLbl:'Kayıtlı'},
+    {no:'PLX-2026-050', tarih:'2 Temmuz 2026',   kart:'İlyas Kurt',     kartno:'6242', santiye:'merkez', tur:'harcama', tag:'Fırın',  desc:'Ekmek/pastane alışverişi',     tutar:340,   durum:'ok',  durumLbl:'Kayıtlı'},
+    {no:'PLX-2026-049', tarih:'2 Temmuz 2026',   kart:'Osman Polat',    kartno:'5904', santiye:'liman',  tur:'harcama', tag:'Market', desc:'Bakkal alışverişi',            tutar:350,   durum:'ok',  durumLbl:'Kayıtlı'},
+    {no:'PLX-2026-048', tarih:'2 Temmuz 2026',   kart:'Selim Doğan',    kartno:'4504', santiye:'vadi',   tur:'harcama', tag:'Yemek',  desc:'Öğle yemeği',                  tutar:360,   durum:'ok',  durumLbl:'Kayıtlı'},
+    {no:'PLX-2026-047', tarih:'1 Temmuz 2026',   kart:'Ramazan Kılıç',  kartno:'4493', santiye:'vadi',   tur:'harcama', tag:'Market', desc:'Sarf malzeme alışverişi',      tutar:370,   durum:'ok',  durumLbl:'Kayıtlı'},
+    {no:'PLX-2026-046', tarih:'1 Temmuz 2026',   kart:'Metin Çetin',    kartno:'5893', santiye:'liman',  tur:'harcama', tag:'Fırın',  desc:'Ekmek/pastane alışverişi',     tutar:380,   durum:'ok',  durumLbl:'Kayıtlı'},
+    {no:'PLX-2026-045', tarih:'1 Temmuz 2026',   kart:'Recep Yaman',    kartno:'6231', santiye:'merkez', tur:'harcama', tag:'Yemek',  desc:'Akşam yemeği',                 tutar:390,   durum:'ok',  durumLbl:'Kayıtlı'},
+    {no:'PLX-2026-044', tarih:'1 Temmuz 2026',   kart:'İbrahim Sönmez', kartno:'4482', santiye:'vadi',   tur:'harcama', tag:'Market', desc:'Temizlik malzemesi',           tutar:400,   durum:'ok',  durumLbl:'Kayıtlı'},
+    {no:'PLX-2026-043', tarih:'1 Temmuz 2026',   kart:'Şükrü Aslan',    kartno:'5871', santiye:'liman',  tur:'harcama', tag:'Yemek',  desc:'Öğle yemeği',                  tutar:410,   durum:'ok',  durumLbl:'Kayıtlı'},
+    {no:'PLX-2026-042', tarih:'1 Temmuz 2026',   kart:'Ali Vural',      kartno:'4471', santiye:'vadi',   tur:'harcama', tag:'Market', desc:'Haftalık market alışverişi',   tutar:420,   durum:'ok',  durumLbl:'Kayıtlı'},
+    {no:'PLX-2026-041', tarih:'1 Temmuz 2026',   kart:'12 kart (toplu)',kartno:null,  santiye:'',       tur:'yukleme', tag:'Yükleme', desc:'Aylık toplu yükleme — 12 kart × ₺1.250 (Nesrin Aydın)', tutar:15000, durum:'ok', durumLbl:'Kayıtlı'},
+    {no:'PLX-2026-040', tarih:'30 Haziran 2026', kart:'Sadık Öz',       kartno:'6253', santiye:'merkez', tur:'diger',   tag:'Bildirim', desc:'Kayıp bildirimi — kart pasifleştirildi', tutar:null, durum:'off', durumLbl:'Pasifleştirildi'},
+    {no:'PLX-2026-039', tarih:'30 Haziran 2026', kart:'Halil Güneş',    kartno:'5882', santiye:'liman',  tur:'harcama', tag:'Market', desc:'Bakkal alışverişi',            tutar:210,   durum:'ok',  durumLbl:'Kayıtlı'}
+  ];
+
+  function fmtTL(n){ return n == null ? '₺—' : '₺' + n.toLocaleString('tr-TR'); }
+
+  /* ---- kart ızgarası render ---- */
+  var grid = document.getElementById('plxGrid');
+  var gh = '';
+  KARTLAR.forEach(function(k){
+    gh += '<div class="plx-card">'
+        +   '<div class="plx-top"><div class="plx-who"><div class="plx-name">'+k.ad+'</div><span class="plx-no">•'+k.no+'</span></div>'
+        +   '<div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div>'
+        +   '<div class="plx-santiye">'+SANTIYE_ADI[k.santiye]+'</div>'
+        +   '<div class="plx-bakiye">'+fmtTL(k.bakiye)+'</div><div class="plx-bakiye-lbl">güncel bakiye</div>'
+        +   '<div class="plx-foot">Son işlem: '+k.son+'</div>'
+        + '</div>';
+  });
+  gh += '<div class="plx-card is-off">'
+      +   '<div class="plx-top"><div class="plx-who"><div class="plx-name">'+PASIF.ad+'</div><span class="plx-no">•'+PASIF.no+'</span></div>'
+      +   '<div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div>'
+      +   '<div class="plx-santiye">'+SANTIYE_ADI[PASIF.santiye]+'</div>'
+      +   '<div class="plx-bakiye"><span class="gstat off">Kayıp — kart pasif</span></div>'
+      +   '<div class="plx-foot">Bildirim: '+PASIF.son+'</div>'
+      + '</div>';
+  grid.innerHTML = gh;
+
+  /* ---- hareket tablosu render ---- */
+  var TUR_META = {
+    yukleme: {ic:'fa-arrow-up-from-bracket', bg:'var(--ok-tint)',   fg:'var(--ok)',   tag:'<span class="gtag mint">Yükleme</span>'},
+    harcama: {ic:'fa-cart-shopping',         bg:'rgba(var(--acc-rgb),.1)', fg:'var(--acc-ink)', tag:'<span class="gtag">Harcama</span>'},
+    diger:   {ic:'fa-triangle-exclamation',  bg:'var(--bg)',        fg:'var(--muted)', tag:'<span class="gtag">Bildirim</span>'}
+  };
+  var body = document.getElementById('plxBody');
+  var html = '';
+  HAREKET.forEach(function(h){
+    var T = TUR_META[h.tur];
+    html += '<tr data-tur="'+h.tur+'" data-santiye="'+h.santiye+'">';
+    html += '<td><div class="rp-cell"><div class="rp-mark" style="background:'+T.bg+';color:'+T.fg+'"><i class="fa-solid '+T.ic+'"></i></div>'
+          + '<div class="rp-info"><b>'+h.no+'</b><span>'+h.tarih+'</span></div></div></td>';
+    html += '<td><div class="plx-kart-cell"><b>'+h.kart+'</b>'+(h.kartno ? '<span>•'+h.kartno+'</span>' : '')+'</div></td>';
+    html += '<td>'+(h.santiye ? SANTIYE_ADI[h.santiye] : '<span class="muted">—</span>')+'</td>';
+    html += '<td>'+T.tag+'</td>';
+    html += '<td>'+h.desc+'</td>';
+    html += '<td class="num t-strong">'+fmtTL(h.tutar)+'</td>';
+    html += '<td><span class="gstat '+h.durum+'">'+h.durumLbl+'</span></td>';
+    html += '</tr>';
+  });
+  body.innerHTML = html;
+
+  /* Yeni Kayıt — oluşturabilen roller (İK dahil: kasa mantığından farklı, D8 rol notu) */
+  var OLUSTURABILIR = ['superadmin','sahip','yonetim','muhasebe','ik'];
+  document.querySelectorAll('[data-view="olusturabilir"]').forEach(function(el){
+    el.hidden = OLUSTURABILIR.indexOf(GV.role) === -1;
+  });
+
+  /* ---- iki boyutlu filtre (Tür + Şantiye) + serbest metin — kasa/demirbas AND deseni,
+     ui.js'in tek-boyutlu data-filter primitifiyle çakışmaması için tamamen sayfa-lokal ---- */
+  var curTur = 'hepsi', curSantiye = 'hepsi';
+  function applyFilter(){
+    var term = document.getElementById('plxSearch').value.trim().toLocaleLowerCase('tr');
+    var shown = 0;
+    document.querySelectorAll('#tblPluxee tbody tr').forEach(function(tr){
+      var okTur = curTur === 'hepsi' || tr.getAttribute('data-tur') === curTur;
+      var okSantiye = curSantiye === 'hepsi' || tr.getAttribute('data-santiye') === curSantiye;
+      var okTerm = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
+      var show = okTur && okSantiye && okTerm;
+      tr.hidden = !show;
+      if(show) shown++;
+    });
+    document.getElementById('plxEmpty').hidden = shown !== 0;
+    document.getElementById('plxFoot').textContent = shown + ' hareket gösteriliyor · toplam ' + HAREKET.length + ' kayıt';
+  }
+  document.getElementById('plxSearch').addEventListener('input', applyFilter);
+  document.getElementById('plxTurChips').addEventListener('click', function(e){
+    var ch = e.target.closest('.chip[data-tur]'); if(!ch) return;
+    this.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('is-on'); });
+    ch.classList.add('is-on');
+    curTur = ch.getAttribute('data-tur');
+    applyFilter();
+  });
+  document.getElementById('plxSantiyeChips').addEventListener('click', function(e){
+    var ch = e.target.closest('.chip[data-santiye]'); if(!ch) return;
+    this.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('is-on'); });
+    ch.classList.add('is-on');
+    curSantiye = ch.getAttribute('data-santiye');
+    applyFilter();
+  });
+
+  applyFilter();
+})();
+</script>
+</body>
+</html>
