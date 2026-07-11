@@ -369,7 +369,7 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
     </div>
   </div>
 
-  <div class="bottom-grid">
+  <div class="bottom-grid cols-4">
 
     <!-- Bekleyen Onaylar -->
     <div class="k-panel">
@@ -454,6 +454,29 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
       </div>
     </div>
 
+    <!-- [D8 1.2] Kasa Bakiyeleri — kanonik defter (shell.js DALGA 8): 81.920+18.520+64.690 = 165.130 -->
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-wallet"></i><b>Kasa Bakiyeleri</b></div>
+      <div style="padding:0 22px 10px;margin-top:-6px;font-size:12px;font-weight:700;color:var(--on-dark-mut)">Toplam ₺165.130 · 3 aktif kasa</div>
+      <div class="kp-body">
+        <div class="stat-row">
+          <div class="stat-ico" style="background:var(--gv-mint-glow);color:var(--gv-mint)"><i class="fa-solid fa-building"></i></div>
+          <div class="stat-txt"><b>Vadi Konakları</b><span>devir ₺48.250 · 18 hareket</span></div>
+          <div class="stat-num">₺81.920</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(59,111,212,.16);color:var(--info)"><i class="fa-solid fa-building"></i></div>
+          <div class="stat-txt"><b>Liman Lojistik</b><span>devir ₺31.750 · 2 hareket</span></div>
+          <div class="stat-num">₺18.520</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(46,158,107,.16);color:var(--ok)"><i class="fa-solid fa-building"></i></div>
+          <div class="stat-txt"><b>Merkez Şantiye</b><span>devir ₺12.860 · 3 hareket</span></div>
+          <div class="stat-num">₺64.690</div>
+        </div>
+      </div>
+    </div>
+
   </div>
   </div><!-- /data-view="gm" -->
 
@@ -465,8 +488,8 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
        12 · geciken görev 3 (crm-gorev.html:121) · bugün sahada 93
        (crm-panel-ozet.html:123) · ajanda 3 olay (crm-panel-ajanda.html:408-410)
        · okunmamış bildirim 3 (crm-panel-bildirimler.html:191-195).
-       Finansal özet: crm-operasyon-kasa.html:106-117 — kasa bakiyesi KPI'ı
-       repoda yok, gösterilmez. Hakediş: crm-finans-kurum.html:90-101 +
+       Finansal özet: crm-operasyon-kasa.html KPI + D8 kasa defteri kanonikleri
+       (shell.js DALGA 8 — bakiye 165.130). Hakediş: crm-finans-kurum.html:90-101 +
        crm-finans-taseron.html:88-89 (onaylanan ₺338.500 bilinçli alt-küme dışı).
        Cari: crm-cari-durum.html:102-118 + crm-panel-rapor-cari.html:321
        (vadesi geçen 2 = Demir-Beton ₺342.000 4 gün + Marmara ₺211.000 17 gün
@@ -592,24 +615,26 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
       </div>
     </div>
 
-    <!-- Finansal Özet — kasa (bakiye KPI'ı repoda yok, gösterilmez) -->
+    <!-- Finansal Özet — Kasa [D8 1.2 revize: şantiye-bazlı defter kanonikleri,
+         shell.js DALGA 8 bloğu — toplam bakiye 165.130 · Temmuz giriş 246.400 / çıkış 174.130] -->
     <div class="k-panel">
       <div class="kp-head"><i class="fa-solid fa-cash-register"></i><b>Finansal Özet — Kasa</b></div>
+      <div style="padding:0 22px 10px;margin-top:-6px;font-size:12px;font-weight:700;color:var(--on-dark-mut)">Vadi ₺81.920 · Liman ₺18.520 · Merkez ₺64.690</div>
       <div class="kp-body">
         <div class="stat-row">
+          <div class="stat-ico" style="background:var(--gv-mint-glow);color:var(--gv-mint)"><i class="fa-solid fa-wallet"></i></div>
+          <div class="stat-txt"><b>Toplam kasa bakiyesi</b><span>3 aktif kasa · 2 Tem itibarıyla</span></div>
+          <div class="stat-num">₺165.130</div>
+        </div>
+        <div class="stat-row kp-row-div">
           <div class="stat-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-sack-dollar"></i></div>
-          <div class="stat-txt"><b>Temmuz girişi</b><span>KSG-2026-006 · 1 kayıt</span></div>
-          <div class="stat-num">₺60.000</div>
+          <div class="stat-txt"><b>Temmuz girişi</b><span>KSG-2026-006/007/008 · 3 kayıt</span></div>
+          <div class="stat-num">₺246.400</div>
         </div>
         <div class="stat-row kp-row-div">
           <div class="stat-ico" style="background:rgba(169,121,8,.16);color:var(--warn)"><i class="fa-solid fa-money-bill-transfer"></i></div>
-          <div class="stat-txt"><b>Temmuz çıkışı</b><span>2 rapor</span></div>
-          <div class="stat-num">₺28.150</div>
-        </div>
-        <div class="stat-row kp-row-div">
-          <div class="stat-ico" style="background:rgba(59,111,212,.16);color:var(--info)"><i class="fa-solid fa-stamp"></i></div>
-          <div class="stat-txt"><b>Onay bekleyen kasa raporu</b><span>en eski 3 gündür bekliyor</span></div>
-          <div class="stat-num">2</div>
+          <div class="stat-txt"><b>Temmuz çıkışı</b><span>20 kayıt · onay bekleyen 2</span></div>
+          <div class="stat-num">₺174.130</div>
         </div>
       </div>
     </div>
@@ -857,6 +882,29 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+
+    <!-- [D8 1.2] Kasa Bakiyeleri — teknik görünüm (kanonik defter, shell.js DALGA 8) -->
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-wallet"></i><b>Kasa Bakiyeleri</b></div>
+      <div style="padding:0 22px 10px;margin-top:-6px;font-size:12px;font-weight:700;color:var(--on-dark-mut)">Toplam ₺165.130 · 3 aktif kasa</div>
+      <div class="kp-body">
+        <div class="stat-row">
+          <div class="stat-ico" style="background:var(--gv-mint-glow);color:var(--gv-mint)"><i class="fa-solid fa-building"></i></div>
+          <div class="stat-txt"><b>Vadi Konakları</b><span>devir ₺48.250 · 18 hareket</span></div>
+          <div class="stat-num">₺81.920</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(59,111,212,.16);color:var(--info)"><i class="fa-solid fa-building"></i></div>
+          <div class="stat-txt"><b>Liman Lojistik</b><span>devir ₺31.750 · 2 hareket</span></div>
+          <div class="stat-num">₺18.520</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(46,158,107,.16);color:var(--ok)"><i class="fa-solid fa-building"></i></div>
+          <div class="stat-txt"><b>Merkez Şantiye</b><span>devir ₺12.860 · 3 hareket</span></div>
+          <div class="stat-num">₺64.690</div>
+        </div>
+      </div>
+    </div>
   </div>
   </div><!-- /data-view="teknik" -->
 
@@ -1027,6 +1075,29 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+
+    <!-- [D8 1.2] Kasa — Vadi Konakları (SIZINTI YASAĞI: yalnız Vadi verisi; kanonik defter shell.js DALGA 8) -->
+    <div class="k-panel">
+      <div class="kp-head"><i class="fa-solid fa-cash-register"></i><b>Kasa — Vadi Konakları</b></div>
+      <div style="padding:0 22px 10px;margin-top:-6px;font-size:12px;font-weight:700;color:var(--on-dark-mut)">01–15 Temmuz cari dönemi · 18 hareket</div>
+      <div class="kp-body">
+        <div class="stat-row">
+          <div class="stat-ico" style="background:var(--gv-mint-glow);color:var(--gv-mint)"><i class="fa-solid fa-wallet"></i></div>
+          <div class="stat-txt"><b>Mevcut kasa</b><span>devir ₺48.250 · 1 Tem açılışı</span></div>
+          <div class="stat-num">₺81.920</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-sack-dollar"></i></div>
+          <div class="stat-txt"><b>Dönem girişi</b><span>2 kayıt</span></div>
+          <div class="stat-num">₺186.400</div>
+        </div>
+        <div class="stat-row kp-row-div">
+          <div class="stat-ico" style="background:rgba(169,121,8,.16);color:var(--warn)"><i class="fa-solid fa-money-bill-transfer"></i></div>
+          <div class="stat-txt"><b>Dönem çıkışı</b><span>16 kayıt · onay bekleyen 2</span></div>
+          <div class="stat-num">₺152.730</div>
+        </div>
+      </div>
+    </div>
   </div>
   </div><!-- /data-view="sef" -->
 
@@ -1139,18 +1210,25 @@ a.ajd-row:hover{background:rgba(255,255,255,.03)}
         </div>
       </div>
     </div>
+    <!-- [D8 1.2] Kasa & Cari — defter kanonikleri (shell.js DALGA 8) -->
     <div class="k-panel">
       <div class="kp-head"><i class="fa-solid fa-cash-register"></i><b>Kasa &amp; Cari</b></div>
+      <div style="padding:0 22px 10px;margin-top:-6px;font-size:12px;font-weight:700;color:var(--on-dark-mut)">Vadi ₺81.920 · Liman ₺18.520 · Merkez ₺64.690</div>
       <div class="kp-body">
         <div class="stat-row">
+          <div class="stat-ico" style="background:var(--gv-mint-glow);color:var(--gv-mint)"><i class="fa-solid fa-wallet"></i></div>
+          <div class="stat-txt"><b>Toplam kasa bakiyesi</b><span>3 aktif kasa · 2 Tem</span></div>
+          <div class="stat-num">₺165.130</div>
+        </div>
+        <div class="stat-row kp-row-div">
           <div class="stat-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-sack-dollar"></i></div>
-          <div class="stat-txt"><b>Kasa girişi</b><span>1 kayıt · Temmuz 2026</span></div>
-          <div class="stat-num">₺60.000</div>
+          <div class="stat-txt"><b>Kasa girişi</b><span>3 kayıt · Temmuz 2026</span></div>
+          <div class="stat-num">₺246.400</div>
         </div>
         <div class="stat-row kp-row-div">
           <div class="stat-ico" style="background:rgba(169,121,8,.16);color:var(--warn)"><i class="fa-solid fa-cash-register"></i></div>
-          <div class="stat-txt"><b>Kasa çıkışı</b><span>2 rapor · onay bekleyen 2</span></div>
-          <div class="stat-num">₺28.150</div>
+          <div class="stat-txt"><b>Kasa çıkışı</b><span>20 kayıt · onay bekleyen 2</span></div>
+          <div class="stat-num">₺174.130</div>
         </div>
         <div class="stat-row kp-row-div">
           <div class="stat-ico" style="background:rgba(209,67,67,.16);color:var(--danger)"><i class="fa-solid fa-scale-balanced"></i></div>
