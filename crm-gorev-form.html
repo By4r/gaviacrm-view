@@ -49,6 +49,15 @@
 
 .file-drop{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--muted)}
 .file-drop i{font-size:14px;color:var(--line-2)}
+
+/* atama toggle — kişiye ata / havuza bırak (crm-cari-form.html tip-group idiyomu) */
+.tip-group{display:flex;gap:8px;flex-wrap:wrap}
+.tip-opt{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;padding:8px 14px;border-radius:var(--r-pill);border:1px solid var(--line);color:var(--ink-2);cursor:pointer;transition:.18s var(--ease);background:var(--paper)}
+.tip-opt input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.tip-opt::before{content:"";width:7px;height:7px;border-radius:var(--r-circle);background:var(--muted)}
+.tip-opt[data-t="kisi"]::before{background:var(--acc-ink)}
+.tip-opt[data-t="havuz"]::before{background:var(--info)}
+.tip-opt.is-on{border-color:var(--acc-ink);color:var(--acc-ink);background:rgba(var(--acc-rgb),.09)}
 </style>
 </head>
 <body data-sec="gorev" data-screen="form">
@@ -99,7 +108,14 @@
               <label for="fAciklama">Açıklama <span class="gf-hint">(isteğe bağlı)</span></label>
               <textarea id="fAciklama" rows="3" placeholder="Görevin kapsamını ve beklenen çıktıyı yazın…"></textarea>
             </div>
-            <div class="gfield">
+            <div class="gfield full">
+              <label>Atama</label>
+              <div class="tip-group" id="atamaGroup">
+                <label class="tip-opt is-on" data-t="kisi"><input type="radio" name="atama" value="kisi" checked> Kişiye Ata</label>
+                <label class="tip-opt" data-t="havuz"><input type="radio" name="atama" value="havuz"> Havuza Bırak</label>
+              </div>
+            </div>
+            <div class="gfield" id="gfAtanan">
               <label for="fAtanan">Atanan Kişi</label>
               <select id="fAtanan">
                 <option>Kendi adıma (oturum açan kullanıcı)</option>
@@ -197,7 +213,7 @@
               <div class="tsum-body"><div class="tsum-lbl">Öncelik</div><div id="sumOncelik"><span class="gpri med">Orta</span></div></div>
             </div>
           </div>
-          <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Görev oluşturulduğunda atanan kişiye bildirim gider.</span></div>
+          <div class="gc-foot"><span id="sumFoot"><i class="fa-solid fa-circle-info"></i> Görev oluşturulduğunda atanan kişiye bildirim gider.</span></div>
         </div>
       </div>
     </div>
@@ -223,9 +239,41 @@
     return parseInt(p[2],10) + ' ' + (MONTHS[p[1]]||p[1]) + ' ' + p[0];
   }
 
+  /* ---- atama modu: kişiye ata / havuza bırak ---- */
+  var atamaMode = 'kisi';
+  var gfAtanan = document.getElementById('gfAtanan');
+  var sumFoot = document.getElementById('sumFoot');
+  var submitBtn = document.getElementById('gorevSubmit');
+
+  function syncAtamaMode(){
+    if(atamaMode === 'havuz'){
+      gfAtanan.hidden = true;
+      sumFoot.innerHTML = '<i class="fa-solid fa-layer-group"></i> Görev ortak havuza düşecek — ilk üstlenen kişi sorumluluğu alır.';
+      submitBtn.innerHTML = '<i class="fa-solid fa-layer-group"></i> Havuza Bırak';
+    } else {
+      gfAtanan.hidden = false;
+      sumFoot.innerHTML = '<i class="fa-solid fa-circle-info"></i> Görev oluşturulduğunda atanan kişiye bildirim gider.';
+      submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Görevi Oluştur';
+    }
+    syncSummary();
+  }
+
+  var atamaGroup = document.getElementById('atamaGroup');
+  if(atamaGroup){
+    atamaGroup.addEventListener('click', function(e){
+      var opt = e.target.closest('.tip-opt'); if(!opt) return;
+      atamaGroup.querySelectorAll('.tip-opt').forEach(function(o){ o.classList.remove('is-on'); });
+      opt.classList.add('is-on');
+      atamaMode = opt.getAttribute('data-t');
+      syncAtamaMode();
+    });
+  }
+
   function syncSummary(){
-    var atanan = document.getElementById('fAtanan').value.split(' — ')[0];
-    document.getElementById('sumAtanan').textContent = atanan;
+    var atanan = atamaMode === 'havuz' ? 'Ortak Havuz' : document.getElementById('fAtanan').value.split(' — ')[0];
+    var sumAtanan = document.getElementById('sumAtanan');
+    sumAtanan.textContent = atanan;
+    sumAtanan.classList.toggle('muted', atamaMode === 'havuz');
 
     var santiye = document.getElementById('fSantiye').value;
     var sEl = document.getElementById('sumSantiye');
@@ -253,7 +301,9 @@
         document.getElementById('fBaslik').focus();
         return;
       }
-      gvToast('Görev oluşturuldu ve atanan kişiye bildirim gönderildi.');
+      gvToast(atamaMode === 'havuz'
+        ? 'Görev oluşturuldu ve ortak havuza bırakıldı.'
+        : 'Görev oluşturuldu ve atanan kişiye bildirim gönderildi.');
       setTimeout(function(){ location.href = 'crm-gorev.html'; }, 900);
     });
   }

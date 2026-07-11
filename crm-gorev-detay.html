@@ -96,6 +96,15 @@
 .gd-danger-txt span{font-size:12px;color:var(--muted)}
 
 .gv-side-stack{display:flex;flex-direction:column;gap:16px}
+
+/* havuz varyantı — ?pool=1 durum şeridi */
+.pool-strip{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding:13px 18px;border-radius:var(--r-md);background:var(--info-tint);color:var(--info)}
+.pool-strip .ps-ico{font-size:15px;flex:none}
+.pool-strip .ps-txt{flex:1;min-width:0;font-size:13px;font-weight:700;color:var(--ink)}
+.pool-strip .ps-txt b{color:var(--info)}
+.pool-strip.is-claimed{background:var(--ok-tint)}
+.pool-strip.is-claimed .ps-txt b{color:var(--ok)}
+@media(max-width:640px){.pool-strip{flex-wrap:wrap}}
 </style>
 </head>
 <body data-sec="gorev">
@@ -106,6 +115,7 @@
   var f = q.get('f');
   var VALID = ['bana','verdigim','geciken','tamam'];
   document.body.dataset.screen = VALID.indexOf(f) !== -1 ? f : 'bana';
+  document.body.dataset.pool = q.get('pool') === '1' ? '1' : '0';
 })();
 </script>
 <div class="gv-app">
@@ -132,6 +142,12 @@
       <a href="crm-gorev.html">Görevler</a>
       <i class="fa-solid fa-chevron-right"></i>
       <span>Perde betonu kür takibini raporla</span>
+    </div>
+
+    <div class="pool-strip" id="poolStrip" hidden>
+      <i class="fa-solid fa-layer-group ps-ico"></i>
+      <span class="ps-txt" id="poolStripTxt"><b>Havuzda</b> — 2 gündür bekliyor</span>
+      <button type="button" class="btn btn-acc btn-sm" id="poolClaimBtn"><i class="fa-solid fa-hand"></i> Üzerime Al</button>
     </div>
 
     <div class="gd-head">
@@ -216,7 +232,7 @@
       <!-- ============ SAĞ: bağlam ============ -->
       <div class="gv-side-stack">
         <div class="gv-card">
-          <div class="gd-block">
+          <div class="gd-block" id="atamaNormal">
             <div class="gd-label">Atama</div>
             <div class="who-row">
               <div class="who-mark" style="background:var(--info-tint);color:var(--info)">MD</div>
@@ -226,6 +242,23 @@
             <div class="who-row">
               <div class="who-mark" style="background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)">HD</div>
               <div class="who-info"><b>Hasan Demirci</b><span>Atanan · Şantiye Şefi — Vadi Konakları</span></div>
+            </div>
+          </div>
+          <div class="gd-block" id="atamaHavuz" hidden>
+            <div class="gd-label">Atama</div>
+            <div class="who-row">
+              <div class="who-mark" style="background:var(--info-tint);color:var(--info)">KY</div>
+              <div class="who-info"><b>Kemal Yapıcıoğlu</b><span>Atayan · Firma Sahibi</span></div>
+            </div>
+            <div class="who-arrow"><i class="fa-solid fa-arrow-down-long"></i></div>
+            <div class="who-row">
+              <div class="who-mark" style="background:var(--bg);color:var(--muted);border:1px solid var(--line)"><i class="fa-solid fa-layer-group"></i></div>
+              <div class="who-info"><b>Ortak Havuz</b><span>2 gündür bekliyor</span></div>
+            </div>
+            <div class="who-arrow" id="poolArrow2" hidden><i class="fa-solid fa-arrow-down-long"></i></div>
+            <div class="who-row" id="poolClaimedRow" hidden>
+              <div class="who-mark" style="background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)" id="poolClaimedIni">—</div>
+              <div class="who-info"><b id="poolClaimedName">—</b><span>Atanan · üzerine aldı</span></div>
             </div>
           </div>
           <div class="gd-block">
@@ -286,6 +319,31 @@
 
   var meAva = document.getElementById('cmtMeAva');
   if(meAva) meAva.textContent = GV.R.ini;
+
+  /* havuz varyantı — ?pool=1: durum şeridi + atama zinciri (Kemal Yapıcıoğlu → havuz → aktif rol) */
+  if(document.body.dataset.pool === '1'){
+    document.getElementById('poolStrip').hidden = false;
+    document.getElementById('atamaNormal').hidden = true;
+    document.getElementById('atamaHavuz').hidden = false;
+    var claimBtn = document.getElementById('poolClaimBtn');
+    claimBtn.addEventListener('click', function(){
+      gvConfirm({
+        title:'Görevi üzerine al',
+        message:'Bu görevi üzerinize almak istiyor musunuz? Sorumluluk size geçer.',
+        ok:'Üzerime Al', cancel:'Vazgeç',
+        onConfirm:function(){
+          document.getElementById('poolStrip').classList.add('is-claimed');
+          document.getElementById('poolStripTxt').innerHTML = '<b>' + GV.R.name + '</b> üzerine aldı';
+          claimBtn.remove();
+          document.getElementById('poolArrow2').hidden = false;
+          document.getElementById('poolClaimedRow').hidden = false;
+          document.getElementById('poolClaimedIni').textContent = GV.R.ini;
+          document.getElementById('poolClaimedName').textContent = GV.R.name;
+          gvToast('Görev üzerinize alındı');
+        }
+      });
+    });
+  }
 
   var send = document.getElementById('cmtSend'), inp = document.getElementById('cmtInput');
   if(send && inp){

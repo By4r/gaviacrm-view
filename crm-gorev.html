@@ -73,7 +73,7 @@
 (function(){
   var q = new URLSearchParams(location.search);
   var f = q.get('f');
-  var VALID = ['bana','verdigim','geciken','tamam'];
+  var VALID = ['bana','verdigim','geciken','tamam','havuz'];
   document.body.dataset.screen = VALID.indexOf(f) !== -1 ? f : 'bana';
 })();
 </script>
@@ -116,6 +116,7 @@
           <input type="text" placeholder="Görev, şantiye veya kişi ara" data-table-search="#tblGorev">
         </div>
         <div class="chips" data-target="#tblGorev">
+          <button class="chip" data-filter="havuz"><i class="fa-solid fa-layer-group"></i> Havuz <span class="ch-cnt">6</span></button>
           <button class="chip" data-filter="bana"><i class="fa-solid fa-inbox"></i> Bana Verilenler <span class="ch-cnt">7</span></button>
           <button class="chip" data-filter="verdigim"><i class="fa-solid fa-paper-plane"></i> Verdiklerim <span class="ch-cnt">5</span></button>
           <button class="chip" data-filter="geciken"><i class="fa-solid fa-triangle-exclamation"></i> Gecikenler <span class="ch-cnt">3</span></button>
@@ -332,6 +333,62 @@
               <td><span class="gstat ok">Tamamlandı</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-gorev-detay.html" data-no-confirm aria-label="Görev detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
+
+            <!-- ===== HAVUZ (6) — atanmadan bırakılan, Kemal Yapıcıoğlu bıraktı ===== -->
+            <tr data-f="havuz" data-actor="all" data-santiye="liman">
+              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?pool=1">Liman Lojistik çevre aydınlatma keşfi</a></td>
+              <td>Liman Lojistik Merkezi</td>
+              <td><div class="assign-chain"><span class="ac-from">Kemal Yapıcıoğlu</span><i class="fa-solid fa-arrow-right-long"></i><span class="gstat info">Havuzda</span></div></td>
+              <td><span class="due-cell"><i class="fa-regular fa-calendar"></i> 8 Tem</span></td>
+              <td><span class="gpri med">Orta</span></td>
+              <td><span class="gstat info">Havuzda</span></td>
+              <td><div class="row-acts"><button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-claim="liman-cevre-aydinlatma-kesfi"><i class="fa-solid fa-hand"></i> Üzerime Al</button><a class="ia-btn" href="crm-gorev-detay.html?pool=1" data-no-confirm aria-label="Görev detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+            </tr>
+            <tr data-f="havuz" data-actor="all">
+              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?pool=1">Kule Ofis kesin hesap dosyası kontrolü</a></td>
+              <td>Kule Ofis B Blok</td>
+              <td><div class="assign-chain"><span class="ac-from">Kemal Yapıcıoğlu</span><i class="fa-solid fa-arrow-right-long"></i><span class="gstat info">Havuzda</span></div></td>
+              <td><span class="due-cell"><i class="fa-regular fa-calendar"></i> 6 Tem</span></td>
+              <td><span class="gpri high">Yüksek</span></td>
+              <td><span class="gstat info">Havuzda</span></td>
+              <td><div class="row-acts"><button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-claim="kule-kesin-hesap-kontrolu"><i class="fa-solid fa-hand"></i> Üzerime Al</button><a class="ia-btn" href="crm-gorev-detay.html?pool=1" data-no-confirm aria-label="Görev detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+            </tr>
+            <tr data-f="havuz" data-actor="personel" data-santiye="vadi">
+              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?pool=1">Vadi Konakları numune daire fotoğraf çekimi</a></td>
+              <td>Vadi Konakları</td>
+              <td><div class="assign-chain"><span class="ac-from">Kemal Yapıcıoğlu</span><i class="fa-solid fa-arrow-right-long"></i><span class="gstat info">Havuzda</span></div></td>
+              <td><span class="due-cell"><i class="fa-regular fa-calendar"></i> 10 Tem</span></td>
+              <td><span class="gpri low">Düşük</span></td>
+              <td><span class="gstat info">Havuzda</span></td>
+              <td><div class="row-acts"><button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-claim="vadi-numune-daire-fotograf"><i class="fa-solid fa-hand"></i> Üzerime Al</button><a class="ia-btn" href="crm-gorev-detay.html?pool=1" data-no-confirm aria-label="Görev detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+            </tr>
+            <tr data-f="havuz" data-actor="all" data-santiye="merkez">
+              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?pool=1">Merkez depo yıl ortası sayım planı</a></td>
+              <td>Merkez Şantiye</td>
+              <td><div class="assign-chain"><span class="ac-from">Kemal Yapıcıoğlu</span><i class="fa-solid fa-arrow-right-long"></i><span class="gstat info">Havuzda</span></div></td>
+              <td><span class="due-cell"><i class="fa-regular fa-calendar"></i> 9 Tem</span></td>
+              <td><span class="gpri med">Orta</span></td>
+              <td><span class="gstat info">Havuzda</span></td>
+              <td><div class="row-acts"><button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-claim="merkez-yil-ortasi-sayim"><i class="fa-solid fa-hand"></i> Üzerime Al</button><a class="ia-btn" href="crm-gorev-detay.html?pool=1" data-no-confirm aria-label="Görev detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+            </tr>
+            <tr data-f="havuz" data-actor="all">
+              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?pool=1">Göl Evleri 2. Etap ruhsat evrak listesi</a></td>
+              <td>Göl Evleri 2. Etap</td>
+              <td><div class="assign-chain"><span class="ac-from">Kemal Yapıcıoğlu</span><i class="fa-solid fa-arrow-right-long"></i><span class="gstat info">Havuzda</span></div></td>
+              <td><span class="due-cell late"><i class="fa-solid fa-triangle-exclamation"></i> 1 Tem</span></td>
+              <td><span class="gpri high">Yüksek</span></td>
+              <td><span class="gstat danger">Gecikti</span></td>
+              <td><div class="row-acts"><button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-claim="gol-evleri-ruhsat-evrak"><i class="fa-solid fa-hand"></i> Üzerime Al</button><a class="ia-btn" href="crm-gorev-detay.html?pool=1" data-no-confirm aria-label="Görev detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+            </tr>
+            <tr data-f="havuz" data-actor="all" data-santiye="merkez">
+              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?pool=1">Şantiye araç takip çizelgesi güncelleme</a></td>
+              <td>Merkez Şantiye</td>
+              <td><div class="assign-chain"><span class="ac-from">Kemal Yapıcıoğlu</span><i class="fa-solid fa-arrow-right-long"></i><span class="gstat info">Havuzda</span></div></td>
+              <td><span class="due-cell"><i class="fa-regular fa-calendar"></i> 12 Tem</span></td>
+              <td><span class="gpri low">Düşük</span></td>
+              <td><span class="gstat info">Havuzda</span></td>
+              <td><div class="row-acts"><button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-claim="arac-takip-cizelgesi"><i class="fa-solid fa-hand"></i> Üzerime Al</button><a class="ia-btn" href="crm-gorev-detay.html?pool=1" data-no-confirm aria-label="Görev detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+            </tr>
           </tbody>
         </table>
         <div class="gv-empty" data-table-empty hidden>
@@ -363,14 +420,14 @@
     var chip = document.querySelector('.chips .chip[data-filter="'+f+'"]');
     if(!chip) return;
     var cnt = chip.querySelector('.ch-cnt').textContent;
-    var label = chip.textContent.replace(/\s+/g,' ').trim().replace(/\s*\d+$/,'');
+    var label = f === 'havuz' ? 'Ortak Havuz' : chip.textContent.replace(/\s+/g,' ').trim().replace(/\s*\d+$/,'');
     sub.textContent = cnt + ' görev · ' + label;
   }
   /* durum chip rozetlerini kalan satırlar + seçili şantiyeye göre yeniden hesaplar
      (rol daraltmasından SONRA ve şantiye filtresi değiştiğinde çağrılır) */
   function recomputeCounts(){
     var site = (document.getElementById('fltSantiye') || {}).value || 'hepsi';
-    var counts = {bana:0, verdigim:0, geciken:0, tamam:0};
+    var counts = {bana:0, verdigim:0, geciken:0, tamam:0, havuz:0};
     document.querySelectorAll('#tblGorev tbody tr').forEach(function(tr){
       var f = tr.getAttribute('data-f');
       if(counts[f] === undefined) return;
@@ -404,8 +461,64 @@
     var empty = card && card.querySelector('[data-table-empty]');
     if(empty) empty.hidden = shown !== 0;
   }
+  /* ---- görev havuzu: "Üzerime Al" — localStorage(gv_gorev_claims) kalıcılık simülasyonu ---- */
+  var CLAIM_KEY = 'gv_gorev_claims';
+  function loadClaims(){
+    try{ return JSON.parse(localStorage.getItem(CLAIM_KEY)) || []; }catch(e){ return []; }
+  }
+  function saveClaim(slug){
+    var arr = loadClaims();
+    if(arr.indexOf(slug) === -1){ arr.push(slug); localStorage.setItem(CLAIM_KEY, JSON.stringify(arr)); }
+  }
+  function applyClaim(tr){
+    if(!tr || tr.dataset.claimed) return;
+    tr.dataset.claimed = '1';
+    tr.setAttribute('data-f', 'bana');
+    var toBadge = tr.querySelector('.assign-chain .gstat');
+    if(toBadge){
+      var span = document.createElement('span');
+      span.className = 'ac-to';
+      span.textContent = GV.R.name;
+      toBadge.replaceWith(span);
+    }
+    var durum = tr.children[5] && tr.children[5].querySelector('.gstat');
+    if(durum){ durum.className = 'gstat info'; durum.textContent = 'Devam Ediyor'; }
+    var claimBtn = tr.querySelector('[data-claim]');
+    if(claimBtn) claimBtn.remove();
+  }
+  function bindClaimButtons(){
+    document.querySelectorAll('[data-claim]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var slug = btn.getAttribute('data-claim');
+        var tr = btn.closest('tr');
+        var titleEl = tr.querySelector('.task-link');
+        var title = titleEl ? titleEl.textContent.trim() : 'Görev';
+        gvConfirm({
+          title:'Görevi üzerine al',
+          message:'“' + title + '” görevini üzerinize almak istiyor musunuz? Sorumluluk size geçer.',
+          ok:'Üzerime Al', cancel:'Vazgeç',
+          onConfirm:function(){
+            saveClaim(slug);
+            applyClaim(tr);
+            gvToast('Görev üzerinize alındı');
+            recomputeCounts();
+            updateSub(document.body.dataset.screen || 'bana');
+            applyCompound();
+          }
+        });
+      });
+    });
+  }
+
   function init(){
     if(!window.GV) return;
+
+    /* kalıcı claim'ler — sayfa her yüklendiğinde localStorage'dan geri uygulanır */
+    loadClaims().forEach(function(slug){
+      var btn = document.querySelector('[data-claim="'+slug+'"]');
+      if(btn) applyClaim(btn.closest('tr'));
+    });
+    bindClaimButtons();
 
     /* rol daraltması: personel yalnız kendi görevlerini görür (Verdiklerim için görev vermez) */
     if(GV.role === 'personel'){
