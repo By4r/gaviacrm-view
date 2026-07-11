@@ -95,11 +95,11 @@
     <div class="rr-mast">
       <div class="rr-mast-l">
         <div class="rr-mast-eyebrow"><i class="fa-solid fa-chart-column"></i> Rapor Merkezi</div>
-        <h2>14 rapor tanımlı, tamamı bu sürümde canlı.</h2>
-        <p>Canlı raporlar mevcut kayıtlardan derlenir; şantiye, demirbaş, makine, hakediş, talep ve cari raporlarıyla set tamamlandı.</p>
+        <h2>15 rapor tanımlı, tamamı bu sürümde canlı.</h2>
+        <p>Canlı raporlar mevcut kayıtlardan derlenir; şantiye, demirbaş, makine, hakediş, talep, cari ve iş programı raporlarıyla set tamamlandı.</p>
       </div>
       <div class="rr-mast-r">
-        <div class="rr-mstat"><b>14</b><span>canlı rapor</span></div>
+        <div class="rr-mstat"><b>15</b><span>canlı rapor</span></div>
         <div class="rr-mstat"><b>0</b><span>planlanan rapor</span></div>
         <div class="rr-mstat"><b>3</b><span>şantiye kapsamı</span></div>
       </div>
@@ -217,6 +217,14 @@
         </div>
         <div class="rpc-foot"><a class="rpc-btn" href="crm-panel-rapor-em.html">Görüntüle <i class="fa-solid fa-arrow-right"></i></a></div>
       </div>
+
+      <div class="rpc-card">
+        <div class="rpc-top">
+          <div class="rpc-ico"><i class="fa-solid fa-chart-gantt"></i></div>
+          <div class="rpc-hd"><b>İş Programı Raporu</b><p>Şantiye bazında planlanan/gerçekleşen kıyası ve kritik gecikmeler.</p></div>
+        </div>
+        <div class="rpc-foot"><a class="rpc-btn" href="crm-panel-rapor-isprogrami.html">Görüntüle <i class="fa-solid fa-arrow-right"></i></a></div>
+      </div>
     </div>
   </main>
 </div>
@@ -231,9 +239,9 @@
   if(GV.role!=='sef') return;
   document.querySelectorAll('.rpc-card[data-sef-hidden]').forEach(function(c){ c.remove(); });
   var h2=document.querySelector('.rr-mast-l h2');
-  if(h2) h2.textContent='12 rapor tanımlı, tamamı bu sürümde canlı.';
+  if(h2) h2.textContent='13 rapor tanımlı, tamamı bu sürümde canlı.';
   var st=document.querySelector('.rr-mast-r .rr-mstat b');
-  if(st) st.textContent='12';
+  if(st) st.textContent='13';
 })();
 </script>
 </body>
