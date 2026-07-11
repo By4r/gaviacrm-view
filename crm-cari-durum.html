@@ -133,6 +133,10 @@
               <option value="aliaga-liman">Aliağa Liman İşletmeleri</option>
               <option value="sapanca-belediyesi">Sapanca Belediyesi</option>
             </optgroup>
+            <optgroup label="Müşteri · Satış">
+              <option value="onaran">Selçuk Onaran — CAR-2026-021</option>
+              <option value="toprak">Derya Toprak — CAR-2026-022</option>
+            </optgroup>
             <optgroup label="Taşeron">
               <option value="demir-beton">Demir-Beton İnş. Ltd.</option>
               <option value="yalitim-kardesler">Yalıtım Kardeşler</option>
@@ -145,7 +149,7 @@
             </optgroup>
           </select>
         </div>
-        <div class="picker-hint"><i class="fa-solid fa-circle-info"></i> Firma Rehberi'ndeki 9 cari burada listelenir.</div>
+        <div class="picker-hint"><i class="fa-solid fa-circle-info"></i> Firma Rehberi'ndeki 11 cari burada listelenir.</div>
       </div>
     </div>
 
@@ -238,10 +242,11 @@
    modellenmiştir; diğerleri rehberdeki tek "son hareket" satırından türetilir.
    ===================================================================== */
 (function(){
-  var TUR_LBL = {musteri:'Müşteri-Kurum', taseron:'Taşeron', tedarikci:'Tedarikçi'};
-  var TUR_ICON = {musteri:'fa-building-columns', taseron:'fa-helmet-safety', tedarikci:'fa-truck-ramp-box'};
+  var TUR_LBL = {musteri:'Müşteri-Kurum', satis:'Müşteri · Satış', taseron:'Taşeron', tedarikci:'Tedarikçi'};
+  var TUR_ICON = {musteri:'fa-building-columns', satis:'fa-house-circle-check', taseron:'fa-helmet-safety', tedarikci:'fa-truck-ramp-box'};
   var TUR_STYLE = {
     musteri:  {bg:'rgba(63,213,173,.12)', fg:'var(--acc-ink)'},
+    satis:    {bg:'rgba(63,213,173,.12)', fg:'var(--acc-ink)'},
     taseron:  {bg:'var(--info-tint)',     fg:'var(--info)'},
     tedarikci:{bg:'var(--warn-tint)',     fg:'var(--warn)'}
   };
@@ -267,6 +272,26 @@
       ad:'Sapanca Belediyesi', ini:'SB', tur:'musteri', kisi:'Zeynep Ulusoy · Fen İşleri Md.',
       tel:'0264 582 11 30', santiye:'Göl Evleri 2. Etap',
       hareketler:[]
+    },
+    /* D11 — satış müşterisi cari hesapları (CAR- serisi; SSZ ödeme planlarıyla BİREBİR) */
+    'onaran': {
+      ad:'Selçuk Onaran', ini:'SO', tur:'satis', kisi:'CAR-2026-021 · CRM MST-2026-001',
+      tel:'0533 000 21 04', santiye:'Kule Ofis B Blok · Vadi Konakları',
+      hareketler:[
+        {tarih:'12 Nis 2026', aciklama:'SSZ-2026-003 satış bedeli tahakkuku (VK-C-18)', borc:6120000, alacak:0},
+        {tarih:'12 Nis 2026', aciklama:'Peşinat tahsilatı (%15)', borc:0, alacak:918000},
+        {tarih:'15 May 2026', aciklama:'Taksit tahsilatları 1–12 (dönem özeti)', borc:0, alacak:1380000},
+        {tarih:'15 Haz 2026', aciklama:'13.–14. taksit tahsilatı', borc:0, alacak:230000}
+      ]
+    },
+    'toprak': {
+      ad:'Derya Toprak', ini:'DT', tur:'satis', kisi:'CAR-2026-022 · CRM MST-2026-002',
+      tel:'0532 000 47 82', santiye:'Vadi Konakları',
+      hareketler:[
+        {tarih:'20 Şub 2026', aciklama:'SSZ-2026-004 paket satış tahakkuku (A-03 · A-09 · C-21)', borc:13665000, alacak:0},
+        {tarih:'20 Şub 2026', aciklama:'Peşin ödeme tahsilatı (%50)', borc:0, alacak:6825000},
+        {tarih:'20 May 2026', aciklama:'Taksit tahsilatları 1–4', borc:0, alacak:2280000}
+      ]
     },
     'demir-beton': {
       ad:'Demir-Beton İnş. Ltd.', ini:'DB', tur:'taseron', kisi:'Yusuf Ergin',
@@ -324,13 +349,14 @@
      dir: 'alacak' = bize borçlu · 'borc' = biz borçluyuz · 'sifir' = kapalı */
   function balanceOf(C){
     var running = 0;
+    var musteriTur = (C.tur === 'musteri' || C.tur === 'satis');
     C.hareketler.forEach(function(h){
-      if(C.tur === 'musteri') running += h.borc - h.alacak;
+      if(musteriTur) running += h.borc - h.alacak;
       else running += h.alacak - h.borc;
     });
     var dir = running === 0 ? 'sifir'
-      : (C.tur === 'musteri' ? (running > 0 ? 'alacak' : 'borc')
-                             : (running > 0 ? 'borc'   : 'alacak'));
+      : (musteriTur ? (running > 0 ? 'alacak' : 'borc')
+                    : (running > 0 ? 'borc'   : 'alacak'));
     return { amount: Math.abs(running), dir: dir };
   }
 
@@ -370,10 +396,11 @@
        müşteri/kurum: borç sütunu hakediş/fatura artışı, alacak sütunu tahsilat azalışı
        taşeron/tedarikçi: alacak sütunu onların faturası artışı, borç sütunu ödemelerimiz azalışı */
     var running = 0, rows = '';
+    var mTur = (C.tur === 'musteri' || C.tur === 'satis');   /* D11: satış müşterisi de alacaklı defter tarafı */
     C.hareketler.forEach(function(h){
-      if(C.tur === 'musteri') running += h.borc - h.alacak;
+      if(mTur) running += h.borc - h.alacak;
       else running += h.alacak - h.borc;
-      var yon = running > 0 ? (C.tur === 'musteri' ? 'alacak' : 'borc') : (running < 0 ? (C.tur === 'musteri' ? 'borc' : 'alacak') : 'sifir');
+      var yon = running > 0 ? (mTur ? 'alacak' : 'borc') : (running < 0 ? (mTur ? 'borc' : 'alacak') : 'sifir');
       var yonLbl = yon === 'borc' ? 'Borç' : (yon === 'alacak' ? 'Alacak' : '—');
       var yonColor = yon === 'borc' ? 'var(--danger)' : (yon === 'alacak' ? 'var(--ok)' : 'var(--muted)');
       rows += '<tr>'
@@ -392,8 +419,8 @@
       ekBody.innerHTML = rows;
     }
 
-    var borcTotal = running > 0 && (C.tur !== 'musteri') ? running : (running < 0 && C.tur === 'musteri' ? -running : 0);
-    var alacakTotal = running > 0 && (C.tur === 'musteri') ? running : (running < 0 && C.tur !== 'musteri' ? -running : 0);
+    var borcTotal = running > 0 && !mTur ? running : (running < 0 && mTur ? -running : 0);
+    var alacakTotal = running > 0 && mTur ? running : (running < 0 && !mTur ? -running : 0);
     var net = alacakTotal - borcTotal;
 
     document.getElementById('kpiBorcVal').textContent = fmt(borcTotal);

@@ -58,9 +58,6 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
 .gv-tab.is-active{color:var(--acc-ink);border-color:var(--acc-ink)}
 .gv-tab .tb-cnt{font-size:10.5px;font-weight:700;background:var(--bg);color:var(--ink-2);padding:1px 6px;border-radius:var(--r-pill)}
 .gv-tab.is-active .tb-cnt{background:rgba(var(--acc-rgb),.16);color:var(--acc-deep)}
-.gv-tab.is-locked{color:var(--muted);cursor:not-allowed;opacity:.6}
-.gv-tab.is-locked:hover{color:var(--muted)}
-.gv-tab .tb-soon{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--bg);border:1px solid var(--line);padding:2px 6px;border-radius:6px}
 .tab-panel{animation:tabIn .22s var(--ease)}
 @keyframes tabIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
@@ -118,12 +115,6 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
 .kum-note .gbar{flex:1;min-width:160px}
 .kum-note .kn-txt{font-size:12px;color:var(--muted);flex:1 1 200px;min-width:0}
 
-/* Faz 2 kilit paneli — Fırsatlar/Teklifler */
-.locked-panel{padding:56px 24px;text-align:center;color:var(--muted)}
-.locked-panel i{font-size:26px;color:var(--acc-ink);margin-bottom:14px;display:block}
-.locked-panel h4{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:6px}
-.locked-panel p{font-size:13px;max-width:380px;margin:0 auto}
-.locked-panel .gp-soon{display:inline-block;margin-top:14px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--bg);border:1px solid var(--line);padding:4px 10px;border-radius:var(--r-pill)}
 </style>
 </head>
 <body data-sec="cari" data-screen="rehber">
@@ -150,9 +141,9 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
     <div class="gv-page-head">
       <div>
         <a class="ph-back" href="crm-cari.html"><i class="fa-solid fa-arrow-left"></i> Firma Rehberi</a>
-        <div class="ph-eyebrow">Rehber &amp; Hesap · Taşeron</div>
-        <h1>Demir-Beton İnş. Ltd.</h1>
-        <div class="ph-sub">Vadi Konakları · kaba inşaat taşeronu · ilgili kişi Yusuf Ergin</div>
+        <div class="ph-eyebrow" id="cdEyebrow">Rehber &amp; Hesap · Taşeron</div>
+        <h1 id="cdName">Demir-Beton İnş. Ltd.</h1>
+        <div class="ph-sub" id="cdSub">Vadi Konakları · kaba inşaat taşeronu · ilgili kişi Yusuf Ergin</div>
       </div>
       <div class="ph-actions" data-view="yonetim" hidden>
         <a class="btn btn-ghost btn-sm" href="#" data-wip="1"><i class="fa-solid fa-pen"></i> Düzenle</a>
@@ -166,13 +157,13 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
     <!-- ============ CARİ BAŞLIK KARTI ============ -->
     <div class="gv-card cari-hero">
       <div class="cari-hero-id">
-        <div class="cari-hero-mark">DB</div>
+        <div class="cari-hero-mark" id="cdMark">DB</div>
         <div class="cari-hero-info">
-          <div class="cari-hero-tags">
+          <div class="cari-hero-tags" id="cdTags">
             <span class="gtag" style="background:var(--info-tint);color:var(--info);border-color:transparent">Taşeron</span>
             <span class="gstat danger"><i class="fa-solid fa-triangle-exclamation"></i> Vadesi geçti · 4 gün</span>
           </div>
-          <dl class="cari-hero-meta">
+          <dl class="cari-hero-meta" id="cdMeta">
             <div><dt>İlgili Kişi</dt><dd>Yusuf Ergin</dd></div>
             <div><dt>Telefon</dt><dd>0532 411 27 63</dd></div>
             <div><dt>İlişkili Şantiye</dt><dd><a href="crm-santiye-detay.html">Vadi Konakları</a></dd></div>
@@ -180,7 +171,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
           </dl>
         </div>
       </div>
-      <div class="hero-stats">
+      <div class="hero-stats" id="cdStats">
         <div class="hstat danger"><span class="hstat-num">₺342.000</span><span class="hstat-lbl">Açık bakiye — bizim borcumuz</span></div>
         <a class="hstat" href="crm-finans-sozlesme-detay.html"><span class="hstat-num">SZL-2025-T05</span><span class="hstat-lbl">Aktif sözleşme <i class="fa-solid fa-arrow-right"></i></span></a>
         <a class="hstat" href="crm-finans-taseron.html"><span class="hstat-num">1</span><span class="hstat-lbl">Onay bekleyen hakediş <i class="fa-solid fa-arrow-right"></i></span></a>
@@ -194,16 +185,16 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
       <button class="gv-tab" data-tab="kisiler" role="tab" aria-selected="false"><i class="fa-solid fa-id-card"></i> İlgili Kişiler</button>
       <button class="gv-tab" data-tab="hareket" role="tab" aria-selected="false"><i class="fa-solid fa-receipt"></i> Cari Hareketler</button>
       <button class="gv-tab" data-tab="sozlesme" role="tab" aria-selected="false"><i class="fa-solid fa-file-signature"></i> Sözleşmeler &amp; Hakedişler</button>
-      <button class="gv-tab is-locked" data-locked="1" role="tab" aria-selected="false" aria-disabled="true"><i class="fa-solid fa-lock"></i> Fırsatlar &amp; Teklifler <span class="tb-soon">Faz 2</span></button>
+      <button class="gv-tab" data-tab="firsat" role="tab" aria-selected="false"><i class="fa-solid fa-chart-line"></i> Fırsatlar &amp; Teklifler</button>
     </div>
 
     <!-- ============ ÖZET ============ -->
     <section class="tab-panel" data-tab-panel="ozet" role="tabpanel" aria-label="Özet">
       <div class="dash-cols">
         <div class="gv-card">
-          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-building"></i> Firma Künyesi</div></div>
+          <div class="gc-head"><div class="gc-title" id="cdKunyeTitle"><i class="fa-solid fa-building"></i> Firma Künyesi</div></div>
           <div class="gc-body">
-            <dl class="cari-hero-meta" style="grid-template-columns:1fr">
+            <dl class="cari-hero-meta" id="cdKunye" style="grid-template-columns:1fr">
               <div><dt>Ünvan</dt><dd>Demir-Beton İnş. Ltd.</dd></div>
               <div><dt>Cari Türü</dt><dd>Taşeron — kaba inşaat (kalıp, demir, beton işçiliği)</dd></div>
               <div><dt>Vergi Dairesi / No</dt><dd>Tuzla V.D. · 726 034 8841</dd></div>
@@ -217,23 +208,25 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
         </div>
         <div class="gv-card">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-scale-balanced"></i> Açık Bakiye</div></div>
-          <div class="bal-row borc odue">
-            <span class="br-lbl"><i class="fa-solid fa-triangle-exclamation"></i> Vadesi geçen tutar</span>
-            <span class="br-val">₺342.000</span>
+          <div id="cdBalRows">
+            <div class="bal-row borc odue">
+              <span class="br-lbl"><i class="fa-solid fa-triangle-exclamation"></i> Vadesi geçen tutar</span>
+              <span class="br-val">₺342.000</span>
+            </div>
+            <div class="bal-row">
+              <span class="br-lbl"><i class="fa-solid fa-calendar-days"></i> Son hareket tarihi</span>
+              <span class="br-val" style="font-weight:700;color:var(--ink)">28 Haz 2026</span>
+            </div>
+            <div class="bal-row">
+              <span class="br-lbl"><i class="fa-solid fa-clock"></i> Gecikme</span>
+              <span class="br-val" style="font-weight:700;color:var(--ink)">4 gün</span>
+            </div>
           </div>
-          <div class="bal-row">
-            <span class="br-lbl"><i class="fa-solid fa-calendar-days"></i> Son hareket tarihi</span>
-            <span class="br-val" style="font-weight:700;color:var(--ink)">28 Haz 2026</span>
-          </div>
-          <div class="bal-row">
-            <span class="br-lbl"><i class="fa-solid fa-clock"></i> Gecikme</span>
-            <span class="br-val" style="font-weight:700;color:var(--ink)">4 gün</span>
-          </div>
-          <div class="gc-foot"><a class="gc-link" href="crm-cari-durum.html?cari=demir-beton">Tam ekstreyi gör <i class="fa-solid fa-arrow-right"></i></a></div>
+          <div class="gc-foot"><a class="gc-link" id="cdEkstreLink" href="crm-cari-durum.html?cari=demir-beton">Tam ekstreyi gör <i class="fa-solid fa-arrow-right"></i></a></div>
         </div>
       </div>
 
-      <div class="gv-card">
+      <div class="gv-card" id="cdSzlOzet">
         <div class="gc-head">
           <div class="gc-title"><i class="fa-solid fa-file-signature"></i> Sözleşme Özeti</div>
           <a class="gc-link" href="#" data-tab-goto="sozlesme">Detay <i class="fa-solid fa-arrow-right"></i></a>
@@ -251,7 +244,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
 
     <!-- ============ İLGİLİ KİŞİLER ============ -->
     <section class="tab-panel" data-tab-panel="kisiler" role="tabpanel" aria-label="İlgili Kişiler" hidden>
-      <div class="gv-card">
+      <div class="gv-card" id="cdKisiler">
         <div class="gc-head">
           <div class="gc-title"><i class="fa-solid fa-id-card"></i> İlgili Kişi</div>
           <a class="gc-link" href="crm-cari-kisiler.html">Tüm cari kişileri <i class="fa-solid fa-arrow-right"></i></a>
@@ -290,7 +283,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
                 <th class="num col-tutar">Yürüyen Bakiye</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="cdHareketBody">
               <tr>
                 <td class="muted">02 Haz 2026</td>
                 <td class="t-strong">Hakediş #1 tahakkuku</td>
@@ -326,7 +319,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
     </section>
 
     <!-- ============ SÖZLEŞMELER & HAKEDİŞLER ============ -->
-    <section class="tab-panel" data-tab-panel="sozlesme" role="tabpanel" aria-label="Sözleşmeler ve Hakedişler" hidden>
+    <section class="tab-panel" data-tab-panel="sozlesme" role="tabpanel" aria-label="Sözleşmeler ve Hakedişler" id="cdSzlTab" hidden>
       <div class="gv-card" style="margin-bottom:16px">
         <div class="szl-summary">
           <h3><a href="crm-finans-sozlesme-detay.html" style="color:var(--ink)">SZL-2025-T05</a> — Vadi Konakları kaba inşaat</h3>
@@ -371,14 +364,15 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
       </div>
     </section>
 
-    <!-- ============ FIRSATLAR & TEKLİFLER (Faz 2 kilitli) ============ -->
-    <section class="tab-panel" data-tab-panel="firsat" role="tabpanel" aria-label="Fırsatlar ve Teklifler" hidden>
+    <!-- ============ FIRSATLAR & TEKLİFLER ([D11] Satış CRM canlı — kilit kaldırıldı) ============ -->
+    <section class="tab-panel" data-tab-panel="firsat" role="tabpanel" aria-label="Fırsatlar ve Teklifler" id="cdFirsatTab" hidden>
       <div class="gv-card">
-        <div class="locked-panel">
-          <i class="fa-solid fa-lock"></i>
-          <h4>Satış fırsatları ve teklifler</h4>
-          <p>Bu cari için fırsat ve teklif takibi, Satış CRM modülüyle birlikte Faz 2 kapsamında eklenecek.</p>
-          <span class="gp-soon">Faz 2</span>
+        <div class="gv-empty">
+          <div class="ge-ico"><i class="fa-solid fa-chart-line"></i></div>
+          <h4>Bu cari için satış fırsatı kaydı yok</h4>
+          <p>Taşeron ve tedarikçi carilerinde satış süreci izlenmez; fırsat ve teklif takibi
+            satış müşterisi cari kartlarında ve Satış CRM bölümünde yaşar.</p>
+          <a class="btn btn-ghost btn-sm" href="crm-satis-pipeline.html" style="margin-top:14px"><i class="fa-solid fa-table-columns"></i> Satış Pipeline'ı</a>
         </div>
       </div>
     </section>
@@ -413,10 +407,6 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
   }
   tabs.forEach(function(t){
     t.addEventListener('click', function(){
-      if(t.hasAttribute('data-locked')){
-        if(window.gvToast) gvToast('Fırsatlar &amp; Teklifler — Faz 2 kapsamında, bu sürümde kilitli.'.replace('&amp;','&'), {type:'info'});
-        return;
-      }
       var id = t.getAttribute('data-tab');
       activate(id);
       history.replaceState(null, '', '#' + id);
@@ -435,6 +425,202 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
   var initial = (location.hash || '').replace('#', '');
   var valid = tabs.some(function(t){ return t.getAttribute('data-tab') === initial; });
   activate(valid ? initial : 'ozet');
+})();
+
+/* =====================================================================
+   [D11] ?cari= çok-kayıt şablonu (demirbaş ?zmt= idiyomu):
+   parametresiz → Demir-Beton default'u AYNEN; ?cari=onaran|toprak →
+   satış müşterisi cari kartı (CAR- serisi; tutarlar SSZ ödeme planlarıyla
+   ve crm-cari-durum.html kayıtlarıyla BİREBİR — shell.js D11 kanoniği).
+   ===================================================================== */
+(function(){
+  var REC = {
+    onaran: {
+      title:'Selçuk Onaran — Cari Kartı — Gavia CRM',
+      eyebrow:'Rehber &amp; Hesap · Müşteri · Satış',
+      name:'Selçuk Onaran',
+      sub:'CAR-2026-021 · Kule Ofis B-304 (teslim) + Vadi Konakları C-18 (taksitli) · temsilci Okan Eren',
+      mark:'SO', markBg:'rgba(var(--acc-rgb),.12)', markFg:'var(--acc-ink)',
+      tags:'<span class="gtag mint">Müşteri · Satış</span>'
+          +'<span class="gstat ok"><i class="fa-solid fa-circle-check"></i> Ödemeler düzenli</span>',
+      meta:'<div><dt>CRM Kartı</dt><dd><a href="crm-satis-musteri-detay.html?mst=001" style="color:var(--acc-ink)">MST-2026-001</a></dd></div>'
+          +'<div><dt>Telefon</dt><dd>0533 000 21 04</dd></div>'
+          +'<div><dt>Birimler</dt><dd><a href="crm-satis-birim-detay.html?birim=KO-B-304">KO-B-304</a> · <a href="crm-satis-birim-detay.html?birim=VK-C-18">VK-C-18</a></dd></div>'
+          +'<div><dt>Cari Hesap No</dt><dd>CAR-2026-021</dd></div>',
+      stats:'<div class="hstat ok"><span class="hstat-num">₺3.592.000</span><span class="hstat-lbl">Kalan taksit bakiyesi — alacağımız</span></div>'
+           +'<a class="hstat" href="crm-satis-sozlesme-detay.html?ssz=2026-003"><span class="hstat-num">SSZ-2026-003</span><span class="hstat-lbl">Aktif satış sözleşmesi <i class="fa-solid fa-arrow-right"></i></span></a>'
+           +'<div class="hstat"><span class="hstat-num">14/36</span><span class="hstat-lbl">Ödenen taksit</span></div>'
+           +'<a class="hstat" href="crm-satis-talep-detay.html?sst=007"><span class="hstat-num">1</span><span class="hstat-lbl">Açık garanti talebi (Portal) <i class="fa-solid fa-arrow-right"></i></span></a>',
+      kunyeTitle:'<i class="fa-solid fa-user"></i> Müşteri Künyesi',
+      kunye:'<div><dt>Ad Soyad</dt><dd>Selçuk Onaran</dd></div>'
+           +'<div><dt>Cari Türü</dt><dd>Müşteri · Satış — kurumsal alıcı (ofis + konut)</dd></div>'
+           +'<div><dt>CRM Kartı</dt><dd><a href="crm-satis-musteri-detay.html?mst=001" style="color:var(--acc-ink)">MST-2026-001 — Satış CRM müşteri kartı</a></dd></div>'
+           +'<div><dt>Vergi Dairesi / No</dt><dd>Kozyatağı V.D. · 048 213 5590</dd></div>'
+           +'<div><dt>E-posta</dt><dd>selcuk.onaran@ornek.example</dd></div>'
+           +'<div><dt>Adres</dt><dd>Ataşehir, İstanbul</dd></div>'
+           +'<div><dt>Birimler</dt><dd>KO-B-304 (teslim edildi — TSL-2026-001) · VK-C-18 (taksit sürüyor)</dd></div>',
+      bal:'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-scale-balanced"></i> Kalan bakiye (alacağımız)</span><span class="br-val" style="color:var(--ok)">₺3.592.000</span></div>'
+         +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-calendar-days"></i> Son tahsilat</span><span class="br-val" style="font-weight:700;color:var(--ink)">15 Haz 2026 · 14. taksit</span></div>'
+         +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-clock"></i> Sonraki vade</span><span class="br-val" style="font-weight:700;color:var(--ink)">15 Tem 2026 · ₺115.000</span></div>',
+      ekstre:'crm-cari-durum.html?cari=onaran',
+      szlOzet:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Satış Sözleşmeleri</div><a class="gc-link" href="#" data-tab-goto="sozlesme">Detay <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><dl class="cari-hero-meta">'
+           +'<div><dt>SSZ-2026-003 — VK-C-18</dt><dd><a href="crm-satis-sozlesme-detay.html?ssz=2026-003" style="color:var(--acc-ink)">₺6.120.000 · 14/36 taksit ödendi</a></dd></div>'
+           +'<div><dt>SSZ-2025-042 — KO-B-304</dt><dd><a href="crm-satis-sozlesme-detay.html?ssz=2025-042" style="color:var(--acc-ink)">Tamamlandı · teslim TSL-2026-001</a></dd></div>'
+           +'<div><dt>Kalan Bakiye</dt><dd>₺3.592.000 (22 taksit + teslim ödemesi)</dd></div>'
+           +'<div><dt>Ödeme Düzeni</dt><dd>Düzenli — gecikme yok</dd></div>'
+           +'</dl></div>',
+      kisiler:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-id-card"></i> İletişim</div>'
+           +'<a class="gc-link" href="crm-satis-musteri-detay.html?mst=001">CRM kartındaki görüşme geçmişi <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="person-card"><div class="person-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">SO</div>'
+           +'<div class="person-info"><h3>Selçuk Onaran</h3><span>Müşteri · Satış — CRM MST-2026-001 · temsilci Okan Eren</span></div></div>'
+           +'<div class="person-contact">'
+           +'<div class="pc-row"><i class="fa-solid fa-phone"></i> <a href="tel:05330002104">0533 000 21 04</a></div>'
+           +'<div class="pc-row"><i class="fa-solid fa-envelope"></i> <a href="mailto:selcuk.onaran@ornek.example">selcuk.onaran@ornek.example</a></div>'
+           +'<div class="pc-row"><i class="fa-solid fa-building"></i> Kule Ofis B-304 (teslim) · Vadi Konakları C-18</div>'
+           +'</div>'
+           +'<div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Müşteri Portalı girişi bulunan demo müşterisidir; portal talepleri Satış Sonrası ekranında "Portal" rozetiyle görünür.</span></div>',
+      hareket:[
+        ['12 Nis 2026','SSZ-2026-003 satış bedeli tahakkuku (VK-C-18)','₺6.120.000','—','₺6.120.000'],
+        ['12 Nis 2026','Peşinat tahsilatı (%15)','—','₺918.000','₺5.202.000'],
+        ['15 May 2026','Taksit tahsilatları 1–12 (dönem özeti)','—','₺1.380.000','₺3.822.000'],
+        ['15 Haz 2026','13.–14. taksit tahsilatı','—','₺230.000','₺3.592.000']
+      ],
+      szlTab:'<div class="gv-card" style="margin-bottom:16px">'
+           +'<div class="szl-summary"><h3><a href="crm-satis-sozlesme-detay.html?ssz=2026-003" style="color:var(--ink)">SSZ-2026-003</a> — Vadi Konakları C-18 konut satışı</h3>'
+           +'<div class="szl-sub">₺6.120.000 · peşinat ₺918.000 + 36 × ₺115.000 + teslimde ₺1.062.000 · kaynak teklif <a href="crm-satis-teklif-detay.html?tkf=001" style="color:var(--acc-ink)">TKF-2026-001</a></div></div>'
+           +'<div class="kum-note" style="border-top:none;padding-top:0">'
+           +'<div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:39%"></div></div><span class="gbar-val">14/36</span></div>'
+           +'<span class="kn-txt">₺2.528.000 tahsil edildi / kalan ₺3.592.000</span>'
+           +'<a class="btn btn-ghost btn-sm" href="crm-satis-sozlesme-detay.html?ssz=2026-003"><i class="fa-solid fa-file-signature"></i> Sözleşme Detayı</a></div></div>'
+           +'<div class="gv-card"><div class="szl-summary"><h3><a href="crm-satis-sozlesme-detay.html?ssz=2025-042" style="color:var(--ink)">SSZ-2025-042</a> — Kule Ofis B-304 ofis satışı</h3>'
+           +'<div class="szl-sub">Tamamlandı · teslim tutanağı <a href="crm-satis-sozlesme-detay.html?ssz=2025-042" style="color:var(--acc-ink)">TSL-2026-001</a> · satış sonrası: <a href="crm-satis-talep-detay.html?sst=007" style="color:var(--acc-ink)">SST-2026-007 klima drenaj (garanti · Portal)</a></div></div></div>',
+      firsatTab:'<div class="gv-card" style="margin-bottom:16px">'
+           +'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-table-columns"></i> Açık Fırsat</div>'
+           +'<a class="gc-link" href="crm-satis-pipeline.html">Pipeline <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="szl-summary" style="padding-top:0"><h3><a href="crm-satis-firsat-detay.html?frs=008" style="color:var(--ink)">FRS-2026-008</a> — Göl Evleri 2. Etap V-05 kurumsal misafirhane</h3>'
+           +'<div class="szl-sub">Aşama: <span class="gstat info">Müzakere</span> · temsilci Okan Eren</div></div></div>'
+           +'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-invoice-dollar"></i> Teklif Geçmişi</div></div>'
+           +'<div class="szl-summary" style="padding-top:0"><h3><a href="crm-satis-teklif-detay.html?tkf=001" style="color:var(--ink)">TKF-2026-001</a> — VK-C-18 · %2 indirim</h3>'
+           +'<div class="szl-sub">Durum: <span class="gstat ok">Onaylı</span> · satış tamamlandı → SSZ-2026-003</div></div></div>'
+    },
+    toprak: {
+      title:'Derya Toprak — Cari Kartı — Gavia CRM',
+      eyebrow:'Rehber &amp; Hesap · Müşteri · Satış',
+      name:'Derya Toprak',
+      sub:'CAR-2026-022 · Vadi Konakları A-03 · A-09 · C-21 (yatırım paketi) · temsilci Okan Eren',
+      mark:'DT', markBg:'rgba(var(--acc-rgb),.12)', markFg:'var(--acc-ink)',
+      tags:'<span class="gtag mint">Müşteri · Satış</span>'
+          +'<span class="gstat danger"><i class="fa-solid fa-triangle-exclamation"></i> Vadesi geçti · 12 gün</span>',
+      meta:'<div><dt>CRM Kartı</dt><dd><a href="crm-satis-musteri-detay.html?mst=002" style="color:var(--acc-ink)">MST-2026-002</a></dd></div>'
+          +'<div><dt>Telefon</dt><dd>0532 000 47 82</dd></div>'
+          +'<div><dt>Birimler</dt><dd><a href="crm-satis-birim-detay.html?birim=VK-A-03">VK-A-03</a> · <a href="crm-satis-birim-detay.html?birim=VK-A-09">VK-A-09</a> · <a href="crm-satis-birim-detay.html?birim=VK-C-21">VK-C-21</a></dd></div>'
+          +'<div><dt>Cari Hesap No</dt><dd>CAR-2026-022</dd></div>',
+      stats:'<div class="hstat danger"><span class="hstat-num">₺570.000</span><span class="hstat-lbl">Vadesi geçen 5. taksit — 12 gün</span></div>'
+           +'<div class="hstat"><span class="hstat-num">₺4.560.000</span><span class="hstat-lbl">Kalan bakiye — alacağımız</span></div>'
+           +'<a class="hstat" href="crm-satis-sozlesme-detay.html?ssz=2026-004"><span class="hstat-num">SSZ-2026-004</span><span class="hstat-lbl">Paket satış sözleşmesi <i class="fa-solid fa-arrow-right"></i></span></a>'
+           +'<a class="hstat" href="crm-satis-pipeline.html"><span class="hstat-num">2</span><span class="hstat-lbl">Açık fırsat <i class="fa-solid fa-arrow-right"></i></span></a>',
+      kunyeTitle:'<i class="fa-solid fa-user"></i> Müşteri Künyesi',
+      kunye:'<div><dt>Ad Soyad</dt><dd>Derya Toprak</dd></div>'
+           +'<div><dt>Cari Türü</dt><dd>Müşteri · Satış — yatırımcı (3 daire portföyü)</dd></div>'
+           +'<div><dt>CRM Kartı</dt><dd><a href="crm-satis-musteri-detay.html?mst=002" style="color:var(--acc-ink)">MST-2026-002 — Satış CRM müşteri kartı</a></dd></div>'
+           +'<div><dt>E-posta</dt><dd>derya.toprak@ornek.example</dd></div>'
+           +'<div><dt>Adres</dt><dd>Üsküdar, İstanbul</dd></div>'
+           +'<div><dt>Birimler</dt><dd>VK-A-03 · VK-A-09 · VK-C-21 (paket satış, Şubat 2026)</dd></div>'
+           +'<div><dt>Açık Süreçler</dt><dd>VK-C-24 kapora (FRS-2026-011) · GE2 V-21+V-22 görüşme (FRS-2026-015)</dd></div>',
+      bal:'<div class="bal-row borc odue"><span class="br-lbl"><i class="fa-solid fa-triangle-exclamation"></i> Vadesi geçen 5. taksit (20 Haz)</span><span class="br-val">₺570.000</span></div>'
+         +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-scale-balanced"></i> Kalan bakiye (alacağımız)</span><span class="br-val" style="color:var(--ok)">₺4.560.000</span></div>'
+         +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-clock"></i> Gecikme</span><span class="br-val" style="font-weight:700;color:var(--danger)">12 gün</span></div>',
+      ekstre:'crm-cari-durum.html?cari=toprak',
+      szlOzet:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Satış Sözleşmesi Özeti</div><a class="gc-link" href="#" data-tab-goto="sozlesme">Detay <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><dl class="cari-hero-meta">'
+           +'<div><dt>Sözleşme No</dt><dd><a href="crm-satis-sozlesme-detay.html?ssz=2026-004" style="color:var(--acc-ink)">SSZ-2026-004</a></dd></div>'
+           +'<div><dt>Paket Bedeli</dt><dd>₺13.665.000 (%6 indirimli)</dd></div>'
+           +'<div><dt>Ödeme Planı</dt><dd>%50 peşin + 12 × ₺570.000</dd></div>'
+           +'<div><dt>Durum</dt><dd>4/12 taksit ödendi · 5. taksit gecikmede</dd></div>'
+           +'</dl></div>',
+      kisiler:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-id-card"></i> İletişim</div>'
+           +'<a class="gc-link" href="crm-satis-musteri-detay.html?mst=002">CRM kartındaki görüşme geçmişi <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="person-card"><div class="person-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">DT</div>'
+           +'<div class="person-info"><h3>Derya Toprak</h3><span>Müşteri · Satış — CRM MST-2026-002 · temsilci Okan Eren</span></div></div>'
+           +'<div class="person-contact">'
+           +'<div class="pc-row"><i class="fa-solid fa-phone"></i> <a href="tel:05320004782">0532 000 47 82</a></div>'
+           +'<div class="pc-row"><i class="fa-solid fa-envelope"></i> <a href="mailto:derya.toprak@ornek.example">derya.toprak@ornek.example</a></div>'
+           +'<div class="pc-row"><i class="fa-solid fa-building"></i> Vadi Konakları A-03 · A-09 · C-21</div>'
+           +'</div>'
+           +'<div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Tahsilat gecikmesi satış müdürünün takip listesindedir; hatırlatma 30 Haz 2026 tarihinde iletildi.</span></div>',
+      hareket:[
+        ['20 Şub 2026','SSZ-2026-004 paket satış tahakkuku (A-03 · A-09 · C-21)','₺13.665.000','—','₺13.665.000'],
+        ['20 Şub 2026','Peşin ödeme tahsilatı (%50)','—','₺6.825.000','₺6.840.000'],
+        ['20 May 2026','Taksit tahsilatları 1–4','—','₺2.280.000','₺4.560.000']
+      ],
+      szlTab:'<div class="gv-card">'
+           +'<div class="szl-summary"><h3><a href="crm-satis-sozlesme-detay.html?ssz=2026-004" style="color:var(--ink)">SSZ-2026-004</a> — Vadi Konakları 3 daire yatırım paketi</h3>'
+           +'<div class="szl-sub">₺13.665.000 (%6 indirim) · %50 peşin + 12 × ₺570.000 · kaynak teklif <a href="crm-satis-teklif-detay.html?tkf=002" style="color:var(--acc-ink)">TKF-2026-002</a></div></div>'
+           +'<div class="kum-note" style="border-top:none;padding-top:0">'
+           +'<div class="gbar"><div class="gbar-track"><div class="gbar-fill warn" style="width:66.6%"></div></div><span class="gbar-val">%66,6</span></div>'
+           +'<span class="kn-txt">₺9.105.000 tahsil edildi / kalan ₺4.560.000 — 5. taksit (₺570.000) 12 gündür gecikmede</span>'
+           +'<a class="btn btn-ghost btn-sm" href="crm-satis-sozlesme-detay.html?ssz=2026-004"><i class="fa-solid fa-file-signature"></i> Sözleşme Detayı</a></div></div>',
+      firsatTab:'<div class="gv-card" style="margin-bottom:16px">'
+           +'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-table-columns"></i> Açık Fırsatlar</div>'
+           +'<a class="gc-link" href="crm-satis-pipeline.html">Pipeline <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="szl-summary" style="padding-top:0"><h3><a href="crm-satis-firsat-detay.html?frs=011" style="color:var(--ink)">FRS-2026-011</a> — VK-C-24 (2+1)</h3>'
+           +'<div class="szl-sub">Aşama: <span class="gstat ok">Kapora</span> · birim rezerve · sözleşme hazırlığında</div></div>'
+           +'<div class="szl-summary" style="padding-top:0"><h3><a href="crm-satis-firsat-detay.html?frs=015" style="color:var(--ink)">FRS-2026-015</a> — GE2 V-21 + V-22 yatırım paketi</h3>'
+           +'<div class="szl-sub">Aşama: <span class="gstat info">Sunum / Gezi</span> · lansman öncesi ön-görüşme</div></div></div>'
+           +'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-invoice-dollar"></i> Teklif Geçmişi</div></div>'
+           +'<div class="szl-summary" style="padding-top:0"><h3><a href="crm-satis-teklif-detay.html?tkf=002" style="color:var(--ink)">TKF-2026-002</a> — 3 daire paketi · %6 indirim</h3>'
+           +'<div class="szl-sub">Durum: <span class="gstat ok">Onaylı</span> (müdür onaylı) · satış tamamlandı → SSZ-2026-004</div></div></div>'
+    }
+  };
+
+  var key = new URLSearchParams(location.search).get('cari');
+  var R = key && REC[key];
+  if(!R) return;   /* parametresiz / bilinmeyen → Demir-Beton default'u aynen */
+
+  document.title = R.title;
+  document.getElementById('cdEyebrow').innerHTML = R.eyebrow;
+  document.getElementById('cdName').textContent = R.name;
+  document.getElementById('cdSub').textContent = R.sub;
+  var mk = document.getElementById('cdMark');
+  mk.textContent = R.mark; mk.style.background = R.markBg; mk.style.color = R.markFg;
+  document.getElementById('cdTags').innerHTML = R.tags;
+  document.getElementById('cdMeta').innerHTML = R.meta;
+  document.getElementById('cdStats').innerHTML = R.stats;
+  document.getElementById('cdKunyeTitle').innerHTML = R.kunyeTitle;
+  document.getElementById('cdKunye').innerHTML = R.kunye;
+  document.getElementById('cdBalRows').innerHTML = R.bal;
+  document.getElementById('cdSzlOzet').innerHTML = R.szlOzet;
+  document.getElementById('cdKisiler').innerHTML = R.kisiler;
+  document.getElementById('cdSzlTab').innerHTML = R.szlTab;
+  document.getElementById('cdFirsatTab').innerHTML = R.firsatTab;
+  var szlTabBtn = document.querySelector('.gv-tab[data-tab="sozlesme"]');
+  if(szlTabBtn) szlTabBtn.innerHTML = '<i class="fa-solid fa-file-signature"></i> Sözleşmeler &amp; Ödemeler';
+
+  /* hareket ekstresi — müşteri defter tarafı: yürüyen bakiye ALACAK (ok rengi) */
+  var hb = '';
+  R.hareket.forEach(function(h){
+    hb += '<tr><td class="muted">'+h[0]+'</td><td class="t-strong">'+h[1]+'</td>'
+        + '<td class="num">'+h[2]+'</td><td class="num">'+h[3]+'</td>'
+        + '<td class="num" style="font-weight:800;color:var(--ok)">'+h[4]+' Alacak</td></tr>';
+  });
+  document.getElementById('cdHareketBody').innerHTML = hb;
+
+  /* ekstre linkleri → doğru cari-durum kaydı */
+  document.querySelectorAll('a[href^="crm-cari-durum.html"]').forEach(function(a){ a.href = R.ekstre; });
+
+  /* künye kartı alt notu Demir-Beton'a özel — müşteri kartında nötrle */
+  var kf = document.getElementById('cdKunye').closest('.gv-card').querySelector('.gc-foot span');
+  if(kf) kf.innerHTML = '<i class="fa-solid fa-circle-info"></i> Satış süreci belgeleri Sözleşmeler sekmesinde; görüşme geçmişi CRM kartındadır.';
+
+  /* tab-goto linkleri yeniden bağla (innerHTML ile yenilenen bölgeler için) */
+  document.querySelectorAll('#cdSzlOzet [data-tab-goto]').forEach(function(el){
+    el.addEventListener('click', function(e){
+      e.preventDefault();
+      var btn = document.querySelector('.gv-tab[data-tab="' + el.getAttribute('data-tab-goto') + '"]');
+      if(btn) btn.click();
+    });
+  });
 })();
 </script>
 </body>
