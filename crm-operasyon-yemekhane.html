@@ -17,9 +17,11 @@
 <link rel="stylesheet" href="assets/css/ui.css">
 <style>
 /* ============ SAYFAYA ÖZEL — Yemekhane kaydı ============ */
-#tblYemek{min-width:780px}
+#tblYemek{min-width:860px}
 .col-ogun{width:100px}
 .col-toplam{width:110px}
+.col-tur{width:120px}
+.yk-tur-badge{font-size:11px}
 
 .yk-cell{display:flex;align-items:center;gap:12px;min-width:0}
 .yk-mark{width:38px;height:38px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:14px;background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)}
@@ -130,11 +132,25 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
       <div class="gc-head">
         <div class="gc-title"><i class="fa-solid fa-list"></i> Günlük Kişi Sayımı</div>
       </div>
+      <!-- Taşeron filtresi (D9 / 1.6) — .filter-bar/.chip shell komponenti, ancak ui.js'in
+           genel data-filter kablolaması KASITLI kullanılmaz (footer toplamlarını görünen
+           satırlara göre yeniden hesaplamak gerekiyor); data-yfilter özel öznitelikle
+           sayfa-lokal JS bloğu yönetir, bkz. sayfa altındaki script. -->
+      <div class="filter-bar">
+        <div class="chips" id="ykChips">
+          <button class="chip is-on" type="button" data-yfilter="tum"><i class="fa-solid fa-layer-group"></i> Tümü</button>
+          <button class="chip" type="button" data-yfilter="yapitas"><i class="fa-solid fa-helmet-safety"></i> Yapıtaş</button>
+          <button class="chip" type="button" data-yfilter="demir-beton" data-tas="1"><i class="fa-solid fa-people-group"></i> Demir-Beton İnş. Ltd.</button>
+          <button class="chip" type="button" data-yfilter="elektromek" data-tas="1"><i class="fa-solid fa-people-group"></i> ElektroMek Taahhüt</button>
+          <button class="chip" type="button" data-yfilter="yalitim" data-tas="1"><i class="fa-solid fa-people-group"></i> Yalıtım Kardeşler</button>
+        </div>
+      </div>
       <div class="gc-body flush">
         <table class="gtable" id="tblYemek">
           <thead>
             <tr>
               <th>Yer</th>
+              <th class="col-tur">Tür</th>
               <th class="col-ogun num">Kahvaltı</th>
               <th class="col-ogun num">Öğle</th>
               <th class="col-ogun num">Akşam</th>
@@ -145,7 +161,7 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
           <tbody id="ykBody"></tbody>
           <tfoot>
             <tr>
-              <td class="t-strong">Genel Toplam</td>
+              <td class="t-strong" id="ftLabel" colspan="2">Genel Toplam</td>
               <td class="num t-strong" id="ftKahvalti">—</td>
               <td class="num t-strong" id="ftOgle">—</td>
               <td class="num t-strong" id="ftAksam">—</td>
@@ -206,13 +222,14 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
      Taşeron-şantiye eşleşmesi crm-finans-taseron.html ile aynı: Demir-Beton + ElektroMek → Vadi,
      Yalıtım Kardeşler → Liman. Merkez Şantiye'de taşeron ekibi yok (depo+atölye, kendi kadrosu). ---- */
   var YERLER = [
-    {ad:'Vadi Konakları',        tip:'oz',  ic:'fa-helmet-safety', kahvalti:32, ogle:35, aksam:18},
-    {ad:'Demir-Beton İnş. Ltd.', tip:'tas', ic:'fa-people-group',  santiye:'Vadi Konakları', kahvalti:9,  ogle:10, aksam:6},
-    {ad:'ElektroMek Taahhüt',    tip:'tas', ic:'fa-people-group',  santiye:'Vadi Konakları', kahvalti:5,  ogle:6,  aksam:3},
-    {ad:'Liman Lojistik Merkezi',tip:'oz',  ic:'fa-helmet-safety', kahvalti:20, ogle:22, aksam:10},
-    {ad:'Yalıtım Kardeşler',     tip:'tas', ic:'fa-people-group',  santiye:'Liman Lojistik Merkezi', kahvalti:7, ogle:8, aksam:4},
-    {ad:'Merkez Şantiye',        tip:'oz',  ic:'fa-helmet-safety', kahvalti:11, ogle:12, aksam:5}
+    {ad:'Vadi Konakları',        tip:'oz',  ic:'fa-helmet-safety', firma:'yapitas',     kahvalti:32, ogle:35, aksam:18},
+    {ad:'Demir-Beton İnş. Ltd.', tip:'tas', ic:'fa-people-group',  firma:'demir-beton', santiye:'Vadi Konakları', kahvalti:9,  ogle:10, aksam:6},
+    {ad:'ElektroMek Taahhüt',    tip:'tas', ic:'fa-people-group',  firma:'elektromek',  santiye:'Vadi Konakları', kahvalti:5,  ogle:6,  aksam:3},
+    {ad:'Liman Lojistik Merkezi',tip:'oz',  ic:'fa-helmet-safety', firma:'yapitas',     kahvalti:20, ogle:22, aksam:10},
+    {ad:'Yalıtım Kardeşler',     tip:'tas', ic:'fa-people-group',  firma:'yalitim',     santiye:'Liman Lojistik Merkezi', kahvalti:7, ogle:8, aksam:4},
+    {ad:'Merkez Şantiye',        tip:'oz',  ic:'fa-helmet-safety', firma:'yapitas',     kahvalti:11, ogle:12, aksam:5}
   ];
+  var FIRMA_LBL = {yapitas:'Yapıtaş', 'demir-beton':'Demir-Beton', elektromek:'ElektroMek', yalitim:'Yalıtım Kardeşler'};
 
   /* birim maliyet (madde 11 — mock, KDV dahil; shell.js kanonik yorum bloğuyla senkron) */
   var BIRIM = {kahvalti:50, ogle:90, aksam:75};
@@ -231,11 +248,12 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
       tasToplam += toplam;
       tas.kahvalti += y.kahvalti; tas.ogle += y.ogle; tas.aksam += y.aksam;
     }
-    html += '<tr class="'+(y.tip === 'tas' ? 'is-tas' : '')+'">';
+    html += '<tr class="'+(y.tip === 'tas' ? 'is-tas' : '')+'" data-firma="'+y.firma+'" data-kahvalti="'+y.kahvalti+'" data-ogle="'+y.ogle+'" data-aksam="'+y.aksam+'">';
     html += '<td><div class="yk-cell"><div class="yk-mark'+(y.tip==='tas'?' tas':'')+'"><i class="fa-solid '+y.ic+'"></i></div>'
           + '<div class="yk-info"><b>'+y.ad+'</b>'
           + (y.tip==='tas' ? '<span>Taşeron ekibi · '+y.santiye+'</span>' : '<span>Öz kadro</span>')
           + '</div></div></td>';
+    html += '<td><span class="gstat yk-tur-badge '+(y.tip==='tas'?'info':'off')+'">'+(y.tip==='tas'?'Taşeron':'Yapıtaş')+'</span></td>';
     html += '<td class="num yk-num">'+y.kahvalti+'</td>';
     html += '<td class="num yk-num">'+y.ogle+'</td>';
     html += '<td class="num yk-num">'+y.aksam+'</td>';
@@ -260,6 +278,40 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
   document.getElementById('kpiTaseron').textContent = tasToplam;
   document.getElementById('kpiTaseronYuzde').innerHTML = '<i class="fa-solid fa-chart-pie"></i> Toplamın %' + Math.round(tasToplam / genelToplam * 100) + '’i';
   document.getElementById('ykSub').textContent = genelToplam + ' kişi · 3 şantiye + 3 taşeron ekibi · 2 Temmuz 2026, Perşembe';
+
+  /* ---- Taşeron filtresi (D9 / 1.6) — satırları data-firma'ya göre gösterir/gizler,
+     footer toplamlarını (genel toplam SAYILARINA dokunmadan) yalnız görünen satırlardan
+     yeniden hesaplar. Şef budaması (aşağıda) DOM'dan satır silmeden önce çalışsa da
+     recomputeFooter her zaman DOM'daki mevcut satırlardan okur — sıraya duyarsız. ---- */
+  var ftLabel = document.getElementById('ftLabel');
+  function recomputeFooter(fil){
+    var rows = Array.prototype.slice.call(document.querySelectorAll('#tblYemek tbody tr'));
+    var s = {kahvalti:0, ogle:0, aksam:0};
+    rows.forEach(function(tr){
+      var show = fil === 'tum' || tr.getAttribute('data-firma') === fil;
+      tr.hidden = !show;
+      if(show){
+        s.kahvalti += +tr.getAttribute('data-kahvalti');
+        s.ogle += +tr.getAttribute('data-ogle');
+        s.aksam += +tr.getAttribute('data-aksam');
+      }
+    });
+    var toplam = s.kahvalti + s.ogle + s.aksam;
+    var maliyet = s.kahvalti*BIRIM.kahvalti + s.ogle*BIRIM.ogle + s.aksam*BIRIM.aksam;
+    document.getElementById('ftKahvalti').textContent = s.kahvalti;
+    document.getElementById('ftOgle').textContent = s.ogle;
+    document.getElementById('ftAksam').textContent = s.aksam;
+    document.getElementById('ftToplam').textContent = toplam;
+    document.getElementById('ftTutar').textContent = trTl(maliyet);
+    ftLabel.textContent = fil === 'tum' ? 'Genel Toplam' : (FIRMA_LBL[fil] + ' Toplamı — filtrelenmiş görünüm');
+  }
+  document.querySelectorAll('#ykChips .chip[data-yfilter]').forEach(function(ch){
+    ch.addEventListener('click', function(){
+      document.querySelectorAll('#ykChips .chip').forEach(function(x){ x.classList.remove('is-on'); });
+      ch.classList.add('is-on');
+      recomputeFooter(ch.getAttribute('data-yfilter'));
+    });
+  });
 
   function renderMaliyet(toplam, oz, tasT, tasOgun, kisi){
     var strip = document.getElementById('maliyetStrip');
@@ -344,6 +396,11 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
     var sMaliyetTas = sTasKalan.kahvalti*BIRIM.kahvalti + sTasKalan.ogle*BIRIM.ogle + sTasKalan.aksam*BIRIM.aksam;
     document.getElementById('ftTutar').textContent = trTl(sMaliyet);
     renderMaliyet(sMaliyet, sMaliyet - sMaliyetTas, sMaliyetTas, sTas, st);
+
+    /* şefin sahasında Yalıtım Kardeşler yok — o taşeron chip'i gizlenir, kalan
+       chip filtresi (Tümü/Yapıtaş/Demir-Beton/ElektroMek) Vadi satırlarında tutarlı çalışır */
+    var yalitimChip = document.querySelector('#ykChips .chip[data-yfilter="yalitim"]');
+    if(yalitimChip) yalitimChip.hidden = true;
   }
 })();
 </script>
