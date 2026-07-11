@@ -4,7 +4,7 @@
    ilerleme/limit çubuğu · toggle · form · modal · toast · dropdown ·
    boş durum · aktivite listesi · onay zinciri (gvChain).
    Semantik renkler accent'ten BAĞIMSIZ.
-   Pilot onayı sonrası KİLİTLİ — değişiklik sahibine (T0) sorulur.
+   Ortak çekirdek dosya — değişiklikler tek elden yapılır.
    ===================================================================== */
 
 /* ============ BUTON AİLESİ ============ */
@@ -336,9 +336,6 @@
 .gv-pop a.danger{color:var(--danger)}
 .gv-pop a.danger i{color:var(--danger)}
 .gv-pop a.danger:hover{background:var(--danger-tint)}
-.gv-pop a.is-locked{color:var(--muted);cursor:not-allowed}
-.gv-pop a.is-locked:hover{background:transparent;color:var(--muted)}
-.gv-pop a .gp-soon{margin-left:auto;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--bg);border:1px solid var(--line);padding:2px 6px;border-radius:6px}
 
 /* ============ RESPONSIVE YOĞUNLUK ============ */
 @media(max-width:980px){

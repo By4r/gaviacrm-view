@@ -1,10 +1,10 @@
 /* =====================================================================
    GAVIA CRM — PAYLAŞILAN UI PRİMİTİFLERİ (kabuk-bağımsız)
    gvToast · gvConfirm (+ delege yıkıcı-aksiyon onayı) · hesap dropdown ·
-   data-wip / data-soon yakalama · data-export format menüsü [MOCK-SİM] ·
+   data-demo sim toast'ı · data-export format menüsü [MOCK-SİM] ·
    tablo arama + chip filtre yardımcıları ·
    gvChain onay zinciri (timeline + rozet + onayla/reddet/revize aksiyonu).
-   Pilot onayı sonrası KİLİTLİ (sahip: T0).
+   Ortak çekirdek dosya — değişiklikler tek elden yapılır.
    ===================================================================== */
 (function(){
   'use strict';
@@ -99,21 +99,18 @@
     });
   }, true);
 
-  /* ---- data-wip / data-soon linkleri — prototip kapsam bilgisi ---- */
+  /* ---- data-demo aksiyonları [MOCK-SİM] — gerçek arka uç gerektiren buton/link
+     tıklanınca attribute'taki mesajı toast'lar (ör. data-demo="İndirme hazırlanıyor (demo)") ---- */
   document.addEventListener('click', function(e){
-    var el = e.target.closest('[data-wip],[data-soon]'); if(!el) return;
-    if(el.hasAttribute('data-locked')) return;   /* tenant pop kendi mesajını verir */
+    var el = e.target.closest('[data-demo]'); if(!el) return;
     e.preventDefault();
-    var msg = el.hasAttribute('data-soon')
-      ? ((window.GV && GV.STR.phase2 || 'Faz 2') + ' kapsamında — bu sürümde kilitli.')
-      : ((window.GV && GV.STR.wip) || 'Bu ekran çoğaltma dalgasında eklenecek.');
-    gvToast(msg, {type:'info'});
+    gvToast(el.getAttribute('data-demo') || 'Bu işlem bu prototipte simülasyondur (demo).', {type:'info'});
   });
 
   /* ---- data-export — DIŞA AKTARMA format menüsü [MOCK-SİM] ----
      <a data-export="Kasa hareketleri"> → Excel/PDF/CSV mini-dropdown + gvToast sim.
      Görsel: .gv-pop idiyomu; konum inline fixed (butona demirli — ata elemanın
-     position'ına bağımlı DEĞİL, ui.css dokunuşu yok). Gerçek dosya üretimi Faz 2. ---- */
+     position'ına bağımlı DEĞİL, ui.css dokunuşu yok). Dosya üretimi simülasyondur. ---- */
   var EXP_FMT = [
     {ic:'fa-file-excel', lbl:'Excel (.xlsx)', f:'Excel'},
     {ic:'fa-file-pdf',   lbl:'PDF (.pdf)',    f:'PDF'},
@@ -183,7 +180,7 @@
     me.setAttribute('role','button'); me.setAttribute('tabindex','0');
     me.setAttribute('aria-haspopup','true'); me.setAttribute('aria-expanded','false');
     var items = window.GV_ACCOUNT_ITEMS || [
-      {ic:'fa-regular fa-user', lbl:'Profil', soon:true},
+      {ic:'fa-regular fa-user', lbl:'Profil', href:'crm-ayarlar-profil.html'},
       {div:true},
       {ic:'fa-solid fa-right-from-bracket', lbl:'Çıkış', href:'index.html', danger:true}
     ];
@@ -192,8 +189,7 @@
     items.forEach(function(it){
       if(it.div){ html += '<div class="gp-div"></div>'; return; }
       var cls = it.danger ? ' class="danger"' : '';
-      var soon = (!it.href && it.soon !== false) ? ' data-acc-soon="1"' : '';
-      html += '<a' + cls + ' href="' + (it.href || '#') + '"' + soon + '><i class="' + (it.ic || 'fa-solid fa-circle') + '"></i> ' + it.lbl + '</a>';
+      html += '<a' + cls + ' href="' + (it.href || '#') + '"><i class="' + (it.ic || 'fa-solid fa-circle') + '"></i> ' + it.lbl + '</a>';
     });
     menu.innerHTML = html;
     menu.querySelector('b').textContent = nm;
@@ -206,9 +202,6 @@
       else if(e.key === 'Escape') setOpen(false);
     });
     document.addEventListener('click', function(e){ if(!me.contains(e.target)) setOpen(false); });
-    menu.querySelectorAll('a[data-acc-soon]').forEach(function(a){
-      a.addEventListener('click', function(e){ e.preventDefault(); setOpen(false); gvToast(a.textContent.trim() + ' — yakında', {type:'info'}); });
-    });
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', accountMenu);
   else accountMenu();

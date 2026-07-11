@@ -4,7 +4,7 @@
    çevrildi: sol İKON-RAIL (76px, --gv-deep) + BÖLÜM MENÜSÜ (264px,
    --gv-night) + üst ince bar + AÇIK içerik. Rail/menü JS render
    (assets/js/shell.js). Divider grip ile menü katlanır (localStorage).
-   ≤980px: rail+menü off-canvas drawer. Pilot onayı sonrası KİLİTLİ.
+   ≤980px: rail+menü off-canvas drawer. Ortak çekirdek dosya — değişiklikler tek elden yapılır.
    ===================================================================== */
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -104,19 +104,11 @@ img{display:block;max-width:100%}
   content:"";position:absolute;left:-14px;top:9px;bottom:9px;width:3px;
   background:var(--acc);border-radius:0 var(--r-sm) var(--r-sm) 0;
 }
-.gv-mlink.is-locked{color:var(--on-dark-faint);cursor:not-allowed}
-.gv-mlink.is-locked:hover{background:transparent;color:var(--on-dark-faint)}
-.gv-mlink.is-locked i{color:var(--on-dark-faint)}
 .gv-mlink .ml-cnt{
   margin-left:auto;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;
   background:var(--acc);color:var(--gv-deep);
   min-width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;
   padding:0 6px;border-radius:7px;
-}
-.gv-mlink .ml-soon{
-  margin-left:auto;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--on-dark-mut);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
-  padding:2px 7px;border-radius:6px;
 }
 .gv-menu-foot{padding:14px;border-top:1px solid var(--hair);display:flex;flex-direction:column;gap:3px}
 .gv-menu-foot .gv-mlink{font-size:13px}
@@ -174,7 +166,7 @@ img{display:block;max-width:100%}
 .gv-search input::placeholder{color:var(--muted)}
 .gv-search input:focus{border-color:var(--acc);background:var(--paper);box-shadow:0 0 0 3px rgba(var(--acc-rgb),.14)}
 
-/* tenant çipi — superadmin bağlam sinyali (İMZA öğesi; switcher Faz 2) */
+/* tenant çipi — superadmin bağlam sinyali (İMZA öğesi; Platform Konsolu firma listesine link) */
 .gv-tenant{
   display:inline-flex;align-items:center;gap:9px;flex:none;position:relative;
   height:40px;padding:0 14px;border-radius:var(--r-md);cursor:pointer;
@@ -194,10 +186,6 @@ img{display:block;max-width:100%}
 }
 .gv-iconbtn:hover{border-color:var(--acc);color:var(--acc-ink)}
 .gv-iconbtn .gb-dot{position:absolute;top:9px;right:10px;width:8px;height:8px;background:var(--danger);border:2px solid var(--paper);border-radius:var(--r-circle)}
-
-/* pasif dil çipi — çok-dil Faz 2+; tıklanınca bilgi toast'ı */
-.gv-lang{width:auto;padding:0 12px;font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--muted);cursor:default}
-.gv-lang:hover{border-color:var(--line-2);color:var(--muted)}
 
 /* topbar ikon ipucu — aşağı açılır */
 .gv-top-tools [data-tip],.gv-top [data-tip]{position:relative}

@@ -3,7 +3,7 @@
    Rol: ?role= → localStorage(gv_crm_role) → superadmin
    Bölüm: body[data-sec] · Aktif ekran: body[data-screen]
    Tüm shell metinleri STR/SECTIONS/ROLES config'inde — i18n'e hazır,
-   sayfalara hardcode edilmez. Pilot onayı sonrası KİLİTLİ (sahip: T0).
+   sayfalara hardcode edilmez. Ortak çekirdek dosya — değişiklikler tek elden yapılır.
    =====================================================================
 
    KANONİK MOCK VERİ SETİ (tamamen kurgusal — tüm sayfalar BU adları kullanır)
@@ -144,7 +144,7 @@
          MKN-06 Beko Loder JCB 3CX     · motorin ~40 L/gün  · ARIZALI (hidrolik) — servis kaydı 2 Tem 2026, sayfadaki durumla senkron
      · Yemekhane birim maliyet (madde 11 — mock, KDV dahil): kahvaltı ₺50 · öğle ₺90 ·
        akşam ₺75. 2 Tem günlük toplam: 84×50 + 93×90 + 46×75 = ₺16.020; taşeron payı
-       58 öğün = ₺4.185 (ayrı gösterilir; firmaya yansıtma/faturalama Faz 2 — UI notu).
+       58 öğün = ₺4.185 (ayrı gösterilir; hakediş kesintisi muhasebe değerlendirmesinde — UI notu).
    ─ DALGA 8 KANONİK TANIMLAR (2026-07-11 — kasa defteri + havuz + Pluxee + kredi kartı):
      · KASA DEFTERİ (şantiye-bazlı; dönem = yarım ay pencereleri; cari dönem 01–15 Tem 2026):
          Vadi Konakları : devir ₺48.250 · giriş ₺186.400 · çıkış ₺152.730 · MEVCUT ₺81.920
@@ -226,9 +226,9 @@
        bağlamı → 041 default'una düşer, eşleşme doğru kalır).
      · PUANTAJ SAAT REVİZE (Talep 7): varsayılan mesai 08:00–18:00; fark rozeti saat cinsinden
        −N (.gstat.warn — erken çıkış) / +N (.gstat.info — fazla mesai). Revize YALNIZ aynı gün;
-       geçmiş gün hücresi kilitli (disabled + kilit ikonu + gvToast "Geçmiş güne revize yapılamaz…");
-       arşiv haftası tümüyle kilitli. localStorage: gv_pt_saat_*.
-       Demo: Ali Vural Çar 1 Tem 08:00–15:00 → −3 (geçmiş gün, kilitli; EM işaretiyle senkron) ·
+       geçmiş gün hücresi girişe kapalı (disabled + kilit ikonu + gvToast "Geçmiş güne revize yapılamaz…");
+       arşiv haftası tümüyle girişe kapalı. localStorage: gv_pt_saat_*.
+       Demo: Ali Vural Çar 1 Tem 08:00–15:00 → −3 (geçmiş gün, girişe kapalı; EM işaretiyle senkron) ·
        İbrahim Sönmez Per 2 Tem (bugün) 08:00–21:00 → +3 (canlı aynı-gün revize; FM işaretiyle senkron).
        (Plan notundaki "Cemil Öztürk +3" kanonik kadrodan İbrahim Sönmez'e atandı.)
      · HAFTALIK PUANTAJ ÇIKTISI (crm-operasyon-puantaj-cikti.html?santiye=&hafta=; hafta=Pzt ISO tarihi):
@@ -290,9 +290,9 @@
          [Modüller] mod-row listesi — moduller sayfasıyla senkron (D13 süpürmesiyle 10/10 açık;
            3 genişleme modülü tanıtım eklentisi — DALGA 13 bloğuna bak)
      · SÜPÜRME PART-1 (1.13 / K6 / K7): topbar TR dil çipi KALDIRILDI (dil tercihi artık
-       Aidiyet & Tercihler'de gerçek alan); Faz 3 "Gavia Asistan" modül satırı TAMAMEN GİZLENDİ
-       (K7 — teaser bırakılmaz); "Çok Dil" modül satırı da kaldırıldı (K6 — çok-dil Faz 2
-       kapsamı DIŞI; modül sayacı 7/10). Hesap dropdown'u 3 GERÇEK sayfaya bağlandı:
+       Aidiyet & Tercihler'de gerçek alan); "Gavia Asistan" modül satırı TAMAMEN GİZLENDİ
+       (K7 — teaser bırakılmaz); "Çok Dil" modül satırı da kaldırıldı (K6 — çok-dil
+       kapsam DIŞI; modül sayacı 7/10). Hesap dropdown'u 3 GERÇEK sayfaya bağlandı:
        crm-ayarlar-profil.html · crm-ayarlar-hesap.html · crm-ayarlar-bildirim-tercih.html —
        SECTIONS.hesap (rail-DIŞI bölüm, tüm roller erişir; içerik aktif personadan okunur).
        Kurgusal e-posta idiyomu: ad.soyad@yapitas.example (superadmin: deniz.aksoy@gavia.example).
@@ -638,7 +638,7 @@
      · SÜPÜRME FİNALİ (1.13 kapanış): tenant-chip "Firma değiştir" → gavia-firmalar.html
        GERÇEK LİNK (kilit + toast KALKTI) · Ayarlar > Modüller 3 genişleme toggle'ı GERÇEK
        ve AÇIK (10/10 aktif; "tanıtım eklentisi" notu) · index: Müşteri Portalı demo giriş
-       kartı + superadmin kartına Platform Konsolu linki. Repo genelinde kilitli/yakında
+       kartı + superadmin kartına Platform Konsolu linki. Repo genelinde placeholder
        kalıntısı 0 hedefi (grep denetimi dalga sonu QA'da).
    ===================================================================== */
 (function(){
@@ -653,11 +653,8 @@
     search:'Ara — şantiye, kişi, talep, hakediş…',
     notif:'Bildirimler',
     switchTenant:'Firma değiştir',
-    phase2:'Faz 2',
     firmSettings:'Firma Ayarları',
     logout:'Çıkış / Rol Değiştir',
-    wip:'Bu ekran çoğaltma dalgasında eklenecek.',
-    wipSection:'Bu bölümün ekranları hazırlanıyor.',
     signature:'Gaviaworks'
   };
 
@@ -870,29 +867,16 @@
           + '<span class="gv-rail-div"></span>';
     RAIL_ORDER.forEach(function(key){
       var X = SECTIONS[key];
-      if(X.locked){
-        if(role==='superadmin' || role==='sahip'){
-          h += '<a class="gv-rail-ico is-locked" data-sec="'+key+'" href="#" data-tip="'+X.title+' — '+STR.phase2+'"><i class="fa-solid '+X.ic+'"></i></a>';
-        }
-        return;
-      }
       if(R.secs.indexOf(key) === -1) return;
       /* rail linki rolün GÖREBİLDİĞİ ilk ekrana gider (scr budaması dahil) */
       var vis = X.menu.filter(function(m){return m.href && scrOk(key, m);});
-      var built = vis.length > 0;
-      var href = built ? vis[0].href : '#';
-      h += '<a class="gv-rail-ico'+(key===sec?' is-active':'')+(built?'':' rail-wip')+'" data-sec="'+key+'" href="'+href+'" data-tip="'+X.title+'"><i class="fa-solid '+X.ic+'"></i></a>';
+      if(!vis.length) return;   /* rolün hiç ekranı yoksa bölüm ikonu çizilmez */
+      h += '<a class="gv-rail-ico'+(key===sec?' is-active':'')+'" data-sec="'+key+'" href="'+vis[0].href+'" data-tip="'+X.title+'"><i class="fa-solid '+X.ic+'"></i></a>';
     });
     h += '<div class="gv-rail-foot">'
        + '<a class="gv-sig" href="https://gaviaworks.com" target="_blank" rel="noopener" data-tip="gaviaworks.com">GAVIA</a>'
        + '</div>';
     railEl.innerHTML = h;
-    railEl.querySelectorAll('.gv-rail-ico.is-locked, .gv-rail-ico.rail-wip').forEach(function(el){
-      el.addEventListener('click', function(e){
-        e.preventDefault();
-        if(window.gvToast) gvToast(el.classList.contains('is-locked') ? (STR.phase2+' kapsamında — bu sürümde kilitli.') : STR.wipSection, {type:'info'});
-      });
-    });
   }
 
   /* ---- 2) bölüm menüsü render ---- */
@@ -906,8 +890,8 @@
       if(m.seclbl){ mh += '<div class="gv-msec">'+m.seclbl+'</div>'; return; }
       var isActive = screen && m.screen === screen;
       var cls = 'gv-mlink'+(isActive?' is-active':'');
-      var tail = m.cnt ? '<span class="ml-cnt">'+m.cnt+'</span>' : (m.soon ? '<span class="ml-soon">'+STR.phase2+'</span>' : '');
-      mh += '<a class="'+cls+'" href="'+(m.href||'#')+'"'+(m.wip?' data-wip="1"':'')+(m.soon?' data-soon="1"':'')+'><i class="fa-solid '+m.ic+'"></i> '+m.lbl+tail+'</a>';
+      var tail = m.cnt ? '<span class="ml-cnt">'+m.cnt+'</span>' : '';
+      mh += '<a class="'+cls+'" href="'+(m.href||'#')+'"><i class="fa-solid '+m.ic+'"></i> '+m.lbl+tail+'</a>';
     });
     mh += '</div><div class="gv-menu-foot">'
         + '<a class="gv-mlink" href="index.html"><i class="fa-solid fa-right-from-bracket"></i> '+STR.logout+'</a>'

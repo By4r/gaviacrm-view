@@ -47,7 +47,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
   .cari-hero-meta{grid-template-columns:1fr}
 }
 
-/* sekme çubuğu — santiye-detay ile birebir dil, kilitli sekme eklenmiş */
+/* sekme çubuğu — santiye-detay ile birebir dil */
 .gv-tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:22px;overflow-x:auto;scrollbar-width:none}
 .gv-tabs::-webkit-scrollbar{display:none}
 .gv-tab{display:inline-flex;align-items:center;gap:8px;padding:13px 4px;margin-right:26px;flex:none;
@@ -146,7 +146,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
         <div class="ph-sub" id="cdSub">Vadi Konakları · kaba inşaat taşeronu · ilgili kişi Yusuf Ergin</div>
       </div>
       <div class="ph-actions" data-view="yonetim" hidden>
-        <a class="btn btn-ghost btn-sm" href="#" data-wip="1"><i class="fa-solid fa-pen"></i> Düzenle</a>
+        <a class="btn btn-ghost btn-sm" href="#" data-demo="Düzenleme ekranı bu prototipte simülasyondur (demo)."><i class="fa-solid fa-pen"></i> Düzenle</a>
         <a class="btn btn-acc btn-sm" href="crm-cari-durum.html?cari=demir-beton"><i class="fa-solid fa-scale-balanced"></i> Cari Durum</a>
       </div>
       <div class="ph-actions" data-view="satinalma" hidden>
@@ -393,7 +393,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
   });
 })();
 
-/* sekme motoru: tık + URL hash, kilitli sekme toast ile bilgilendirir */
+/* sekme motoru: tık + URL hash */
 (function(){
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.gv-tab'));
   var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
