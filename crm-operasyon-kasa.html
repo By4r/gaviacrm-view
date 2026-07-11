@@ -661,6 +661,47 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
     var kpiBakSub = document.querySelector('.kpi-grid .kpi-card .kpi-delta');
     if(kpiBak){ kpiBak.textContent = '₺81.920'; kpiBakSub.innerHTML = '<i class="fa-solid fa-building"></i> Vadi Konakları kasası · 2 Tem'; }
   }
+  /* ============ D15 — GERÇEK DIŞA AKTARMA: görünen defter → KASA_FORMATI düzeni ============
+     ui.js data-export menüsü bu kaydı görünce Excel/CSV'yi gerçek dosya olarak indirir
+     (SheetJS cdnjs'ten; yüklenemezse BOM'lu CSV) — bu ekranda demo toast yok.
+     Kolonlar KASA_FORMATI (crm-operasyon-kasa-cikti.html) ile birebir:
+     No · Tarih · Firma/Kişi · Açıklama · Gelen · Çıkan · Bakiye + devir/toplam/mevcut satırları. */
+  var AY_KISA = {Oca:'01',Şub:'02',Mar:'03',Nis:'04',May:'05',Haz:'06',Tem:'07',Ağu:'08',Eyl:'09',Eki:'10',Kas:'11',Ara:'12'};
+  function trTarih(t){                       /* '1 Tem' → '01.07.2026' (defter cari dönemi) */
+    var p = t.trim().split(/\s+/);
+    if(p.length < 2 || !AY_KISA[p[1]]) return t.trim();
+    return ('0' + p[0]).slice(-2) + '.' + AY_KISA[p[1]] + '.2026';
+  }
+  function tlNum(s){ var d = (s || '').replace(/[^\d]/g, ''); return d ? parseInt(d, 10) : ''; }
+  window.GV_EXPORTERS = window.GV_EXPORTERS || {};
+  GV_EXPORTERS['Kasa hareketleri'] = function(){
+    var on = document.querySelector('#ksGrid .ks-card.is-on');
+    var ks = on ? on.getAttribute('data-ks') : 'vadi';
+    var aoa = [
+      ['YAPITAŞ İNŞAAT A.Ş. — ŞANTİYE KASA DEFTERİ DÖKÜMÜ'],
+      [KS_ADLAR[ks] + ' · 01 – 15 Temmuz 2026 (cari dönem)'],
+      [],
+      ['No','Tarih','Ödeme Yapılacak Firma / Kişi','Açıklama','Kasaya Gelen (₺)','Kasadan Çıkan (₺)','Bakiye (₺)']
+    ];
+    document.querySelectorAll('#tblDefter tbody tr:not([hidden])').forEach(function(tr){
+      var td = tr.children;
+      var bak = tlNum(td[td.length - 1].textContent);
+      if(tr.classList.contains('df-devir') || tr.classList.contains('df-mevcut')){
+        aoa.push(['', td[1].textContent.trim(), '', '', '', '', bak]); return;
+      }
+      if(tr.classList.contains('df-total')){
+        aoa.push(['', td[1].textContent.trim(), '', '', tlNum(td[2].textContent), tlNum(td[3].textContent), bak]); return;
+      }
+      var firm = td[2].cloneNode(true);
+      var w = firm.querySelector('.df-wait'); if(w) w.remove();   /* "onayda" rozeti hücre metnine karışmasın */
+      aoa.push([ parseInt(td[0].textContent, 10) || '', trTarih(td[1].textContent),
+        firm.textContent.trim(), td[3].textContent.trim(),
+        tlNum(td[4].textContent), tlNum(td[5].textContent), bak ]);
+    });
+    return { file:'kasa-defteri-' + ks + '-temmuz-2026', sheet:'Kasa Defteri',
+             cols:[5, 12, 34, 48, 15, 15, 14], aoa:aoa };
+  };
+
   var kpiGirisNum = document.getElementById('kpiGirisNum');
   var kpiGirisSub = document.getElementById('kpiGirisSub');
   var kpiCikisNum = document.getElementById('kpiCikisNum');

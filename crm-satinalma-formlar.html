@@ -244,6 +244,39 @@ tr.is-iptal .fr-info b{color:var(--ink-2);text-decoration:line-through;text-deco
       if(tr.getAttribute('data-santiye') !== 'vadi') tr.remove();
     });
   }
+
+  /* D15 — GERÇEK DIŞA AKTARMA: görünen form/icmal listesi (rol budaması + aktif
+     filtre/aramaya saygılı) gerçek .xlsx/.csv olur (ui.js GV_EXPORTERS sözleşmesi). */
+  window.GV_EXPORTERS = window.GV_EXPORTERS || {};
+  GV_EXPORTERS['Satın alma formları'] = function(){
+    var rows = document.querySelectorAll('#tblForm tbody tr:not([hidden])');
+    var aoa = [
+      ['YAPITAŞ İNŞAAT A.Ş. — SATIN ALMA FORMLARI (İCMAL LİSTESİ)'],
+      [rows.length + ' form · onaylanan taleplerden oluşturulan sipariş süreci · 2 Temmuz 2026'],
+      [],
+      ['Form No','Tarih','Şantiye','Tedarikçi','Kalem','Kaynak Talep','Tutar (₺)','Durum']
+    ];
+    rows.forEach(function(tr){
+      var td = tr.children;
+      var no = td[0].querySelector('.fr-info b'), not = td[0].querySelector('.fr-info span');
+      var kalem = td[2].querySelector('.fr-desc');
+      var tedarikci = td[2].cloneNode(true);
+      var kd = tedarikci.querySelector('.fr-desc'); if(kd) kd.remove();
+      var tutar = (td[4].textContent || '').replace(/[^\d]/g, '');
+      aoa.push([
+        no ? no.textContent.trim() : '',
+        not ? not.textContent.split('·')[0].trim() : '',
+        td[1].textContent.trim(),
+        tedarikci.textContent.replace(/·\s*$/, '').trim(),
+        kalem ? kalem.textContent.trim() : '',
+        (td[3].textContent || '').trim(),
+        tutar ? parseInt(tutar, 10) : '',
+        (td[5].textContent || '').trim()
+      ]);
+    });
+    return { file:'satinalma-formlari-icmal-temmuz-2026', sheet:'SA Formları',
+             cols:[14, 16, 22, 22, 26, 14, 12, 16], aoa:aoa };
+  };
 })();
 </script>
 </body>

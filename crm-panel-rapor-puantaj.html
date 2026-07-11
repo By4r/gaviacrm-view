@@ -269,6 +269,38 @@
   document.querySelectorAll('[data-view]').forEach(function(el){
     el.hidden = el.getAttribute('data-view') !== view;
   });
+
+  /* D15 — GERÇEK DIŞA AKTARMA: görünen görünümün durum matrisi (+ yönetimde ay
+     karşılaştırması) gerçek .xlsx/.csv olur (ui.js GV_EXPORTERS sözleşmesi). */
+  function tblAoa(tbl){
+    var out = [];
+    tbl.querySelectorAll('tr').forEach(function(tr){
+      var row = [];
+      tr.querySelectorAll('th,td').forEach(function(c){
+        var t = c.textContent.replace(/\s+/g, ' ').trim();
+        row.push(c.classList.contains('num') && /^\d+$/.test(t) ? parseInt(t, 10) : t);
+      });
+      out.push(row);
+    });
+    return out;
+  }
+  window.GV_EXPORTERS = window.GV_EXPORTERS || {};
+  GV_EXPORTERS['Puantaj raporu'] = function(){
+    var sef = view === 'sef';
+    var aoa = [
+      ['YAPITAŞ İNŞAAT A.Ş. — PUANTAJ RAPORU'],
+      [sef ? 'Vadi Konakları · işlenen 4 gün (29 Haziran – 2 Temmuz 2026)'
+           : '16 personel · 3 şantiye · işlenen 4 gün (29 Haziran – 2 Temmuz 2026)'],
+      [],
+      [sef ? 'Vadi Konakları — Durum Dökümü (29 Haz – 2 Tem)' : 'Şantiye × Durum Matrisi (29 Haz – 2 Tem)']
+    ].concat(tblAoa(document.getElementById(sef ? 'tblDurumSef' : 'tblDurum')));
+    if(!sef){
+      aoa.push([], ['Ay Karşılaştırması — Haziran (29–30) vs. Temmuz (1–2), işlenen 2\'şer gün']);
+      aoa = aoa.concat(tblAoa(document.querySelector('.cmp-tbl')));
+    }
+    return { file:'puantaj-raporu-' + (sef ? 'vadi-' : '') + '29haz-2tem-2026',
+             sheet:'Puantaj', cols:[30, 17, 17, 17, 10], aoa:aoa };
+  };
 })();
 </script>
 </body>

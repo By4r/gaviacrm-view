@@ -1,7 +1,8 @@
 /* =====================================================================
    GAVIA CRM — PAYLAŞILAN UI PRİMİTİFLERİ (kabuk-bağımsız)
    gvToast · gvConfirm (+ delege yıkıcı-aksiyon onayı) · hesap dropdown ·
-   data-demo sim toast'ı · data-export format menüsü [MOCK-SİM] ·
+   data-demo sim toast'ı · data-export format menüsü (GV_EXPORTERS kayıtlıysa
+   gerçek .xlsx/.csv indirme, değilse [MOCK-SİM] toast) ·
    tablo arama + chip filtre yardımcıları ·
    gvChain onay zinciri (timeline + rozet + onayla/reddet/revize aksiyonu).
    Ortak çekirdek dosya — değişiklikler tek elden yapılır.
@@ -107,15 +108,87 @@
     gvToast(el.getAttribute('data-demo') || 'Bu işlem bu prototipte simülasyondur (demo).', {type:'info'});
   });
 
-  /* ---- data-export — DIŞA AKTARMA format menüsü [MOCK-SİM] ----
-     <a data-export="Kasa hareketleri"> → Excel/PDF/CSV mini-dropdown + gvToast sim.
+  /* ---- data-export — DIŞA AKTARMA format menüsü ----
+     <a data-export="Kasa hareketleri"> → format mini-dropdown. İKİ MOD:
+     · Sayfa window.GV_EXPORTERS['<ad>'] kaydettiyse GERÇEK indirme: Excel .xlsx
+       (SheetJS, cdnjs'ten tembel yüklenir; yüklenemezse BOM'lu CSV fallback) +
+       CSV (BOM + ';' ayraç, TR bölge ayarlı Excel uyumlu). Exporter sözleşmesi:
+       fn(fmt) → {file, aoa:[[…]], sheet?, cols?:[genişlik]} — görünen veriden üretir.
+     · Exporter'sız sayfalarda [MOCK-SİM] demo toast davranışı aynen sürer.
      Görsel: .gv-pop idiyomu; konum inline fixed (butona demirli — ata elemanın
-     position'ına bağımlı DEĞİL, ui.css dokunuşu yok). Dosya üretimi simülasyondur. ---- */
+     position'ına bağımlı DEĞİL, ui.css dokunuşu yok). ---- */
   var EXP_FMT = [
     {ic:'fa-file-excel', lbl:'Excel (.xlsx)', f:'Excel'},
     {ic:'fa-file-pdf',   lbl:'PDF (.pdf)',    f:'PDF'},
     {ic:'fa-file-csv',   lbl:'CSV (.csv)',    f:'CSV'}
   ];
+  var EXP_FMT_REAL = [                 /* gerçek indirmede PDF yok — basılı döküm "Çıktı Al" ekranlarının işi */
+    {ic:'fa-file-excel', lbl:'Excel (.xlsx)', f:'Excel'},
+    {ic:'fa-file-csv',   lbl:'CSV (.csv)',    f:'CSV'}
+  ];
+  /* SheetJS tembel yükleme — yalnız ilk gerçek Excel isteğinde CDN'den gelir (buildless) */
+  var XLSX_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  var XLSX_SRI = 'sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==';
+  var xlsxProm = null;
+  function loadXlsx(){
+    if(window.XLSX) return Promise.resolve();
+    if(!xlsxProm){
+      xlsxProm = new Promise(function(res, rej){
+        var s = document.createElement('script');
+        s.src = XLSX_SRC; s.integrity = XLSX_SRI;
+        s.crossOrigin = 'anonymous'; s.referrerPolicy = 'no-referrer';
+        s.onload = res;
+        s.onerror = function(){ xlsxProm = null; s.remove(); rej(new Error('SheetJS CDN yüklenemedi')); };
+        document.head.appendChild(s);
+      });
+    }
+    return xlsxProm;
+  }
+  function dlBlob(blob, fname){
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = fname;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+  }
+  function aoaToCsv(aoa){
+    return '\uFEFF' + aoa.map(function(row){   /* BOM — Excel'in UTF-8'i doğru açması için */
+      return row.map(function(c){
+        if(typeof c === 'number') return String(c).replace('.', ',');
+        var s = c == null ? '' : String(c);
+        return /[;"\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+      }).join(';');
+    }).join('\r\n');
+  }
+  function csvDownload(data){
+    dlBlob(new Blob([aoaToCsv(data.aoa)], {type:'text/csv;charset=utf-8'}), data.file + '.csv');
+  }
+  function xlsxDownload(data){
+    var ws = XLSX.utils.aoa_to_sheet(data.aoa);
+    if(data.cols) ws['!cols'] = data.cols.map(function(w){ return {wch:w}; });
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, data.sheet || 'Rapor');
+    XLSX.writeFile(wb, data.file + '.xlsx');
+  }
+  function runExport(exporter, fmt){
+    var data;
+    try{ data = exporter(fmt); }catch(err){ console.warn('GV_EXPORTERS:', err); }
+    if(!data || !data.aoa || !data.aoa.length){
+      gvToast('Dışa aktarılacak kayıt bulunamadı', {type:'info'});
+      return;
+    }
+    if(fmt === 'Excel'){
+      loadXlsx().then(function(){
+        xlsxDownload(data);
+        gvToast(data.file + '.xlsx indirildi', {icon:'fa-file-arrow-down'});
+      }).catch(function(){
+        csvDownload(data);
+        gvToast('Excel kitaplığı yüklenemedi — ' + data.file + '.csv (BOM) indirildi', {type:'info', icon:'fa-file-arrow-down'});
+      });
+    } else {
+      csvDownload(data);
+      gvToast(data.file + '.csv indirildi', {icon:'fa-file-arrow-down'});
+    }
+  }
   var expMenu = null, expBtn = null;
   function expClose(){
     if(!expMenu) return;
@@ -138,10 +211,11 @@
     if(expBtn === el){ expClose(); return; }   /* aynı butona tekrar tıklama = kapat */
     expClose();
     var name = (el.getAttribute('data-export') || '').replace(/^1$/, '').trim();
+    var exporter = name && window.GV_EXPORTERS && window.GV_EXPORTERS[name];
     var menu = document.createElement('div');
     menu.className = 'gv-pop gv-export-pop';
     var html = '<div class="gp-head"><b>Dışa Aktar</b><span></span></div>';
-    EXP_FMT.forEach(function(F){
+    (exporter ? EXP_FMT_REAL : EXP_FMT).forEach(function(F){
       html += '<a href="#" data-fmt="' + F.f + '"><i class="fa-solid ' + F.ic + '"></i> ' + F.lbl + '</a>';
     });
     menu.innerHTML = html;
@@ -163,7 +237,8 @@
         ev.preventDefault(); ev.stopPropagation();
         var f = a.getAttribute('data-fmt');
         expClose();
-        gvToast((name ? name + ' — ' : '') + f + ' formatında hazırlanıyor (demo)', {type:'info', icon:'fa-file-arrow-down'});
+        if(exporter) runExport(exporter, f);
+        else gvToast((name ? name + ' — ' : '') + f + ' formatında hazırlanıyor (demo)', {type:'info', icon:'fa-file-arrow-down'});
       });
     });
     el.setAttribute('aria-haspopup','true');
