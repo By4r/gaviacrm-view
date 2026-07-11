@@ -66,7 +66,11 @@
     text-transform:uppercase;color:var(--gv-mint);background:var(--gv-mint-glow);
     border:1px solid rgba(63,213,173,.25);padding:3px 8px;border-radius:6px;
   }
-  .fcard:hover .f-badge{opacity:0}
+  .fcard:hover .f-badge:not(.f-link){opacity:0}
+  /* [D13] kart-içi ikinci hedef: ana alan stretched-link, rozet ayrı link */
+  .f-main{position:absolute;inset:0;z-index:1;border-radius:inherit}
+  .f-badge.f-link{z-index:2;display:inline-flex;align-items:center;gap:6px;transition:.2s var(--ease)}
+  .f-badge.f-link:hover{background:rgba(63,213,173,.22);border-color:rgba(63,213,173,.5)}
 
   /* diğer roller — kompakt grid */
   .others{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
@@ -108,15 +112,16 @@
 
     <p class="lbl">Demo personaları</p>
     <div class="featured">
-      <a class="fcard" href="crm-panel.html?role=superadmin">
-        <span class="f-badge">Platform</span>
+      <div class="fcard">
+        <a class="f-main" href="crm-panel.html?role=superadmin" aria-label="Süper Admin — Gavia CRM'i aç"></a>
+        <a class="f-badge f-link" href="gavia-panel.html?role=superadmin">Platform Konsolu <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:8px"></i></a>
         <div class="f-ava"><i class="fa-solid fa-layer-group"></i></div>
         <div class="f-info">
           <b>Süper Admin</b>
           <span>Deniz Aksoy · Gavia Platform Yöneticisi — tüm firmalar, paket &amp; modül yönetimi</span>
         </div>
         <i class="fa-solid fa-arrow-right f-go"></i>
-      </a>
+      </div>
       <a class="fcard" href="crm-panel.html?role=sahip">
         <span class="f-badge">Firma</span>
         <div class="f-ava"><i class="fa-solid fa-crown"></i></div>
@@ -169,6 +174,19 @@
       <a class="ocard" href="crm-panel.html?role=superadmin">
         <div class="o-ico"><i class="fa-solid fa-arrows-rotate"></i></div>
         <div class="o-info"><b>Varsayılan</b><span>Süper Admin ile aç</span></div>
+      </a>
+    </div>
+
+    <p class="lbl" style="margin-top:26px">Müşteri portalı</p>
+    <div class="featured" style="grid-template-columns:minmax(0,1fr);margin-bottom:0">
+      <a class="fcard" href="portal-panel.html">
+        <span class="f-badge">Portal</span>
+        <div class="f-ava"><i class="fa-solid fa-house-user"></i></div>
+        <div class="f-info">
+          <b>Müşteri Portalı</b>
+          <span>Selçuk Onaran · Yapıtaş İnşaat müşterisi — birimlerim, ödeme planım, belgeler ve talepler</span>
+        </div>
+        <i class="fa-solid fa-arrow-right f-go"></i>
       </a>
     </div>
 

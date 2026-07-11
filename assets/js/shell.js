@@ -287,7 +287,8 @@
            evrak önekleri tablosu (KSA/KSG/MLZ/SAT/TH/HKD/AVN/İZN/ISG/ZMT/ARC/PLX/KKR/LOG)
          [Paket & Kullanım] plan-card (Profesyonel ₺14.900/ay) + limitler (18/25 kullanıcı ·
            3/5 şantiye · 34/50 GB · 2.400/5.000 SMS) + fatura geçmişi (Tem/Haz ₺14.900, May ₺13.400)
-         [Modüller] mod-row listesi — moduller sayfasıyla senkron (7 açık + 3 kilitli üst-paket)
+         [Modüller] mod-row listesi — moduller sayfasıyla senkron (D13 süpürmesiyle 10/10 açık;
+           3 genişleme modülü tanıtım eklentisi — DALGA 13 bloğuna bak)
      · SÜPÜRME PART-1 (1.13 / K6 / K7): topbar TR dil çipi KALDIRILDI (dil tercihi artık
        Aidiyet & Tercihler'de gerçek alan); Faz 3 "Gavia Asistan" modül satırı TAMAMEN GİZLENDİ
        (K7 — teaser bırakılmaz); "Çok Dil" modül satırı da kaldırıldı (K6 — çok-dil Faz 2
@@ -564,6 +565,81 @@
        = [talepler,formlar,siparisler,termin,irsaliye,stok] (tedarikçi YOK; sipariş/irsaliye
        kendi şantiyesi görüntüleme). MENÜ UNLOCK KURALI: yeni menü kalemleri ancak 14 dosya
        diskte varken eklenir (ölü link yasağı).
+   ─ DALGA 13 KANONİK TANIMLAR (2026-07-11 — yönetici paneli + müşteri portalı + gavia
+       platform konsolu + süpürme finali; D14 tutarlılık kapanışı AYRI dalga):
+     · YÖNETİCİ PANELİ (crm-panel-yonetici.html — panel menüsü Analiz grubu, screen:'yonetici';
+       YALNIZ superadmin+sahip+yonetim görür): teknik/sef/muhasebe/ik rollerine D13'te panel
+       scr'si TANIMLANDI [panel,ozet,ajanda,onaylar,bildirimler,raporlar] — görünen set
+       DEĞİŞMEDİ (tüm crm-panel-rapor-* sayfaları data-screen="raporlar"), yalnız yonetici
+       dışarıda; satinalma/personel/satistemsilci/satismudur'un mevcut panel scr'si zaten
+       yonetici'yi dışlar. 10 panel: Genel · Satış Hunisi · Bağımsız Bölüm Stoku · Bütçe ·
+       Finans/Nakit · Satın Alma · Stok & Depo · Hakediş · Taşeron · Risk Uyarıları — TÜM
+       sayılar kaynak sayfalarla BİREBİR (satış D11 · bütçe/maliyet/stok/nakit/tedarik D12
+       kanonikleri; yeni tutar UYDURULMAZ), her panel "tümü →" linkli.
+       RİSK UYARILARI (3 — kaynaklarla senkron): Betonarme %104 AŞIM (revize ₺41.500.000 →
+       gerçekleşen ₺43.160.000; butce-detay/maliyet) · Derya Toprak SSZ-2026-004 5. taksit
+       ₺570.000 vade 20 Haz — 12 GÜN GECİKME (nakit/cari/sözleşme-detay) · Delta Elektrik
+       SIP-2026-04 ₺734.600 termin 24 Haz — 8 GÜN GECİKME (siparisler/tedarikci-detay).
+     · MÜŞTERİ PORTALI (portal-panel / portal-odemeler / portal-belgeler / portal-talepler
+       .html — 4 sayfa, STANDALONE: shell.js YOK, rail YOK, rol motoru DIŞI; açık zeminli
+       hafif topbar [Yapıtaş markı + "Müşteri Portalı" + Selçuk Onaran çipi] + 4 sekme nav;
+       MOBİL ÖNCELİKLİ; tokens.css+ui.css üstüne sayfa-içi stil — YENİ CSS DOSYASI YOK).
+       Demo müşteri: Selçuk Onaran (MST-2026-001 · CAR-2026-021 · Onaran Holding yönetim
+       kurulu üyesi idiomu müşteri-detay'dan):
+         KO-B-304: SSZ-2025-042 imzalı → TSL-2026-001 TESLİM EDİLDİ (Mart 2026) — ödemesi kapalı.
+         VK-C-18: SSZ-2026-003 imzalı ₺6.120.000 = peşinat ₺918.000 (%15) + 36 × ₺115.000
+           (her ayın 15'i) + teslimde ₺1.062.000 · 14/36 taksit ÖDENDİ (ödenen ₺2.528.000 =
+           peşinat + 14 taksit) · KALAN ₺3.592.000 (cari + sözleşme-detay + müşteri-detay
+           BİREBİR) · SIRADAKİ 15. taksit VADE 15 TEM 2026 (nakit akışı tahsilat takvimi BİREBİR).
+       MAKBUZ idiomu: MKB-2026-0## tahsilat makbuzu (yalnız portal belgelerinde görünür;
+       en yeni MKB-2026-014 = 15 Haz 2026, 14. taksit ₺115.000). Belge seti: SSZ-2025-042 ·
+       SSZ-2026-003 · TSL-2026-001 · ODP ödeme planı çıktısı · 14 taksit makbuzu.
+       Portal talepleri crm-satis-talepler ile ÇİFT YÖNLÜ TUTARLI: SST-2026-007 klima drenaj
+       (garanti) + SST-2026-010 taksit planı dökümü (bilgi) — tür/durum/tarih satış
+       tarafındaki kayıtlarla BİREBİR; portalda "Yeni Talep" formu tür seçimli (mock, kayıt
+       localStorage'a YAZMAZ).
+     · GAVIA PLATFORM KONSOLU (gavia-panel / gavia-firmalar / gavia-firma-detay /
+       gavia-firma-form / gavia-paketler .html — 5 sayfa, STANDALONE kiosk emsali: shell.js
+       YOK, kendi DARK topbar'ı [Gaviaworks "G" markı + "Platform Konsolu" + Deniz Aksoy
+       çipi] + yatay sekme nav [Genel Bakış · Firmalar · Paketler]; YALNIZ superadmin —
+       sayfa-içi guard: ?role → localStorage(gv_crm_role) → superadmin DEĞİLSE
+       location.replace('index.html')).
+       PAKETLER (4 + Ücretsiz; aylık): Ücretsiz ₺0 · Basic ₺7.900 · Professional ₺14.900 ·
+       CRM + Sales ₺19.900 · Enterprise ₺34.900. Limit/modül matrisi:
+         Ücretsiz     : 3 kullanıcı · 1 şantiye · 1 GB · SMS yok · Şantiye & Saha + Görev Takibi
+         Basic        : 10 kullanıcı · 2 şantiye · 10 GB · 1.000 SMS · + Personel & İK + Saha Kayıtları
+         Professional : 25 kullanıcı · 5 şantiye · 50 GB · 5.000 SMS · + Satın Alma + Cariler +
+           Hakediş & Sözleşme (7 modül — Yapıtaş plan-card/limitleriyle BİREBİR)
+         CRM + Sales  : 40 kullanıcı · 8 şantiye · 100 GB · 10.000 SMS · + Satış CRM + Müşteri Portalı
+         Enterprise   : sınırsız kullanıcı/şantiye · 500 GB · 25.000 SMS · + Stok & ERP +
+           Çoklu Firma Yönetimi + öncelikli destek
+       TENANT'LAR (5 ana + Miray 2 alt şirket; MRR ₺61.700 = 14.900 + 26.900 + 19.900 —
+       deneme ve ücretsiz ₺0):
+         Yapıtaş İnşaat A.Ş. · Professional ₺14.900 · Aktif 14 ay · 18/25 kullanıcı · 3/5
+           şantiye · toplam ödeme ₺208.600 (dönemsel fiyat farkı + ek paketler dahil; kırılım
+           gösterilmez) · son faturalar Tem/Haz ₺14.900 + May ₺13.400 (crm-ayarlar-firma
+           BİREBİR) · 3 genişleme modülü (Satış CRM · Stok & ERP · Çoklu Firma) TANITIM
+           EKLENTİSİ olarak AÇIK (₺0 — moduller sayfası 10/10 senkron; MRR'a eklenmez)
+         Miray Yapı Group · Enterprise · Aktif 26 ay · ESKİ FİYAT GARANTİSİ ₺26.900/ay (2024
+           sözleşmesi; liste ₺34.900) · MULTI-COMPANY: alt şirketler ana sözleşmeye DAHİL,
+           ayrı fatura YOK — Miray Konut A.Ş. (Enterprise rozeti) + Miray Altyapı Ltd.
+           (Basic rozeti) · tek yetkili Cem Miray — 3 şirkete erişim · kullanıcı 42 (24+12+6) ·
+           toplam ödeme ₺699.400 (26 × 26.900)
+         Ege Modern İnşaat · CRM + Sales ₺19.900 · Aktif 7 ay · 11/40 kullanıcı · toplam
+           ödeme ₺139.300 · satış ofisi ağırlıklı geliştirici
+         Kuzey Proje Ltd. · Basic DENEME (9/14. gün — başlangıç 24 Haz, bitiş 8 Tem 2026) ·
+           ₺0 · 4 kullanıcı · "Deneme Sürecini Başlat" akışının sonucu
+         Çınar İnşaat · Ücretsiz ₺0 · Aktif 2 ay (May 2026) · 3 kullanıcı
+       Platform KPI seti: firma 5 (+2 alt şirket) · MRR ₺61.700 · aktif deneme 1 · toplam
+       kullanıcı 78 (18+42+11+4+3). gavia-firma-detay ?firma= map: yapitas (DEFAULT) ·
+       miray · ege · kuzey · cinar; Genel sekmesi = crm-ayarlar-firma alan setinin YAPISAL
+       İKİZİ (DALGA 10 kanonik bloğu — alanlar BİREBİR, salt-okunur platform görünümü).
+       "Deneme Sürecini Başlat" CTA'sı gvToast sim (yeni tenant açmaz).
+     · SÜPÜRME FİNALİ (1.13 kapanış): tenant-chip "Firma değiştir" → gavia-firmalar.html
+       GERÇEK LİNK (kilit + toast KALKTI) · Ayarlar > Modüller 3 genişleme toggle'ı GERÇEK
+       ve AÇIK (10/10 aktif; "tanıtım eklentisi" notu) · index: Müşteri Portalı demo giriş
+       kartı + superadmin kartına Platform Konsolu linki. Repo genelinde kilitli/yakında
+       kalıntısı 0 hedefi (grep denetimi dalga sonu QA'da).
    ===================================================================== */
 (function(){
   'use strict';
@@ -596,6 +672,8 @@
       {ic:'fa-stamp',          lbl:'Bekleyen Onaylar', href:'crm-panel-onaylar.html',     screen:'onaylar', cnt:'12'},
       {ic:'fa-bell',           lbl:'Bildirimler',      href:'crm-panel-bildirimler.html', screen:'bildirimler'},
       {seclbl:'Analiz'},
+      /* [D13] yönetici paneli — scr ile yalnız superadmin+sahip+yonetim (2.15) */
+      {ic:'fa-table-cells-large', lbl:'Yönetici Paneli', href:'crm-panel-yonetici.html',  screen:'yonetici'},
       {ic:'fa-chart-column',   lbl:'Raporlar',         href:'crm-panel-raporlar.html',    screen:'raporlar'}
     ]},
     santiye:{ ic:'fa-helmet-safety', eyebrow:'Saha', title:'Şantiyeler', menu:[
@@ -697,23 +775,29 @@
        teknik satinalma'da yalnız stok, finans'ta nakit HARİÇ; sef finans'ta yalnız taşeron
        kartları (kendi şantiyesi) + satinalma'da tedarikçi YOK; muhasebe satinalma'da yalnız
        4 yeni ekran (sipariş/irsaliye/stok/tedarikçi) */
+    /* [D13] teknik/sef/muhasebe/ik panel scr'si: Yönetici Paneli (yonetici) yalnız
+       superadmin+sahip+yonetim'de — bu 4 rolün görünen panel seti DEĞİŞMEDİ */
     teknik:    { name:'Elif Sarıkaya',    role:'Teknik Müdür',              ini:'ES',
                  secs:['panel','santiye','gorev','operasyon','satinalma','finans','satis'], land:'crm-panel.html',
-                 scr:{ satis:['talepler'], satinalma:['stok'],
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar'],
+                       satis:['talepler'], satinalma:['stok'],
                        finans:['kurum','taseron','sozlesmeler','butce','maliyet','taseronlar'] } },
     sef:       { name:'Hasan Demirci',    role:'Şantiye Şefi — Vadi Konakları', ini:'HD',
                  secs:['panel','santiye','gorev','personel','operasyon','satinalma','finans'], land:'crm-panel.html',
-                 scr:{ satinalma:['talepler','formlar','siparisler','termin','irsaliye','stok'],
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar'],
+                       satinalma:['talepler','formlar','siparisler','termin','irsaliye','stok'],
                        finans:['taseronlar'] } },
     muhasebe:  { name:'Nesrin Aydın',     role:'Muhasebe',                  ini:'NA',
                  secs:['panel','operasyon','satinalma','cari','finans','personel'], land:'crm-panel.html',
-                 scr:{ satinalma:['siparisler','irsaliye','stok','tedarikciler'] } },
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar'],
+                       satinalma:['siparisler','irsaliye','stok','tedarikciler'] } },
     satinalma: { name:'Baran Yıldız',     role:'Satın Alma Sorumlusu',      ini:'BY',
                  secs:['panel','satinalma','cari','gorev'], land:'crm-panel.html',
                  scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } },
     ik:        { name:'Seda Karaca',      role:'İK Uzmanı',                 ini:'SK',
                  secs:['panel','personel','gorev','operasyon'], land:'crm-panel.html',
-                 scr:{ operasyon:['kasa','pluxee','puantaj','demirbas','arac'] } },
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar'],
+                       operasyon:['kasa','pluxee','puantaj','demirbas','arac'] } },
     personel:  { name:'Ali Vural',        role:'Saha Personeli',            ini:'AV',
                  secs:['panel','gorev'], land:'crm-panel.html',
                  scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } },
@@ -840,7 +924,8 @@
   var searchInp = document.querySelector('.gv-search input');
   if(searchInp) searchInp.placeholder = STR.search;
 
-  /* tenant çipi — yalnız superadmin (kiralanabilirlik sinyali; switcher Faz 2) */
+  /* tenant çipi — yalnız superadmin (kiralanabilirlik sinyali; [D13] Firma değiştir
+     → Gavia Platform Konsolu firma listesine gerçek link) */
   if(R.tenantChip){
     var top = document.querySelector('.gv-top'), search = document.querySelector('.gv-search');
     if(top && search){
@@ -853,14 +938,12 @@
         +   '<div class="gp-head"><b>'+STR.tenant+'</b><span>'+STR.tenantPlan+' · 18 kullanıcı</span></div>'
         +   '<a href="crm-ayarlar-firma.html"><i class="fa-solid fa-building-user"></i> '+STR.firmSettings+'</a>'
         +   '<div class="gp-div"></div>'
-        +   '<a class="is-locked" href="#" data-locked="1"><i class="fa-solid fa-shuffle"></i> '+STR.switchTenant+'<span class="gp-soon">'+STR.phase2+'</span></a>'
+        +   '<a href="gavia-firmalar.html"><i class="fa-solid fa-shuffle"></i> '+STR.switchTenant+'</a>'
         + '</div>';
       top.insertBefore(tn, search.nextSibling);
       var pop = tn.querySelector('.gv-pop');
       function setTn(o){ pop.classList.toggle('open',o); tn.setAttribute('aria-expanded', o?'true':'false'); }
       tn.addEventListener('click', function(e){
-        var lk = e.target.closest('[data-locked]');
-        if(lk){ e.preventDefault(); if(window.gvToast) gvToast('Çoklu firma yönetimi '+STR.phase2+' kapsamında.', {type:'info'}); setTn(false); return; }
         if(e.target.closest('.gv-pop')) return;
         setTn(!pop.classList.contains('open'));
       });
