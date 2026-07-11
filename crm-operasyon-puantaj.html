@@ -108,7 +108,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
 
 /* ============ Geçmiş gün kilidi (D9 — saat revize) ============
    Haftalık grid'de aynı-gün dışındaki işlenmiş günler + tüm arşiv haftası
-   kilitli görünür: köşede kilit rozeti + tıklanınca gvToast uyarısı. ---- */
+   girişe kapalı görünür: köşede kilit rozeti + tıklanınca gvToast uyarısı. ---- */
 .pt-mark.is-locked{cursor:not-allowed}
 .pt-mark.is-locked .pt-lock{
   position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:var(--r-circle);
@@ -500,7 +500,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
         var V = STATUS[st];
         var todayCls = (WEEK === 0 && d === TODAY_IDX) ? ' is-today' : '';
         /* geçmiş gün kilidi: arşiv haftasında tüm işlenmiş günler, kanonik haftada
-           bugünden önceki işlenmiş günler kilitli — revize yalnız aynı gün içinde. */
+           bugünden önceki işlenmiş günler girişe kapalı — revize yalnız aynı gün içinde. */
         var locked = (st !== 'ht' && st !== 'gelecek') && (WEEK === -1 || (WEEK === 0 && d < TODAY_IDX));
         var extraTip = (SAAT_TIP[p.ad] && SAAT_TIP[p.ad][d]) ? ' — ' + SAAT_TIP[p.ad][d] : '';
         var tip = curDays()[d] + ' · ' + V.lbl + extraTip;

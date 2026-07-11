@@ -37,8 +37,8 @@
 /* termin göstergesi — kalan gün/duruma göre renk (termin.html deseniyle aynı dil) */
 .kalan-pill{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--ink-2)}
 .kalan-pill .k-dot{width:8px;height:8px;border-radius:var(--r-circle);flex:none}
-.kalan-pill.soon .k-dot{background:var(--warn)}
-.kalan-pill.soon{color:var(--ink-2)}
+.kalan-pill.near .k-dot{background:var(--warn)}
+.kalan-pill.near{color:var(--ink-2)}
 .kalan-pill.partial .k-dot{background:var(--warn)}
 .kalan-pill.partial{color:var(--warn)}
 .kalan-pill.late .k-dot{background:var(--danger)}
@@ -195,7 +195,7 @@
               <td>Liman Lojistik Merkezi</td>
               <td><span class="sp-desc">C35/45 beton — 420 m³</span></td>
               <td class="num t-strong">₺798.000</td>
-              <td><span class="kalan-pill soon"><span class="k-dot"></span> 14 Tem (planlı)</span></td>
+              <td><span class="kalan-pill near"><span class="k-dot"></span> 14 Tem (planlı)</span></td>
               <td data-badge2="tedarikcide"></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-siparis-detay.html?sip=SIP-2026-06" data-no-confirm aria-label="Sipariş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
@@ -205,7 +205,7 @@
               <td>Vadi Konakları</td>
               <td><span class="sp-desc">Şap betonu — 120 m³</span></td>
               <td class="num t-strong">₺186.000</td>
-              <td><span class="kalan-pill soon"><span class="k-dot"></span> 9 Tem (planlı)</span></td>
+              <td><span class="kalan-pill near"><span class="k-dot"></span> 9 Tem (planlı)</span></td>
               <td data-badge2="onaylandi"></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-siparis-detay.html?sip=SIP-2026-07" data-no-confirm aria-label="Sipariş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>

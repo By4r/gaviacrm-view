@@ -2,7 +2,7 @@
    GAVIA CRM — DESIGN TOKENS (tek kaynak)
    Marka: gaviaworks.com brand.css BİREBİR (koyu katman) + light içerik
    türevleri (İŞARETLİ). Bölüm/marka yeniden renklendirme --acc üçlüsüyle.
-   Bu dosya pilot onayı sonrası KİLİTLİDİR — değişiklik sahibine (T0) sorulur.
+   Ortak çekirdek dosya — değişiklikler tek elden yapılır.
    ===================================================================== */
 :root{
   /* ---- Marka — birebir gaviaworks.com ---- */

@@ -227,7 +227,7 @@
      kullanır — puantajdaki gv_pt_gunluk_2tem'e karışmaz]. Toggle → tablo satırları
      saat/operatör/durum için düzenlenebilir moda geçer → Kaydet ile localStorage'a
      yazılır → normal görünüme dönüşte girilen değerler yansır. Arızalı makinede
-     (MKN-06, hidrolik arıza) günlük giriş kilitlidir — servis durumu günlük
+     (MKN-06, hidrolik arıza) günlük giriş kapalıdır — servis durumu günlük
      çalıştı/çalışmadı girişiyle ezilmez. ---- */
   var GIRIS_KEY = 'gvMakineGiris';
   function loadGiris(){ try{ return JSON.parse(localStorage.getItem(GIRIS_KEY)) || {}; }catch(e){ return {}; } }
@@ -258,7 +258,7 @@
     var html = '<tr data-f="'+m.durum+'" data-santiye="'+m.santiye+'" data-no="'+m.no+'">';
     /* own.lbl/mk-no arasına eklenen boşluk karakterleri görsel yerleşimi etkilemez
        (own/mk-no zaten blok/satır kırılımıyla ayrılıyor) — ui.js'in global sil
-       interceptor'ı (KİLİTLİ) satırdaki ilk <td>'nin textContent'ini onay
+       interceptor'ı (ortak ui.js) satırdaki ilk <td>'nin textContent'ini onay
        diyaloğunda isim olarak kullanıyor; boşluksuz halde "Forklift Toyota
        8FD25MKN-05Öz Mal" gibi bitişik/okunmaz bir metin üretiyordu. */
     html += '<td><div class="mk-cell"><div class="mk-mark" style="background:'+tint.bg+';color:'+tint.fg+'"><i class="fa-solid fa-truck-pickup"></i></div>'
