@@ -150,14 +150,15 @@
     <div class="h-txt">
       <div class="eyebrow">Gaviaworks · Statik Prototip</div>
       <h1>Ekran Dizini</h1>
-      <p class="sub">Operasyon çekirdeği + Satış CRM + Tedarik &amp; Finans'ın tüm ekranları — modül modül, tıklanabilir.
-        Sıralama ürünün sol rail'iyle birebir; Raporlar ve Operasyon Ekranı panel bölümünün altında yaşar.</p>
+      <p class="sub">Operasyon çekirdeği + Satış CRM + Tedarik &amp; Finans + Müşteri Portalı + Gavia Platform'un
+        tüm ekranları — modül modül, tıklanabilir. Sıralama ürünün sol rail'iyle birebir; Raporlar ve
+        Operasyon Ekranı panel bölümünün altında yaşar.</p>
     </div>
     <div class="h-side">
       <div class="stat-chips">
-        <span class="schip"><b>114</b> ekran</span>
-        <span class="schip"><b>12</b> modül grubu</span>
-        <span class="schip">Tedarik &amp; Finans <b>canlı</b></span>
+        <span class="schip"><b>133</b> ekran</span>
+        <span class="schip"><b>14</b> modül grubu</span>
+        <span class="schip">Portal &amp; Platform <b>canlı</b></span>
       </div>
       <a class="back" href="index.html"><i class="fa-solid fa-arrow-left"></i> Giriş / rol seçimi</a>
     </div>
@@ -176,6 +177,8 @@
     <a class="rn" href="#finans"><i class="fa-solid fa-file-signature"></i>Finans</a>
     <a class="rn" href="#satis"><i class="fa-solid fa-chart-line"></i>Satış</a>
     <a class="rn" href="#ayarlar"><i class="fa-solid fa-sliders"></i>Ayarlar</a>
+    <a class="rn" href="#portal"><i class="fa-solid fa-house-user"></i>Portal</a>
+    <a class="rn" href="#gavia"><i class="fa-solid fa-layer-group"></i>Gavia</a>
   </nav>
 
   <section class="cols">
@@ -184,7 +187,7 @@
       <div class="c-head">
         <div class="c-ico"><i class="fa-solid fa-gauge-high"></i></div>
         <div class="c-tit"><b>Panel &amp; Kontrol</b><span>Genel Bakış</span></div>
-        <span class="c-cnt">5 ekran</span>
+        <span class="c-cnt">6 ekran</span>
       </div>
       <ul class="rows">
         <li><a class="row" href="crm-panel.html">
@@ -207,6 +210,10 @@
           <span class="r-top"><b>Bildirimler</b><em class="t">liste</em></span>
           <span class="r-desc">Topbar zilinin hedefi — sistem bildirim akışı</span>
           <code class="r-file">crm-panel-bildirimler.html</code></a></li>
+        <li><a class="row" href="crm-panel-yonetici.html">
+          <span class="r-top"><b>Yönetici Paneli</b><em class="t">hub</em></span>
+          <span class="r-desc">Üst yönetim mozaiği — satış, bütçe, nakit, tedarik, hakediş + risk uyarıları</span>
+          <code class="r-file">crm-panel-yonetici.html</code></a></li>
       </ul>
     </article>
 
@@ -214,12 +221,12 @@
       <div class="c-head">
         <div class="c-ico"><i class="fa-solid fa-chart-column"></i></div>
         <div class="c-tit"><b>Raporlar</b><span>Panel Altı</span></div>
-        <span class="c-cnt">15 ekran</span>
+        <span class="c-cnt">16 ekran</span>
       </div>
       <ul class="rows">
         <li><a class="row" href="crm-panel-raporlar.html">
           <span class="r-top"><b>Rapor Merkezi</b><em class="t">hub</em></span>
-          <span class="r-desc">14 rapor kartı — tamamı canlı</span>
+          <span class="r-desc">15 rapor kartı — tamamı canlı</span>
           <code class="r-file">crm-panel-raporlar.html</code></a></li>
         <li><a class="row" href="crm-panel-rapor-puantaj.html">
           <span class="r-top"><b>Puantaj Raporu</b><em class="t t-rapor">rapor</em></span>
@@ -277,6 +284,10 @@
           <span class="r-top"><b>Cari Raporu</b><em class="t t-rapor">rapor</em></span>
           <span class="r-desc">Firma bakiyeleri, vade ve tür kırılımı</span>
           <code class="r-file">crm-panel-rapor-cari.html</code></a></li>
+        <li><a class="row" href="crm-panel-rapor-isprogrami.html">
+          <span class="r-top"><b>İş Programı Raporu</b><em class="t t-rapor">rapor</em></span>
+          <span class="r-desc">Planlanan vs gerçekleşen — kalem bazlı sapma (gün)</span>
+          <code class="r-file">crm-panel-rapor-isprogrami.html</code></a></li>
       </ul>
     </article>
 
@@ -416,7 +427,7 @@
       <div class="c-head">
         <div class="c-ico"><i class="fa-solid fa-clipboard-list"></i></div>
         <div class="c-tit"><b>Operasyon</b><span>Günlük Kayıt</span></div>
-        <span class="c-cnt">17 ekran</span>
+        <span class="c-cnt">20 ekran</span>
       </div>
       <ul class="rows">
         <li><a class="row" href="crm-operasyon-kasa.html">
@@ -487,6 +498,18 @@
           <span class="r-top"><b>Yeni Demirbaş</b><em class="t t-form">form</em></span>
           <span class="r-desc">Envantere kalem ekleme; zimmet ataması detaydan</span>
           <code class="r-file">crm-operasyon-demirbas-form.html</code></a></li>
+        <li><a class="row" href="crm-operasyon-arac.html">
+          <span class="r-top"><b>Araçlar</b><em class="t">liste</em></span>
+          <span class="r-desc">ARC filosu — muayene/bakım uyarıları, aylık maliyet</span>
+          <code class="r-file">crm-operasyon-arac.html</code></a></li>
+        <li><a class="row" href="crm-operasyon-arac-detay.html">
+          <span class="r-top"><b>Araç Dosyası</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">ARC-01 Ford Ranger — HGS, ceza, kaza, bakım sekmeleri</span>
+          <code class="r-file">crm-operasyon-arac-detay.html</code></a></li>
+        <li><a class="row" href="crm-operasyon-puantaj-cikti.html">
+          <span class="r-top"><b>Haftalık Puantaj Çıktısı</b><em class="t t-kiosk">çıktı</em></span>
+          <span class="r-desc">A4 imzaya hazır haftalık puantaj tablosu — shell'siz</span>
+          <code class="r-file">crm-operasyon-puantaj-cikti.html</code></a></li>
       </ul>
     </article>
 
@@ -494,7 +517,7 @@
       <div class="c-head">
         <div class="c-ico"><i class="fa-solid fa-cart-flatbed"></i></div>
         <div class="c-tit"><b>Satın Alma</b><span>Tedarik</span></div>
-        <span class="c-cnt">14 ekran</span>
+        <span class="c-cnt">15 ekran</span>
       </div>
       <ul class="rows">
         <li><a class="row" href="crm-satinalma-talepler.html">
@@ -553,6 +576,10 @@
           <span class="r-top"><b>Tedarikçi Kartı</b><em class="t t-detay">detay</em></span>
           <span class="r-desc">Künye, teklif geçmişi, teslimat performansı, cari</span>
           <code class="r-file">crm-satinalma-tedarikci-detay.html</code></a></li>
+        <li><a class="row" href="crm-satinalma-icmal-cikti.html">
+          <span class="r-top"><b>İcmal Çıktısı</b><em class="t t-kiosk">çıktı</em></span>
+          <span class="r-desc">SAT-2026-018 — A4 imzaya hazır icmal tablosu, shell'siz</span>
+          <code class="r-file">crm-satinalma-icmal-cikti.html</code></a></li>
       </ul>
     </article>
 
@@ -569,7 +596,7 @@
           <code class="r-file">crm-cari.html</code></a></li>
         <li><a class="row" href="crm-cari-detay.html">
           <span class="r-top"><b>Cari Kartı</b><em class="t t-detay">detay</em></span>
-          <span class="r-desc">Demir-Beton — 5 sekme; satış pipeline'ı Faz 2 kilitli</span>
+          <span class="r-desc">Demir-Beton — 5 sekme; ?cari= ile Onaran/Toprak şablonu</span>
           <code class="r-file">crm-cari-detay.html</code></a></li>
         <li><a class="row" href="crm-cari-form.html">
           <span class="r-top"><b>Yeni Firma</b><em class="t t-form">form</em></span>
@@ -651,7 +678,7 @@
     <article class="cat" id="satis">
       <div class="c-head">
         <div class="c-ico"><i class="fa-solid fa-chart-line"></i></div>
-        <div class="c-tit"><b>Satış CRM</b><span>Satış · Faz 2</span></div>
+        <div class="c-tit"><b>Satış CRM</b><span>Satış</span></div>
         <span class="c-cnt">14 ekran</span>
       </div>
       <ul class="rows">
@@ -718,7 +745,7 @@
       <div class="c-head">
         <div class="c-ico"><i class="fa-solid fa-sliders"></i></div>
         <div class="c-tit"><b>Ayarlar</b><span>Tenant-Admin Konsolu</span></div>
-        <span class="c-cnt">8 ekran</span>
+        <span class="c-cnt">12 ekran</span>
       </div>
       <ul class="rows">
         <li><a class="row" href="crm-ayarlar-firma.html">
@@ -735,11 +762,11 @@
           <code class="r-file">crm-ayarlar-kullanici-davet.html</code></a></li>
         <li><a class="row" href="crm-ayarlar-moduller.html">
           <span class="r-top"><b>Modüller</b><em class="t">konsol</em></span>
-          <span class="r-desc">7 aktif + 5 kilitli modül (Faz 2)</span>
+          <span class="r-desc">10 modül aç-kapa — genişleme eklentileri dahil, tamamı aktif</span>
           <code class="r-file">crm-ayarlar-moduller.html</code></a></li>
         <li><a class="row" href="crm-ayarlar-roller.html">
           <span class="r-top"><b>Roller &amp; Yetkiler</b><em class="t">konsol</em></span>
-          <span class="r-desc">9 rol × 9 bölüm yetki matrisi, kısmi erişim rozetli</span>
+          <span class="r-desc">11 rol × 10 bölüm yetki matrisi, kısmi erişim rozetli</span>
           <code class="r-file">crm-ayarlar-roller.html</code></a></li>
         <li><a class="row" href="crm-ayarlar-rol-form.html">
           <span class="r-top"><b>Yeni Rol</b><em class="t t-form">form</em></span>
@@ -753,6 +780,78 @@
           <span class="r-top"><b>Yeni Onay Akışı</b><em class="t t-form">form</em></span>
           <span class="r-desc">Özel akış (demo) — adım zinciri kurgusu, gvChain'i etkilemez</span>
           <code class="r-file">crm-ayarlar-onay-form.html</code></a></li>
+        <li><a class="row" href="crm-ayarlar-log.html">
+          <span class="r-top"><b>İşlem Kayıtları</b><em class="t">liste</em></span>
+          <span class="r-desc">LOG denetim izi — modül/kullanıcı filtreli, salt-okunur</span>
+          <code class="r-file">crm-ayarlar-log.html</code></a></li>
+        <li><a class="row" href="crm-ayarlar-profil.html">
+          <span class="r-top"><b>Profil</b><em class="t">hesap</em></span>
+          <span class="r-desc">Aktif personanın profil kartı — hesap menüsünden</span>
+          <code class="r-file">crm-ayarlar-profil.html</code></a></li>
+        <li><a class="row" href="crm-ayarlar-hesap.html">
+          <span class="r-top"><b>Hesap Ayarları</b><em class="t">hesap</em></span>
+          <span class="r-desc">Şifre, oturum ve güvenlik tercihleri (sim)</span>
+          <code class="r-file">crm-ayarlar-hesap.html</code></a></li>
+        <li><a class="row" href="crm-ayarlar-bildirim-tercih.html">
+          <span class="r-top"><b>Bildirim Tercihleri</b><em class="t">hesap</em></span>
+          <span class="r-desc">Kanal × olay bildirimi tercih matrisi (sim)</span>
+          <code class="r-file">crm-ayarlar-bildirim-tercih.html</code></a></li>
+      </ul>
+    </article>
+
+    <article class="cat" id="portal">
+      <div class="c-head">
+        <div class="c-ico"><i class="fa-solid fa-house-user"></i></div>
+        <div class="c-tit"><b>Müşteri Portalı</b><span>Standalone · Shell'siz</span></div>
+        <span class="c-cnt">4 ekran</span>
+      </div>
+      <ul class="rows">
+        <li><a class="row" href="portal-panel.html">
+          <span class="r-top"><b>Portal — Panel</b><em class="t t-kiosk">portal</em></span>
+          <span class="r-desc">Selçuk Onaran demo girişi — birim kartları + ödeme/talep özeti</span>
+          <code class="r-file">portal-panel.html</code></a></li>
+        <li><a class="row" href="portal-odemeler.html">
+          <span class="r-top"><b>Portal — Ödemelerim</b><em class="t t-kiosk">portal</em></span>
+          <span class="r-desc">VK-C-18 taksit planı 14/36 — kalan ₺3.592.000, makbuz linkleri</span>
+          <code class="r-file">portal-odemeler.html</code></a></li>
+        <li><a class="row" href="portal-belgeler.html">
+          <span class="r-top"><b>Portal — Belgelerim</b><em class="t t-kiosk">portal</em></span>
+          <span class="r-desc">Sözleşmeler, teslim tutanağı, ödeme planı ve makbuzlar</span>
+          <code class="r-file">portal-belgeler.html</code></a></li>
+        <li><a class="row" href="portal-talepler.html">
+          <span class="r-top"><b>Portal — Taleplerim</b><em class="t t-kiosk">portal</em></span>
+          <span class="r-desc">SST-2026-007/010 müşteri görünümü + yeni talep formu</span>
+          <code class="r-file">portal-talepler.html</code></a></li>
+      </ul>
+    </article>
+
+    <article class="cat" id="gavia">
+      <div class="c-head">
+        <div class="c-ico"><i class="fa-solid fa-layer-group"></i></div>
+        <div class="c-tit"><b>Gavia Platform</b><span>Standalone · Yalnız Superadmin</span></div>
+        <span class="c-cnt">5 ekran</span>
+      </div>
+      <ul class="rows">
+        <li><a class="row" href="gavia-panel.html">
+          <span class="r-top"><b>Platform Konsolu</b><em class="t">hub</em></span>
+          <span class="r-desc">5 tenant · MRR ₺61.700 — platform KPI ve son işlemler</span>
+          <code class="r-file">gavia-panel.html</code></a></li>
+        <li><a class="row" href="gavia-firmalar.html">
+          <span class="r-top"><b>Firmalar</b><em class="t">liste</em></span>
+          <span class="r-desc">Tenant tablosu — Miray multi-company alt şirket satırlarıyla</span>
+          <code class="r-file">gavia-firmalar.html</code></a></li>
+        <li><a class="row" href="gavia-firma-detay.html">
+          <span class="r-top"><b>Firma Detayı</b><em class="t t-detay">detay</em></span>
+          <span class="r-desc">Genel sekmesi firma profili yapısal ikizi; abonelik + limitler</span>
+          <code class="r-file">gavia-firma-detay.html</code></a></li>
+        <li><a class="row" href="gavia-firma-form.html">
+          <span class="r-top"><b>Yeni Firma</b><em class="t t-form">form</em></span>
+          <span class="r-desc">Firma / alt şirket kaydı + paket seçimi + deneme başlatma</span>
+          <code class="r-file">gavia-firma-form.html</code></a></li>
+        <li><a class="row" href="gavia-paketler.html">
+          <span class="r-top"><b>Paketler</b><em class="t">konsol</em></span>
+          <span class="r-desc">4 paket + Ücretsiz — fiyat kartları ve modül/limit matrisi</span>
+          <code class="r-file">gavia-paketler.html</code></a></li>
       </ul>
     </article>
 
