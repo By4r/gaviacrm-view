@@ -29,6 +29,7 @@
 
   /* ---- gvConfirm — onay modalı ---- */
   window.gvConfirm = function(opts){
+    if(document.querySelector('.gv-modal-ov')) return;   /* çift/hızlı tık → modal üst üste binmez (D15) */
     opts = opts || {};
     var danger = !!opts.danger;
     var ov = document.createElement('div'); ov.className = 'gv-modal-ov';
@@ -357,6 +358,7 @@
             ok:'Revize İste', ph:'Revize açıklaması — zorunlu',  need:true,  done:'için revize istendi',  type:'info'}
   };
   window.gvChainAction = function(opts){
+    if(document.querySelector('.gv-modal-ov')) return;   /* çift/hızlı tık → modal üst üste binmez (D15) */
     opts = opts || {};
     var K = CHAIN_ACT[opts.kind] || CHAIN_ACT.onayla;
     var ov = document.createElement('div'); ov.className = 'gv-modal-ov';
