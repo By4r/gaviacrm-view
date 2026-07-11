@@ -77,6 +77,7 @@
         <div class="ph-sub" id="dmSub">Yükleniyor…</div>
       </div>
       <div class="ph-actions">
+        <a class="btn btn-ghost btn-sm" href="crm-operasyon-arac.html"><i class="fa-solid fa-car-side"></i> Araç Filosu (6)</a>
         <a class="btn btn-acc btn-sm" href="crm-operasyon-demirbas-form.html"><i class="fa-solid fa-plus"></i> Yeni Demirbaş</a>
       </div>
     </div>
@@ -190,10 +191,10 @@
     {no:'ZMT-2026-041', ad:'İş Telefonu', alt:'Samsung Galaxy A54, 64GB',         kat:'telefon',  kisi:'Hasan Demirci', santiye:'vadi', tarih:'3 Oca 2026',   durum:'zimmetli'},
     {no:'ZMT-2026-042', ad:'El Aleti Seti', alt:'Bosch GSB 18V-55, 18 parça',     kat:'elaleti',  kisi:'Hasan Demirci', santiye:'vadi', tarih:'3 Oca 2026',   durum:'zimmetli'},
     {no:'ZMT-2026-043', ad:'Güvenlik Ekipmanı', alt:'baret + yelek + bot seti',   kat:'guvenlik', kisi:'Hasan Demirci', santiye:'vadi', tarih:'3 Oca 2026',   durum:'zimmetli'},
-    {no:'ZMT-2026-044', ad:'Araç', alt:'Ford Ranger pikap, 34 ABC 123',           kat:'arac',     kisi:'Hasan Demirci', santiye:'vadi', tarih:'3 Oca 2026',   durum:'zimmetli'},
+    {no:'ZMT-2026-044', ad:'Araç', alt:'Ford Ranger pikap, 34 ABC 123',           kat:'arac',     kisi:'Hasan Demirci', santiye:'vadi', tarih:'3 Oca 2026',   durum:'zimmetli', arac:'ARC-01', zmt:'044'},
     {no:'ZMT-2026-045', ad:'Tablet', alt:'Samsung Galaxy Tab A9, 64GB',           kat:'tablet',   kisi:'Aylin Koç',     santiye:'liman', tarih:'15 Şub 2026', durum:'zimmetli'},
     {no:'ZMT-2026-046', ad:'Lazer Metre', alt:'Bosch GLM 50 C',                   kat:'elaleti',  kisi:'Ömer Taşkın',   santiye:'merkez', tarih:'20 Oca 2026', durum:'zimmetli'},
-    {no:'ZMT-2026-047', ad:'Kırıcı-Delici', alt:'Hilti TE 60-A36',                kat:'makine',   kisi:null, santiye:'depo', tarih:'25 Haz 2026', tarihNot:'gönderim', durum:'serviste'},
+    {no:'ZMT-2026-047', ad:'Kırıcı-Delici', alt:'Hilti TE 60-A36',                kat:'makine',   kisi:null, santiye:'depo', tarih:'25 Haz 2026', tarihNot:'gönderim', durum:'serviste', zmt:'047'},
     {no:'ZMT-2026-048', ad:'El Telsizi Seti', alt:'Motorola CP040, 4 adet',       kat:'telefon',  kisi:null, santiye:'depo', tarih:'—', durum:'depoda'},
     {no:'ZMT-2025-017', ad:'El Telsizi', alt:'Motorola CP040 — iade: 3 Oca 2026', kat:'telefon',  kisi:'Hasan Demirci', santiye:null, tarih:'10 Mar 2025', durum:'iade'},
     {no:'ZMT-2025-009', ad:'Jeneratör', alt:'Honda EU22i — hurda kararı: 12 May 2026', kat:'makine', kisi:null, santiye:null, tarih:'8 Nis 2025', durum:'hurda'}
@@ -206,13 +207,15 @@
     var D = DURUM[d.durum];
     html += '<tr data-kat="'+d.kat+'" data-durum="'+d.durum+'" data-santiye="'+(d.santiye||'')+'">';
     html += '<td><div class="dm-cell"><div class="dm-mark" style="background:'+K.bg+';color:'+K.fg+'"><i class="fa-solid '+K.ic+'"></i></div>'
-          + '<div class="dm-info"><b>'+d.ad+'</b><span class="dm-no">'+d.no+' — '+d.alt+'</span></div></div></td>';
+          + '<div class="dm-info"><b>'+d.ad+'</b><span class="dm-no">'+d.no+' — '+d.alt+'</span>'
+          + (d.arac ? '<a href="crm-operasyon-arac-detay.html?arac='+d.arac+'" style="display:block;font-size:11px;font-weight:700;color:var(--acc-ink)">Araç dosyası: '+d.arac+'</a>' : '')
+          + '</div></div></td>';
     html += '<td>'+K.lbl+'</td>';
     html += '<td>'+(d.kisi ? d.kisi : '<span class="dm-kisisiz">(kişisiz)</span>')+'</td>';
     html += '<td>'+(d.santiye ? SANTIYE_ADI[d.santiye] : '<span class="dm-kisisiz">—</span>')+'</td>';
     html += '<td>'+(d.tarihNot ? '<span class="muted" style="font-size:11.5px">'+d.tarihNot+':</span> ' : '')+d.tarih+'</td>';
     html += '<td><span class="gstat '+D.cls+'">'+D.lbl+'</span></td>';
-    html += '<td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>';
+    html += '<td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html'+(d.zmt ? '?zmt='+d.zmt : '')+'" data-no-confirm aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>';
     html += '</tr>';
   });
   body.innerHTML = html;

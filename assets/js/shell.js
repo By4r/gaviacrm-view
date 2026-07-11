@@ -189,6 +189,83 @@
        oluştur butonları OLUSTURABILIR dizileriyle zaten gizli). Kredi kartı sayfası
        sef'e KENDİ kartını gösterir (sayfa-lokal filtre, kasa sef idiyomu).
        Saha personeli operasyon bölümünü hiç görmez (secs) — kasa/pluxee/KK otomatik kapalı.
+   ─ DALGA 9 KANONİK TANIMLAR (2026-07-11 — icmal + puantaj çıktı/saat revize + araçlar + iş programı raporu):
+     · ARC-## araç sicil serisi — KANONİK FİLO (6 araç). Demirbaş "Araç" kategorisi bu modüle
+       yönlenir; ZMT-2026-044 Ford Ranger = ARC-01 ile AYNI araç (zimmet kaydı demirbaşta yaşar):
+         ARC-01 Ford Ranger 4x4 pikap (2023)     · 34 ABC 123 · Vadi   · Hasan Demirci (ZMT-2026-044) ·
+           muayene 29.07.2026 (18 gün — warn) · bakım 42.300/50.000 km · Tem HGS ₺1.840 (22 geçiş) ·
+           aylık maliyet ₺9.640 · Aktif
+         ARC-02 Mercedes Sprinter 316 servis (2022) · 34 SRV 641 · Vadi · İbrahim Sönmez (servis şoförü) ·
+           muayene 14.02.2027 · bakım 61.200/70.000 km · TEMİZ dosya (ceza/kaza yok) · aylık ₺11.280 · Aktif
+         ARC-03 Toyota Hilux pikap (2021)        · 35 KLT 208 · Liman  · Aylin Koç · muayene 03.11.2026 ·
+           bakım 78.450/80.000 km · Tem HGS ₺740 · aylık ₺8.120 · Aktif
+         ARC-04 Fiat Doblo Cargo panelvan (2020) · 41 DBL 457 · Merkez · Recep Yaman · muayene 22.09.2026 ·
+           bakım 87.400 km / 85.000 AŞILDI (danger) · SERVİSTE (30 Haz'dan beri bakımda) · aylık ₺6.940
+         ARC-05 Renault Megane sedan (2024)      · 34 GNL 310 · Genel Merkez · Elif Sarıkaya ·
+           muayene 08.04.2027 · bakım 18.900/30.000 km · Tem HGS ₺1.020 · aylık ₺7.310 · Aktif
+         ARC-06 Ford Transit 350L kamyonet (2019) · 41 FTR 118 · Merkez · zimmetsiz (depo havuz aracı) ·
+           muayene 30.08.2026 · bakım 132.600/135.000 km · Tem HGS ₺590 · aylık ₺8.860 · Aktif
+       Araç KPI seti: filo 6 · yaklaşan muayene 1 (ARC-01, 18 gün) · açık ceza 1 · Tem HGS toplam ₺4.190.
+       FORD RANGER DOSYASI (Not D zengin senaryo — arac-detay bu değerleri kullanır):
+         22 HGS geçişi (Tem, ₺1.840) · ceza 2: hız 12.05.2026 ₺2.167 (Hasan Demirci bordro
+         kesintisi — AÇIK, kesinti onay sürecinde) + park 03.04.2026 ₺993 (firma ödedi — kapalı) ·
+         kaza 1: 18.06.2026 şantiye giriş rampası çarpması, hasar ₺18.500, sigorta %80 = ₺14.800,
+         firma payı ₺3.700 · muayene 29.07.2026 → "18 gün" uyarısı · son bakım 15.05.2026 @40.000 km,
+         sonraki 50.000 km (şu an 42.300 km).
+     · ZİMMET GEÇMİŞİ + BORÇ/CEZA (demirbaş derinleştirme): ZMT-2026-047 Hilti TE 60-A36 —
+       3 duraklı geçmiş: 12 Şub 2026 teslim → Ramazan Kılıç (Vadi) · 28 Nis 2026 depo iadesi ·
+       5 May 2026 teslim → Ali Vural (Vadi) · 20 Haz 2026 iade (kontrolde gövde çatlağı) →
+       hasar bedeli ₺650 borç kaydı (Ali Vural, bordro kesintisi muhasebe onayında) ·
+       25 Haz 2026 servise gönderim (mevcut "Serviste" durumuyla senkron).
+       (Plan notu düzeltmeleri: "Cemil Öztürk" kanonik kadroda yok → Ramazan Kılıç;
+       "ZMT-2026-041" yazımı → Hilti kanonikte ZMT-2026-047.)
+       Sayfa idiyomu (T3 kararı): crm-operasyon-demirbas-detay.html artık ?zmt= param'lı
+       template — 3 kayıt: 041 telefon (DEFAULT, parametresiz eski davranış aynen),
+       044 Ford Ranger (ARC-01 çapraz link), 047 Hilti (zimmet geçmişi + borç/ceza senaryosu).
+       Personel-detay'daki parametresiz linkler bilinçli DOKUNULMADI (hepsi Hasan Demirci
+       bağlamı → 041 default'una düşer, eşleşme doğru kalır).
+     · PUANTAJ SAAT REVİZE (Talep 7): varsayılan mesai 08:00–18:00; fark rozeti saat cinsinden
+       −N (.gstat.warn — erken çıkış) / +N (.gstat.info — fazla mesai). Revize YALNIZ aynı gün;
+       geçmiş gün hücresi kilitli (disabled + kilit ikonu + gvToast "Geçmiş güne revize yapılamaz…");
+       arşiv haftası tümüyle kilitli. localStorage: gv_pt_saat_*.
+       Demo: Ali Vural Çar 1 Tem 08:00–15:00 → −3 (geçmiş gün, kilitli; EM işaretiyle senkron) ·
+       İbrahim Sönmez Per 2 Tem (bugün) 08:00–21:00 → +3 (canlı aynı-gün revize; FM işaretiyle senkron).
+       (Plan notundaki "Cemil Öztürk +3" kanonik kadrodan İbrahim Sönmez'e atandı.)
+     · HAFTALIK PUANTAJ ÇIKTISI (crm-operasyon-puantaj-cikti.html?santiye=&hafta=; hafta=Pzt ISO tarihi):
+       başlık "HAFTALIK PUANTAJ TABLOSU" · AİT OLDUĞU ÇALIŞMA DÖNEMİ 29.06.2026 - 05.07.2026 ·
+       İşyeri Sicil No (K4 kurgu, Vadi): 2-3401-02-01-0248671-034-56-77 ·
+       resmi proje adı (K4 kurgu, Vadi): "İSTANBUL İLİ ÇEKMEKÖY İLÇESİ VADİ KONAKLARI 214 KONUT
+       VE ÇEVRE DÜZENLEMESİ İNŞAATI".
+       Liman (T2 kurgusu): sicil 1-3501-01-01-0193845-041-18-92 · "İZMİR İLİ ALİAĞA İLÇESİ
+       LİMAN LOJİSTİK MERKEZİ DEPOLAMA VE DAĞITIM TESİSİ İNŞAATI" · imza: Şükrü Aslan/Aylin Koç.
+       Merkez (T2 kurgusu): sicil 3-4102-01-01-0287410-019-63-45 · "KOCAELİ İLİ GEBZE İLÇESİ
+       MERKEZ ŞANTİYE DEPO VE ATÖLYE TESİSİ İNŞAATI" · imza: Recep Yaman/Ömer Taşkın.
+       Kağıt işaret idiyomu: + tam · ½ yarım · İ izinli · R raporlu · boş gelmedi · HT hafta
+       tatili (EM/FM kağıtta "+" basılır; saat detayı yalnız ekranda). TOP.GÜN = +(1) + ½(0,5).
+       Satırlar: Yapıtaş VK öz kadro 35 ADLI satır (kanonik 6 ad + temsili adlar), gün işaretleri
+       "+" idiyomu, PERSONEL İMZA kolonu BOŞ hücre (ıslak imza); taşeron blokları FİRMA satırı
+       (kişi adı LİSTELENMEZ — 5C metrik ayrımı): Demir-Beton 10 · ElektroMek 6.
+       Firma özeti: YAPITAŞ 35 · DEMİR-BETON 10 · ELEKTROMEK 6 → TOPLAM 51 (kanonik headcount BİREBİR).
+       (Plan "23 kişilik liste" kanonik 35 ile çelişir → 35'e hizalandı.)
+     · YEMEKHANE TAŞERON FİLTRESİ (Talep 6 — D12 taşeron kartı "yemekhane kişi sayısı" alanı
+       BU değerleri kullanır): 2 Tem öğle 93 = Yapıtaş öz 69 (35/22/12) + Demir-Beton 10 +
+       ElektroMek 6 + Yalıtım Kardeşler 8 (taşeron toplam 24). Plan şeması "Taşeron A 14 + B 10"
+       kanonik firma kadrolarıyla (10/6/8) çelişir → FİRMA BAZLI 10/6/8 KESİN.
+     · SATIN ALMA İCMALİ (Talep 5): SAT-2026-018 · Vadi Konakları mekanik tesisat paketi ·
+       9 kalem · 5 tedarikçi (plan 1.5 birebir): Ege Hazır Beton · Trakya Beton · Marmara Yapı
+       Market · Deta Demir Çelik · Nokta Hırdavat (4 tam + 1 kısmi teklif; en iyi fiyat 3
+       tedarikçiye dağılır) · GENEL TOPLAM ₺742.300 · GM onayında (₺100.000 eşik üstü) ·
+       çıktı: crm-satinalma-icmal-cikti.html?form=SAT-2026-018.
+       Kaynak talep: MLZ-2026-030 (T1 kararı — 032/033 "liste-dışı eski kayıt" idiyomuyla
+       açıldı; 5 Haz 2026, durum "Tedarik Sürecinde", zincir Hasan Demirci → Baran Yıldız.
+       Bu numara REZERVE — başka dalgada farklı kayda VERİLMEZ. Seçili tedarikçi Deta Demir
+       Çelik ₺742.300 (en ucuz DEĞİL — Ege ₺699.100; gerekçe: tek elden montaj koordinasyonu +
+       2 yıl garanti + 60 gün vade). En iyi fiyat kombinasyonu ₺667.000.
+     · İŞ PROGRAMI RAPORU (Not E — crm-panel-rapor-isprogrami.html?santiye=):
+       Liman Lojistik: kaba yapı 12 gün GECİKME (danger) · mekanik tesisat 3 gün ÖNDE ·
+       Vadi Konakları: programında (kaba inşaat +2 gün önde — santiye-detay hero ile senkron) ·
+       Merkez Şantiye: programında (%86). Rapor kartı panel-raporlar hub'ında; şantiye listesi
+       satır aksiyonunda rapor ikonu YALNIZ 3 aktif şantiyede (ölü link yasağı).
    ===================================================================== */
 (function(){
   'use strict';
@@ -253,7 +330,8 @@
       {ic:'fa-user-clock',     lbl:'Puantaj',          href:'crm-operasyon-puantaj.html', screen:'puantaj'},
       {ic:'fa-truck-pickup',   lbl:'Makine Puantajı',  href:'crm-operasyon-makine.html',    screen:'makine'},
       {ic:'fa-utensils',       lbl:'Yemekhane',        href:'crm-operasyon-yemekhane.html', screen:'yemekhane'},
-      {ic:'fa-toolbox',        lbl:'Demirbaş',         href:'crm-operasyon-demirbas.html',  screen:'demirbas'}
+      {ic:'fa-toolbox',        lbl:'Demirbaş',         href:'crm-operasyon-demirbas.html',  screen:'demirbas'},
+      {ic:'fa-car-side',       lbl:'Araçlar',          href:'crm-operasyon-arac.html',      screen:'arac'}
     ]},
     satinalma:{ ic:'fa-cart-flatbed', eyebrow:'Tedarik', title:'Satın Alma', menu:[
       {ic:'fa-boxes-stacked',  lbl:'Malzeme Talepleri',   href:'crm-satinalma-talepler.html', screen:'talepler', cnt:'9'},
@@ -302,7 +380,7 @@
                  scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } },
     ik:        { name:'Seda Karaca',      role:'İK Uzmanı',                 ini:'SK',
                  secs:['panel','personel','gorev','operasyon'], land:'crm-panel.html',
-                 scr:{ operasyon:['kasa','pluxee','puantaj','demirbas'] } },
+                 scr:{ operasyon:['kasa','pluxee','puantaj','demirbas','arac'] } },
     personel:  { name:'Ali Vural',        role:'Saha Personeli',            ini:'AV',
                  secs:['panel','gorev'], land:'crm-panel.html',
                  scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } }
