@@ -420,6 +420,150 @@
      · satis menü cnt: Pipeline 14 · Teklifler 2 (onay bekleyen) · Satış Sonrası 6.
        satistemsilci override: Pipeline 6 · Teklifler 1. SATIŞ UNLOCK KURALI: locked:true
        ancak 14 crm-satis-*.html dosyasının TAMAMI diskte varken kaldırılır (ölü link yasağı).
+   ─ DALGA 12 KANONİK TANIMLAR (2026-07-11 — tedarik & finans genişlemesi: sipariş zinciri +
+       stok & depo + tedarikçi + proje bütçe + gerçekleşen maliyet + nakit akışı + taşeron
+       kartları; dashboard/portal/gavia D13'te):
+     · Yeni prefix'ler: SIP-2026-## sipariş · IRS-2026-## irsaliye · FTR-2026-## fatura ·
+       STK-2026-### stok hareketi · TDR-## tedarikçi kartı · TAS-## taşeron kartı ·
+       BTC-2026-R# bütçe revizyonu. Depo kodları: D-MRK Merkez Ana Depo · D-VDI Vadi
+       Şantiye Deposu · D-LMN Liman Şantiye Deposu · D-ARC Araç Deposu (mobil — Ford
+       Transit ARC-06 üstü gezici takım/sarf).
+     · SİPARİŞLER (8 SIP; sipariş = onaylı SAT formundan doğar; eski tamamlanmış SAT'ların
+       siparişleri kapanmış SIP kayıtlarıyla temsil edilir):
+         SIP-2026-01 · 14 Nis · Ege Hazır Beton      · Vadi   · C30/37 hazır beton 850 m³ · ₺1.487.500 · Kapandı (FTR-01..03 ödendi)
+         SIP-2026-02 · 5 May  · Anadolu Hırdavat     · Liman  · kaynak teli + sarf paketi (MLZ-2026-033 → SAT-2026-010) · ₺96.400 · Kapandı (FTR-2026-04 ödendi)
+         SIP-2026-03 · 12 May · Boğaziçi Yapı Market · Vadi   · PVC doğrama (MLZ-2026-032 → SAT-2026-009) · ₺418.200 · Teslim Edildi (IRS-2026-09 · FTR-2026-06 vade 15 Tem)
+         SIP-2026-04 · 20 May · Delta Elektrik       · Liman  · elektrik tesisat malzemesi (kablo+pano) · ₺734.600 · TERMİN GECİKMESİ — termin 24 Haz, 8 gün geçti, teslimat YOK (danger; D13 "Delta termin gecikmesi" risk uyarısının kaynağı)
+         SIP-2026-05 · 2 Haz  · Marmara Demir Çelik  · Vadi   · nervürlü inşaat demiri 4 kalem 88 ton · ₺2.840.000 · Kısmi Teslim (TAM ZİNCİR — aşağıda)
+         SIP-2026-06 · 10 Haz · Trakya Beton Santrali· Liman  · C35/45 beton 420 m³ · ₺798.000 · Tedarikçide (sevkiyat programlı; Trakya'nın 12 May sevkiyatındaki 3 gün gecikmesi AYRI eski kayıt — performans skoruna yansıdı)
+         SIP-2026-07 · 25 Haz · Ege Hazır Beton      · Vadi   · şap betonu 120 m³ · ₺186.000 · Onaylandı (termin 9 Tem)
+         SIP-2026-08 · 1 Tem  · Boğaziçi Yapı Market · Merkez · depo raf sistemi · ₺112.750 · Taslak (onaya gönderilmedi)
+       Menü cnt Siparişler 5 = açık sipariş (04 gecikme + 05 kısmi + 06 tedarikçide + 07 onaylandı + 08 taslak).
+     · TAM ZİNCİR (doc §6.8 — sipariş detayı gvChain bu akışı birebir verir):
+       MLZ-2026-031 (26 May, Vadi betonarme demir ihtiyacı; LİSTE-DIŞI eski talep idiyomu —
+       talepler listesi 034-046 gösterir; zincir Hasan Demirci → Baran Yıldız; bu numara
+       REZERVE) → onay → İCMAL 3 teklif: Marmara Demir Çelik ₺2.840.000 SEÇİLDİ (60 gün
+       vade + tonaj sevk programı; en ucuz DEĞİL) · Deta Demir Çelik ₺2.812.000 (30 gün
+       vade) · Nokta Hırdavat ₺2.918.000 → SIP-2026-05 (kalemler: Ø10 8t · Ø12 38t ·
+       Ø16 12t · Ø20 30t = 88t) → İRSALİYELER: IRS-2026-12 (18 Haz; Ø12 20t + Ø16 6,4t +
+       Ø20 14t = 40,4t) + IRS-2026-14 (26 Haz; Ø10 8t + Ø12 18t + Ø16 5,2t + Ø20 16t =
+       47,2t) → Ø16 kalemi 12t sipariş / 11,6t irsaliye = −0,4t MİKTAR UYUŞMAZLIĞI (uyarı;
+       menü cnt İrsaliye & Fatura 1) → FTR-2026-09 (28 Haz · ₺2.840.000 sipariş miktarı
+       üzerinden kesilmiş · vade 27 Ağu/60 gün · durum: Muhasebe kontrolünde — irsaliye
+       toplamıyla uyuşmazlık; bu yüzden cari hesaba İŞLENMEDİ → cari-durum Marmara bakiyesi
+       ₺211.000 olarak kalır, TUTARLI) → mal kabul stok girişleri STK-2026-041 (IRS-12) +
+       STK-2026-047 (IRS-14).
+       IRS/FTR serisi kuralı: numara sırası = tarih sırası. Pinli: IRS-09 (9 Haz, SIP-03
+       PVC) · IRS-12 · IRS-14; FTR-04 (Anadolu ₺96.400 ödendi) · FTR-06 (Boğaziçi ₺418.200,
+       fatura 12 Haz, vade 15 Tem — nakit akışında planlı ödeme) · FTR-09 (yukarıda).
+       Kalan IRS 01..08/10/11/13 ve FTR 01..03/05/07/08 numaraları SIP-01/02/06 eski
+       teslimat-faturalarına ÖDENDİ/kapalı durumla dağıtılır — YENİ vadeli borç üretilmez
+       (nakit akışı yalnız FTR-06 + FTR-09 vadesini bilir).
+     · STOK & DEPO (K8 — 4 depo · ~20 kalem · 6 hareket türü; toplam stok değeri ₺4.860.000):
+       Depo sorumluları: D-MRK Recep Yaman · D-VDI İbrahim Sönmez · D-LMN Şükrü Aslan ·
+       D-ARC Recep Yaman (araç: ARC-06 Ford Transit).
+       MİN-STOK ALTI 3 KALEM (menü cnt Stok & Depo 3; doc kabul kriteri):
+         Ø16 nervürlü demir  · D-VDI · 1,7 t / min 5 t   (SIP-05 eksik teslim −0,4t hikayesiyle bağlı)
+         İSG baret+yelek seti· D-MRK · 9 ad / min 25 ad
+         NYM 3×2,5 kablo     · D-LMN · 180 m / min 500 m (Delta SIP-04 termin gecikmesiyle bağlı — ikmal bekliyor)
+       6 hareket türü pinli örnekleri:
+         Giriş    STK-2026-041 · 18 Haz · IRS-2026-12 mal kabul · D-VDI (+ STK-2026-047 · 26 Haz · IRS-2026-14)
+         Çıkış    STK-2026-052 · 2 Tem  · B Blok 3. kat demir imalatı Ø12 4,2t · D-VDI
+         Transfer STK-2026-049 · 30 Haz · D-MRK → D-VDI el aleti + jeneratör yakıt varili
+         İade     STK-2026-045 · 24 Haz · sahadan depoya artan PVC kasa 12 ad · D-VDI
+         Fire     STK-2026-050 · 1 Tem  · seramik kırılması 18 m² · D-VDI
+         Sayım    STK-2026-018 · 12 Nis · bahar dönem sayımı düzeltmesi · D-MRK
+       Seri son numara ~052. Yıl ortası sayımı HENÜZ YAPILMADI — görev havuzu #4
+       "Merkez depo yıl ortası sayım planı" (termin 9 Tem) ile tutarlı; 2026'da tek sayım
+       düzeltmesi Nisan kaydıdır.
+     · TEDARİKÇİLER (6 TDR; performans skorları pinli — Ege %96 · Trakya %88 · Delta %71):
+         TDR-01 Ege Hazır Beton       · Beton            · Kadir Solmaz 0536 218 77 41 · %96 · aktif SIP-07 · cari ₺54.900 alacaklı (cari-durum hareketleriyle BİREBİR: 39.000+35.900−20.000)
+         TDR-02 Trakya Beton Santrali · Beton            · %88 — 12 May sevkiyatında 3 gün gecikme kaydı skora yansıdı (doc kabul kriteri) · aktif SIP-06 · cari ₺0 (dönem kapalı)
+         TDR-03 Marmara Demir Çelik   · Demir & Çelik    · Burcu İnan 0212 466 90 23 · %91 · aktif SIP-05 kısmi (−0,4t açık) · cari ₺211.000 alacaklı (FTR-09 kontrolde, cariye işlenmedi)
+         TDR-04 Boğaziçi Yapı Market  · Yapı Market & Doğrama · %94 · FTR-06 vade 15 Tem · cari satırı cari-durum'da YOK → D14 senkron devri (kartta bakiye ₺418.200 gösterilir, "muhasebe ödeme planında" notu)
+         TDR-05 Delta Elektrik        · Elektrik         · %71 WARN — SIP-04 8 gün AKTİF termin gecikmesi + 14 Nis teslimatında 5 gün gecikme (2 kayıt; D13 risk uyarısı kaynağı)
+         TDR-06 Anadolu Hırdavat      · Hırdavat & Sarf  · Fatih Coşkun 0216 349 82 17 · %97 · cari ₺9.850 alacaklı (cari-durum BİREBİR)
+       Kayıt-dışı teklifçi idiyomu: SAT-2026-018 icmalindeki Deta Demir Çelik · Nokta
+       Hırdavat · Marmara Yapı Market kartsız TEK-SEFER teklifçidir — tedarikçi listesi
+       6'da SABİT, icmal ekranındaki bu adlara kart linki VERİLMEZ.
+       Cari sekmesi linki: crm-cari-durum.html (liste; ?cari= genişletmesi YAPILMAZ).
+     · TAŞERON KARTLARI (K9 — 3 TAS; hakediş ekranı İŞLEM listesi olarak AYNEN kalır,
+       kart = KİMLİK/performans; personel sayısı = yemekhane kişi sayısı = 5C kanonik
+       firma kadroları 10/6/8 BİREBİR):
+         TAS-01 Demir-Beton İnş. Ltd. · Vadi  · betonarme kalıp + demir işçiliği · SZL-2025-T05 ·
+           personel 10 · yemekhane 10 · ekipman: kalıp-iskele sistemi + 2 kırıcı-delici ·
+           İSG UYARISI: ISG-2026-008 iskele korkuluk eksikliği B Blok (aksiyon bekliyor —
+           crm-santiye-isg-detay.html linkli) · HAKEDİŞ İHTİLAFI: TH-2026-014 ₺90.000
+           Haziran hakedişinde metraj itirazı (gönderildi 28 Haz, bekliyor; ödeme BLOKE) ·
+           6 kriter: süre ok · kalite ok · hakediş ihtilafı WARN · İSG WARN · gecikme ok · teslim ok ·
+           cari: crm-cari-detay.html (parametresiz default Demir-Beton — birebir eşleşme)
+         TAS-02 ElektroMek Taahhüt    · Vadi  · elektrik tesisat taahhüdü · SZL-2025-T07 ·
+           personel 6 · yemekhane 6 · TH-2026-009 ₺76.200 bekliyor + TH-2026-002 ödendi ·
+           6 kriter temiz · cari ₺76.200 alacaklı (cari-durum BİREBİR)
+         TAS-03 Yalıtım Kardeşler     · Liman · ısı/su yalıtımı + çatı kaplama · SZL-2025-T06 ·
+           personel 8 · yemekhane 8 · TH-2026-008 ₺128.500 onaylandı (malzeme mahsuplu) ·
+           6 kriter temiz, kalite yüksek · cari: cari-durum'daki yalitim-kardesler kaydıyla senkron
+     · PROJE BÜTÇELERİ (3 bütçe; 15 kategori: Hafriyat & Zemin İşleri · Betonarme (Kaba
+       Yapı) · Çatı & İzolasyon · Duvar & Sıva · Mekanik Tesisat · Elektrik Tesisatı ·
+       İnce İşler & Boya · Doğrama & Cephe · Zemin Kaplama & Seramik · Peyzaj & Çevre
+       Düzenleme · Şantiye Genel Giderleri · İşçilik (Puantaj) · Makine & Ekipman ·
+       Nakliye & Lojistik · Resmi Giderler & Harçlar):
+         Vadi Konakları : orijinal ₺176.500.000 → BTC-2026-R1 (15 Mar; demir fiyat artışı
+           +%8 → Betonarme +₺5.200.000) → BTC-2026-R2 (28 May; kapsam — çevre düzenleme
+           genişlemesi, Peyzaj +₺2.300.000) → REVİZE ₺184.000.000 · gerçekleşen
+           ₺127.400.000 (%69; fiziksel %68 ile tutarlı) · kalan ₺56.600.000
+         Liman Lojistik : ₺97.000.000 · revizyon yok · gerçekleşen ₺40.700.000 (%42; fiziksel %41)
+         Merkez Şantiye : ₺61.000.000 · revizyon yok · gerçekleşen ₺53.100.000 (%87; fiziksel %86)
+       BETONARME AŞIMI (doc kabul kriteri; D13 risk uyarısı): VK Betonarme orijinal
+       ₺36.300.000 → R1 revize ₺41.500.000 → gerçekleşen ₺43.160.000 = %104 AŞIM (danger).
+       Diğer 14 kategori dağılımını butce-detay üretir — kategori toplamları proje pinli
+       toplamlarına OTURUR (uydurma serbest, toplam sabit).
+     · GERÇEKLEŞEN MALİYET (proje filtreli; VK default): VK ₺127.400.000 kaynak kırılımı —
+       satın alma %41 ₺52.234.000 (SIP-/SAT- linkli) · taşeron hakedişi %28 ₺35.672.000
+       (TH- linkli) · işçilik %14 ₺17.836.000 (puantaj) · kasa %9 ₺11.466.000 (KSA- linkli) ·
+       stok sarfı %5 ₺6.370.000 (STK- linkli) · genel %3 ₺3.822.000. Pinli kaynak satır
+       örnekleri: SIP-2026-05 ₺2,84M · TH-2026-013 ₺210.000 · KSA-2026-021 · STK-2026-052.
+       Menü cnt Gerçekleşen Maliyet 1 = Betonarme aşım uyarısı.
+       crm-panel-rapor-maliyet.html RAPOR olarak kalır + bu ekrana "Detaylı ekran →" linki
+       alır (K13 — tek hedefli edit, T3).
+     · NAKİT AKIŞI (şirket geneli ↔ proje toggle; bugün 2 Tem 2026):
+       Başlangıç likidite ₺5.430.130 = banka ₺5.265.000 (Garanti ₺2.980.000 · Akbank
+       ₺1.640.000 · Ziraat ₺645.000 — firma IBAN üçlüsüyle eş) + şantiye kasaları ₺165.130
+       (D8 kanonik TOPLAM KASA BİREBİR).
+       KPI şeridi (kümülatif NET akış; başlangıç 0): 7 gün +₺670.000 · 30 gün +₺710.000 ·
+       60 gün −₺2.990.000 (DANGER dip — FTR-2026-09 ₺2,84M vadesi 27 Ağu + 28 Ağu bordro) ·
+       90 gün −₺465.000 (warn; toparlanma: GE2 lansman kapora beklentisi).
+       Maaş günü kanoniği: aylık bordro ₺3.400.000 her ayın 28'i (idari 22 + öz saha 69).
+       TAHSİLAT TAKVİMİ (pinli satırlar; ODP-/HKD- belgeye linkli):
+         GECİKMİŞ · Toprak SSZ-2026-004 5. taksit ₺570.000 — vade 20 Haz, 12 GÜN GECİKME
+           (danger; D11/D13 senkron) · tahsilat girişimi 10 Tem
+         8 Tem  · HKD-2026-003 Aliağa ₺980.000 (onaylandı — ödeme bildirimi alındı)
+         15 Tem · Onaran SSZ-2026-003 15. taksit ₺115.000 (aylık seri: 15 Ağu, 15 Eyl…)
+         20 Tem · Toprak 6. taksit ₺570.000 (aylık seri: 20 Ağu, 20 Eyl…)
+         25 Tem · Şahinoğlu ODP-2026-001 peşinat ₺1.485.000 (opsiyon→sözleşme; "beklenen" rozeti)
+         28 Tem · HKD-2026-006 Körfez ₺1.630.000 (gönderildi — onay+tahsilat beklenen)
+         18 Ağu · Aliağa Temmuz hakedişi ₺1.050.000 (beklenen) · 20 Ağu · Körfez Temmuz
+           hakedişi ₺1.700.000 (beklenen) · Eyl: Körfez+Aliağa Ağustos hakedişleri
+           ₺2.750.000 (beklenen) · Eyl sonu: GE2 lansman kapora beklentisi ₺4.200.000
+           (12 opsiyonlu ön-talep; "beklenen" rozeti — projeksiyon satırı)
+       ÖDEME TAKVİMİ (pinli satırlar; TH-/FTR- belgeye linkli):
+         8 Tem  · TH-2026-013 Demir-Beton ₺210.000 · 10 Tem · TH-2026-008 Yalıtım ₺128.500
+         15 Tem · FTR-2026-06 Boğaziçi ₺418.200
+         28 Tem/28 Ağu/28 Eyl · bordro ₺3.400.000
+         27 Ağu · FTR-2026-09 Marmara ₺2.840.000 (60 gün dip sürücüsü)
+         Eyl ortası · Trakya SIP-06 faturası ₺798.000 (teslim sonrası beklenen vade)
+         TH-2026-014 ₺90.000 İHTİLAFLI — tarih ATANMAZ, "bloke" rozetiyle listelenir
+         haftalık şantiye kasa beslemeleri ~₺100–150K (KSG idiyomu, "planlı" satır)
+       Haftalık akış tablosu (giren/çıkan/kümülatif) bu satırlardan DERİLİR ve pinli KPI
+       dörtlüsüne OTURUR (ara haftalar T3 türetmesi — toplamlar sabit, negatif .danger).
+     · Menü cnt özeti (D12): Siparişler 5 · İrsaliye & Fatura 1 · Stok & Depo 3 ·
+       Gerçekleşen Maliyet 1. ROLES delta: muhasebe.secs += satinalma
+       (scr:[siparisler,irsaliye,stok,tedarikciler]) · teknik.secs += satinalma (scr:[stok])
+       + finans scr'ye iner [kurum,taseron,sozlesmeler,butce,maliyet,taseronlar] (nakit YOK) ·
+       sef.secs += finans (scr:[taseronlar] — kendi şantiyesi salt-okunur) + sef.scr.satinalma
+       = [talepler,formlar,siparisler,termin,irsaliye,stok] (tedarikçi YOK; sipariş/irsaliye
+       kendi şantiyesi görüntüleme). MENÜ UNLOCK KURALI: yeni menü kalemleri ancak 14 dosya
+       diskte varken eklenir (ölü link yasağı).
    ===================================================================== */
 (function(){
   'use strict';
@@ -485,20 +629,33 @@
       {ic:'fa-toolbox',        lbl:'Demirbaş',         href:'crm-operasyon-demirbas.html',  screen:'demirbas'},
       {ic:'fa-car-side',       lbl:'Araçlar',          href:'crm-operasyon-arac.html',      screen:'arac'}
     ]},
+    /* [D12] sipariş zinciri + stok & depo + tedarikçi — 8 dosya diskte, unlock dalga sonunda */
     satinalma:{ ic:'fa-cart-flatbed', eyebrow:'Tedarik', title:'Satın Alma', menu:[
       {ic:'fa-boxes-stacked',  lbl:'Malzeme Talepleri',   href:'crm-satinalma-talepler.html', screen:'talepler', cnt:'9'},
       {ic:'fa-file-invoice',   lbl:'Satın Alma Formları', href:'crm-satinalma-formlar.html',  screen:'formlar'},
-      {ic:'fa-truck-ramp-box', lbl:'Termin Takibi',       href:'crm-satinalma-termin.html',   screen:'termin'}
+      {ic:'fa-cart-shopping',  lbl:'Siparişler',          href:'crm-satinalma-siparisler.html', screen:'siparisler', cnt:'5'},
+      {ic:'fa-truck-ramp-box', lbl:'Termin Takibi',       href:'crm-satinalma-termin.html',   screen:'termin'},
+      {ic:'fa-receipt',        lbl:'İrsaliye & Fatura',   href:'crm-satinalma-irsaliye-fatura.html', screen:'irsaliye', cnt:'1'},
+      {seclbl:'Depo & Tedarik'},
+      {ic:'fa-warehouse',      lbl:'Stok & Depo',         href:'crm-satinalma-stok.html',     screen:'stok', cnt:'3'},
+      {ic:'fa-industry',       lbl:'Tedarikçiler',        href:'crm-satinalma-tedarikciler.html', screen:'tedarikciler'}
     ]},
     cari:{ ic:'fa-address-book', eyebrow:'Rehber & Hesap', title:'Cariler', menu:[
       {ic:'fa-building',       lbl:'Firma Rehberi',   href:'crm-cari.html',       screen:'rehber'},
       {ic:'fa-id-card',        lbl:'Kişiler',         href:'crm-cari-kisiler.html', screen:'kisiler'},
       {ic:'fa-scale-balanced', lbl:'Cari Durum',      href:'crm-cari-durum.html', screen:'durum'}
     ]},
+    /* [D12] bütçe + maliyet + nakit + taşeron kartları — 6 dosya diskte, unlock dalga sonunda.
+       Taşeron Kartları = KİMLİK/performans; Taşeron Hakedişleri İŞLEM listesi olarak kalır (K9) */
     finans:{ ic:'fa-file-signature', eyebrow:'Finans', title:'Hakediş & Sözleşme', menu:[
       {ic:'fa-building-columns',lbl:'Kurum Hakedişleri',   href:'crm-finans-kurum.html',       screen:'kurum'},
       {ic:'fa-people-arrows',  lbl:'Taşeron Hakedişleri',  href:'crm-finans-taseron.html',     screen:'taseron', cnt:'2'},
-      {ic:'fa-file-contract',  lbl:'Sözleşme Arşivi',      href:'crm-finans-sozlesmeler.html', screen:'sozlesmeler'}
+      {ic:'fa-id-card-clip',   lbl:'Taşeron Kartları',     href:'crm-finans-taseronlar.html',  screen:'taseronlar'},
+      {ic:'fa-file-contract',  lbl:'Sözleşme Arşivi',      href:'crm-finans-sozlesmeler.html', screen:'sozlesmeler'},
+      {seclbl:'Bütçe & Nakit'},
+      {ic:'fa-coins',          lbl:'Proje Bütçesi',        href:'crm-finans-butce.html',       screen:'butce'},
+      {ic:'fa-chart-pie',      lbl:'Gerçekleşen Maliyet',  href:'crm-finans-maliyet.html',     screen:'maliyet', cnt:'1'},
+      {ic:'fa-money-bill-trend-up', lbl:'Nakit Akışı',     href:'crm-finans-nakit.html',       screen:'nakit'}
     ]},
     ayarlar:{ ic:'fa-sliders', eyebrow:'Yönetim', title:'Ayarlar', menu:[
       {ic:'fa-building-user',  lbl:'Firma',            href:'crm-ayarlar-firma.html', screen:'firma'},
@@ -536,13 +693,21 @@
                  secs:ALL.concat(['ayarlar']), land:'crm-panel.html' },
     yonetim:   { name:'Murat Denizli',    role:'Genel Müdür',               ini:'MD',
                  secs:ALL, land:'crm-panel.html' },
+    /* [D12] teknik/sef/muhasebe tedarik-finans delta'ları — Bölüm 3 rol matrisi birebir:
+       teknik satinalma'da yalnız stok, finans'ta nakit HARİÇ; sef finans'ta yalnız taşeron
+       kartları (kendi şantiyesi) + satinalma'da tedarikçi YOK; muhasebe satinalma'da yalnız
+       4 yeni ekran (sipariş/irsaliye/stok/tedarikçi) */
     teknik:    { name:'Elif Sarıkaya',    role:'Teknik Müdür',              ini:'ES',
-                 secs:['panel','santiye','gorev','operasyon','finans','satis'], land:'crm-panel.html',
-                 scr:{ satis:['talepler'] } },
+                 secs:['panel','santiye','gorev','operasyon','satinalma','finans','satis'], land:'crm-panel.html',
+                 scr:{ satis:['talepler'], satinalma:['stok'],
+                       finans:['kurum','taseron','sozlesmeler','butce','maliyet','taseronlar'] } },
     sef:       { name:'Hasan Demirci',    role:'Şantiye Şefi — Vadi Konakları', ini:'HD',
-                 secs:['panel','santiye','gorev','personel','operasyon','satinalma'], land:'crm-panel.html' },
+                 secs:['panel','santiye','gorev','personel','operasyon','satinalma','finans'], land:'crm-panel.html',
+                 scr:{ satinalma:['talepler','formlar','siparisler','termin','irsaliye','stok'],
+                       finans:['taseronlar'] } },
     muhasebe:  { name:'Nesrin Aydın',     role:'Muhasebe',                  ini:'NA',
-                 secs:['panel','operasyon','cari','finans','personel'], land:'crm-panel.html' },
+                 secs:['panel','operasyon','satinalma','cari','finans','personel'], land:'crm-panel.html',
+                 scr:{ satinalma:['siparisler','irsaliye','stok','tedarikciler'] } },
     satinalma: { name:'Baran Yıldız',     role:'Satın Alma Sorumlusu',      ini:'BY',
                  secs:['panel','satinalma','cari','gorev'], land:'crm-panel.html',
                  scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } },
@@ -579,6 +744,14 @@
   if(role === 'personel'){
     var _hv = SECTIONS.gorev.menu.filter(function(m){ return m.screen === 'havuz'; })[0];
     if(_hv) _hv.cnt = '1';
+  }
+
+  /* D12: şef sipariş listesinde yalnız kendi şantiyesini (Vadi) görür — menü sayacı
+     budanmış açık sipariş sayısıyla tutarlı (5 → 2: SIP-05 kısmi + SIP-07 onaylandı) */
+  if(role === 'sef'){
+    SECTIONS.satinalma.menu.forEach(function(m){
+      if(m.screen === 'siparisler') m.cnt = '2';
+    });
   }
 
   /* D11: satış temsilcisi liste sayfalarında yalnız kendi kayıtlarını görür —
