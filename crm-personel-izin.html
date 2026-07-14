@@ -31,6 +31,8 @@
 .izin-detail-acts{display:flex;gap:8px;flex-wrap:wrap}
 .izin-detail-note{padding:14px 22px;font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:9px;border-top:1px solid var(--line)}
 .izin-detail-note i{color:var(--acc-ink)}
+.gc-head-r{display:flex;align-items:center;gap:14px}
+a.gcell-sub:hover{color:var(--acc-ink)}
 </style>
 </head>
 <body data-sec="personel" data-screen="izin">
@@ -119,7 +121,7 @@
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">AV</div>
-                  <div class="gcell-info"><div class="gcell-name">Ali Vural</div><span class="gcell-sub">İZN-2026-031</span></div>
+                  <div class="gcell-info"><div class="gcell-name">Ali Vural</div><a class="gcell-sub" href="crm-personel-izin-detay.html?izn=031" onclick="event.stopPropagation()">İZN-2026-031</a></div>
                 </div>
               </td>
               <td>Yıllık İzin</td>
@@ -132,7 +134,7 @@
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">AK</div>
-                  <div class="gcell-info"><div class="gcell-name">Aylin Koç</div><span class="gcell-sub">İZN-2026-030</span></div>
+                  <div class="gcell-info"><div class="gcell-name">Aylin Koç</div><a class="gcell-sub" href="crm-personel-izin-detay.html?izn=030" onclick="event.stopPropagation()">İZN-2026-030</a></div>
                 </div>
               </td>
               <td>Yıllık İzin</td>
@@ -145,7 +147,7 @@
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">RK</div>
-                  <div class="gcell-info"><div class="gcell-name">Ramazan Kılıç</div><span class="gcell-sub">İZN-2026-029</span></div>
+                  <div class="gcell-info"><div class="gcell-name">Ramazan Kılıç</div><a class="gcell-sub" href="crm-personel-izin-detay.html?izn=029" onclick="event.stopPropagation()">İZN-2026-029</a></div>
                 </div>
               </td>
               <td>Raporlu</td>
@@ -158,7 +160,7 @@
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--warn-tint);color:var(--warn)">NA</div>
-                  <div class="gcell-info"><div class="gcell-name">Nesrin Aydın</div><span class="gcell-sub">İZN-2026-028</span></div>
+                  <div class="gcell-info"><div class="gcell-name">Nesrin Aydın</div><a class="gcell-sub" href="crm-personel-izin-detay.html?izn=028" onclick="event.stopPropagation()">İZN-2026-028</a></div>
                 </div>
               </td>
               <td>Yıllık İzin</td>
@@ -171,7 +173,7 @@
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">ÖT</div>
-                  <div class="gcell-info"><div class="gcell-name">Ömer Taşkın</div><span class="gcell-sub">İZN-2026-027</span></div>
+                  <div class="gcell-info"><div class="gcell-name">Ömer Taşkın</div><a class="gcell-sub" href="crm-personel-izin-detay.html?izn=027" onclick="event.stopPropagation()">İZN-2026-027</a></div>
                 </div>
               </td>
               <td>Babalık İzni</td>
@@ -193,7 +195,10 @@
     <div class="gv-card" id="izinDetailCard">
       <div class="gc-head">
         <div class="gc-title"><i class="fa-solid fa-stamp"></i> Onay Akışı — <span id="izinDetailName">—</span></div>
-        <span id="izinDetailBadge"></span>
+        <div class="gc-head-r">
+          <span id="izinDetailBadge"></span>
+          <a class="gc-link" id="izinDetailLink" href="crm-personel-izin-detay.html?izn=031">Detayı aç <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
       </div>
       <div class="gc-body" id="izinDetailBody">
         <div class="izin-detail-empty">Onay akışını görmek için yukarıdaki listeden bir izin talebi seçin.</div>
@@ -254,6 +259,7 @@
     });
     document.getElementById('izinDetailName').textContent = rec.name + ' · ' + rec.personel;
     document.getElementById('izinDetailBadge').innerHTML = gvChainBadge(rec.status);
+    document.getElementById('izinDetailLink').href = 'crm-personel-izin-detay.html?izn=' + id.replace('izn-', '');
     gvChain(document.getElementById('izinDetailBody'), {steps: rec.steps});
 
     var role = window.GV ? GV.role : null;

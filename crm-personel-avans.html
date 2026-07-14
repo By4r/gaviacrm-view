@@ -30,6 +30,8 @@
 .avans-detail-acts{display:flex;gap:8px;flex-wrap:wrap}
 .avans-detail-note{padding:14px 22px;font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:9px;border-top:1px solid var(--line)}
 .avans-detail-note i{color:var(--acc-ink)}
+.gc-head-r{display:flex;align-items:center;gap:14px}
+a.gcell-sub:hover{color:var(--acc-ink)}
 </style>
 </head>
 <body data-sec="personel" data-screen="avans">
@@ -117,7 +119,7 @@
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">ME</div>
-                  <div class="gcell-info"><div class="gcell-name">Musa Erdem</div><span class="gcell-sub">AVN-2026-015</span></div>
+                  <div class="gcell-info"><div class="gcell-name">Musa Erdem</div><a class="gcell-sub" href="crm-personel-avans-detay.html?avn=015" onclick="event.stopPropagation()">AVN-2026-015</a></div>
                 </div>
               </td>
               <td class="num t-strong">₺3.500</td>
@@ -129,7 +131,7 @@
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">AV</div>
-                  <div class="gcell-info"><div class="gcell-name">Ali Vural</div><span class="gcell-sub">AVN-2026-014</span></div>
+                  <div class="gcell-info"><div class="gcell-name">Ali Vural</div><a class="gcell-sub" href="crm-personel-avans-detay.html?avn=014" onclick="event.stopPropagation()">AVN-2026-014</a></div>
                 </div>
               </td>
               <td class="num t-strong">₺4.000</td>
@@ -141,7 +143,7 @@
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">HD</div>
-                  <div class="gcell-info"><div class="gcell-name">Hasan Demirci</div><span class="gcell-sub">AVN-2026-013</span></div>
+                  <div class="gcell-info"><div class="gcell-name">Hasan Demirci</div><a class="gcell-sub" href="crm-personel-avans-detay.html?avn=013" onclick="event.stopPropagation()">AVN-2026-013</a></div>
                 </div>
               </td>
               <td class="num t-strong">₺8.000</td>
@@ -153,7 +155,7 @@
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--warn-tint);color:var(--warn)">BY</div>
-                  <div class="gcell-info"><div class="gcell-name">Baran Yıldız</div><span class="gcell-sub">AVN-2026-012</span></div>
+                  <div class="gcell-info"><div class="gcell-name">Baran Yıldız</div><a class="gcell-sub" href="crm-personel-avans-detay.html?avn=012" onclick="event.stopPropagation()">AVN-2026-012</a></div>
                 </div>
               </td>
               <td class="num t-strong">₺6.500</td>
@@ -165,7 +167,7 @@
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">AK</div>
-                  <div class="gcell-info"><div class="gcell-name">Aylin Koç</div><span class="gcell-sub">AVN-2026-011</span></div>
+                  <div class="gcell-info"><div class="gcell-name">Aylin Koç</div><a class="gcell-sub" href="crm-personel-avans-detay.html?avn=011" onclick="event.stopPropagation()">AVN-2026-011</a></div>
                 </div>
               </td>
               <td class="num t-strong">₺10.000</td>
@@ -186,7 +188,10 @@
     <div class="gv-card" id="avansDetailCard">
       <div class="gc-head">
         <div class="gc-title"><i class="fa-solid fa-stamp"></i> Onay Akışı — <span id="avansDetailName">—</span></div>
-        <span id="avansDetailBadge"></span>
+        <div class="gc-head-r">
+          <span id="avansDetailBadge"></span>
+          <a class="gc-link" id="avansDetailLink" href="crm-personel-avans-detay.html?avn=014">Detayı aç <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
       </div>
       <div class="gc-body" id="avansDetailBody">
         <div class="avans-detail-empty">Onay akışını görmek için yukarıdaki listeden bir avans talebi seçin.</div>
@@ -246,6 +251,7 @@
     });
     document.getElementById('avansDetailName').textContent = rec.name + ' · ' + rec.personel;
     document.getElementById('avansDetailBadge').innerHTML = gvChainBadge(rec.status);
+    document.getElementById('avansDetailLink').href = 'crm-personel-avans-detay.html?avn=' + id.replace('avn-', '');
     gvChain(document.getElementById('avansDetailBody'), {steps: rec.steps});
 
     var role = window.GV ? GV.role : null;
