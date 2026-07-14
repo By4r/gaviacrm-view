@@ -644,6 +644,104 @@
        ve AÇIK (10/10 aktif; "tanıtım eklentisi" notu) · index: Müşteri Portalı demo giriş
        kartı + superadmin kartına Platform Konsolu linki. Repo genelinde placeholder
        kalıntısı 0 hedefi (grep denetimi dalga sonu QA'da).
+   ─ DALGA 17 KANONİK TANIMLAR (2026-07-14 — yönlendirme çekirdeği: kayıt kimliklendirme +
+       gv-pager + bulunamadı-kartı; kaynak: tasks/plan-denetim.md D17 + DK1-DK12):
+     · YENİ KANONİK (DK10 — Beyar direktifi): İSG-008 tek-link emsali İPTAL. Kural artık
+       "HER kayıt referansı kimlikli linke gider." D14'te düz-metne çevrilen MLZ-2026-032/033
+       bu dalgada ?mlz= ile YENİDEN linklenir; SZL-T06/T07 → ?szl= D18'de (Y9).
+     · PARAM ANAHTAR KONVANSİYONU (D12 param↔map dersi + Ç3): param adları kısa Türkçe-ASCII
+       (?gorev= ?mlz= ?izn= ?avn=), DEĞERLER kısa-form SADECE numara ("008", "046", "031") —
+       belge önekinin tamamı DEĞİL. Türkçe karakter param'a girmez (İZN → izn). Hedef sayfa
+       normalize eder: küçük harf + "MLZ-2026-046"/"izn-031" gibi uzun formdan son 3 haneyi
+       soyar (sessiz default'a düşme YASAK — bkz. bulunamadı kuralı).
+     · GEÇERSİZ PARAM KURALI (DK3): param VAR ama map'te YOKSA gvNotFound(...) kartı
+       (ui.js — "Kayıt bulunamadı" + listeye dön + varsayılan kaydı aç aksiyonları;
+       mount: main.gv-main). Param HİÇ YOKSA eski davranış: DEFAULT kayda düşer
+       (ALTIN KURAL — menü linkleri ölü ekrana düşmez).
+     · GRV-2026-0## GÖREV KODU SERİSİ (YENİ — 26 kayıt; numara = crm-gorev.html DOM sırası;
+       eski "Görev #VK-118" yazımı KALKAR → GRV-2026-008; detay ?gorev=0## map,
+       parametresiz DEFAULT 008; kod liste satırlarında ve detay eyebrow'unda GÖRÜNÜR):
+       Bana Verilenler (001-007):
+         001 Ø12 demir talebinin teslim tarihini teyit et      · Vadi   · MD→Hasan Demirci · 10 Tem · yüksek · devam
+         002 A Blok elektrik şaft kontrolü — ElektroMek ile    · Vadi   · MD→Hasan Demirci · 3 Tem  · orta   · devam
+         003 Vinç bakım planını revize et                      · Liman  · MD→Aylin Koç     · 5 Tem  · yüksek · devam
+         004 Çatı paneli montaj ekibini planla                 · Merkez · ES→Ömer Taşkın   · 6 Tem  · orta   · devam
+         005 Haftalık İSG turu                                 · Merkez · MD→Ömer Taşkın   · 4 Tem  · düşük  · başlamadı
+         006 Kalıp kereste stok sayımı                         · Vadi   · HD→Ali Vural     · 8 Tem  · orta   · devam
+         007 Puantaj defterini güncelle                        · Vadi   · HD→Ali Vural     · 3 Tem  · düşük  · devam
+       Gecikenler (008-010):
+         008 Perde betonu kür takibini raporla  [DEFAULT]      · Vadi   · MD→Hasan Demirci · 1 Tem GEÇTİ  · yüksek · gecikti
+         009 Kalıp iskelesi söküm onayını al                   · Liman  · MD→Aylin Koç     · 30 Haz GEÇTİ · yüksek · gecikti
+         010 Haziran kasa mutabakatını tamamla                 · —      · MD→Nesrin Aydın  · 30 Haz GEÇTİ · orta   · gecikti
+       Verdiklerim (011-015):
+         011 Aylık ilerleme raporunu hazırla                   · Vadi   · MD→Hasan Demirci · 9 Tem  · orta   · devam
+         012 Malzeme talep onay sürecini hızlandır             · Liman  · MD→Baran Yıldız  · 6 Tem  · yüksek · devam
+         013 Yeni personel oryantasyon planı hazırla           · Merkez · MD→Seda Karaca   · 12 Tem · düşük  · başlamadı
+         014 Temmuz hakediş taslağını gözden geçir             · —      · MD→Nesrin Aydın  · 15 Tem · yüksek · devam
+         015 Vinç kiralama sözleşmesini incele                 · Liman  · MD→Aylin Koç     · 7 Tem  · orta   · devam
+       Tamamlananlar (016-020):
+         016 Haftalık İSG turu                                 · Vadi   · MD→Hasan Demirci · 1 Tem  · tamamlandı
+         017 Avans ödemelerini banka listesine aktar           · —      · MD→Nesrin Aydın  · 1 Tem  · tamamlandı
+         018 Çatı paneli sevkiyatı teslim alma kaydı           · Merkez · ES→Ömer Taşkın   · 30 Haz · tamamlandı
+         019 Haftalık İSG turu                                 · Merkez · MD→Ömer Taşkın   · 28 Haz · tamamlandı
+         020 Kalıp kereste stok sayımı ön kontrolü             · Vadi   · HD→Ali Vural     · 29 Haz · tamamlandı
+       Havuz (021-026 — D8 kanonik havuz listesi BİREBİR; bırakan Kemal Yapıcıoğlu;
+       data-claim slug'ları AYNEN kalır, claim mekanizmasına DOKUNULMAZ):
+         021 Liman Lojistik çevre aydınlatma keşfi             (liman-cevre-aydinlatma-kesfi) · 8 Tem  · orta
+         022 Kule Ofis kesin hesap dosyası kontrolü            (kule-kesin-hesap-kontrolu)    · 6 Tem  · yüksek
+         023 Vadi Konakları numune daire fotoğraf çekimi       (vadi-numune-daire-fotograf)   · 10 Tem · düşük
+         024 Merkez depo yıl ortası sayım planı                (merkez-yil-ortasi-sayim)      · 9 Tem  · orta
+         025 Göl Evleri 2. Etap ruhsat evrak listesi           (gol-evleri-ruhsat-evrak)      · 1 Tem GEÇTİ · yüksek
+         026 Şantiye araç takip çizelgesi güncelleme           (arac-takip-cizelgesi)         · 12 Tem · düşük
+       Havuz görünümü kayıttan türer (durum=havuzda → pool şeridi + havuz atama kartı);
+       ?pool=1 ESKİ paramı: gorev'siz gelirse ?gorev=021'e eşdeğer davranır (ölü link yasağı),
+       tüm iç linkler ?gorev='e çevrilir. Not: 3× "Haftalık İSG turu" (005/016/019) ve
+       benzer başlıklar kodla ayrışır — link hedefi HER ZAMAN koddan, başlık metninden değil.
+       Seri REZERVE: 001-026 dolu, sıradaki 027+ (gorev-form "yeni görev" numarası üretmez,
+       [MOCK] toast'ta GRV-2026-027 örneklenebilir ama kayıt AÇILMAZ).
+     · ?mlz= MAP EVRENİ (MLZ-2026-030..046 = 17 kayıt; talepler LİSTESİ 034-046'da SABİT
+       kalır — evren numaraları DEĞİŞMEZ, rezerveler aynen):
+         030 mekanik tesisat paketi (Vadi, Tedarik Sürecinde, SAT-018 icmal) = DEFAULT
+             (parametresiz eski davranış birebir) · 031 Vadi betonarme demir (arşiv,
+             SIP-05 zinciri) · 032 Vadi PVC doğrama → SAT-009 (arşiv) · 033 Liman kaynak
+             teli + gaz tüpü → SAT-010 (arşiv) · 034-046 talepler listesindeki 13 kayıt
+             (liste alanları kanonik; detay içerikleri T2 üretir — kalem/tarih/zincir
+             liste satırı + varsa panel/onay/rapor atıflarıyla ÇELİŞEMEZ).
+       Arşiv kayıtlar (031/032/033) detayda "Arşiv talep" rozetiyle açılır; bunlara
+       liste satırı EKLENMEZ. formlar.html 032/033 düz-metinleri LİNKE döner (DK10).
+     · İZİN/AVANS AYRI DETAY EKRANLARI (DK1 — Seçenek A; dizin +2 → 136 ekran):
+       crm-personel-izin-detay.html?izn=  (map: 027..031; DEFAULT 031 — İZN-2026-031 Ali Vural)
+       crm-personel-avans-detay.html?avn= (map: 011..015; DEFAULT 014 — AVN-2026-014 Ali Vural ₺4.000)
+       Liste master-detail panelleri HIZLI-BAKIŞ olarak KALIR (onay aksiyonları dahil);
+       panele "Detayı aç →" linki eklenir; liste satır tıklaması panel seçimi olarak sürer
+       (detaya gitmez), detaya götüren şey panel linki + satır kod linkidir. Panel/onaylar/
+       ozet/rapor/ajanda köprüleri doğrudan ?izn=/?avn= detayına kimliklenir.
+     · gv-pager KOMPONENTİ (DK11 kilit istisnası — ui.js+ui.css, T0):
+       Bağlama: tabloya/konteynere data-paginate="25" (satır kaynağı: tbody tr; tablo-dışı
+       için data-paginate-rows="selector"). ui.js wireTables otomatik kurar; JS-render
+       sayfalar satırları bastıktan sonra gvPager(el) çağırır. Filtreyle iş bölümü:
+       filtre motoru tr.hidden yazar (mevcut idiyom), pager YALNIZ filtre-görünür satırları
+       .gv-pg-hide ile sayfalara böler — iki eksen çakışmaz. Sayfa-lokal filtre motoru olan
+       ekranlar filtre sonrası gvPagerRefresh(el) çağırır; ui.js applyFilters bunu kendisi yapar.
+       Kurallar (RB §5 statik alt kümesi): kayıt ≤ pageSize → pager kendini GİZLER ·
+       filtre/arama değişince page=1 · geçersiz/aşkın ?page → son sayfaya kelepçe ·
+       toplam kayıt sayacı görünür ("1–25 · 196 kayıt") · ?page= URL'e replaceState ile
+       yazılır/okunur · mobil kompakt görünüm. Her refresh konteynerde 'gvpage' event'i
+       yayar (gün-başlıklı listeler senkron için — log idiyomu).
+       PageSize kanoniği: 25 (tüm listeler). D17 pilotları: birimler · kullanıcılar ·
+       personel · ayarlar-log (T0). Kalan entegrasyonlar D18.
+     · URL-STATE STANDARDI (Y6): ?f= (chip) & ?q= (arama) & ?page= — ui.js merkezi yazar
+       (replaceState; arama debounce'lu). Yüklemede ?q= arama kutusuna, ?f= YALNIZ birebir
+       eşleşen data-filter chip'i varsa uygulanır (crm-gorev'in görünüm-?f='i sayfa-lokal
+       kalır, çakışmaz). Detay sekmeleri #hash idiyomunda sürer (D13).
+     · PANEL KART KURALI (Y4): KPI/sayaç kartları <a class="kpi-card" href="filtreli-liste">
+       olur (ui.css a.kpi-card dokunuşu); başlık linkleri kayıt kimliğine, "Tümü" filtreli
+       listeye, onay aksiyonları modala — RB §3.4 beşlisi. Kiosk (crm-panel-operasyon.html)
+       DOKUNULMAZ (D15 kanoniği).
+     · Y15 (DK12): kredikarti "Tümünü Göster" karosu KALDIRILDI — banka sıfırlama "Tümü"
+       chip'inde; kart şeridi salt seçici. şef dalı ve syncBankaUI chip senkronu AYNEN.
+     · Y12 (DK6): 4 portal sayfasına noindex eklendi (132→136/136) + robots.txt (Disallow /)
+       + 404.html (index dark idiyomu; giriş + dizin aksiyonlu).
    ===================================================================== */
 (function(){
   'use strict';
