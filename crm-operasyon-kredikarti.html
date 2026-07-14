@@ -100,6 +100,7 @@
         <div class="ph-sub">4 firma kartı · kart bazlı harcama, limit ve ekstre takibi</div>
       </div>
       <div class="ph-actions">
+        <a class="btn btn-ghost btn-sm" href="crm-operasyon-kredikarti-kart-form.html" data-view="karttanim" hidden><i class="fa-solid fa-credit-card"></i> Yeni Kart</a>
         <a class="btn btn-acc btn-sm" href="crm-operasyon-kredikarti-form.html" data-view="olusturabilir" hidden><i class="fa-solid fa-plus"></i> Harcama Kaydı</a>
       </div>
     </div>
@@ -275,6 +276,12 @@
   var OLUSTURABILIR = ['superadmin','sahip','yonetim','muhasebe','sef'];
   document.querySelectorAll('[data-view="olusturabilir"]').forEach(function(el){
     el.hidden = OLUSTURABILIR.indexOf(GV.role) === -1;
+  });
+
+  /* Yeni Kart tanımı — muhasebe/yönetim yetkisi (şef harcama girer, kart tanımlamaz) */
+  var KART_TANIMLAYABILIR = ['superadmin','sahip','yonetim','muhasebe'];
+  document.querySelectorAll('[data-view="karttanim"]').forEach(function(el){
+    el.hidden = KART_TANIMLAYABILIR.indexOf(GV.role) === -1;
   });
 
   /* şef yalnız kendi kartını (Garanti BBVA) görür — kart şeridi + tablo kalıcı budanır.
