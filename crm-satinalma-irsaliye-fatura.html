@@ -17,8 +17,18 @@
 <link rel="stylesheet" href="assets/css/ui.css">
 <style>
 /* ============ SAYFAYA ÖZEL — İrsaliye & Fatura eşleştirme (D12) ============ */
-.gv-tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:0;overflow-x:auto;scrollbar-width:none}
+.gv-tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:0;padding:0 22px;overflow-x:auto;scrollbar-width:none}
 .gv-tabs::-webkit-scrollbar{display:none}
+.gv-tab{display:inline-flex;align-items:center;gap:8px;padding:13px 4px;margin-right:26px;flex:none;
+  font-family:inherit;font-size:13.5px;font-weight:700;color:var(--muted);background:none;border:none;
+  border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;transition:.18s var(--ease)}
+.gv-tab i{font-size:13px}
+.gv-tab:hover{color:var(--ink)}
+.gv-tab.is-active{color:var(--acc-ink);border-color:var(--acc-ink)}
+.gv-tab .tb-cnt{font-size:10.5px;font-weight:700;background:var(--bg);color:var(--ink-2);padding:1px 6px;border-radius:var(--r-pill)}
+.gv-tab.is-active .tb-cnt{background:rgba(var(--acc-rgb),.16);color:var(--acc-deep)}
+.tab-panel{animation:tabIn .22s var(--ease)}
+@keyframes tabIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
 .uyusmazlik-banner{display:flex;align-items:flex-start;gap:13px;font-size:13px;color:var(--danger);background:var(--danger-tint);border-radius:var(--r-md);padding:16px 18px;line-height:1.65;margin-bottom:18px}
 .uyusmazlik-banner i{margin-top:2px;flex:none;font-size:16px}
@@ -107,8 +117,8 @@ tr.is-mismatch td{background:rgba(var(--danger-rgb,209,67,67),.05)}
 
     <div class="gv-card">
       <div class="gv-tabs" role="tablist" aria-label="İrsaliye ve fatura sekmeleri">
-        <button class="gv-tab is-active" data-tab="irsaliye" role="tab" aria-selected="true"><i class="fa-solid fa-truck-ramp-box"></i> İrsaliyeler <span class="ml-cnt" id="irsCount">14</span></button>
-        <button class="gv-tab" data-tab="fatura" role="tab" aria-selected="false"><i class="fa-solid fa-file-invoice-dollar"></i> Faturalar <span class="ml-cnt" id="ftrCount">9</span></button>
+        <button class="gv-tab is-active" data-tab="irsaliye" role="tab" aria-selected="true"><i class="fa-solid fa-truck-ramp-box"></i> İrsaliyeler <span class="tb-cnt" id="irsCount">14</span></button>
+        <button class="gv-tab" data-tab="fatura" role="tab" aria-selected="false"><i class="fa-solid fa-file-invoice-dollar"></i> Faturalar <span class="tb-cnt" id="ftrCount">9</span></button>
       </div>
 
       <section class="tab-panel" data-tab-panel="irsaliye" role="tabpanel" aria-label="İrsaliyeler">
