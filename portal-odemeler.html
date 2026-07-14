@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
 <title>Ödemelerim — Müşteri Portalı — Yapıtaş İnşaat</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,6 +94,13 @@ a{color:inherit;text-decoration:none}
 .tks-mrow{padding:12px 18px;border-bottom:1px solid var(--line)}
 .tks-mrow:last-child{border-bottom:none}
 .tks-mrow.next{background:rgba(var(--acc-rgb),.07)}
+/* hash hedef vurgusu — sayfa-lokal (D17 Y8): kalıcı sol-kenar işareti + hafif tint,
+   üstüne giriş flash'ı; flash bitince kalıcı tona döner */
+.tks-table tr.is-target td{background:rgba(var(--acc-rgb),.1)}
+.tks-table tr.is-target td:first-child{box-shadow:inset 3px 0 0 var(--acc)}
+.tks-mrow.is-target{background:rgba(var(--acc-rgb),.1);box-shadow:inset 3px 0 0 var(--acc)}
+.tks-table tr.is-flash td,.tks-mrow.is-flash{animation:hedefVurgu 2s ease-out 1}
+@keyframes hedefVurgu{0%,30%{background:rgba(var(--acc-rgb),.22)}}
 .tks-mrow.pesin,.tks-mrow.teslim{background:var(--bg)}
 .tks-mrow-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:7px}
 .tks-mrow-no{font-size:11.5px;font-weight:700;color:var(--muted);flex:none}
@@ -175,7 +183,7 @@ a{color:inherit;text-decoration:none}
   <div class="pf-section-lbl"><i class="fa-solid fa-table-list"></i> Taksit Tablosu</div>
   <div class="gv-card">
     <div class="tks-wrap">
-      <table class="tks-table">
+      <table class="tks-table" data-paginate="25">
         <thead><tr><th>#</th><th>Vade Tarihi</th><th style="text-align:right">Tutar</th><th>Durum</th><th>Makbuz</th></tr></thead>
         <tbody id="tksBody"></tbody>
       </table>
@@ -226,15 +234,67 @@ a{color:inherit;text-decoration:none}
   lines.push({cls:'teslim', no:'—', tarih:'Aralık 2026 (hedef)', tutar:teslim, durum:'<span class="gstat wait">Bekliyor</span>', mkb:'—'});
 
   var tableRows = '', cardRows = '';
-  lines.forEach(function(l){
-    tableRows += '<tr class="' + l.cls + '"><td>' + l.no + '</td><td>' + l.tarih + '</td><td class="num">' + tl(l.tutar) + '</td><td>' + l.durum + '</td><td>' + l.mkb + '</td></tr>';
-    cardRows += '<div class="tks-mrow ' + l.cls + '">'
+  lines.forEach(function(l, idx){
+    /* data-idx: masaüstü tablo ile mobil kart listesi aynı 'lines' döngüsünden
+       birebir sırayla basılır — pager hedef-sayfa hesabı (FIX A) bu index'e dayanır */
+    tableRows += '<tr class="' + l.cls + '"' + (l.cls === 'next' ? ' id="tks-next"' : '') + ' data-idx="' + idx + '"><td>' + l.no + '</td><td>' + l.tarih + '</td><td class="num">' + tl(l.tutar) + '</td><td>' + l.durum + '</td><td>' + l.mkb + '</td></tr>';
+    cardRows += '<div class="tks-mrow ' + l.cls + '" data-idx="' + idx + '">'
       + '<div class="tks-mrow-top"><span class="tks-mrow-no">' + l.no + '</span><span class="tks-mrow-date">' + l.tarih + '</span><span class="tks-mrow-amt">' + tl(l.tutar) + '</span></div>'
       + '<div class="tks-mrow-bottom">' + l.durum + '<span>' + l.mkb + '</span></div>'
       + '</div>';
   });
   document.getElementById('tksBody').innerHTML = tableRows;
   document.getElementById('tksMobileList').innerHTML = cardRows;
+
+  /* ---- sayfalandırma (gv-pager, D17 pager yayılımı): masaüstü tabloya bağlanır.
+     Mobil kart listesi ayrı bir DOM olduğu için pager'ı görmez — 'gvpage' event'ini
+     dinleyip aynı dilimi (.gv-pg-hide) index eşleşmesiyle mobil listeye uygular. ---- */
+  var tksTable = document.querySelector('.tks-table');
+  var tksMobileList = document.getElementById('tksMobileList');
+  var pgBoyut = parseInt(tksTable.getAttribute('data-paginate'), 10) || 25;
+  var pgMevcutSayfa = 1;
+  tksTable.addEventListener('gvpage', function(e){
+    var d = e.detail;
+    pgMevcutSayfa = d.page;
+    Array.prototype.forEach.call(tksMobileList.children, function(r, i){
+      r.classList.toggle('gv-pg-hide', i < (d.page - 1) * d.size || i >= d.page * d.size);
+    });
+  });
+
+  /* ---- FIX A + pager: #tks-next hedefi aktif sayfada değilse pager hedef sayfaya
+     atlar. Yüklemede inline script pager kurulumundan ÖNCE koştuğu için hedef sayfa
+     ?page= URL-state'ine yazılır (gvPager init'te bunu okur — hash her zaman ?page='i
+     ezer, RB "hash kazanır" kuralı). hashchange'de nav'daki sayfa butonuna programatik
+     tıklama kullanılır (ui.js'e dokunmadan). ---- */
+  function hedefIdx(){
+    if(location.hash !== '#tks-next') return null;
+    var el = document.getElementById('tks-next');
+    if(!el) return null;
+    var idx = parseInt(el.getAttribute('data-idx'), 10);
+    return isNaN(idx) ? null : idx;
+  }
+  function hedefSayfaNo(idx){ return Math.floor(idx / pgBoyut) + 1; }
+
+  var ilkIdx = hedefIdx();
+  if(ilkIdx !== null){
+    var ilkSayfa = hedefSayfaNo(ilkIdx);
+    gvUrlState.set({ page: ilkSayfa > 1 ? ilkSayfa : null });
+  }
+
+  gvPager(tksTable);
+  var pgNav = document.querySelector('.gv-pager');
+  /* nav kuruluşta .tks-wrap içine düşer (overflow-x konteyneri, 640px altında
+     display:none) — kart altına, hem masaüstü hem mobilde görünür şekilde taşı */
+  if(pgNav) tksMobileList.parentNode.insertBefore(pgNav, tksMobileList.nextSibling);
+
+  function hedefSayfayaAtla(){
+    var idx = hedefIdx();
+    if(idx === null || !pgNav) return;
+    var hedef = hedefSayfaNo(idx);
+    if(hedef === pgMevcutSayfa) return;
+    var btn = pgNav.querySelector('[data-pg="' + hedef + '"]');
+    if(btn) btn.click();
+  }
 
   /* ---- ilerleme şeridi: 36 taksit tick'i ---- */
   var track = document.getElementById('ppTrack');
@@ -244,6 +304,30 @@ a{color:inherit;text-decoration:none}
     tickHtml += '<div class="pp-seg ' + cls + '" title="Taksit ' + t + '"></div>';
   }
   track.innerHTML = tickHtml;
+
+  /* ---- hash hedefine vurgu (D17 Y8): #tks-next sıradaki (15 Tem) taksiti hem masaüstü
+     tabloda hem mobil kart listesinde işaretler — kalıcı .is-target + tek seferlik
+     .is-flash; hedef değişirse eski işaret temizlenir; görünür olan kaydırılır.
+     Sayfa atlaması (hedefSayfayaAtla) İLK çalışır — is-target satırı hâlâ .gv-pg-hide
+     ile gizliyken işaretlenip kaydırma atlanmasın diye. ---- */
+  var hedefler = [];
+  function flashHedef(){
+    hedefler.forEach(function(el){ el.classList.remove('is-target','is-flash'); });
+    hedefler = [];
+    if(location.hash !== '#tks-next') return;
+    var els = document.querySelectorAll('tr.next, .tks-mrow.next');
+    var scrolled = false;
+    Array.prototype.forEach.call(els, function(el){
+      hedefler.push(el);
+      el.classList.add('is-target');
+      void el.offsetWidth;
+      el.classList.add('is-flash');
+      if(!scrolled && el.offsetParent){ el.scrollIntoView({block:'center'}); scrolled = true; }
+    });
+  }
+  function hedefeGit(){ hedefSayfayaAtla(); flashHedef(); }
+  window.addEventListener('hashchange', hedefeGit);
+  setTimeout(hedefeGit, 60);
 })();
 </script>
 </body>
