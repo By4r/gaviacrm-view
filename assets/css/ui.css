@@ -2,7 +2,8 @@
    GAVIA CRM — UI COMPONENT KATMANI (kabuk-bağımsız primitifler)
    Kart · KPI · buton · durum rozeti · data-table · filtre bar + chip ·
    ilerleme/limit çubuğu · toggle · form · modal · toast · dropdown ·
-   boş durum · aktivite listesi · onay zinciri (gvChain).
+   boş durum · aktivite listesi · onay zinciri (gvChain) ·
+   sayfalandırma (gv-pager) · kayıt-bulunamadı kartı (gv-notfound) — D17.
    Semantik renkler accent'ten BAĞIMSIZ.
    Ortak çekirdek dosya — değişiklikler tek elden yapılır.
    ===================================================================== */
@@ -359,3 +360,50 @@
   .kpi-card{flex-direction:column;align-items:flex-start;gap:8px;padding:16px}
   .kpi-num{font-size:19px}
 }
+
+/* ============ D17 — YÖNLENDİRME ÇEKİRDEĞİ (DK11 kilit istisnası) ============ */
+
+/* tıklanabilir KPI kartı (Y4 panel kart kuralı): <a class="kpi-card" href="…"> —
+   link rengi kart içeriğine sızmaz, hover lift mevcut kuraldan gelir */
+a.kpi-card{color:inherit;text-decoration:none;cursor:pointer}
+
+/* sayfalandırma (gv-pager) — kart altına yerleşir, gc-foot diliyle akraba */
+.gv-pg-hide{display:none !important}
+.gv-pager{
+  display:flex;align-items:center;justify-content:space-between;gap:10px 14px;flex-wrap:wrap;
+  padding:13px 22px;border-top:1px solid var(--line);
+}
+.pg-count{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pg-btns{display:flex;align-items:center;gap:5px}
+.pg-btn,.pg-num{
+  min-width:32px;height:32px;padding:0 8px;border-radius:var(--r-sm);
+  border:1px solid var(--line);background:var(--paper);color:var(--ink-2);
+  font-family:inherit;font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:.18s var(--ease);
+}
+.pg-btn i{font-size:11px}
+.pg-btn:hover:not(:disabled),.pg-num:hover{border-color:var(--acc-ink);color:var(--acc-ink)}
+.pg-btn:disabled{opacity:.4;cursor:default}
+.pg-num.is-on{background:var(--acc-ink);border-color:var(--acc-ink);color:#fff;cursor:default}
+.pg-gap{color:var(--muted);font-size:12px;padding:0 2px;user-select:none}
+.pg-compact{display:none;font-size:12.5px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums;padding:0 6px}
+@media(max-width:640px){
+  .gv-pager{padding:12px 16px}
+  .pg-num,.pg-gap{display:none}
+  .pg-compact{display:inline-flex}
+}
+
+/* kayıt bulunamadı kartı (gvNotFound, Y7/DK3) */
+.gv-notfound{max-width:560px;margin:7vh auto 0;padding:46px 34px 40px;text-align:center}
+.gv-notfound .nf-ico{
+  width:64px;height:64px;margin:0 auto 18px;border-radius:var(--r-md);
+  background:var(--warn-tint);color:var(--warn);
+  display:flex;align-items:center;justify-content:center;font-size:25px;
+}
+.gv-notfound h2{font-size:19px;letter-spacing:-.01em;margin-bottom:8px}
+.gv-notfound p{font-size:13.5px;color:var(--muted);line-height:1.6;max-width:390px;margin:0 auto 24px}
+.gv-notfound .nf-code{font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.gv-notfound .nf-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* boş durumda filtre temizleme affordance'ı (Y13) */
+.gv-empty .ge-clear{margin-top:14px}

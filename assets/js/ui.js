@@ -4,7 +4,9 @@
    data-demo sim toast'ı · data-export format menüsü (GV_EXPORTERS kayıtlıysa
    gerçek .xlsx/.csv indirme, değilse [MOCK-SİM] toast) ·
    tablo arama + chip filtre yardımcıları ·
-   gvChain onay zinciri (timeline + rozet + onayla/reddet/revize aksiyonu).
+   gvChain onay zinciri (timeline + rozet + onayla/reddet/revize aksiyonu) ·
+   gvUrlState (?f=&q=&page= URL-state, D17) · gvNotFound kayıt-bulunamadı kartı (D17) ·
+   gv-pager sayfalandırma (data-paginate, D17) · gv-empty "Filtreleri temizle" (D17).
    Ortak çekirdek dosya — değişiklikler tek elden yapılır.
    ===================================================================== */
 (function(){
@@ -411,14 +413,183 @@
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireChains);
   else wireChains();
 
+  /* ---- URL-STATE YARDIMCISI (D17 Y6) — liste durumu ?f=&q=&page= paramlarında
+     yaşar; replaceState ile yazılır (history spam yok), yüklemede geri uygulanır.
+     Detay sekmeleri #hash idiyomunda sürer (D13). ---- */
+  window.gvUrlState = {
+    get: function(k){ return new URLSearchParams(location.search).get(k); },
+    set: function(obj){
+      var p = new URLSearchParams(location.search);
+      Object.keys(obj).forEach(function(k){
+        var v = obj[k];
+        if(v === null || v === undefined || v === '') p.delete(k); else p.set(k, String(v));
+      });
+      var qs = p.toString();
+      history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
+    }
+  };
+
+  /* ---- KAYIT BULUNAMADI KARTI (D17 Y7 / DK3) — param-driven detay sayfaları
+     TANINMAYAN param değerinde çağırır; parametresiz açılış default kayda düşmeye
+     devam eder (ALTIN KURAL — menü linkleri ölü ekrana düşmez).
+     gvNotFound({code:'051', tur:'malzeme talebi', listHref, listLbl, defHref, defLbl}) ---- */
+  window.gvNotFound = function(opts){
+    opts = opts || {};
+    var mount = typeof opts.mount === 'string' ? document.querySelector(opts.mount) : opts.mount;
+    if(!mount) mount = document.querySelector('main.gv-main') || document.body;
+    var card = document.createElement('div');
+    card.className = 'gv-card gv-notfound';
+    card.innerHTML = '<div class="nf-ico"><i class="fa-solid fa-file-circle-question"></i></div>'
+      + '<h2>Kayıt bulunamadı</h2><p></p><div class="nf-acts"></div>';
+    var p = card.querySelector('p');
+    if(opts.code){
+      var b = document.createElement('span'); b.className = 'nf-code'; b.textContent = opts.code;
+      p.appendChild(document.createTextNode('“'));
+      p.appendChild(b);
+      p.appendChild(document.createTextNode('” koduna ait bir ' + (opts.tur || 'kayıt')
+        + ' bu çalışma alanında yok. Bağlantı eski ya da hatalı olabilir.'));
+    } else {
+      p.textContent = 'Aradığınız ' + (opts.tur || 'kayıt') + ' bu çalışma alanında yok. Bağlantı eski ya da hatalı olabilir.';
+    }
+    var acts = card.querySelector('.nf-acts');
+    function act(href, lbl, cls, ic){
+      if(!href) return;
+      var a = document.createElement('a');
+      a.className = 'btn ' + cls; a.href = href;
+      a.innerHTML = '<i class="fa-solid ' + ic + '"></i> ';
+      a.appendChild(document.createTextNode(lbl));
+      acts.appendChild(a);
+    }
+    act(opts.listHref, opts.listLbl || 'Listeye dön', 'btn-acc', 'fa-list');
+    act(opts.defHref, opts.defLbl || 'Varsayılan kaydı aç', 'btn-ghost', 'fa-file-lines');
+    mount.innerHTML = '';
+    mount.appendChild(card);
+    document.title = 'Kayıt Bulunamadı — Gavia CRM';
+  };
+
+  /* ---- SAYFALANDIRMA (gv-pager, D17 Y5 / DK11) ----
+     Bağlama: tabloya/konteynere data-paginate="25"; tablo-dışı listede satır kaynağı
+     data-paginate-rows="selector". wireTables otomatik kurar; JS-render sayfalar
+     satırları bastıktan sonra gvPager(el) çağırabilir (ikinci çağrı = refresh).
+     Eksen ayrımı: filtre motoru tr.hidden yazar (mevcut idiyom), pager YALNIZ
+     filtre-görünür satırları .gv-pg-hide ile böler — iki mekanizma çakışmaz.
+     Sayfa-lokal filtre motoru olan ekranlar filtre sonrası gvPagerRefresh(el) çağırır;
+     ui.js applyFilters bunu kendisi yapar. Kurallar (RB §5 statik alt kümesi):
+     kayıt ≤ pageSize → pager gizli · filtre değişince page=1 · geçersiz/aşkın ?page →
+     son sayfaya kelepçe · toplam kayıt sayacı · ?page= URL'de (tek listeli sayfa
+     varsayımı). Her refresh'te konteyner 'gvpage' CustomEvent yayar (gün-başlıklı
+     listelerin grup başlığı senkronu için — ayarlar-log idiyomu). ---- */
+  window.gvPager = function(el, opts){
+    if(typeof el === 'string') el = document.querySelector(el);
+    if(!el) return null;
+    if(el._gvPager){ el._gvPager.refresh(); return el._gvPager; }
+    opts = opts || {};
+    var size = parseInt(el.getAttribute('data-paginate'), 10) || opts.pageSize || 25;
+    var rowSel = el.getAttribute('data-paginate-rows') || (el.tagName === 'TABLE' ? 'tbody tr' : ':scope > *');
+    var nav = document.createElement('nav');
+    nav.className = 'gv-pager'; nav.hidden = true;
+    nav.setAttribute('aria-label', 'Sayfalandırma');
+    var anchor = el.closest('.gc-body') || el;
+    anchor.parentNode.insertBefore(nav, anchor.nextSibling);
+    var page = parseInt(gvUrlState.get('page'), 10) || 1;
+
+    function visRows(){
+      return Array.prototype.filter.call(el.querySelectorAll(rowSel), function(r){ return !r.hidden; });
+    }
+    function pageBtns(pages){
+      /* pencereli numara listesi: 1 … p−1 p p+1 … son */
+      var set = [1, pages, page - 1, page, page + 1]
+        .filter(function(n){ return n >= 1 && n <= pages; })
+        .filter(function(n, i, a){ return a.indexOf(n) === i; })
+        .sort(function(a, b){ return a - b; });
+      var out = [];
+      set.forEach(function(n, i){
+        if(i && n - set[i - 1] > 1) out.push('gap');
+        out.push(n);
+      });
+      return out;
+    }
+    function render(total, pages){
+      var from = (page - 1) * size + 1, to = Math.min(page * size, total);
+      var h = '<span class="pg-count">' + from + '–' + to + ' · ' + total + ' kayıt</span>'
+            + '<div class="pg-btns">'
+            + '<button type="button" class="pg-btn" data-pg="prev" aria-label="Önceki sayfa"' + (page <= 1 ? ' disabled' : '') + '><i class="fa-solid fa-chevron-left"></i></button>';
+      pageBtns(pages).forEach(function(n){
+        if(n === 'gap'){ h += '<span class="pg-gap">…</span>'; return; }
+        h += '<button type="button" class="pg-num' + (n === page ? ' is-on" aria-current="page"' : '"') + ' data-pg="' + n + '">' + n + '</button>';
+      });
+      h += '<span class="pg-compact">' + page + ' / ' + pages + '</span>'
+         + '<button type="button" class="pg-btn" data-pg="next" aria-label="Sonraki sayfa"' + (page >= pages ? ' disabled' : '') + '><i class="fa-solid fa-chevron-right"></i></button>'
+         + '</div>';
+      nav.innerHTML = h;
+    }
+    function refresh(reset){
+      if(reset) page = 1;
+      var vis = visRows();
+      var total = vis.length;
+      var pages = Math.max(1, Math.ceil(total / size));
+      if(page > pages) page = pages;   /* geçersiz/aşkın sayfa → son sayfa (RB §5) */
+      if(page < 1) page = 1;
+      vis.forEach(function(r, i){
+        r.classList.toggle('gv-pg-hide', i < (page - 1) * size || i >= page * size);
+      });
+      el.querySelectorAll(rowSel).forEach(function(r){ if(r.hidden) r.classList.remove('gv-pg-hide'); });
+      nav.hidden = total <= size;      /* az kayıt → pager kendini gizler (RB §4) */
+      if(!nav.hidden) render(total, pages);
+      gvUrlState.set({ page: page > 1 ? page : null });
+      el.dispatchEvent(new CustomEvent('gvpage', { bubbles: true, detail: { page: page, pages: pages, total: total, size: size } }));
+    }
+    nav.addEventListener('click', function(e){
+      var b = e.target.closest('[data-pg]'); if(!b || b.disabled) return;
+      var v = b.getAttribute('data-pg');
+      var pages = Math.max(1, Math.ceil(visRows().length / size));
+      if(v === 'prev') page = Math.max(1, page - 1);
+      else if(v === 'next') page = Math.min(pages, page + 1);
+      else page = parseInt(v, 10) || 1;
+      refresh(false);
+      /* sayfa değişiminde liste başına dön (sabit topbar payıyla) */
+      var top = (el.closest('.gv-card') || el).getBoundingClientRect().top + window.pageYOffset - 86;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    });
+    el._gvPager = { refresh: refresh, el: el };
+    refresh(false);
+    return el._gvPager;
+  };
+  window.gvPagerRefresh = function(el, reset){
+    if(typeof el === 'string') el = document.querySelector(el);
+    if(el && el._gvPager) el._gvPager.refresh(reset !== false);
+  };
+
   /* ---- TABLO YARDIMCILARI (data-attribute ile kendiliğinden bağlanır) ----
      Arama: <input data-table-search="#tbl"> — satır metninde arar.
      Chip filtre: .chip[data-filter="deger"] + tablo satırında data-f="deger";
-     "hepsi" değeri tümünü gösterir. İkisi birlikte AND çalışır. ---- */
+     "hepsi" değeri tümünü gösterir. İkisi birlikte AND çalışır.
+     D17: kullanıcı değişimi ?f=&q= URL-state'ine yazılır; yüklemede geri uygulanır. ---- */
   function wireTables(){
+    /* URL → başlangıç durumu (D17 Y6): ?q= arama kutusuna; ?f= YALNIZ birebir eşleşen
+       data-filter chip'i varsa ona uygulanır (sayfa-lokal ?f= semantiği olan ekranlar
+       — ör. crm-gorev görünümleri — etkilenmez) */
+    var uq = gvUrlState.get('q'), uf = gvUrlState.get('f');
+    if(uq){
+      var inp0 = document.querySelector('input[data-table-search]');
+      if(inp0) inp0.value = uq;
+    }
+    if(uf){
+      var chTarget = null;
+      try{
+        chTarget = document.querySelector('.chip[data-filter="' + (window.CSS && CSS.escape ? CSS.escape(uf) : uf.replace(/"/g, '')) + '"]');
+      }catch(_){}
+      if(chTarget){
+        var grp0 = chTarget.closest('.chips');
+        if(grp0){
+          grp0.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('is-on'); });
+          chTarget.classList.add('is-on');
+        }
+      }
+    }
     document.querySelectorAll('input[data-table-search]').forEach(function(inp){
       var tbl = document.querySelector(inp.getAttribute('data-table-search')); if(!tbl) return;
-      inp.addEventListener('input', function(){ applyFilters(tbl); });
+      inp.addEventListener('input', function(){ applyFilters(tbl, true); });
     });
     document.querySelectorAll('.chip[data-filter]').forEach(function(ch){
       ch.addEventListener('click', function(){
@@ -426,9 +597,12 @@
         grp.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('is-on'); });
         ch.classList.add('is-on');
         var tbl = document.querySelector(grp.getAttribute('data-target') || '.gtable');
-        if(tbl) applyFilters(tbl);
+        if(tbl) applyFilters(tbl, true);
       });
     });
+    /* data-paginate otomatik kurulum — satırlar inline sayfa scriptlerince
+       basıldıktan sonra çalışır (DOMContentLoaded) */
+    document.querySelectorAll('[data-paginate]').forEach(function(el){ gvPager(el); });
     /* yüklemede ilk uygulama — sayfa scriptinin rol budaması (tr.remove) SONRASI
        sayaç + boş durum senkronlanır (satır gizlemek İÇİN rol budamada tr.hidden
        KULLANMA; bu ilk uygulama onu geri açar — budama tr.remove ile yapılır) */
@@ -437,7 +611,7 @@
       if(tbl) applyFilters(tbl);
     });
   }
-  function applyFilters(tbl){
+  function applyFilters(tbl, isChange){
     var card = tbl.closest('.gv-card') || document;
     var inp = card.querySelector('input[data-table-search]');
     var term = inp ? inp.value.trim().toLocaleLowerCase('tr') : '';
@@ -452,11 +626,44 @@
       if(show) shown++;
     });
     var empty = card.querySelector('[data-table-empty]');
-    if(empty) empty.hidden = shown !== 0;
+    if(empty){
+      empty.hidden = shown !== 0;
+      /* D17 Y13: filtre kaynaklı boş sonuçta "Filtreleri temizle" affordance'ı */
+      syncClearBtn(empty, tbl, shown === 0 && (!!term || f !== 'hepsi'));
+    }
     /* sayaç kart dışında (.gv-page-head) olabilir — karttan bulunamazsa belgeden.
        Çok tablolu sayfada sayaç KART İÇİNE konmalı. */
     var cnt = card.querySelector('[data-table-count]') || document.querySelector('[data-table-count]');
     if(cnt) cnt.textContent = shown;
+    /* D17: kullanıcı değişimi URL-state'e; filtre değişti → sayfa 1 (RB §5) */
+    if(isChange) gvUrlState.set({ q: term || null, f: f !== 'hepsi' ? f : null, page: null });
+    if(tbl._gvPager) tbl._gvPager.refresh(isChange === true);
+  }
+  function syncClearBtn(empty, tbl, show){
+    var btn = empty.querySelector('.ge-clear');
+    if(show && !btn){
+      btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-ghost btn-sm ge-clear';
+      btn.innerHTML = '<i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri temizle';
+      btn.addEventListener('click', function(){
+        var card = tbl.closest('.gv-card') || document;
+        var inp = card.querySelector('input[data-table-search]');
+        if(inp) inp.value = '';
+        var on = card.querySelector('.chip.is-on[data-filter]');
+        if(on){
+          var grp = on.closest('.chips');
+          var hepsi = grp && grp.querySelector('.chip[data-filter="hepsi"]');
+          if(hepsi){
+            grp.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('is-on'); });
+            hepsi.classList.add('is-on');
+          }
+        }
+        applyFilters(tbl, true);
+      });
+      empty.appendChild(btn);
+    }
+    if(btn) btn.hidden = !show;
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireTables);
   else wireTables();
