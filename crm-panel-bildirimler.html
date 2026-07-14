@@ -81,6 +81,7 @@
       </div>
     </div>
 
+    <div id="notifList" data-paginate="25" data-paginate-rows=".notif-row">
     <div class="notif-group">
       <div class="notif-glabel">Bugün — 2 Temmuz</div>
       <div class="notif-card">
@@ -92,7 +93,7 @@
           </div>
           <span class="notif-unread-dot"></span>
         </a>
-        <a class="notif-row is-unread" href="crm-gorev-detay.html" data-read="0">
+        <a class="notif-row is-unread" href="crm-gorev-detay.html?gorev=002" data-read="0">
           <div class="notif-ico gorev"><i class="fa-solid fa-list-check"></i></div>
           <div class="notif-body">
             <div class="notif-top"><span class="notif-title">Murat Denizli size yeni görev verdi</span><span class="notif-time">08:50</span></div>
@@ -121,7 +122,7 @@
     <div class="notif-group">
       <div class="notif-glabel">Dün — 1 Temmuz</div>
       <div class="notif-card">
-        <a class="notif-row" href="crm-personel-avans.html" data-read="1">
+        <a class="notif-row" href="crm-personel-avans-detay.html?avn=015" data-read="1">
           <div class="notif-ico onay"><i class="fa-solid fa-stamp"></i></div>
           <div class="notif-body">
             <div class="notif-top"><span class="notif-title">AVN-2026-015 Şantiye Şefi onayınızda</span><span class="notif-time">16:10</span></div>
@@ -135,7 +136,7 @@
             <div class="notif-meta">Vadi Konakları · tutanak yüklendi</div>
           </div>
         </a>
-        <a class="notif-row" href="crm-gorev-detay.html" data-read="1">
+        <a class="notif-row" href="crm-gorev-detay.html?gorev=004" data-read="1">
           <div class="notif-ico gorev"><i class="fa-solid fa-list-check"></i></div>
           <div class="notif-body">
             <div class="notif-top"><span class="notif-title">Elif Sarıkaya, Ömer Taşkın'a yeni görev verdi</span><span class="notif-time">11:20</span></div>
@@ -178,6 +179,7 @@
         </a>
       </div>
     </div>
+    </div>
 
   </main>
 </div>
@@ -213,6 +215,22 @@
       row.classList.remove('is-unread');
     });
   });
+})();
+
+/* D17 pager: gün grubu senkronu — bir grubun tüm satırları bu sayfada
+   görünmüyorsa grup başlığı+kartı gizlenir (crm-ayarlar-log.html syncDays idiyomu) */
+(function(){
+  var list = document.getElementById('notifList');
+  if(!list) return;
+  var groups = Array.prototype.slice.call(document.querySelectorAll('.notif-group'));
+  function syncGroups(){
+    groups.forEach(function(g){
+      var rows = g.querySelectorAll('.notif-row');
+      var onPage = Array.prototype.filter.call(rows, function(r){ return !r.hidden && !r.classList.contains('gv-pg-hide'); });
+      g.hidden = rows.length > 0 && onPage.length === 0;
+    });
+  }
+  list.addEventListener('gvpage', syncGroups);
 })();
 </script>
 </body>

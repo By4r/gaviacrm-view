@@ -233,7 +233,7 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
         </div>
       </div>
       <div class="gc-body flush">
-        <table class="gtable" id="tblDefter">
+        <table class="gtable" id="tblDefter" data-paginate="25">
           <thead>
             <tr>
               <th class="df-no">#</th>
@@ -254,7 +254,7 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
             <tr data-ks="vadi"><td class="df-no">4</td><td class="df-date">1 Tem</td><td class="df-firm">Gürsoy Gıda Toptan</td><td class="df-desc">Yemekhane haftalık yaş sebze-meyve — KSA-2026-025</td><td class="num"></td><td class="num df-out">₺9.640</td><td class="num df-bak">₺121.360</td></tr>
             <tr data-ks="vadi"><td class="df-no">5</td><td class="df-date">1 Tem</td><td class="df-firm">Demir-Beton İnş. Ltd.</td><td class="df-desc">Taşeron nakit avansı (TH mahsuben) — KSA-2026-026</td><td class="num"></td><td class="num df-out">₺25.000</td><td class="num df-bak">₺96.360</td></tr>
             <tr data-ks="vadi"><td class="df-no">6</td><td class="df-date">1 Tem</td><td class="df-firm">Anadolu Hırdavat</td><td class="df-desc">Kesme diski, elektrod, eldiven — KSA-2026-027</td><td class="num"></td><td class="num df-out">₺6.480</td><td class="num df-bak">₺89.880</td></tr>
-            <tr data-ks="vadi"><td class="df-no">7</td><td class="df-date">1 Tem</td><td class="df-firm">Musa Erdem</td><td class="df-desc">Personel avansı — AVN-2026-031 / KSA-2026-028</td><td class="num"></td><td class="num df-out">₺5.000</td><td class="num df-bak">₺84.880</td></tr>
+            <tr data-ks="vadi"><td class="df-no">7</td><td class="df-date">1 Tem</td><td class="df-firm">Musa Erdem</td><td class="df-desc">Personel avansı — AVN-2026-008 / KSA-2026-028</td><td class="num"></td><td class="num df-out">₺5.000</td><td class="num df-bak">₺84.880</td></tr>
             <tr data-ks="vadi"><td class="df-no">8</td><td class="df-date">1 Tem</td><td class="df-firm">Çekmeköy Belediyesi</td><td class="df-desc">Hafriyat döküm kabul ücreti — KSA-2026-029</td><td class="num"></td><td class="num df-out">₺8.900</td><td class="num df-bak">₺75.980</td></tr>
             <tr data-ks="vadi"><td class="df-no">9</td><td class="df-date">1 Tem</td><td class="df-firm">Sönmezler Kereste</td><td class="df-desc">Kalıp azmanı + OSB takviye — KSA-2026-030</td><td class="num"></td><td class="num df-out">₺12.300</td><td class="num df-bak">₺63.680</td></tr>
             <tr data-ks="vadi"><td class="df-no">10</td><td class="df-date">1 Tem</td><td class="df-firm">Aden Su &amp; Tüp</td><td class="df-desc">Şantiye içme suyu + tüp dağıtımı — KSA-2026-031</td><td class="num"></td><td class="num df-out">₺1.940</td><td class="num df-bak">₺61.740</td></tr>
@@ -566,6 +566,8 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
     });
     if(dfSantiye) dfSantiye.textContent = KS_ADLAR[ks];
     if(btnCikti) btnCikti.href = 'crm-operasyon-kasa-cikti.html?santiye=' + ks;
+    /* D17: şantiye değişince defter satır seti değişir → pager sayfa 1'e döner (RB §5) */
+    gvPagerRefresh('#tblDefter', true);
   }
   document.querySelectorAll('#ksGrid .ks-card[data-ks]').forEach(function(c){
     c.addEventListener('click', function(){ setKasa(c.getAttribute('data-ks')); });

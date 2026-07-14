@@ -30,7 +30,12 @@
 .tl-info span{font-size:11.5px;color:var(--muted)}
 
 /* malzeme özeti — uzun metin ellipsis, taşma yok */
-.tl-desc{max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.tl-desc{max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;color:var(--ink)}
+.tl-desc:hover{color:var(--acc-ink)}
+
+/* satır kod linki — tl-info b yerine (satır tıklanabilir-alan standardı) */
+.tl-link{display:block;font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;text-decoration:none}
+.tl-link:hover{color:var(--acc-ink)}
 
 /* öncelik rozetleri — durumdan bağımsız anlamsal renk */
 .pri{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:var(--r-sm);white-space:nowrap}
@@ -117,7 +122,7 @@
         </div>
       </div>
       <div class="gc-body flush">
-        <table class="gtable" id="tblTalep">
+        <table class="gtable" id="tblTalep" data-paginate="25">
           <thead>
             <tr>
               <th>Talep</th>
@@ -131,121 +136,121 @@
           </thead>
           <tbody>
             <tr data-f="bekliyor" data-santiye="vadi">
-              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><b>MLZ-2026-046</b><span>2 Temmuz 2026</span></div></div></td>
+              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><a class="tl-link" href="crm-satinalma-talep-detay.html?mlz=046">MLZ-2026-046</a><span>2 Temmuz 2026</span></div></div></td>
               <td>Vadi Konakları</td>
-              <td><span class="tl-desc">Hazır beton C30 (30 m³) + demir çubuk Ø12 (2 ton)</span></td>
+              <td><a class="tl-desc" href="crm-satinalma-talep-detay.html?mlz=046">Hazır beton C30 (30 m³) + demir çubuk Ø12 (2 ton)</a></td>
               <td>Hasan Demirci</td>
               <td><span class="pri acil">Acil</span></td>
               <td data-badge="bekliyor"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html?mlz=046" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
             <tr data-f="bekliyor" data-santiye="liman">
-              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><b>MLZ-2026-045</b><span>1 Temmuz 2026</span></div></div></td>
+              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><a class="tl-link" href="crm-satinalma-talep-detay.html?mlz=045">MLZ-2026-045</a><span>1 Temmuz 2026</span></div></div></td>
               <td>Liman Lojistik Merkezi</td>
-              <td><span class="tl-desc">Çelik konstrüksiyon kaynak teli + gaz tüpü</span></td>
+              <td><a class="tl-desc" href="crm-satinalma-talep-detay.html?mlz=045">Çelik konstrüksiyon kaynak teli + gaz tüpü</a></td>
               <td>Şükrü Aslan</td>
               <td><span class="pri normal">Normal</span></td>
               <td data-badge="bekliyor"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html?mlz=045" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
             <tr data-f="bekliyor" data-santiye="merkez">
-              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><b>MLZ-2026-044</b><span>1 Temmuz 2026</span></div></div></td>
+              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><a class="tl-link" href="crm-satinalma-talep-detay.html?mlz=044">MLZ-2026-044</a><span>1 Temmuz 2026</span></div></div></td>
               <td>Merkez Şantiye</td>
-              <td><span class="tl-desc">Yalıtım malzemesi (XPS) — 200 m²</span></td>
+              <td><a class="tl-desc" href="crm-satinalma-talep-detay.html?mlz=044">Yalıtım malzemesi (XPS) — 200 m²</a></td>
               <td>Ömer Taşkın</td>
               <td><span class="pri normal">Normal</span></td>
               <td data-badge="bekliyor"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html?mlz=044" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
             <tr data-f="bekliyor" data-santiye="vadi">
-              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><b>MLZ-2026-043</b><span>30 Haziran 2026</span></div></div></td>
+              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><a class="tl-link" href="crm-satinalma-talep-detay.html?mlz=043">MLZ-2026-043</a><span>30 Haziran 2026</span></div></div></td>
               <td>Vadi Konakları</td>
-              <td><span class="tl-desc">PVC boru + pis su bağlantı seti</span></td>
+              <td><a class="tl-desc" href="crm-satinalma-talep-detay.html?mlz=043">PVC boru + pis su bağlantı seti</a></td>
               <td>İbrahim Sönmez</td>
               <td><span class="pri normal">Normal</span></td>
               <td data-badge="bekliyor"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html?mlz=043" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
             <tr data-f="bekliyor" data-santiye="liman">
-              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><b>MLZ-2026-042</b><span>29 Haziran 2026</span></div></div></td>
+              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><a class="tl-link" href="crm-satinalma-talep-detay.html?mlz=042">MLZ-2026-042</a><span>29 Haziran 2026</span></div></div></td>
               <td>Liman Lojistik Merkezi</td>
-              <td><span class="tl-desc">Forklift lastiği (4 adet)</span></td>
+              <td><a class="tl-desc" href="crm-satinalma-talep-detay.html?mlz=042">Forklift lastiği (4 adet)</a></td>
               <td>Halil Güneş</td>
               <td><span class="pri acil">Acil</span></td>
               <td data-badge="bekliyor"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html?mlz=042" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
             <tr data-f="tedarik" data-santiye="merkez">
-              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><b>MLZ-2026-041</b><span>28 Haziran 2026</span></div></div></td>
+              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><a class="tl-link" href="crm-satinalma-talep-detay.html?mlz=041">MLZ-2026-041</a><span>28 Haziran 2026</span></div></div></td>
               <td>Merkez Şantiye</td>
-              <td><span class="tl-desc">Elektrik kablosu NYY 3x2,5 — 500 m</span></td>
+              <td><a class="tl-desc" href="crm-satinalma-talep-detay.html?mlz=041">Elektrik kablosu NYY 3x2,5 — 500 m</a></td>
               <td>Recep Yaman</td>
               <td><span class="pri normal">Normal</span></td>
               <td><span class="gstat info">Tedarik Sürecinde</span></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html?mlz=041" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
             <tr data-f="tamamlandi" data-santiye="vadi">
-              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><b>MLZ-2026-040</b><span>27 Haziran 2026</span></div></div></td>
+              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><a class="tl-link" href="crm-satinalma-talep-detay.html?mlz=040">MLZ-2026-040</a><span>27 Haziran 2026</span></div></div></td>
               <td>Vadi Konakları</td>
-              <td><span class="tl-desc">Alçı sıva malzemesi — 40 torba</span></td>
+              <td><a class="tl-desc" href="crm-satinalma-talep-detay.html?mlz=040">Alçı sıva malzemesi — 40 torba</a></td>
               <td>Selim Doğan</td>
               <td><span class="pri planli">Planlı</span></td>
               <td><span class="gstat ok">Tamamlandı</span></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html?mlz=040" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
             <tr data-f="bekliyor" data-santiye="vadi">
-              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><b>MLZ-2026-039</b><span>26 Haziran 2026</span></div></div></td>
+              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><a class="tl-link" href="crm-satinalma-talep-detay.html?mlz=039">MLZ-2026-039</a><span>26 Haziran 2026</span></div></div></td>
               <td>Vadi Konakları</td>
-              <td><span class="tl-desc">İç kapı seti — 12 adet</span></td>
+              <td><a class="tl-desc" href="crm-satinalma-talep-detay.html?mlz=039">İç kapı seti — 12 adet</a></td>
               <td>Hasan Demirci</td>
               <td><span class="pri planli">Planlı</span></td>
               <td data-badge="bekliyor"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html?mlz=039" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
             <tr data-f="bekliyor" data-santiye="liman">
-              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><b>MLZ-2026-038</b><span>25 Haziran 2026</span></div></div></td>
+              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><a class="tl-link" href="crm-satinalma-talep-detay.html?mlz=038">MLZ-2026-038</a><span>25 Haziran 2026</span></div></div></td>
               <td>Liman Lojistik Merkezi</td>
-              <td><span class="tl-desc">Kaynak elektrotu + iş güvenliği ekipmanı</span></td>
+              <td><a class="tl-desc" href="crm-satinalma-talep-detay.html?mlz=038">Kaynak elektrotu + iş güvenliği ekipmanı</a></td>
               <td>Metin Çetin</td>
               <td><span class="pri acil">Acil</span></td>
               <td data-badge="bekliyor"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html?mlz=038" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
             <tr data-f="onaylandi" data-santiye="merkez">
-              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><b>MLZ-2026-037</b><span>20 Haziran 2026</span></div></div></td>
+              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><a class="tl-link" href="crm-satinalma-talep-detay.html?mlz=037">MLZ-2026-037</a><span>20 Haziran 2026</span></div></div></td>
               <td>Merkez Şantiye</td>
-              <td><span class="tl-desc">Çimento (50 torba) + kum-çakıl</span></td>
+              <td><a class="tl-desc" href="crm-satinalma-talep-detay.html?mlz=037">Çimento (50 torba) + kum-çakıl</a></td>
               <td>Ömer Taşkın</td>
               <td><span class="pri normal">Normal</span></td>
               <td data-badge="onaylandi"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html?mlz=037" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
             <tr data-f="onaylandi" data-santiye="vadi">
-              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><b>MLZ-2026-036</b><span>18 Haziran 2026</span></div></div></td>
+              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><a class="tl-link" href="crm-satinalma-talep-detay.html?mlz=036">MLZ-2026-036</a><span>18 Haziran 2026</span></div></div></td>
               <td>Vadi Konakları</td>
-              <td><span class="tl-desc">Boya malzemesi — iç cephe</span></td>
+              <td><a class="tl-desc" href="crm-satinalma-talep-detay.html?mlz=036">Boya malzemesi — iç cephe</a></td>
               <td>Hasan Demirci</td>
               <td><span class="pri normal">Normal</span></td>
               <td data-badge="onaylandi"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html?mlz=036" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
             <tr data-f="reddedildi" data-santiye="liman">
-              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><b>MLZ-2026-035</b><span>15 Haziran 2026</span></div></div></td>
+              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><a class="tl-link" href="crm-satinalma-talep-detay.html?mlz=035">MLZ-2026-035</a><span>15 Haziran 2026</span></div></div></td>
               <td>Liman Lojistik Merkezi</td>
-              <td><span class="tl-desc">Vinç halatı değişimi</span></td>
+              <td><a class="tl-desc" href="crm-satinalma-talep-detay.html?mlz=035">Vinç halatı değişimi</a></td>
               <td>Aylin Koç</td>
               <td><span class="pri acil">Acil</span></td>
               <td data-badge="reddedildi"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html?mlz=035" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
             <tr data-f="revize" data-santiye="vadi">
-              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><b>MLZ-2026-034</b><span>12 Haziran 2026</span></div></div></td>
+              <td><div class="tl-cell"><div class="tl-mark"><i class="fa-solid fa-boxes-stacked"></i></div><div class="tl-info"><a class="tl-link" href="crm-satinalma-talep-detay.html?mlz=034">MLZ-2026-034</a><span>12 Haziran 2026</span></div></div></td>
               <td>Vadi Konakları</td>
-              <td><span class="tl-desc">Cam ünitesi — B Blok pencere</span></td>
+              <td><a class="tl-desc" href="crm-satinalma-talep-detay.html?mlz=034">Cam ünitesi — B Blok pencere</a></td>
               <td>Hasan Demirci</td>
               <td><span class="pri normal">Normal</span></td>
               <td data-badge="revize"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-talep-detay.html?mlz=034" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
           </tbody>
         </table>

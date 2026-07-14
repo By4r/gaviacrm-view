@@ -162,7 +162,7 @@
         </div>
       </div>
       <div class="gc-body flush">
-        <table class="gtable" id="tblMst">
+        <table class="gtable" id="tblMst" data-paginate="25">
           <thead>
             <tr>
               <th>Müşteri</th>
@@ -448,6 +448,8 @@
     if(empty) empty.hidden = shown !== 0;
     var cntEl = card.querySelector('[data-table-count]');
     if(cntEl) cntEl.textContent = shown;
+    /* D17: sayfa-lokal bileşik filtre değişince pager sayfa 1'e döner (gvPager RB §5) */
+    gvPagerRefresh(tbl, true);
   }
 
   document.getElementById('fltKaynak').addEventListener('change', applyCompound);
