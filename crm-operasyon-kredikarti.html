@@ -35,15 +35,6 @@
 .kk-avail{font-size:12px;color:var(--ink-2);font-weight:600;margin-top:8px}
 .kk-ekstre{font-size:11px;color:var(--muted);margin-top:9px;padding-top:9px;border-top:1px solid var(--line);display:flex;align-items:center;gap:6px}
 
-/* "Tümü" seçeneği — kart karosuyla aynı sırada, sade */
-.kk-all{
-  background:var(--paper);border:1px dashed var(--line);border-radius:var(--r-lg);
-  display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
-  font-family:inherit;font-size:13px;font-weight:700;color:var(--muted);transition:.22s var(--ease);
-}
-.kk-all:hover{border-color:var(--acc-ink);color:var(--acc-ink)}
-.kk-all.is-on{border-style:solid;border-color:var(--acc-ink);color:var(--acc-ink);background:rgba(var(--acc-rgb),.06)}
-
 /* hareket tablosu */
 #tblKK{min-width:940px}
 .col-kart{width:170px}
@@ -242,10 +233,8 @@
         + '</button>';
   });
   strip.innerHTML = sh;
-  var allBtn = document.createElement('button');
-  allBtn.type = 'button'; allBtn.className = 'kk-all is-on'; allBtn.setAttribute('data-banka','hepsi');
-  allBtn.innerHTML = '<i class="fa-solid fa-layer-group"></i> Tümünü Göster';
-  strip.appendChild(allBtn);
+  /* [D17 Y15] "Tümünü Göster" karosu KALDIRILDI (Beyar, DK12) — banka-filtre sıfırlama
+     işini alttaki "Tümü" chip'i zaten yapıyor; kart şeridi salt kart seçicidir. */
 
   /* ---- hareket tablosu render ---- */
   var body = document.getElementById('kkBody');
@@ -290,8 +279,6 @@
     strip.querySelectorAll('.kk-card').forEach(function(c){
       if(c.getAttribute('data-banka') !== 'garanti') c.remove();
     });
-    var kkAll = strip.querySelector('.kk-all');
-    if(kkAll) kkAll.remove();   /* gösterecek başka kart yok — "Tümünü Göster" anlamsız */
     document.querySelectorAll('#tblKK tbody tr').forEach(function(tr){
       if(tr.getAttribute('data-banka') !== 'garanti') tr.remove();
     });
@@ -318,7 +305,7 @@
      chip'leri AYNI curBanka durumunu sürer, ikisi görsel olarak senkron tutulur ---- */
   var curBanka = 'hepsi', curDurum = 'hepsi';
   function syncBankaUI(){
-    strip.querySelectorAll('.kk-card,.kk-all').forEach(function(el){
+    strip.querySelectorAll('.kk-card').forEach(function(el){
       el.classList.toggle('is-on', el.getAttribute('data-banka') === curBanka);
     });
     document.querySelectorAll('#kkBankaChips .chip').forEach(function(ch){

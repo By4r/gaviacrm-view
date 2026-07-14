@@ -428,12 +428,13 @@
     if(!item.kaynak) return;
     document.getElementById('kaynakCard').hidden = false;
     var k = item.kaynak;
+    var mlzHref = 'crm-satinalma-talep-detay.html?mlz=' + k.no.slice(-3);
     var h = '';
     if(k.archived){
-      h += '<p class="gd-desc">' + k.no + ' — ' + k.desc + '</p>';
+      h += '<p class="gd-desc"><a href="' + mlzHref + '" title="Arşiv talep">' + k.no + '</a> — ' + k.desc + '</p>';
     } else {
       h += '<div class="rel-form"><div class="rel-ico"><i class="fa-solid fa-boxes-stacked"></i></div>'
-         + '<div class="rel-info"><a href="crm-satinalma-talep-detay.html">' + k.no + '</a><small>' + k.desc + '</small></div></div>';
+         + '<div class="rel-info"><a href="' + mlzHref + '">' + k.no + '</a><small>' + k.desc + '</small></div></div>';
       if(k.form){
         h += '<div class="rel-form"><div class="rel-ico"><i class="fa-solid fa-file-invoice"></i></div>'
            + '<div class="rel-info"><a href="' + k.form.href + '">' + k.form.no + '</a><small>Satın alma formu / teklif icmali</small></div></div>';
