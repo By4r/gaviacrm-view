@@ -60,6 +60,13 @@
 .post-ack.is-acked{color:var(--ok)}
 .post-ack.is-acked i{color:var(--ok)}
 
+/* kart → detay köprüsü — D18-T1 (SBL-2026-0## serisi). Kartın tamamı tıklanabilir
+   yapılmadı (post-ack butonuyla çakışmaması için); post-meta-l'e eklenen ayrı,
+   ince bir bağlantı satırı ile detay sayfasına gidilir. */
+.post-detail{font-size:12px;font-weight:700;color:var(--acc-ink);display:inline-flex;align-items:center;gap:6px}
+.post-detail:hover{color:var(--acc-deep)}
+.post-detail i{font-size:10px}
+
 /* sağ sütun: özet + şantiye lejantı */
 .leg-item{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:12.5px;color:var(--ink-2)}
 .leg-dot{width:11px;height:11px;border-radius:4px;flex:none}
@@ -111,7 +118,7 @@
         </div>
 
         <div id="feedList" class="feed-col">
-          <article class="post" data-santiye="vadi">
+          <article class="post" data-santiye="vadi" data-sbl="001">
             <div class="post-head">
               <div class="post-ava" style="background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)">HD</div>
               <div class="post-who"><b>Hasan Demirci</b><span>Şantiye Şefi · <a href="crm-santiye-detay.html">Vadi Konakları</a> · 2 Temmuz 2026, 09:40</span></div>
@@ -120,12 +127,12 @@
             <div class="post-photo photo-vadi"><i class="fa-solid fa-helmet-safety"></i><span class="post-tag"><i class="fa-solid fa-helmet-safety"></i> Yapı İlerlemesi</span></div>
             <div class="post-body"><p>B Blok temel betonu bugün tamamlandı, ekip 3. kat kalıp işine geçiyor. Döküm sırasında hava koşulları uygundu, numune küpleri laboratuvara gönderildi.</p></div>
             <div class="post-meta">
-              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 6 kişi gördü</span></div>
+              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 6 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=001">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
             </div>
           </article>
 
-          <article class="post" data-santiye="vadi">
+          <article class="post" data-santiye="vadi" data-sbl="002">
             <div class="post-head">
               <div class="post-ava" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">İS</div>
               <div class="post-who"><b>İbrahim Sönmez</b><span>Formen · <a href="crm-santiye-detay.html">Vadi Konakları</a> · 2 Temmuz 2026, 08:15</span></div>
@@ -134,12 +141,12 @@
             <div class="post-photo photo-vadi"><i class="fa-solid fa-bolt"></i><span class="post-tag"><i class="fa-solid fa-bolt"></i> Elektrik/Mekanik</span></div>
             <div class="post-body"><p>Zemin kat elektrik tesisatı döşemesi başladı, kablo kanalları B ve C aksında tamamlandı.</p></div>
             <div class="post-meta">
-              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 3 kişi gördü</span></div>
+              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 3 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=002">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
             </div>
           </article>
 
-          <article class="post" data-santiye="liman">
+          <article class="post" data-santiye="liman" data-sbl="003">
             <div class="post-head">
               <div class="post-ava" style="background:var(--info-tint);color:var(--info)">AK</div>
               <div class="post-who"><b>Aylin Koç</b><span>Şantiye Şefi · <a href="crm-santiye-detay.html">Liman Lojistik Merkezi</a> · 1 Temmuz 2026, 16:20</span></div>
@@ -148,12 +155,12 @@
             <div class="post-photo photo-liman"><i class="fa-solid fa-helmet-safety"></i><span class="post-tag"><i class="fa-solid fa-helmet-safety"></i> Yapı İlerlemesi</span></div>
             <div class="post-body"><p>Çelik konstrüksiyon montajı 3. modülde tamamlandı; vinç operasyonu güvenlik çemberi kapatılarak yürütüldü, kaza/ramak kala kaydı yok.</p></div>
             <div class="post-meta">
-              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 9 kişi gördü</span></div>
+              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 9 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=003">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
             </div>
           </article>
 
-          <article class="post" data-santiye="liman">
+          <article class="post" data-santiye="liman" data-sbl="004">
             <div class="post-head">
               <div class="post-ava" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">ŞA</div>
               <div class="post-who"><b>Şükrü Aslan</b><span>Formen · <a href="crm-santiye-detay.html">Liman Lojistik Merkezi</a> · 1 Temmuz 2026, 11:05</span></div>
@@ -162,12 +169,12 @@
             <div class="post-photo photo-liman"><i class="fa-solid fa-shield-halved"></i><span class="post-tag"><i class="fa-solid fa-shield-halved"></i> İSG</span></div>
             <div class="post-body"><p>Haftalık İSG toplantısı yapıldı; baret, emniyet kemeri ve iş ayakkabısı kontrolü tüm ekipte tamamlandı, eksik ekipman yok.</p></div>
             <div class="post-meta">
-              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 5 kişi gördü</span></div>
+              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 5 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=004">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
             </div>
           </article>
 
-          <article class="post" data-santiye="merkez">
+          <article class="post" data-santiye="merkez" data-sbl="005">
             <div class="post-head">
               <div class="post-ava" style="background:var(--warn-tint);color:var(--warn)">ÖT</div>
               <div class="post-who"><b>Ömer Taşkın</b><span>Şantiye Şefi · <a href="crm-santiye-detay.html">Merkez Şantiye</a> · 30 Haziran 2026, 14:50</span></div>
@@ -175,12 +182,12 @@
             <div class="post-photo photo-merkez"><i class="fa-solid fa-warehouse"></i><span class="post-tag"><i class="fa-solid fa-warehouse"></i> Atölye/Depo</span></div>
             <div class="post-body"><p>Atölye çatı kaplama işi yaklaşık %80 seviyesinde; kalan panel siparişi bu hafta içinde tamamlanacak.</p></div>
             <div class="post-meta">
-              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 4 kişi gördü</span></div>
+              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 4 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=005">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
             </div>
           </article>
 
-          <article class="post" data-santiye="merkez">
+          <article class="post" data-santiye="merkez" data-sbl="006">
             <div class="post-head">
               <div class="post-ava" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">RY</div>
               <div class="post-who"><b>Recep Yaman</b><span>Formen · <a href="crm-santiye-detay.html">Merkez Şantiye</a> · 30 Haziran 2026, 10:30</span></div>
@@ -188,12 +195,12 @@
             <div class="post-photo photo-merkez"><i class="fa-solid fa-truck-pickup"></i><span class="post-tag"><i class="fa-solid fa-truck-pickup"></i> Malzeme Teslimatı</span></div>
             <div class="post-body"><p>Yeni gelen kalıp kerestesi sahaya indirildi ve depo alanında istiflendi; irsaliye Satın Alma'ya iletildi.</p></div>
             <div class="post-meta">
-              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 2 kişi gördü</span></div>
+              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 2 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=006">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
             </div>
           </article>
 
-          <article class="post" data-santiye="liman">
+          <article class="post" data-santiye="liman" data-sbl="007">
             <div class="post-head">
               <div class="post-ava" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">MÇ</div>
               <div class="post-who"><b>Metin Çetin</b><span>Kaynakçı · <a href="crm-santiye-detay.html">Liman Lojistik Merkezi</a> · 29 Haziran 2026, 09:00</span></div>
@@ -201,12 +208,12 @@
             <div class="post-photo photo-liman"><i class="fa-solid fa-magnifying-glass"></i><span class="post-tag"><i class="fa-solid fa-magnifying-glass"></i> Kalite Kontrol</span></div>
             <div class="post-body"><p>Kaynak noktalarının kalite kontrolü tamamlandı; tutanak ve fotoğraflar ekte, revize gereken nokta çıkmadı.</p></div>
             <div class="post-meta">
-              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 3 kişi gördü</span></div>
+              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 3 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=007">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
             </div>
           </article>
 
-          <article class="post" data-santiye="vadi">
+          <article class="post" data-santiye="vadi" data-sbl="008">
             <div class="post-head">
               <div class="post-ava" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">RK</div>
               <div class="post-who"><b>Ramazan Kılıç</b><span>Kalıpçı · <a href="crm-santiye-detay.html">Vadi Konakları</a> · 28 Haziran 2026, 15:40</span></div>
@@ -214,7 +221,7 @@
             <div class="post-photo photo-vadi"><i class="fa-solid fa-helmet-safety"></i><span class="post-tag"><i class="fa-solid fa-helmet-safety"></i> Yapı İlerlemesi</span></div>
             <div class="post-body"><p>3. kat perde kalıbı kuruldu, demir donatı kontrolü için Teknik Müdür'ün onayı bekleniyor.</p></div>
             <div class="post-meta">
-              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 4 kişi gördü</span></div>
+              <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 4 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=008">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
             </div>
           </article>

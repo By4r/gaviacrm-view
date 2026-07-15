@@ -196,6 +196,19 @@ body{font-family:var(--font);color:var(--on-dark)}
   .pc-card-foot{padding:12px 16px}
   .pc-line-row{padding:13px 16px}
 }
+
+/* D18 Y7: gvNotFound kartı (ui.js) — açık zemin varsayılanını Platform Konsolu'nun
+   koyu zeminine uyarlar; .pc-card ile aynı yüzey/kenarlık, .btn-mint/.btn-ghost-dk ile
+   aynı buton dili (bkz. satır ~70-76) — ui.js'in ürettiği sabit sınıf adları üzerinden. */
+.pc-main .gv-notfound{background:var(--gv-night);border:1px solid var(--gv-border-dark);box-shadow:none}
+.pc-main .gv-notfound .nf-ico{background:rgba(255,255,255,.06);color:var(--gv-mint)}
+.pc-main .gv-notfound h2{color:#fff}
+.pc-main .gv-notfound p{color:var(--on-dark-mut)}
+.pc-main .gv-notfound .nf-code{color:var(--on-dark)}
+.pc-main .gv-notfound .btn-acc{background:var(--gv-mint);color:var(--gv-deep)}
+.pc-main .gv-notfound .btn-acc:hover{background:var(--gv-mint-bright)}
+.pc-main .gv-notfound .btn-ghost{background:transparent;color:var(--on-dark);border:1px solid var(--gv-border-dark)}
+.pc-main .gv-notfound .btn-ghost:hover{border-color:var(--gv-mint);color:#fff}
 </style>
 </head>
 <body>
@@ -513,9 +526,28 @@ var FIRMS = {
 };
 
 var q = new URLSearchParams(location.search);
-var key = q.get('firma');
-if(!FIRMS[key]) key = 'yapitas';
-var F = FIRMS[key];
+var rawFirma = q.get('firma');
+var key = rawFirma;
+if(!FIRMS[key]) key = rawFirma ? null : 'yapitas';
+var F = key && FIRMS[key];
+
+if(!F){
+  /* üst crumb/başlık (statik bake) korunur; sadece sekme çubuğu + panel gövdesi
+     kayıt-bulunamadı kartıyla değiştirilir — D18 Y7 */
+  var pcTabsEl = document.querySelector('.pc-tabs');
+  if(pcTabsEl) pcTabsEl.style.display = 'none';
+  Array.prototype.forEach.call(document.querySelectorAll('.pc-tab-panel'), function(p){ p.style.display = 'none'; });
+  var nfMount = document.createElement('div');
+  document.querySelector('.pc-main').appendChild(nfMount);
+  gvNotFound({
+    code: rawFirma ? rawFirma.toUpperCase() : null,
+    tur: 'firma',
+    listHref: 'gavia-firmalar.html', listLbl: 'Firmalara dön',
+    defHref: 'gavia-firma-detay.html', defLbl: 'Varsayılan kaydı aç',
+    mount: nfMount
+  });
+  return;
+}
 
 function esc(s){ return (s == null ? '' : String(s)); }
 

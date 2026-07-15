@@ -676,9 +676,20 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
   };
 
   var q = new URLSearchParams(location.search);
-  var key = q.get('mst');
-  if(!ITEMS[key]) key = '003';
-  var item = ITEMS[key];
+  var rawMst = q.get('mst');
+  var key = rawMst;
+  if(!ITEMS[key]) key = rawMst ? null : '003';
+  var item = key && ITEMS[key];
+
+  if(!item){
+    gvNotFound({
+      code: rawMst ? rawMst.toUpperCase() : null,
+      tur: 'müşteri',
+      listHref: 'crm-satis-musteriler.html', listLbl: 'Müşterilere dön',
+      defHref: 'crm-satis-musteri-detay.html', defLbl: 'Varsayılan kaydı aç'
+    });
+    return;
+  }
 
   function initials(name){
     var parts = name.replace(/&amp;.*$/, '').trim().split(/\s+/).filter(Boolean);

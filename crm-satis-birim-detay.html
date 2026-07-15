@@ -327,16 +327,25 @@
         iliski:[], teklifDurum:'satildi'
       };
     }
-    /* tanınmayan kod biçimi — güvenli genel varsayılan */
-    return {
-      proje:'Vadi Konakları', loc:'—', tip:'—', cephe:'—', brut:0, net:0, fiyat:0, durum:'satista',
-      musteri:null, surec:{tip:'yok'}, gecmis:[], iliski:[], teklifDurum:'aktif'
-    };
+    /* tanınmayan kod şeması — hiçbir VK/GE2/KO kalıbına uymuyor (D18 Y7: artık
+       sessiz genel-varsayılana değil, gvNotFound'a düşer) */
+    return null;
   }
 
   var q = new URLSearchParams(location.search);
-  var kod = (q.get('birim') || 'VK-B-11').toUpperCase();
+  var rawBirim = q.get('birim');
+  var kod = (rawBirim || 'VK-B-11').toUpperCase();
   var item = ITEMS[kod] || deriveFallback(kod);
+
+  if(!item){
+    gvNotFound({
+      code: rawBirim ? rawBirim.toUpperCase() : null,
+      tur: 'birim',
+      listHref: 'crm-satis-birimler.html', listLbl: 'Birimlere dön',
+      defHref: 'crm-satis-birim-detay.html', defLbl: 'Varsayılan kaydı aç'
+    });
+    return;
+  }
 
   document.title = kod + ' — Birim Detayı — Gavia CRM';
   document.getElementById('crumbNo').textContent = kod;

@@ -66,6 +66,28 @@
   .gv-site-bar{padding:10px 16px}
   .gv-site-bar select{flex:1;min-width:0;max-width:none}
 }
+
+/* ---- mobil görev kartları (640px altı — D18 Y17): #tblGorev ile aynı 'lines'
+   (burada: aynı tr kümesi) kaynağından üretilir, data-idx ile eşleşir ---- */
+.gr-mobile-list{display:none}
+.gr-mrow{padding:14px 18px;border-bottom:1px solid var(--line)}
+.gr-mrow:last-child{border-bottom:none}
+.gr-mrow[data-f="geciken"]{background:var(--danger-tint)}
+.gr-mrow[data-f="geciken"]{box-shadow:inset 3px 0 0 var(--danger)}
+.gr-mrow-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:4px}
+.gr-mrow-top .task-link{flex:1}
+.gr-mrow-code{font-size:11.5px;color:var(--muted);margin-bottom:8px}
+.gr-mrow-meta{display:flex;flex-wrap:wrap;align-items:center;gap:7px 12px;margin-bottom:10px;font-size:12px;color:var(--muted)}
+.gr-mrow-site{display:inline-flex;align-items:center;gap:6px}
+.gr-mrow-site i{font-size:10.5px;color:var(--line-2)}
+.gr-mrow-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.gr-mrow-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gr-mrow-acts{display:flex;align-items:center;gap:8px}
+.gr-mrow-acts .ia-btn{width:36px;height:36px}
+@media(max-width:640px){
+  #tblGorev{display:none}
+  .gr-mobile-list{display:block}
+}
 </style>
 </head>
 <body data-sec="gorev">
@@ -392,6 +414,7 @@
             </tr>
           </tbody>
         </table>
+        <div class="gr-mobile-list" id="grMobileList"></div>
         <div class="gv-empty" data-table-empty hidden>
           <div class="ge-ico"><i class="fa-solid fa-list-check"></i></div>
           <h4>Bu görünümde görev yok</h4>
@@ -461,6 +484,114 @@
     var card = tbl.closest('.gv-card');
     var empty = card && card.querySelector('[data-table-empty]');
     if(empty) empty.hidden = shown !== 0;
+    syncCardVisibility();
+  }
+
+  /* ---- mobil kart listesi (D18 Y17): masaüstü #tblGorev ile aynı tr kümesinden
+     üretilir — tek veri modeli (portal-odemeler .tks-mrow deseni). Pager YOK burada
+     (D17 kararı: görünüm zaten ≤7 satırla sınırlı), bu yüzden senkron gvpage event'i
+     değil doğrudan applyCompound() sonunda syncCardVisibility() ile yapılır. data-idx
+     data-label YERİNE eşleşme anahtarıdır; her tr'ye buildCards()'ta atanır. ---- */
+  function buildCards(){
+    var tbody = document.querySelector('#tblGorev tbody');
+    var list = document.getElementById('grMobileList');
+    if(!tbody || !list) return;
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+    list.innerHTML = '';
+    rows.forEach(function(tr, idx){
+      tr.setAttribute('data-idx', idx);
+      var card = document.createElement('div');
+      card.className = 'gr-mrow';
+      card.setAttribute('data-f', tr.getAttribute('data-f') || '');
+      card.setAttribute('data-idx', idx);
+      card.hidden = tr.hidden;
+
+      var top = document.createElement('div'); top.className = 'gr-mrow-top';
+      var titleA = tr.querySelector('.task-link');
+      if(titleA){
+        var a = document.createElement('a');
+        a.className = 'task-link'; a.href = titleA.getAttribute('href'); a.textContent = titleA.textContent;
+        top.appendChild(a);
+      }
+      var pri = tr.querySelector('.gpri');
+      if(pri) top.appendChild(pri.cloneNode(true));
+      card.appendChild(top);
+
+      var codeEl = tr.querySelector('.gcell-sub');
+      if(codeEl){
+        var code = document.createElement('div'); code.className = 'gr-mrow-code'; code.textContent = codeEl.textContent;
+        card.appendChild(code);
+      }
+
+      var meta = document.createElement('div'); meta.className = 'gr-mrow-meta';
+      var site = document.createElement('span'); site.className = 'gr-mrow-site';
+      site.innerHTML = '<i class="fa-solid fa-helmet-safety"></i>';
+      site.appendChild(document.createTextNode(' ' + (tr.children[1] ? tr.children[1].textContent.trim() : '—')));
+      meta.appendChild(site);
+      var chain = tr.querySelector('.assign-chain');
+      if(chain) meta.appendChild(chain.cloneNode(true));
+      card.appendChild(meta);
+
+      var bottom = document.createElement('div'); bottom.className = 'gr-mrow-bottom';
+      var status = document.createElement('div'); status.className = 'gr-mrow-status';
+      var due = tr.querySelector('.due-cell');
+      if(due) status.appendChild(due.cloneNode(true));
+      var statTd = tr.children[5];
+      var stat = statTd ? statTd.querySelector('.gstat') : null;
+      if(stat) status.appendChild(stat.cloneNode(true));
+      bottom.appendChild(status);
+
+      var acts = document.createElement('div'); acts.className = 'gr-mrow-acts';
+      var claimBtn = tr.querySelector('[data-claim]');
+      if(claimBtn){
+        var cb = document.createElement('button');
+        cb.type = 'button'; cb.className = 'btn btn-ghost btn-sm';
+        cb.setAttribute('data-no-confirm', '');
+        cb.setAttribute('data-claim-proxy', claimBtn.getAttribute('data-claim'));
+        cb.innerHTML = '<i class="fa-solid fa-hand"></i> Üzerime Al';
+        acts.appendChild(cb);
+      }
+      var iaBtn = tr.querySelector('.ia-btn');
+      if(iaBtn){
+        var ia = document.createElement('a');
+        ia.className = 'ia-btn'; ia.href = iaBtn.getAttribute('href');
+        ia.setAttribute('data-no-confirm', ''); ia.setAttribute('aria-label', 'Görev detayı');
+        ia.innerHTML = '<i class="fa-solid fa-arrow-up-right-from-square"></i>';
+        acts.appendChild(ia);
+      }
+      bottom.appendChild(acts);
+      card.appendChild(bottom);
+
+      list.appendChild(card);
+    });
+    bindCardClaimProxies();
+  }
+  /* kart "Üzerime Al" butonu ayrı iş mantığı YÜRÜTMEZ — masaüstü satırının asıl
+     data-claim butonuna tıklamayı devreder (confirm modal + localStorage kalıcılığı
+     tek yerde: bindClaimButtons/applyClaim, iş mantığına dokunulmaz) */
+  function bindCardClaimProxies(){
+    document.querySelectorAll('[data-claim-proxy]').forEach(function(btn){
+      if(btn._bound) return;
+      btn._bound = true;
+      btn.addEventListener('click', function(){
+        var slug = btn.getAttribute('data-claim-proxy');
+        var trBtn = document.querySelector('[data-claim="' + slug + '"]');
+        if(trBtn) trBtn.click();
+      });
+    });
+  }
+  /* filtre/arama/şantiye değişince içerik aynı kalır, sadece görünürlük eşitlenir —
+     data-idx üzerinden tr.hidden → card.hidden aktarımı (portal-odemeler gvpage deseni) */
+  function syncCardVisibility(){
+    var tbody = document.querySelector('#tblGorev tbody');
+    var list = document.getElementById('grMobileList');
+    if(!tbody || !list) return;
+    Array.prototype.forEach.call(tbody.querySelectorAll('tr'), function(tr){
+      var idx = tr.getAttribute('data-idx');
+      if(idx === null) return;
+      var card = list.querySelector('.gr-mrow[data-idx="' + idx + '"]');
+      if(card) card.hidden = tr.hidden;
+    });
   }
   /* ---- görev havuzu: "Üzerime Al" — localStorage(gv_gorev_claims) kalıcılık simülasyonu ---- */
   var CLAIM_KEY = 'gv_gorev_claims';
@@ -505,6 +636,7 @@
             recomputeCounts();
             updateSub(document.body.dataset.screen || 'bana');
             applyCompound();
+            buildCards();   /* içerik değişti (data-f/atanan/durum) — mobil kart yeniden üretilir */
             if(GV.syncGorevBadges) GV.syncGorevBadges();   /* D15: menü Havuz/Bana rozeti anında düşer */
           }
         });
@@ -531,6 +663,7 @@
       var sub = document.querySelector('.ph-sub');
       if(sub){ sub.textContent = 'Yalnızca size verilen ve sizin tamamladığınız görevler görünür.'; sub.dataset.locked = '1'; }
     }
+    buildCards();   /* rol budaması (tr.remove) SONRASI — kalan tr kümesinden kart üretilir */
     recomputeCounts();
 
     /* şantiye filtresi — durum chip'leriyle bileşik (AND), rozet + özet senkronu */

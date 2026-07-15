@@ -248,9 +248,21 @@
   };
 
   var q = new URLSearchParams(location.search);
-  var no = (q.get('tkf') || '003').replace(/\D/g, '').padStart(3, '0');
+  var rawTkf = q.get('tkf');
+  var no = (rawTkf || '003').replace(/\D/g, '').padStart(3, '0');
   var item = ITEMS[no] || ITEMS['003'];
-  if(!ITEMS[no]) no = '003';
+  if(!ITEMS[no]){
+    if(rawTkf){
+      gvNotFound({
+        code: rawTkf.toUpperCase(),
+        tur: 'teklif',
+        listHref: 'crm-satis-teklifler.html', listLbl: 'Tekliflere dön',
+        defHref: 'crm-satis-teklif-detay.html', defLbl: 'Varsayılan kaydı aç'
+      });
+      return;
+    }
+    no = '003';
+  }
 
   document.title = 'TKF-2026-' + no + ' — Teklif Detayı — Gavia CRM';
   document.getElementById('crumbNo').textContent = 'TKF-2026-' + no;

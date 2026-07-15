@@ -47,6 +47,12 @@
   .log-row{flex-wrap:wrap}
   .log-time{order:-1;width:calc(100% - 49px);margin:0 0 -6px 49px}
 }
+
+/* ?log= satır hedefleme (D18-B1) — kalıcı vurgu + tek seferlik flaş, portal-odemeler
+   .tks-table tr.is-target/.is-flash emsalinin log-row (flex div) uyarlaması */
+.log-row.is-target{background:rgba(var(--acc-rgb),.1);box-shadow:inset 3px 0 0 var(--acc)}
+.log-row.is-flash{animation:hedefVurgu 2s ease-out 1}
+@keyframes hedefVurgu{0%,30%{background:rgba(var(--acc-rgb),.22)}}
 </style>
 </head>
 <body data-sec="ayarlar" data-screen="log">
@@ -166,7 +172,7 @@
         <div class="log-row" data-day="d0" data-mod="satinalma" data-user="Baran Yıldız" data-type="kayit">
           <div class="log-ico"><i class="fa-solid fa-file-invoice"></i></div>
           <div class="log-body">
-            <div class="log-line"><b>Baran Yıldız</b> <a href="crm-satinalma-form-detay.html">SAT-2026-018</a> icmalini GM onayına gönderdi (₺742.300)</div>
+            <div class="log-line"><b>Baran Yıldız</b> <a href="crm-satinalma-form-detay.html?form=018">SAT-2026-018</a> icmalini GM onayına gönderdi (₺742.300)</div>
             <div class="log-meta"><span class="lm-mod">Satın Alma</span><span>LOG-2026-0832</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
           </div>
           <span class="log-time">15:52</span>
@@ -174,7 +180,7 @@
         <div class="log-row" data-day="d0" data-mod="satinalma" data-user="Baran Yıldız" data-type="kayit">
           <div class="log-ico"><i class="fa-solid fa-scale-balanced"></i></div>
           <div class="log-body">
-            <div class="log-line"><b>Baran Yıldız</b> <a href="crm-satinalma-form-detay.html">SAT-2026-018</a> icmalinde <b>Deta Demir Çelik</b> teklifini seçti — gerekçe: tek elden montaj + 60 gün vade</div>
+            <div class="log-line"><b>Baran Yıldız</b> <a href="crm-satinalma-form-detay.html?form=018">SAT-2026-018</a> icmalinde <b>Deta Demir Çelik</b> teklifini seçti — gerekçe: tek elden montaj + 60 gün vade</div>
             <div class="log-meta"><span class="lm-mod">Satın Alma</span><span>LOG-2026-0831</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
           </div>
           <span class="log-time">15:45</span>
@@ -182,7 +188,7 @@
         <div class="log-row" data-day="d0" data-mod="hakedis" data-user="Elif Sarıkaya" data-type="kayit">
           <div class="log-ico info"><i class="fa-solid fa-file-signature"></i></div>
           <div class="log-body">
-            <div class="log-line"><b>Elif Sarıkaya</b> <a href="crm-finans-hakedis-detay.html">HKD-2026-006</a> hakedişine işveren takip notu ekledi (Körfez GYO · 12 gündür onayda)</div>
+            <div class="log-line"><b>Elif Sarıkaya</b> <a href="crm-finans-hakedis-detay.html?hkd=006">HKD-2026-006</a> hakedişine işveren takip notu ekledi (Körfez GYO · 12 gündür onayda)</div>
             <div class="log-meta"><span class="lm-mod">Hakediş</span><span>LOG-2026-0830</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
           </div>
           <span class="log-time">14:20</span>
@@ -206,7 +212,7 @@
         <div class="log-row" data-day="d0" data-mod="kasa" data-user="Hasan Demirci" data-type="kayit">
           <div class="log-ico warn"><i class="fa-solid fa-cash-register"></i></div>
           <div class="log-body">
-            <div class="log-line"><b>Hasan Demirci</b> <a href="crm-operasyon-kasa-detay.html">KSA-2026-021</a> kasa giderini onaya gönderdi (nakliye + işçilik avansı · ₺18.400)</div>
+            <div class="log-line"><b>Hasan Demirci</b> <a href="crm-operasyon-kasa-detay.html?ks=ksa-021">KSA-2026-021</a> kasa giderini onaya gönderdi (nakliye + işçilik avansı · ₺18.400)</div>
             <div class="log-meta"><span class="lm-mod">Kasa</span><span>LOG-2026-0827</span><span class="lm-sep">·</span><span>31.155.xx.xx · Chrome, Android</span></div>
           </div>
           <span class="log-time">10:05</span>
@@ -291,7 +297,7 @@
         <div class="log-row" data-day="d1" data-mod="kasa" data-user="Elif Sarıkaya" data-type="onay">
           <div class="log-ico ok"><i class="fa-solid fa-check"></i></div>
           <div class="log-body">
-            <div class="log-line"><b>Elif Sarıkaya</b> <a href="crm-operasyon-kasa-detay.html">KSA-2026-020</a> kasa giderini onayladı (Liman Lojistik · ₺9.750)</div>
+            <div class="log-line"><b>Elif Sarıkaya</b> <a href="crm-operasyon-kasa-detay.html?ks=ksa-020">KSA-2026-020</a> kasa giderini onayladı (Liman Lojistik · ₺9.750)</div>
             <div class="log-meta"><span class="lm-mod">Kasa</span><span>LOG-2026-0817</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
           </div>
           <span class="log-time">15:20</span>
@@ -351,7 +357,7 @@
         <div class="log-row" data-day="d2" data-mod="kasa" data-user="Murat Denizli" data-type="red">
           <div class="log-ico danger"><i class="fa-solid fa-xmark"></i></div>
           <div class="log-body">
-            <div class="log-line"><b>Murat Denizli</b> <a href="crm-operasyon-kasa-detay.html">KSA-2026-017</a> kasa giderini reddetti — "vinç operatörü ödemesi taşeron kapsamında" (₺4.500)</div>
+            <div class="log-line"><b>Murat Denizli</b> <a href="crm-operasyon-kasa-detay.html?ks=ksa-017">KSA-2026-017</a> kasa giderini reddetti — "vinç operatörü ödemesi taşeron kapsamında" (₺4.500)</div>
             <div class="log-meta"><span class="lm-mod">Kasa</span><span>LOG-2026-0810</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
           </div>
           <span class="log-time">17:05</span>
@@ -359,7 +365,7 @@
         <div class="log-row" data-day="d2" data-mod="kasa" data-user="Nesrin Aydın" data-type="red">
           <div class="log-ico warn"><i class="fa-solid fa-rotate-left"></i></div>
           <div class="log-body">
-            <div class="log-line"><b>Nesrin Aydın</b> <a href="crm-operasyon-kasa-detay.html">KSA-2026-016</a> için revize istedi — "yol/yemek fişleri eksik" (₺3.150)</div>
+            <div class="log-line"><b>Nesrin Aydın</b> <a href="crm-operasyon-kasa-detay.html?ks=ksa-016">KSA-2026-016</a> için revize istedi — "yol/yemek fişleri eksik" (₺3.150)</div>
             <div class="log-meta"><span class="lm-mod">Kasa</span><span>LOG-2026-0809</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
           </div>
           <span class="log-time">16:20</span>
@@ -494,6 +500,63 @@
   [selUser, selType, selDay].forEach(function(s){ s.addEventListener('change', apply); });
   search.addEventListener('input', apply);
   apply();
+})();
+
+/* ============ D18-B1: ?log= satır hedefleme ============
+   Emsal: portal-odemeler.html #tks-next hash-hedef deseni (satır ~264-330), hash yerine
+   query param'a uyarlandı. #logList için sayfanın kendi script'inde açık bir gvPager(...)
+   çağrısı YOK — kurulum ui.js'in wireTables'ı DOMContentLoaded'da otomatik yapıyor. Bu
+   yüzden hedefleme mantığı da KENDİ DOMContentLoaded listener'ında çalışır: script tag
+   sırası (shell.js → ui.js → bu inline script) DOMContentLoaded listener kayıt sırasını
+   belirler, dolayısıyla ui.js'in wireTables'ı HER ZAMAN bizden önce çalışır — gvPager
+   kurulumu bittiğinde biz devreye gireriz. ?log= sabit kaldığı için hashchange dinlemeye
+   gerek yok, sayfa yüklemesinde bir kere çalışması yeterli. */
+(function(){
+  var logNo = new URLSearchParams(location.search).get('log');
+  if(!logNo) return;
+
+  function hedefSatir(){
+    var hedefMeta = 'LOG-2026-' + logNo;
+    var metas = document.querySelectorAll('#logList .log-meta');
+    for(var i = 0; i < metas.length; i++){
+      var spans = metas[i].querySelectorAll('span');
+      for(var j = 0; j < spans.length; j++){
+        if(spans[j].textContent.trim() === hedefMeta) return metas[i].closest('.log-row');
+      }
+    }
+    return null;
+  }
+
+  /* hedef satır o an aktif pager sayfasında değilse (.gv-pg-hide taşıyorsa), gv-pager
+     nav'ındaki doğru sayfa butonuna programatik tıklama ile atla — portal-odemeler'deki
+     hedefSayfayaAtla() deseninin birebir uyarlaması. Sayfa atlaması flaş/scroll'dan ÖNCE
+     çalışmalı; aksi halde satır hâlâ gv-pg-hide iken kaydırma atlanır. */
+  function hedefSayfayaAtla(row){
+    if(!row.classList.contains('gv-pg-hide')) return;
+    var list = document.getElementById('logList');
+    var pgNav = document.querySelector('.gv-pager');
+    if(!list || !pgNav) return;
+    var size = parseInt(list.getAttribute('data-paginate'), 10) || 25;
+    var visRows = Array.prototype.filter.call(list.querySelectorAll('.log-row'), function(r){ return !r.hidden; });
+    var idx = visRows.indexOf(row);
+    if(idx === -1) return;
+    var hedefSayfa = Math.floor(idx / size) + 1;
+    var btn = pgNav.querySelector('[data-pg="' + hedefSayfa + '"]');
+    if(btn) btn.click();
+  }
+
+  function hedefeGit(){
+    var row = hedefSatir();
+    if(!row) return;
+    hedefSayfayaAtla(row);
+    row.classList.add('is-target');
+    void row.offsetWidth;
+    row.classList.add('is-flash');
+    row.scrollIntoView({ block: 'center' });
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hedefeGit);
+  else hedefeGit();
 })();
 </script>
 </body>

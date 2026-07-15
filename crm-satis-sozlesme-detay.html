@@ -378,9 +378,20 @@
   };
 
   var q = new URLSearchParams(location.search);
-  var key = q.get('ssz');
-  if(!ITEMS[key]) key = '2026-003';
-  var item = ITEMS[key];
+  var rawSsz = q.get('ssz');
+  var key = rawSsz;
+  if(!ITEMS[key]) key = rawSsz ? null : '2026-003';
+  var item = key && ITEMS[key];
+
+  if(!item){
+    gvNotFound({
+      code: rawSsz ? rawSsz.toUpperCase() : null,
+      tur: 'sözleşme',
+      listHref: 'crm-satis-sozlesmeler.html', listLbl: 'Sözleşmelere dön',
+      defHref: 'crm-satis-sozlesme-detay.html', defLbl: 'Varsayılan kaydı aç'
+    });
+    return;
+  }
 
   function payRow(no, aciklama, tutar, vade, durum, durumLbl){
     return '<tr><td class="no-col">'+no+'</td><td>'+aciklama+'</td><td class="num">'+tl(tutar)+'</td><td>'+vade+'</td>'

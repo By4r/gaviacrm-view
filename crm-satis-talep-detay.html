@@ -369,9 +369,20 @@
   };
 
   var q = new URLSearchParams(location.search);
-  var key = q.get('sst');
-  if(!ITEMS[key]) key = '007';
-  var item = ITEMS[key];
+  var rawSst = q.get('sst');
+  var key = rawSst;
+  if(!ITEMS[key]) key = rawSst ? null : '007';
+  var item = key && ITEMS[key];
+
+  if(!item){
+    gvNotFound({
+      code: rawSst ? rawSst.toUpperCase() : null,
+      tur: 'talep',
+      listHref: 'crm-satis-talepler.html', listLbl: 'Taleplere dön',
+      defHref: 'crm-satis-talep-detay.html', defLbl: 'Varsayılan kaydı aç'
+    });
+    return;
+  }
 
   function renderComments(){
     var wrap = document.getElementById('cmtList');

@@ -397,9 +397,20 @@
   };
 
   var q = new URLSearchParams(location.search);
-  var key = q.get('frs');
-  if(!ITEMS[key]) key = '005';
-  var item = ITEMS[key];
+  var rawFrs = q.get('frs');
+  var key = rawFrs;
+  if(!ITEMS[key]) key = rawFrs ? null : '005';
+  var item = key && ITEMS[key];
+
+  if(!item){
+    gvNotFound({
+      code: rawFrs ? rawFrs.toUpperCase() : null,
+      tur: 'fırsat',
+      listHref: 'crm-satis-pipeline.html', listLbl: 'Fırsatlara dön',
+      defHref: 'crm-satis-firsat-detay.html', defLbl: 'Varsayılan kaydı aç'
+    });
+    return;
+  }
 
   function render(){
     document.title = item.no + ' — Fırsat Detayı — Gavia CRM';
