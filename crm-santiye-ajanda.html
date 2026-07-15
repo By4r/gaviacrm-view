@@ -216,6 +216,18 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
 @media(prefers-reduced-motion:reduce){
   .tg-ev,.adp,.mn-bar,.evw,.ajd-seg button,.mini-d{transition:none}
 }
+
+/* ============ JS'siz Gün-Listesi Fallback (D18-B1, Beyar kararı) ============
+   JS-off ortamda haftalık zaman ızgarası yerine BUGÜNÜN (2 Temmuz) olay listesi
+   statik gömülüdür; JS yüklenince #ajdView.innerHTML renderAll() ile zaten ezilir
+   (mount devralması, kod değişikliği gerekmez). Mevcut .tg-ev/.tg-evtop/.tg-ico/
+   .tg-time/.tg-ttl/.tg-meta idiyomu AYNEN kullanılır — yeni component yok; yalnız
+   dikey liste akışı (position:static) ve meta görünürlüğü burada eklenir. */
+.ajd-fallback{padding:16px 18px 18px;display:flex;flex-direction:column;gap:10px}
+.ajd-fallback-day{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--muted);padding-bottom:2px}
+.ajd-fallback-day i{color:var(--acc-ink);font-size:12px}
+.ajd-fallback .tg-ev{position:static;height:auto;padding:9px 14px 8px 10px}
+.ajd-fallback .tg-meta{display:block;margin-top:3px}
 </style>
 </head>
 <body data-sec="santiye" data-screen="ajanda">
@@ -243,7 +255,7 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
       <div>
         <div class="ph-eyebrow">Saha</div>
         <h1>İş Programı</h1>
-        <div class="ph-sub" id="ajdSub">Yükleniyor…</div>
+        <div class="ph-sub" id="ajdSub">7 etkinlik · 29 Haziran – 5 Temmuz 2026</div>
       </div>
       <div class="ph-actions">
         <div class="ajd-add-wrap">
@@ -269,21 +281,33 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
             <button type="button" class="btn btn-ghost btn-sm" id="ajdToday" data-no-confirm>Bugün</button>
             <button class="ia-btn" id="ajdPrev" aria-label="Önceki" data-no-confirm><i class="fa-solid fa-chevron-left"></i></button>
             <button class="ia-btn" id="ajdNext" aria-label="Sonraki" data-no-confirm><i class="fa-solid fa-chevron-right"></i></button>
-            <div class="ajd-tt"><b id="ajdTitleBig">—</b><span id="ajdTitleSub">—</span></div>
+            <div class="ajd-tt"><b id="ajdTitleBig">Haziran – Temmuz 2026</b><span id="ajdTitleSub">29 Haziran – 5 Temmuz 2026</span></div>
             <div class="ajd-seg" role="group" aria-label="Görünüm seçimi">
               <button type="button" data-view="gun" data-no-confirm>Gün</button>
               <button type="button" data-view="hafta" class="is-on" data-no-confirm>Hafta</button>
               <button type="button" data-view="ay" data-no-confirm>Ay</button>
             </div>
           </div>
-          <div id="ajdView"></div>
+          <div id="ajdView"><div class="ajd-fallback" id="ajdFallbackList">
+            <div class="ajd-fallback-day"><i class="fa-regular fa-calendar-check"></i> Bugün — 2 Temmuz 2026, Perşembe</div>
+            <a class="tg-ev" style="--evc:var(--ok);--evt:var(--ok-tint)" href="crm-finans-hakedis-detay.html" title="14:00 · Hakediş — HKD-2026-006 işveren onay takibi — Körfez GYO — Vadi Konakları — Gönderildi 20 Haz · Elif Sarıkaya, Selin Aydemir">
+              <span class="tg-evtop"><i class="fa-solid fa-file-invoice-dollar tg-ico"></i><span class="tg-time">14:00</span></span>
+              <span class="tg-ttl">HKD-2026-006 işveren onay takibi — Körfez GYO</span>
+              <span class="tg-meta">Vadi Konakları · Gönderildi 20 Haz · Elif Sarıkaya, Selin Aydemir</span>
+            </a>
+            <div class="tg-ev" style="--evc:var(--ink-2);--evt:color-mix(in srgb,var(--ink-2) 9%,var(--paper))" title="16:00 · Toplantı — Haftalık saha koordinasyon toplantısı — Liman Lojistik Merkezi — Murat Denizli">
+              <span class="tg-evtop"><i class="fa-solid fa-people-arrows tg-ico"></i><span class="tg-time">16:00</span></span>
+              <span class="tg-ttl">Haftalık saha koordinasyon toplantısı</span>
+              <span class="tg-meta">Liman Lojistik Merkezi · Murat Denizli</span>
+            </div>
+          </div></div>
         </div>
       </div>
 
       <aside class="ajd-side">
         <div class="gv-card ajd-mini">
           <div class="ajd-sidehead"><i class="fa-regular fa-calendar"></i> Temmuz 2026</div>
-          <div class="mini-grid" id="miniGrid"></div>
+          <div class="mini-grid" id="miniGrid"><div class="mini-dow">Pt</div><div class="mini-dow">Sa</div><div class="mini-dow">Ça</div><div class="mini-dow">Pe</div><div class="mini-dow">Cu</div><div class="mini-dow">Ct</div><div class="mini-dow">Pa</div><button type="button" class="mini-d is-out in-week" data-wk="0" data-gi="0" data-no-confirm>29</button><button type="button" class="mini-d is-out in-week" data-wk="0" data-gi="1" data-no-confirm>30</button><button type="button" class="mini-d in-week" data-wk="0" data-gi="2" data-no-confirm>1</button><button type="button" class="mini-d is-today in-week" data-wk="0" data-gi="3" data-no-confirm>2</button><button type="button" class="mini-d in-week" data-wk="0" data-gi="4" data-no-confirm>3</button><button type="button" class="mini-d in-week" data-wk="0" data-gi="5" data-no-confirm>4</button><button type="button" class="mini-d in-week" data-wk="0" data-gi="6" data-no-confirm>5</button><button type="button" class="mini-d" data-wk="1" data-gi="0" data-no-confirm>6</button><button type="button" class="mini-d" data-wk="1" data-gi="1" data-no-confirm>7</button><button type="button" class="mini-d" data-wk="1" data-gi="2" data-no-confirm>8</button><button type="button" class="mini-d" data-wk="1" data-gi="3" data-no-confirm>9</button><button type="button" class="mini-d" data-wk="1" data-gi="4" data-no-confirm>10</button><button type="button" class="mini-d" data-wk="1" data-gi="5" data-no-confirm>11</button><button type="button" class="mini-d" data-wk="1" data-gi="6" data-no-confirm>12</button><button type="button" class="mini-d is-off" disabled data-no-confirm>13</button><button type="button" class="mini-d is-off" disabled data-no-confirm>14</button><button type="button" class="mini-d is-off" disabled data-no-confirm>15</button><button type="button" class="mini-d is-off" disabled data-no-confirm>16</button><button type="button" class="mini-d is-off" disabled data-no-confirm>17</button><button type="button" class="mini-d is-off" disabled data-no-confirm>18</button><button type="button" class="mini-d is-off" disabled data-no-confirm>19</button><button type="button" class="mini-d is-off" disabled data-no-confirm>20</button><button type="button" class="mini-d is-off" disabled data-no-confirm>21</button><button type="button" class="mini-d is-off" disabled data-no-confirm>22</button><button type="button" class="mini-d is-off" disabled data-no-confirm>23</button><button type="button" class="mini-d is-off" disabled data-no-confirm>24</button><button type="button" class="mini-d is-off" disabled data-no-confirm>25</button><button type="button" class="mini-d is-off" disabled data-no-confirm>26</button><button type="button" class="mini-d is-off" disabled data-no-confirm>27</button><button type="button" class="mini-d is-off" disabled data-no-confirm>28</button><button type="button" class="mini-d is-off" disabled data-no-confirm>29</button><button type="button" class="mini-d is-off" disabled data-no-confirm>30</button><button type="button" class="mini-d is-off" disabled data-no-confirm>31</button><button type="button" class="mini-d is-out is-off" disabled data-no-confirm>1</button><button type="button" class="mini-d is-out is-off" disabled data-no-confirm>2</button></div>
         </div>
         <div class="gv-card ajd-layers" id="lyrCard">
           <button type="button" class="ajd-sidehead" id="lyrToggle" data-no-confirm aria-expanded="false">

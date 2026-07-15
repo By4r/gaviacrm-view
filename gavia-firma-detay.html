@@ -218,13 +218,21 @@ body{font-family:var(--font);color:var(--on-dark)}
   </header>
 
   <main class="pc-main">
-    <div class="pc-crumb"><a href="gavia-firmalar.html">Firmalar</a> <i class="fa-solid fa-chevron-right" style="font-size:9px"></i> <span id="fCrumb">—</span></div>
+    <!-- statik bake — DEFAULT firma (yapitas, FIRMS map verbatim); JS yüklenince
+         ?firma= parametresine göre aynı mount'lar innerHTML/textContent ile ezilir — D18-B1 -->
+    <div class="pc-crumb"><a href="gavia-firmalar.html">Firmalar</a> <i class="fa-solid fa-chevron-right" style="font-size:9px"></i> <span id="fCrumb">Yapıtaş İnşaat A.Ş.</span></div>
 
     <div class="pc-fhead">
-      <div class="pc-fmark" id="fMark">—</div>
+      <div class="pc-fmark" id="fMark">Y</div>
       <div>
-        <h1 class="pc-fname" id="fName">—</h1>
-        <div class="pc-fmeta" id="fMeta"></div>
+        <h1 class="pc-fname" id="fName">Yapıtaş İnşaat A.Ş.</h1>
+        <div class="pc-fmeta" id="fMeta">
+          <span class="tier paid"><i class="fa-solid fa-gem"></i> Professional</span>
+          <span class="gstat ok">Aktif</span>
+          <span>14 aydır müşteri</span>
+          <span>·</span>
+          <span>18 kullanıcı</span>
+        </div>
       </div>
     </div>
 
@@ -237,12 +245,132 @@ body{font-family:var(--font);color:var(--on-dark)}
       <button class="pc-tab" data-tab="moduller" role="tab" aria-selected="false"><i class="fa-solid fa-puzzle-piece"></i> Modüller</button>
     </div>
 
-    <section class="pc-tab-panel" data-panel="genel"></section>
-    <section class="pc-tab-panel" data-panel="paket" hidden></section>
-    <section class="pc-tab-panel" data-panel="alt" hidden></section>
-    <section class="pc-tab-panel" data-panel="kullanim" hidden></section>
-    <section class="pc-tab-panel" data-panel="fatura" hidden></section>
-    <section class="pc-tab-panel" data-panel="moduller" hidden></section>
+    <!-- 6 panel: statik bake — DEFAULT firma (yapitas, FIRMS map verbatim); JS
+         yüklenince aynı [data-panel] mount innerHTML ile ezilir — D18-B1 (B-006) -->
+    <section class="pc-tab-panel" data-panel="genel">
+      <div class="pc-grid-2">
+        <div class="pc-card">
+          <div class="pc-card-head"><div class="pc-card-title"><i class="fa-solid fa-building-user"></i> Resmi Bilgiler</div></div>
+          <div class="pc-card-body">
+            <div class="pc-fields">
+              <div class="pc-fitem full" style="grid-column:1/-1"><b>Unvan</b><span>Yapıtaş İnşaat A.Ş.</span></div>
+              <div class="pc-fitem"><b>Vergi dairesi</b><span>Ümraniye VD</span></div>
+              <div class="pc-fitem"><b>Vergi no</b><span>935 041 7768</span></div>
+              <div class="pc-fitem"><b>Ticaret sicil no</b><span>İST-254891</span></div>
+              <div class="pc-fitem"><b>MERSİS no</b><span>0935 0417 7680 0015</span></div>
+              <div class="pc-fitem" style="grid-column:1/-1"><b>NACE kodu / faaliyet</b><span>41.20.02 — İkamet amaçlı olmayan binaların inşaatı</span></div>
+              <div class="pc-fitem"><b>Kuruluş yılı</b><span>2011</span></div>
+              <div class="pc-fitem"><b>Telefon</b><span>0216 000 00 00</span></div>
+              <div class="pc-fitem" style="grid-column:1/-1"><b>Kurumsal e-posta</b><span>info@yapitas.example</span></div>
+              <div class="pc-fitem" style="grid-column:1/-1"><b>Merkez adres</b><span>İnşaatçılar Cad. No:12, Ümraniye / İstanbul</span></div>
+              <div class="pc-fitem" style="grid-column:1/-1"><b>Şube / tesis</b><span>Gebze Depo &amp; Atölye — Merkez Şantiye sahası</span></div>
+            </div>
+          </div>
+          <div class="pc-card-foot"><i class="fa-solid fa-lock"></i> Platform tarafında salt okunur görünüm — düzenleme firmanın kendi Ayarlar &gt; Firma ekranından yapılır.</div>
+        </div>
+        <div class="pc-stack">
+          <div class="pc-card">
+            <div class="pc-card-head"><div class="pc-card-title"><i class="fa-solid fa-building-columns"></i> Banka Hesapları (IBAN)</div></div>
+            <div class="pc-card-body flush">
+              <div class="pc-line-row"><div class="pc-line-ico"><i class="fa-solid fa-building-columns"></i></div><div class="pc-line-info"><b>TR12 0006 2000 4560 0006 2988 91</b><span>Garanti BBVA — Ana hesap</span></div></div>
+              <div class="pc-line-row"><div class="pc-line-ico"><i class="fa-solid fa-building-columns"></i></div><div class="pc-line-info"><b>TR44 0004 6000 3288 8000 1594 07</b><span>Akbank — Hakediş tahsilat</span></div></div>
+              <div class="pc-line-row"><div class="pc-line-ico"><i class="fa-solid fa-building-columns"></i></div><div class="pc-line-info"><b>TR73 0001 0002 3812 3456 7850 02</b><span>Ziraat — Maaş ödeme</span></div></div>
+            </div>
+          </div>
+          <div class="pc-card">
+            <div class="pc-card-head"><div class="pc-card-title"><i class="fa-solid fa-file-signature"></i> Yetkililer</div></div>
+            <div class="pc-card-body flush">
+              <div class="pc-line-row"><div class="pc-line-ico">KY</div><div class="pc-line-info"><b>Kemal Yapıcıoğlu</b><span>Firma Sahibi — 1. derece imza, sirküler NOT-2025/8817</span></div></div>
+              <div class="pc-line-row"><div class="pc-line-ico">MD</div><div class="pc-line-info"><b>Murat Denizli</b><span>Genel Müdür — 2. derece imza, ₺500.000 üstü çift imza kuralı</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="pc-tab-panel" data-panel="paket" hidden>
+      <div class="pc-grid-2 even">
+        <div class="pc-card">
+          <div class="pc-card-body">
+            <div class="pc-plan">
+              <div class="pc-plan-eyebrow">Mevcut Paket</div>
+              <div class="pc-plan-name">Professional<span class="gstat ok">Aktif</span></div>
+              <div class="pc-plan-price"><b>₺14.900</b> / ay</div>
+              <div class="pc-plan-note">Yapıtaş plan-card ve limit değerleriyle birebir senkron (Ayarlar &gt; Firma).</div>
+            </div>
+          </div>
+        </div>
+        <div class="pc-card">
+          <div class="pc-card-head"><div class="pc-card-title"><i class="fa-solid fa-sliders"></i> Abonelik Aksiyonları</div></div>
+          <div class="pc-card-body">
+            <div class="pc-select-row"><label for="pkgSel">Paket değiştir</label>
+              <select class="pc-select" id="pkgSel"><option>Ücretsiz</option><option>Basic</option><option selected="">Professional</option><option>CRM + Sales</option><option>Enterprise</option></select>
+            </div>
+            <div class="pc-plan-acts">
+              <button type="button" class="btn btn-mint btn-sm" id="btnTrial"><i class="fa-solid fa-hourglass-start"></i> Deneme Sürecini Başlat</button>
+              <button type="button" class="btn btn-warn-dk btn-sm" id="btnDown"><i class="fa-solid fa-arrow-down"></i> Ücretsiz Tier'a Çek</button>
+            </div>
+          </div>
+          <div class="pc-card-foot"><i class="fa-solid fa-circle-info"></i> Bu konsoldaki abonelik aksiyonları simülasyondur; gerçek faturalama değişmez.</div>
+        </div>
+      </div>
+    </section>
+    <section class="pc-tab-panel" data-panel="alt" hidden>
+      <div class="pc-card">
+        <div class="pc-card-body">
+          <div class="pc-empty">
+            <i class="fa-solid fa-diagram-project"></i>
+            <p>Bu firmanın alt şirketi yok. Çoklu firma yönetimi kapsamında ana sözleşmeye bağlı yeni bir alt şirket ekleyebilirsiniz.</p>
+            <button type="button" class="btn btn-mint btn-sm" onclick="location.href='gavia-firma-form.html?parent=yapitas'"><i class="fa-solid fa-plus"></i> Alt Şirket Ekle</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="pc-tab-panel" data-panel="kullanim" hidden>
+      <div class="pc-card">
+        <div class="pc-card-head"><div class="pc-card-title"><i class="fa-solid fa-gauge-simple-high"></i> Kullanım &amp; Limitler</div></div>
+        <div class="pc-card-body">
+          <div class="pc-limit"><div class="pc-limit-top"><b>Kullanıcı</b><span>18 / 25</span></div><div class="pc-limit-track"><div class="pc-limit-fill" style="width:72%"></div></div></div>
+          <div class="pc-limit"><div class="pc-limit-top"><b>Aktif şantiye</b><span>3 / 5</span></div><div class="pc-limit-track"><div class="pc-limit-fill" style="width:60%"></div></div></div>
+          <div class="pc-limit"><div class="pc-limit-top"><b>Dosya depolama</b><span>34 GB / 50 GB</span></div><div class="pc-limit-track"><div class="pc-limit-fill" style="width:68%"></div></div></div>
+          <div class="pc-limit"><div class="pc-limit-top"><b>Aylık SMS bildirimi</b><span>2400 / 5000</span></div><div class="pc-limit-track"><div class="pc-limit-fill" style="width:48%"></div></div></div>
+        </div>
+        <div class="pc-card-foot"><i class="fa-solid fa-circle-info"></i> Limit artışı paket yükseltmesiyle yapılır.</div>
+      </div>
+    </section>
+    <section class="pc-tab-panel" data-panel="fatura" hidden>
+      <div class="pc-card">
+        <div class="pc-card-head"><div class="pc-card-title"><i class="fa-solid fa-file-invoice"></i> Fatura Geçmişi</div></div>
+        <div class="pc-card-body flush">
+          <table class="pc-table">
+            <thead><tr><th>Dönem</th><th>Tutar</th></tr></thead>
+            <tbody>
+              <tr><td class="t-strong">Temmuz 2026</td><td>₺14.900</td></tr>
+              <tr><td class="t-strong">Haziran 2026</td><td>₺14.900</td></tr>
+              <tr><td class="t-strong">Mayıs 2026</td><td>₺13.400</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pc-card-foot"><i class="fa-solid fa-circle-info"></i> Toplam ödeme ₺208.600. Toplam, dönemsel fiyat farkı ve tanıtım eklentilerini içerir; ayrıntılı kırılım gösterilmez. Mayıs faturası önceki paket dönemine aittir.</div>
+      </div>
+    </section>
+    <section class="pc-tab-panel" data-panel="moduller" hidden>
+      <div class="pc-card">
+        <div class="pc-card-head"><div class="pc-card-title"><i class="fa-solid fa-puzzle-piece"></i> Modüller</div><span style="margin-left:auto;font-size:12px;color:var(--on-dark-mut)">10 / 10 açık</span></div>
+        <div class="pc-card-body">
+          <div class="pc-mod-row"><div class="pc-mod-ico"><i class="fa-solid fa-helmet-safety"></i></div><div class="pc-mod-info"><b>Şantiye &amp; Saha</b><span>Şantiye kartları, saha bildirimleri, İSG tutanakları</span></div><div class="pc-mod-stat"><i class="fa-solid fa-circle-check"></i> Açık</div></div>
+          <div class="pc-mod-row"><div class="pc-mod-ico"><i class="fa-solid fa-list-check"></i></div><div class="pc-mod-info"><b>Görev Takibi</b><span>Görev verme, havuz, gecikme uyarıları</span></div><div class="pc-mod-stat"><i class="fa-solid fa-circle-check"></i> Açık</div></div>
+          <div class="pc-mod-row"><div class="pc-mod-ico"><i class="fa-solid fa-users"></i></div><div class="pc-mod-info"><b>Personel &amp; İK</b><span>Özlük, izin, rapor, avans süreçleri</span></div><div class="pc-mod-stat"><i class="fa-solid fa-circle-check"></i> Açık</div></div>
+          <div class="pc-mod-row"><div class="pc-mod-ico"><i class="fa-solid fa-clipboard-list"></i></div><div class="pc-mod-info"><b>Saha Kayıtları</b><span>Kasa, Pluxee, kredi kartı, puantaj, yemekhane, araçlar</span></div><div class="pc-mod-stat"><i class="fa-solid fa-circle-check"></i> Açık</div></div>
+          <div class="pc-mod-row"><div class="pc-mod-ico"><i class="fa-solid fa-cart-flatbed"></i></div><div class="pc-mod-info"><b>Satın Alma</b><span>Malzeme talebi, icmal, termin takibi</span></div><div class="pc-mod-stat"><i class="fa-solid fa-circle-check"></i> Açık</div></div>
+          <div class="pc-mod-row"><div class="pc-mod-ico"><i class="fa-solid fa-address-book"></i></div><div class="pc-mod-info"><b>Cariler</b><span>Firma rehberi, kişiler, cari durum sorgusu</span></div><div class="pc-mod-stat"><i class="fa-solid fa-circle-check"></i> Açık</div></div>
+          <div class="pc-mod-row"><div class="pc-mod-ico"><i class="fa-solid fa-file-signature"></i></div><div class="pc-mod-info"><b>Hakediş &amp; Sözleşme</b><span>Kurum ve taşeron hakedişleri, sözleşme arşivi</span></div><div class="pc-mod-stat"><i class="fa-solid fa-circle-check"></i> Açık</div></div>
+          <div class="pc-mod-row"><div class="pc-mod-ico"><i class="fa-solid fa-chart-line"></i></div><div class="pc-mod-info"><b>Satış CRM<span class="pc-mod-tag">Tanıtım eklentisi</span></b><span>Fırsat, teklif ve satış hunisi yönetimi</span></div><div class="pc-mod-stat"><i class="fa-solid fa-circle-check"></i> Açık</div></div>
+          <div class="pc-mod-row"><div class="pc-mod-ico"><i class="fa-solid fa-warehouse"></i></div><div class="pc-mod-info"><b>Stok &amp; ERP<span class="pc-mod-tag">Tanıtım eklentisi</span></b><span>Depo, stok hareketi, fatura entegrasyonu</span></div><div class="pc-mod-stat"><i class="fa-solid fa-circle-check"></i> Açık</div></div>
+          <div class="pc-mod-row"><div class="pc-mod-ico"><i class="fa-solid fa-shuffle"></i></div><div class="pc-mod-info"><b>Çoklu Firma Yönetimi<span class="pc-mod-tag">Tanıtım eklentisi</span></b><span>Tek hesaptan birden fazla firma (tenant) yönetimi</span></div><div class="pc-mod-stat"><i class="fa-solid fa-circle-check"></i> Açık</div></div>
+        </div>
+        <div class="pc-card-foot"><i class="fa-solid fa-circle-info"></i> 3 modül tanıtım eklentisi olarak ücretsiz açıktır; MRR'a eklenmez.</div>
+      </div>
+    </section>
   </main>
 </div>
 <script src="assets/js/ui.js"></script>
