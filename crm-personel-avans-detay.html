@@ -17,11 +17,6 @@
 <link rel="stylesheet" href="assets/css/ui.css">
 <style>
 /* sayfaya özel: avans talebi detay kompozisyonu (izin-detay ile aynı iskelet dili) */
-.gv-crumb{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:14px}
-.gv-crumb a{color:var(--acc-ink);font-weight:700}
-.gv-crumb a:hover{color:var(--acc-deep)}
-.gv-crumb i{font-size:9px;color:var(--line-2)}
-.gv-crumb span{color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:340px}
 
 .gd-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:22px;flex-wrap:wrap}
 .gd-head h1{font-size:22px;letter-spacing:-.015em;margin-bottom:9px;max-width:600px}
@@ -89,12 +84,7 @@
   </header>
 
   <main class="gv-main" id="gvMain">
-    <div class="gv-crumb">
-      <a href="crm-personel-avans.html">Avanslar</a>
-      <i class="fa-solid fa-chevron-right"></i>
-      <span id="crumbCode">—</span>
-    </div>
-
+    <!-- D18 Y16: lokal .gv-crumb kaldırıldı — kırıntı shell'den (GV.crumb ile kayıt segmenti) -->
     <div id="avdRoot"></div>
   </main>
 </div>
@@ -166,7 +156,7 @@
   var rec = id ? AVANS[id] : null;
 
   if(!rec){
-    document.getElementById('crumbCode').textContent = 'Kayıt bulunamadı';
+    GV.crumb('Kayıt bulunamadı');
     gvNotFound({
       mount: '#avdRoot',
       code: rawParam ? rawParam.toUpperCase() : null,
@@ -177,7 +167,7 @@
     return;
   }
 
-  document.getElementById('crumbCode').textContent = rec.no;
+  GV.crumb(rec.no);
   document.title = rec.no + ' — Avans Talebi Detayı — Gavia CRM';
 
   var root = document.getElementById('avdRoot');

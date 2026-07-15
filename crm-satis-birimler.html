@@ -435,11 +435,13 @@
     });
     var cnt = card.querySelector('[data-table-count]') || document.querySelector('[data-table-count]');
     if(cnt) cnt.textContent = shown;
-    if(window.gvUrlState) gvUrlState.set({ f: f !== 'hepsi' ? f : null, page: null });
+    /* D18 fix: İLK render URL'e yazmaz — ?page=/?f= deep-link restorasyonu wireTables'a
+       kalır (önceki koşulsuz page:null yazımı ?page=N restore'unu siliyordu, pre-existing) */
+    if(window.gvUrlState && isChange !== false) gvUrlState.set({ f: f !== 'hepsi' ? f : null, page: null });
     if(window.gvPagerRefresh) gvPagerRefresh(tbl, isChange !== false);
   }
 
-  function renderTable(data){
+  function renderTable(data, isInit){
     document.getElementById('tblBirimBody').innerHTML = data.map(function(u){
       var musCell = '—';
       if(u.mus){
@@ -462,7 +464,7 @@
     /* proje değişince filtre "Tümü"ye döner, arama kutusu ise kasıtlı olarak KORUNUR
        (proje geçişinde arama bağlamı sıfırlanmaz) — syncTblBirim mevcut arama terimini
        yeni veri setine karşı yeniden uygular */
-    syncTblBirim(true);
+    syncTblBirim(!isInit);
   }
 
   document.getElementById('brmLegend').innerHTML = DURUM_CHIP_ORDER.map(function(d){
@@ -527,9 +529,9 @@
     else renderMatrixKO();
   }
 
-  function renderAll(){
+  function renderAll(isInit){
     var proj = PROJECTS.filter(function(p){ return p.key === activeProj; })[0];
-    renderTable(proj.data);
+    renderTable(proj.data, isInit);
     renderMatrix();
   }
 
@@ -550,7 +552,7 @@
     });
   });
 
-  renderAll();
+  renderAll(true);
 })();
 </script>
 </body>

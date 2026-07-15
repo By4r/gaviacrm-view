@@ -324,7 +324,7 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
         </div>
       </div>
       <div class="gc-body flush">
-        <table class="gtable" id="tblKasa">
+        <table class="gtable" id="tblKasa" data-paginate="25" data-paginate-key="rapor">
           <thead>
             <tr>
               <th>Rapor</th>
@@ -582,12 +582,10 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
   });
 
   /* ============ 8.1 — Tür filtresi (iki boyutlu: mevcut Durum + yeni Tür) ============
-     ui.js'in applyFilters'ı tek data-f boyutunu destekler (bkz assets/js/ui.js:304-324);
-     ui.js'e DOKUNMADAN ikinci boyutu (data-tur) sayfa-lokal olarak birleştiriyoruz.
-     Durum chip'leri + arama için ui.js dinleyicilerini DOMContentLoaded'da bağlar,
-     bizimkiler parse sırasında bağlanır → aynı olayda BİZ ÖNCE çalışırız ve ui.js'in
-     applyFilters'ı (Tür bilmez) hesabımızı ezer. Bu yüzden o iki yolda AND-hesabı
-     setTimeout(0) ile ui.js'ten SONRAya ötelenir → son söz bizde (T0 audit F1 fix'i). */
+     D18 delegasyon deseni: motor tblKasa._gvApply ile ui.js'e kayıtlı. Durum chip'leri
+     + arama listener'ları ui.js'te (setTimeout öteleme hack'i KALKTI — çifte-listener
+     bulgusu kapandı); Tür chip'leri data-tur olduğundan ui.js bağlamaz, sayfa dinler
+     ve gvApplyFilters(tblKasa, true) üzerinden akıtır. */
   var tblKasa = document.getElementById('tblKasa');
   var turChipsWrap = document.getElementById('turChips');
   var durumChipsWrap = document.querySelector('.chips[data-target="#tblKasa"]');
@@ -613,16 +611,14 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
     var cnt = document.querySelector('[data-table-count]');
     if(cnt) cnt.textContent = shown;
   }
-  durumChipsWrap.querySelectorAll('.chip[data-filter]').forEach(function(ch){
-    ch.addEventListener('click', function(){ setTimeout(applyKasaCombinedFilter, 0); });
-  });
+  /* URL-state + pager refresh delegasyon sahibinde (ui.js applyFilters) */
+  tblKasa._gvApply = applyKasaCombinedFilter;
   turChipsWrap.addEventListener('click', function(e){
     var ch = e.target.closest('.chip[data-tur]'); if(!ch) return;
     turChipsWrap.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('is-on'); });
     ch.classList.add('is-on');
-    applyKasaCombinedFilter();
+    gvApplyFilters(tblKasa, true);
   });
-  if(kasaSearch) kasaSearch.addEventListener('input', function(){ setTimeout(applyKasaCombinedFilter, 0); });
   applyKasaCombinedFilter();
 
   /* ============ 8.2 — Dönem toggle [MOCK] ============

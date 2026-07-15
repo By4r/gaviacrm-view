@@ -425,8 +425,9 @@
   }
 
   /* üç boyutlu bileşik filtre (tür chip + kaynak select + temsilci select + arama) —
-     ui.js'in applyFilters'ı tek chip grubu bilir; ikinci/üçüncü boyut burada eklenir
-     (crm-gorev.html'deki compound filtre deseninin genellenmiş hali). */
+     D18 delegasyon deseni: motor tbl._gvApply ile ui.js'e kayıtlı. Arama + chip
+     listener'ları ui.js'te (çifte-listener bulgusu kapandı — sayfa kendi listener'ını
+     BAĞLAMAZ); select boyutları gvApplyFilters(tbl, true) üzerinden akar. */
   function applyCompound(){
     var onChip = document.querySelector('.chips .chip.is-on[data-filter]');
     var f = onChip ? onChip.getAttribute('data-filter') : 'hepsi';
@@ -448,16 +449,12 @@
     if(empty) empty.hidden = shown !== 0;
     var cntEl = card.querySelector('[data-table-count]');
     if(cntEl) cntEl.textContent = shown;
-    /* D17: sayfa-lokal bileşik filtre değişince pager sayfa 1'e döner (gvPager RB §5) */
-    gvPagerRefresh(tbl, true);
   }
+  /* URL-state + pager refresh delegasyon sahibinde (ui.js applyFilters) */
+  tbl._gvApply = applyCompound;
 
-  document.getElementById('fltKaynak').addEventListener('change', applyCompound);
-  document.getElementById('fltTems').addEventListener('change', applyCompound);
-  document.querySelector('input[data-table-search]').addEventListener('input', applyCompound);
-  document.querySelectorAll('.chips .chip[data-filter]').forEach(function(ch){
-    ch.addEventListener('click', applyCompound);
-  });
+  document.getElementById('fltKaynak').addEventListener('change', function(){ gvApplyFilters(tbl, true); });
+  document.getElementById('fltTems').addEventListener('change', function(){ gvApplyFilters(tbl, true); });
 
   function updateKPI(){
     if(isTemsilci){
