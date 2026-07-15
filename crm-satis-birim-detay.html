@@ -291,7 +291,13 @@
     }
   };
 
-  /* ---- fallback: adı geçmeyen herhangi bir kod şemadan türetilir (VK/GE2/KO) ---- */
+  /* ---- fallback: adı geçmeyen herhangi bir kod şemadan türetilir (VK/GE2/KO) ----
+     [S0 mini-tur ④a — Beyar kararı 2026-07-15] Durum + müşteri ataması
+     crm-satis-birimler.html matrisiyle BİREBİR: anchor map'leri oradan kopya,
+     anchor-dışı kodlar AYNI deterministik doldurma sırasıyla türetilir
+     ("satıldı hücresine tıkla → detay 'Satışta' der" çelişkisi kapandı).
+     Kanonik dışı kod aralığı (VK kapı>24, GE2 villa>40, KO kat/no dışı)
+     artık sahte birim üretmez → gvNotFound (Y7/DK3 ile hizalı). */
   var VK_FLOORS = [
     {kat:1,tip:'2+1',fiyat:4200000,brut:110,net:92},{kat:2,tip:'2+1',fiyat:4200000,brut:110,net:92},
     {kat:3,tip:'3+1',fiyat:6120000,brut:145,net:122},{kat:4,tip:'3+1',fiyat:6120000,brut:145,net:122},
@@ -299,37 +305,126 @@
   ];
   var CEPHE = ['Kuzey','Kuzey-Doğu','Doğu','Güney-Doğu','Güney','Güney-Batı','Batı','Kuzey-Batı'];
 
+  var MST = 'crm-satis-musteri-detay.html?mst=';
+  var VK_ANCHOR = {
+    'A-01':{d:'arsa', mus:'Halil Sancak', href:MST+'007', ozel:'Halil Sancak — arsa sahibi kat karşılığı'},
+    'A-02':{d:'arsa', mus:'Halil Sancak', href:MST+'007', ozel:'Halil Sancak — arsa sahibi kat karşılığı'},
+    'A-03':{d:'satildi', mus:'Derya Toprak', href:MST+'002', ozel:'3 daire paketi · SSZ-2026-004'},
+    'A-09':{d:'satildi', mus:'Derya Toprak', href:MST+'002', ozel:'3 daire paketi · SSZ-2026-004'},
+    'A-11':{d:'satista', mus:'Nova Gayrimenkul', href:MST+'006', ozel:'Teklif taslak · TKF-2026-008'},
+    'A-12':{d:'satista', mus:'Nova Gayrimenkul', href:MST+'006', ozel:'Teklif taslak · TKF-2026-008'},
+    'A-14':{d:'satista', mus:'Nova Gayrimenkul', href:MST+'006', ozel:'Teklif taslak · TKF-2026-008'},
+    'A-16':{d:'opsiyonlu', mus:null, ozel:'Görüşme sürüyor — kart açılmadı'},
+    'A-22':{d:'opsiyonlu', mus:null, ozel:'Görüşme sürüyor — kart açılmadı'},
+    'B-07':{d:'satista', mus:'Tuncay Ilgaz', href:MST+'009', ozel:'Teklif reddedildi (%12) · TKF-2026-004'},
+    'B-11':{d:'opsiyonlu', mus:'Aylin Şahinoğlu', href:MST+'003', ozel:'Opsiyon bitiş 14 Temmuz · TKF-2026-003'},
+    'B-12':{d:'satista', mus:'Aylin Şahinoğlu', href:MST+'003', ozel:'Sunum yapıldı · FRS-2026-018'},
+    'B-19':{d:'rezerve', mus:'Mert Kavukçu', href:MST+'004', ozel:'Teklif müdür onayında · TKF-2026-006'},
+    'B-24':{d:'kapali', mus:null, ozel:'Satış ofisi — proje künyesi'},
+    'C-08':{d:'opsiyonlu', mus:null, ozel:'Görüşme sürüyor — kart açılmadı'},
+    'C-13':{d:'opsiyonlu', mus:null, ozel:'Görüşme sürüyor — kart açılmadı'},
+    'C-18':{d:'satildi', mus:'Selçuk Onaran', href:MST+'001', ozel:'SSZ-2026-003 · 14/36 taksit ödendi'},
+    'C-21':{d:'satildi', mus:'Derya Toprak', href:MST+'002', ozel:'3 daire paketi · SSZ-2026-004'},
+    'C-24':{d:'rezerve', mus:'Derya Toprak', href:MST+'002', ozel:'Kapora alındı · FRS-2026-011'},
+    'D-05':{d:'rezerve', mus:'Baha &amp; Zeynep Korkut', href:MST+'005', ozel:'Sözleşme imzada · SSZ-2026-007'},
+    'D-14':{d:'satildi', mus:'Volkan Demirel', href:null, ozel:'Arşiv kaydı — 90 gün içinde kazanıldı'},
+    'D-19':{d:'opsiyonlu', mus:null, ozel:'Görüşme sürüyor — kart açılmadı'},
+    'D-23':{d:'satista', mus:'İlker Baysal', href:null, ozel:'Dubleks gezisi yapıldı · FRS-2026-014 (ham lead)'},
+    'D-24':{d:'kapali', mus:null, ozel:'Numune daire — satış ekibi kullanımında'}
+  };
+  var GE2_ANCHOR = {
+    5:{d:'opsiyonlu', mus:'Selçuk Onaran', href:MST+'001', ozel:'Ön-talep · FRS-2026-008 müzakerede'},
+    7:{d:'opsiyonlu', mus:'Nihat Karaduman', href:MST+'010', ozel:'Ön-talep · FRS-2026-016 (Yeni)'},
+    12:{d:'opsiyonlu', mus:'Pınar Us', href:null, ozel:'Ön-talep · FRS-2026-006 (ham lead)'},
+    21:{d:'opsiyonlu', mus:'Derya Toprak', href:MST+'002', ozel:'Ön-talep · FRS-2026-015'},
+    22:{d:'opsiyonlu', mus:'Derya Toprak', href:MST+'002', ozel:'Ön-talep · FRS-2026-015'},
+    25:{d:'opsiyonlu', mus:'Nova Gayrimenkul', href:MST+'006', ozel:'Bayi ön-talebi · FRS-2026-007'},
+    26:{d:'opsiyonlu', mus:'Nova Gayrimenkul', href:MST+'006', ozel:'Bayi ön-talebi · FRS-2026-007'},
+    27:{d:'opsiyonlu', mus:'Nova Gayrimenkul', href:MST+'006', ozel:'Bayi ön-talebi · FRS-2026-007'},
+    28:{d:'opsiyonlu', mus:'Nova Gayrimenkul', href:MST+'006', ozel:'Bayi ön-talebi · FRS-2026-007'},
+    29:{d:'opsiyonlu', mus:'Nova Gayrimenkul', href:MST+'006', ozel:'Bayi ön-talebi · FRS-2026-007'},
+    30:{d:'opsiyonlu', mus:'Nova Gayrimenkul', href:MST+'006', ozel:'Bayi ön-talebi · FRS-2026-007'},
+    33:{d:'opsiyonlu', mus:null, ozel:'Bağımsız ön-talep — kart açılmadı'}
+  };
+  var KO_ANCHOR = {
+    '304':{d:'teslim', mus:'Selçuk Onaran', href:MST+'001', ozel:'Teslim edildi · TSL-2026-001'},
+    '311':{d:'satildi', mus:'Rıza Kalkan', href:null, ozel:'Teslim sürecinde · SSZ-2025-051 (9/12 kalem tamam)'},
+    '406':{d:'satildi', mus:'Meltem Işık', href:null, ozel:'Teslim sürecinde · SSZ-2025-058'},
+    '107':{d:'teslim', mus:'Ejder Balcı', href:null, ozel:'Teslim edildi · TSL-2026-002'},
+    '212':{d:'teslim', mus:'Seray Ünal', href:null, ozel:'Teslim edildi · TSL-2026-003'},
+    '207':{d:'kiralandi', mus:'Ferda Yücel', href:MST+'008', ozel:'Kira bitişi 31 Temmuz — yeni kiracı adayı görüşmede'}
+  };
+
+  /* doldurma sırası — birimler.html buildVK/buildKO ile birebir aynı algoritma */
+  function fillMap(codes, anchors, firstN, firstDurum, restDurum){
+    var m = {};
+    codes.filter(function(c){ return !anchors[c]; })
+         .forEach(function(c, i){ m[c] = i < firstN ? firstDurum : restDurum; });
+    return m;
+  }
+  var VK_CODES = []; ['A','B','C','D'].forEach(function(b){ for(var vd = 1; vd <= 24; vd++) VK_CODES.push(b + '-' + pad2(vd)); });
+  var VK_FILL = fillMap(VK_CODES, VK_ANCHOR, 39, 'satildi', 'satista');
+  var KO_CODES = []; for(var kk = 1; kk <= 5; kk++){ for(var kn = 1; kn <= 12; kn++) KO_CODES.push(kk + '' + pad2(kn)); }
+  var KO_FILL = fillMap(KO_CODES, KO_ANCHOR, 47, 'teslim', 'kiralandi');
+
+  function iniOf(ad){
+    var p = ad.replace(/&amp;/g, '').split(/\s+/).filter(Boolean);
+    return (p[0].charAt(0) + (p.length > 1 ? p[p.length - 1].charAt(0) : '')).toUpperCase();
+  }
+  function musterify(a){
+    if(!a || !a.mus) return null;
+    return {ad:a.mus, tur:a.ozel || '—', href:a.href || null, ini:iniOf(a.mus)};
+  }
+  function surecOf(durum, a){
+    if(a && a.ozel) return {tip:'ozet', txt:a.ozel};
+    if(durum === 'satildi')   return {tip:'ozet', txt:'Satış tamamlandı — açık süreç yok.'};
+    if(durum === 'teslim')    return {tip:'teslim', tarih:'20 Mart 2026', tutanak:null};
+    if(durum === 'kiralandi') return {tip:'ozet', txt:'Kiralandı — açık satış süreci yok.'};
+    return {tip:'yok'};
+  }
+  function teklifDurumOf(durum){ return (durum === 'satildi' || durum === 'teslim') ? 'satildi' : 'aktif'; }
+
   function deriveFallback(kod){
     var m;
     if((m = kod.match(/^VK-([A-D])-(\d{2})$/))){
       var bl = m[1], door = parseInt(m[2], 10);
-      var f = VK_FLOORS[Math.min(5, Math.floor((door - 1) / 4))];
+      if(door < 1 || door > 24) return null;
+      var f = VK_FLOORS[Math.floor((door - 1) / 4)];
+      var vKey = bl + '-' + pad2(door);
+      var va = VK_ANCHOR[vKey];
+      var vDurum = va ? va.d : VK_FILL[vKey];
       return {
         proje:'Vadi Konakları', loc:bl + ' Blok · Kat ' + f.kat, tip:f.tip, cephe:CEPHE[door % 8],
-        brut:f.brut, net:f.net, fiyat:f.fiyat, durum:'satista', musteri:null,
-        surec:{tip:'yok'}, gecmis:[{tarih:'1 Oca 2026', desc:'Proje lansmanı — liste fiyatı belirlendi', val:f.fiyat}],
-        iliski:[], teklifDurum:'aktif'
+        brut:f.brut, net:f.net, fiyat:f.fiyat, durum:vDurum, musteri:musterify(va),
+        surec:surecOf(vDurum, va), gecmis:[{tarih:'1 Oca 2026', desc:'Proje lansmanı — liste fiyatı belirlendi', val:f.fiyat}],
+        iliski:[], teklifDurum:teklifDurumOf(vDurum)
       };
     }
     if((m = kod.match(/^GE2-V(\d{2})$/))){
       var n = parseInt(m[1], 10);
+      if(n < 1 || n > 40) return null;
       var fiyat = 12800000 + Math.round((16400000 - 12800000) * (n - 1) / 39 / 10000) * 10000;
+      var ga = GE2_ANCHOR[n];
+      var gDurum = ga ? ga.d : 'satista';
       return {
         proje:'Göl Evleri 2. Etap', loc:'Parsel ' + Math.ceil(n / 8) + ' sıra', tip:'Villa (bahçeli)', cephe:CEPHE[n % 8],
-        brut:235, net:205, fiyat:fiyat, durum:'satista', musteri:null,
-        surec:{tip:'yok'}, gecmis:[{tarih:'15 Haz 2026', desc:'Ön-satış lansmanı — liste fiyatı belirlendi', val:fiyat}],
-        iliski:[], teklifDurum:'aktif'
+        brut:235, net:205, fiyat:fiyat, durum:gDurum, musteri:musterify(ga),
+        surec:surecOf(gDurum, ga), gecmis:[{tarih:'15 Haz 2026', desc:'Ön-satış lansmanı — liste fiyatı belirlendi', val:fiyat}],
+        iliski:[], teklifDurum:teklifDurumOf(gDurum)
       };
     }
     if((m = kod.match(/^KO-B-(\d)(\d{2})$/))){
       var kat = parseInt(m[1], 10), no = parseInt(m[2], 10);
+      if(kat < 1 || kat > 5 || no < 1 || no > 12) return null;
       var fiyatK = 2650000 + kat * 60000;
+      var kKey = kat + '' + pad2(no);
+      var ka = KO_ANCHOR[kKey];
+      var kDurum = ka ? ka.d : KO_FILL[kKey];
       return {
         proje:'Kule Ofis B Blok', loc:'B Blok · Kat ' + kat, tip:'Ofis (açık plan)', cephe:CEPHE[no % 8],
-        brut:105, net:92, fiyat:fiyatK, durum:'teslim', musteri:null,
-        surec:{tip:'teslim', tarih:'20 Mart 2026', tutanak:null},
-        gecmis:[{tarih:'10 Eki 2025', desc:'Proje lansmanı — liste fiyatı belirlendi', val:fiyatK}],
-        iliski:[], teklifDurum:'satildi'
+        brut:105, net:92, fiyat:fiyatK, durum:kDurum, musteri:musterify(ka),
+        surec:surecOf(kDurum, ka), gecmis:[{tarih:'10 Eki 2025', desc:'Proje lansmanı — liste fiyatı belirlendi', val:fiyatK}],
+        iliski:[], teklifDurum:teklifDurumOf(kDurum)
       };
     }
     /* tanınmayan kod şeması — hiçbir VK/GE2/KO kalıbına uymuyor (D18 Y7: artık
@@ -398,6 +493,9 @@
     surecHtml = '<div class="ctx-row"><span class="ctx-lbl">Teslim tarihi</span><span class="ctx-val">' + sc.tarih + '</span></div>'
       + '<div class="ctx-row" style="border-bottom:none"><span class="ctx-lbl">Teslim tutanağı</span><span class="ctx-val">' + (sc.tutanak || '—') + '</span></div>'
       + '<p style="font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:10px"><i class="fa-solid fa-circle-check" style="color:var(--ok)"></i> Teslim tutanağının 12 kalemlik kontrol listesi tamamlandı; birim kullanıma hazır.</p>';
+  } else if(sc.tip === 'ozet'){
+    document.getElementById('surecTitle').innerHTML = '<i class="fa-solid fa-route"></i> Süreç Durumu';
+    surecHtml = '<p class="empty-note">' + sc.txt + '</p>';
   } else {
     document.getElementById('surecTitle').innerHTML = '<i class="fa-solid fa-route"></i> Süreç Durumu';
     surecHtml = '<p class="empty-note">Bu birim için henüz açık bir satış süreci yok — durum "' + DURUM_LBL[item.durum].lbl + '".</p>';
