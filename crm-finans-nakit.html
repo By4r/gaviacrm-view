@@ -222,11 +222,11 @@
 
   var TAHSILAT = [
     {proje:'vk', durum:'danger', ic:'fa-triangle-exclamation', baslik:'Toprak — SSZ-2026-004 5. taksit', link:'crm-satis-sozlesme-detay.html?ssz=2026-004', alt:'GECİKMİŞ · vade 20 Haz, 12 gündür · tahsilat girişimi 10 Tem', tutar:570000, badge:{cls:'danger', lbl:'12 gün gecikme'}},
-    {proje:'liman', durum:'ok', ic:'fa-building-columns', baslik:'HKD-2026-003 — Aliağa Liman İşletmeleri', link:'crm-finans-kurum.html', alt:'8 Tem · onaylandı, ödeme bildirimi alındı', tutar:980000, badge:null},
+    {proje:'liman', durum:'ok', ic:'fa-building-columns', baslik:'HKD-2026-003 — Aliağa Liman İşletmeleri', link:'crm-finans-hakedis-detay.html?hkd=003', alt:'8 Tem · onaylandı, ödeme bildirimi alındı', tutar:980000, badge:null},
     {proje:'vk', durum:'ok', ic:'fa-file-signature', baslik:'Onaran — SSZ-2026-003 15. taksit', link:'crm-satis-sozlesme-detay.html?ssz=2026-003', alt:'15 Tem · aylık seri (15 Ağu, 15 Eyl…)', tutar:115000, badge:null},
     {proje:'vk', durum:'ok', ic:'fa-file-signature', baslik:'Toprak — SSZ-2026-004 6. taksit', link:'crm-satis-sozlesme-detay.html?ssz=2026-004', alt:'20 Tem · aylık seri (20 Ağu, 20 Eyl…)', tutar:570000, badge:null},
     {proje:'vk', durum:'ok', ic:'fa-house', baslik:'Şahinoğlu — ODP-2026-001 peşinat', link:'crm-satis-teklif-detay.html?tkf=003', alt:'25 Tem · opsiyon → sözleşme geçişi', tutar:1485000, badge:{cls:'info', lbl:'Beklenen'}},
-    {proje:'vk', durum:'ok', ic:'fa-building-columns', baslik:'HKD-2026-006 — Körfez GYO', link:'crm-finans-kurum.html', alt:'28 Tem · gönderildi, onay+tahsilat bekleniyor', tutar:1630000, badge:{cls:'info', lbl:'Beklenen'}},
+    {proje:'vk', durum:'ok', ic:'fa-building-columns', baslik:'HKD-2026-006 — Körfez GYO', link:'crm-finans-hakedis-detay.html?hkd=006', alt:'28 Tem · gönderildi, onay+tahsilat bekleniyor', tutar:1630000, badge:{cls:'info', lbl:'Beklenen'}},
     {proje:'liman', durum:'ok', ic:'fa-building-columns', baslik:'Aliağa Liman İşletmeleri — Temmuz hakedişi', link:'crm-finans-kurum.html', alt:'18 Ağu', tutar:1050000, badge:{cls:'info', lbl:'Beklenen'}},
     {proje:'vk', durum:'ok', ic:'fa-building-columns', baslik:'Körfez GYO — Temmuz hakedişi', link:'crm-finans-kurum.html', alt:'20 Ağu', tutar:1700000, badge:{cls:'info', lbl:'Beklenen'}},
     {proje:'genel', durum:'ok', ic:'fa-building-columns', baslik:'Körfez GYO + Aliağa Liman — Ağustos hakedişleri', link:'crm-finans-kurum.html', alt:'Eylül · iki kurum birlikte', tutar:2750000, badge:{cls:'info', lbl:'Beklenen'}},
@@ -234,13 +234,13 @@
   ];
 
   var ODEME = [
-    {proje:'vk', durum:'ok', ic:'fa-people-arrows', baslik:'TH-2026-013 — Demir-Beton İnş. Ltd.', link:'crm-finans-taseron.html', alt:'8 Tem · onaylandı', tutar:210000, badge:null},
-    {proje:'liman', durum:'ok', ic:'fa-people-arrows', baslik:'TH-2026-008 — Yalıtım Kardeşler', link:'crm-finans-taseron.html', alt:'10 Tem · onaylandı, malzeme mahsuplu', tutar:128500, badge:null},
+    {proje:'vk', durum:'ok', ic:'fa-people-arrows', baslik:'TH-2026-013 — Demir-Beton İnş. Ltd.', link:'crm-finans-hakedis-detay.html?th=013', alt:'8 Tem · onaylandı', tutar:210000, badge:null},
+    {proje:'liman', durum:'ok', ic:'fa-people-arrows', baslik:'TH-2026-008 — Yalıtım Kardeşler', link:'crm-finans-hakedis-detay.html?th=008', alt:'10 Tem · onaylandı, malzeme mahsuplu', tutar:128500, badge:null},
     {proje:'vk', durum:'ok', ic:'fa-file-invoice', baslik:'FTR-2026-06 — Boğaziçi Yapı Market', link:'crm-satinalma-irsaliye-fatura.html', alt:'15 Tem · vade', tutar:418200, badge:null},
     {proje:'genel', durum:'ok', ic:'fa-users', baslik:'Bordro', link:'crm-operasyon-puantaj.html', alt:'28 Tem · 28 Ağu · 28 Eyl (idari 22 + öz saha 69)', tutar:3400000, badge:{cls:'info', lbl:'Her ayın 28\'i'}},
     {proje:'vk', durum:'danger', ic:'fa-file-invoice-dollar', baslik:'FTR-2026-09 — Marmara Demir Çelik', link:'crm-satinalma-siparis-detay.html?sip=SIP-2026-05', alt:'27 Ağu · 60 gün dip sürücüsü', tutar:2840000, badge:{cls:'danger', lbl:'Vade riski'}},
     {proje:'liman', durum:'ok', ic:'fa-file-invoice', baslik:'Trakya Beton Santrali — SIP-2026-06 faturası', link:'crm-satinalma-siparis-detay.html?sip=SIP-2026-06', alt:'Eylül ortası · teslim sonrası beklenen vade', tutar:798000, badge:{cls:'info', lbl:'Beklenen'}},
-    {proje:'vk', durum:'blocked', ic:'fa-ban', baslik:'TH-2026-014 — Demir-Beton İnş. Ltd.', link:'crm-finans-taseron.html', alt:'Metraj itirazı görüşülüyor — ödeme bloke, tarih atanmadı', tutar:90000, badge:{cls:'off', lbl:'İhtilaflı · bloke'}},
+    {proje:'vk', durum:'blocked', ic:'fa-ban', baslik:'TH-2026-014 — Demir-Beton İnş. Ltd.', link:'crm-finans-hakedis-detay.html?th=014', alt:'Metraj itirazı görüşülüyor — ödeme bloke, tarih atanmadı', tutar:90000, badge:{cls:'off', lbl:'İhtilaflı · bloke'}},
     {proje:'genel', durum:'ok', ic:'fa-cash-register', baslik:'Haftalık şantiye kasa beslemeleri', link:'crm-operasyon-kasa.html', alt:'Her hafta · planlı, ~₺100.000–150.000', tutar:null, badge:{cls:'info', lbl:'Planlı'}}
   ];
 

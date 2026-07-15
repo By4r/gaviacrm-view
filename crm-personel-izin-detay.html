@@ -153,6 +153,8 @@
   var q = new URLSearchParams(location.search);
   var rawParam = q.get('izn');
   var id = rawParam === null ? DEFAULT_ID : normalize(rawParam);
+  /* D18: personel köprüsü ?per= kimliği (kanonik DOM-sıra numaraları) */
+  var PER = { 'Ali Vural':'010', 'Aylin Koç':'005', 'Ramazan Kılıç':'012', 'Nesrin Aydın':'007', 'Ömer Taşkın':'006' };
   var rec = id ? IZIN[id] : null;
 
   if(!rec){
@@ -213,7 +215,7 @@
     +         '<div class="gd-label">Personel</div>'
     +         '<div class="ctx-link">'
     +           '<div class="who-mark" style="background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)">' + rec.ini + '</div>'
-    +           '<div><a href="crm-personel-detay.html">' + rec.personel + '</a><span>' + rec.pozisyon + ' · ' + rec.santiye + '</span></div>'
+    +           '<div><a href="crm-personel-detay.html' + (PER[rec.personel] ? '?per=' + PER[rec.personel] : '') + '">' + rec.personel + '</a><span>' + rec.pozisyon + ' · ' + rec.santiye + '</span></div>'
     +         '</div>'
     +       '</div>'
     +       '<div class="gd-block">'
