@@ -742,6 +742,139 @@
        chip'inde; kart şeridi salt seçici. şef dalı ve syncBankaUI chip senkronu AYNEN.
      · Y12 (DK6): 4 portal sayfasına noindex eklendi (132→136/136) + robots.txt (Disallow /)
        + 404.html (index dark idiyomu; giriş + dizin aksiyonlu).
+   ─ DALGA 18 KANONİK TANIMLAR (2026-07-15 — kimliklendirme finali Y9/Y10 + Y7/Y17 yayılımı;
+       kaynak: D18 iç planı + DK1-DK12 + Beyar 15 Tem kararları. Param/geçersiz-param/ölü-link
+       kuralları DALGA 17 bloğundakiyle AYNI: kısa ASCII param + kısa değer, tanınmayan param →
+       gvNotFound kartı, parametresiz → DEFAULT, ALTIN KURAL "menü linki ölü ekrana düşmez"):
+     · TEMSİLİ DERİNLİK KURALI (Beyar onaylı): çok-kayıtlı detay dönüşümlerinde TÜM kayıtlar
+       kimlikli + liste-satırı alanlarıyla map'e girer; ZENGİN sekme/blok içerikleri yalnız
+       temsili kayıtlarda dolu olur. Sekme içerikleri UYDURULMAZ — yalnız mevcut kanonik
+       çapraz kayıtlardan derlenir (izin/avans listeleri, GRV blok, ZMT envanteri, ozluk
+       12-matrisi, kasa/hakediş atıfları); çapraz kaydı olmayan kişide tasarlanmış boş durum.
+     · SAT-2026-010 UZLAŞTIRMA (Beyar 15 Tem; D17 devri kapanır): KANONİK = D12 anlatısı —
+       Anadolu Hırdavat (TDR-06) · 5 May sipariş / 9 May teslim · SIP-2026-02 zinciri ·
+       IRS-2026-04 + FTR-2026-04 · ₺96.400 ödendi (siparis-detay:222-239 + DALGA 17 ?mlz=033).
+       ÇELİŞEN yüzeyler hizalanır: formlar.html:174-180 (tedarikçi/tarih/tutar), termin.html:156,
+       rapor-talep.html:350, talep-detay.html:224,228 (onay tarihi dahil). Kalem adı
+       "Kaynak teli + gaz tüpü" SABİT kalır.
+     · ?santiye= ŞANTİYE DETAY MAP (crm-santiye-detay.html; anahtarlar listedeki data-site
+       BİREBİR): vadi [DEFAULT — mevcut hardcode Vadi Konakları] · liman · merkez · gol · kule.
+       Liste 5 satırı + panel/rapor köprüleri kimliklenir. gol (%0 Planlama) ve kule (%100
+       Teslim) sekme içerikleri temsili-derinlik kuralına tabi (uydurma iş programı YOK —
+       durum kartı + tasarlanmış boş sekmeler). DİKKAT: ?santiye= başka sayfalarda SCOPE
+       paramı (kasa/puantaj/isprogrami) — davranış değişmez, yalnız detay sayfası kayıt seçer.
+     · ?isg= MAP (crm-santiye-isg-detay.html; kaynak: crm-santiye-isg.html KAYITLAR dizisi
+       :171-183 BİREBİR, 11 kayıt 001-011): DEFAULT 008 (mevcut hardcode, "KAYITLAR[3]
+       BİREBİR" yorumu korunur). Liste 11 satırın TAMAMI linklenir (DK10 — tek-temsili
+       gerekçe yorumu :187-191 KALKAR). Tür/durum/şantiye alanları dizideki değerlerle.
+     · ?ks= KASA RAPOR MAP (crm-operasyon-kasa-detay.html; kaynak: kasa #tblKasa 16 kayıt):
+       değer slug "ksa-018"/"ksg-004" (İKİ seri tek tabloda — çıplak numara belirsiz).
+       DEFAULT ksa-018 (mevcut hardcode KSA-2026-018). BİLİNEN TUTARSIZLIK ÇÖZÜMÜ: detayın
+       kalem dökümü liste tutarına (₺24.900) HİZALANIR — liste kanonik. KSG kayıtları
+       giriş/tahsilat tipli detay şablonu alır (KSG-004→HKD-2026-005, KSG-002→HKD-2026-004
+       çapraz linkleri ?hkd= ile). KSA-022 TASLAK → kasa-form'a linkli KALIR (detay açılmaz).
+       Dış köprü süpürmesi (panel/onaylar/bildirimler/ozet/log/santiye-detay düz metinleri)
+       ?ks= linkine döner.
+     · ?ymk= MAP (crm-operasyon-yemekhane-sayim-detay.html; kaynak: SAYIMLAR :355-360):
+       001-004 (218/225/220/223) · DEFAULT 004 (mevcut hardcode). Liste 4 satırın tamamı
+       linklenir (linkli:true bayrağı kalkar, hepsi linkli).
+     · SBL-2026-0## SAHA BİLDİRİM SERİSİ (YENİ — kayıt no'suz 8 karta ID atanır; numara =
+       crm-santiye-bildirimler.html DOM sırası) + YENİ SAYFA crm-santiye-bildirim-detay.html?bil=
+       (İSG-detay emsali; dizin +1):
+         001 H.Demirci Vadi 2 Tem 09:40 Yapı İlerlemesi "B Blok temel betonu…" Yeni [DEFAULT]
+         002 İ.Sönmez  Vadi 2 Tem 08:15 Elektrik/Mekanik Yeni
+         003 A.Koç     Liman 1 Tem 16:20 Yapı İlerlemesi Yeni
+         004 Ş.Aslan   Liman 1 Tem 11:05 İSG Yeni
+         005 Ö.Taşkın  Merkez 30 Haz 14:50 Atölye/Depo
+         006 R.Yaman   Merkez 30 Haz 10:30 Malzeme Teslimatı
+         007 M.Çetin   Liman 29 Haz 09:00 Kalite Kontrol
+         008 R.Kılıç   Vadi 28 Haz 15:40 Yapı İlerlemesi
+       Ana liste alt başlığı "8 bildirim · 4'ü yeni" DEĞİŞMEZ. santiye-detay saha sekmesindeki
+       no'suz 4 kayıt: metni havuzdaki bir kayıtla eşleşen AYNI SBL numarasını alır; eşleşmeyen
+       kayıt SBL-2026-009+ olarak seriye LİSTE-DIŞI eklenir (MLZ-031..033 arşiv emsali — ana
+       listeye satır EKLENMEZ, sekme görünümü değişmez, detayı açılır).
+     · ?per= PERSONEL MAP (crm-personel-detay.html; 22 kayıt, numara = crm-personel.html DOM
+       sırası 001-022 → 001 K.Yapıcıoğlu · 002 M.Denizli · 003 E.Sarıkaya · 004 H.Demirci
+       [DEFAULT — mevcut hardcode] · 005 A.Koç · 006 Ö.Taşkın · 007 N.Aydın · 008 B.Yıldız ·
+       009 S.Karaca · 010 A.Vural · 011 İ.Sönmez · 012 R.Kılıç · 013 S.Doğan · 014 M.Erdem ·
+       015 V.Şimşek · 016 Ş.Aslan · 017 H.Güneş · 018 M.Çetin · 019 O.Polat · 020 R.Yaman ·
+       021 İ.Kurt · 022 S.Öz). Görünür kod ÜRETİLMEZ (sicil serisi yok; kimlik param'da).
+       ZENGİN kayıtlar (temsili 4): 004 Hasan Demirci (mevcut tam içerik AYNEN) · 010 Ali Vural
+       (İZN-2026-031 + AVN-2026-014 + RPR-2026-001 + eksik Sağlık Raporu zinciri) · 005 Aylin Koç
+       (İzinli durumu + İZN geçmişi + rapor-puantaj bağlamı) · 017 Halil Güneş (İSG eğitimi
+       18 gün uyarısı + AVN/İZN çaprazları varsa). Kalan 18: kimlik kartı + liste alanları +
+       ozluk 12-matris satırından türeyen evrak özeti; sekmelerde çapraz-kayıt kuralı (üstteki
+       temsili-derinlik maddesi). data-admin-only payroll guard'ı HER kayıtta korunur.
+       İsim≠hedef düzelen dış köprüler: yemekhane-sayim-detay:179→?per=009 (Seda Karaca),
+       isg-detay:233→?per=011 (İ.Sönmez), rapor-puantaj:195→?per=005 (Aylin Koç) vb. —
+       köprü İSİMDEKİ kişiye gider, metin değişmez.
+     · RPR-2026-0## SAĞLIK RAPORU SERİSİ (YENİ — 4 kayıt, numara = liste DOM sırası) +
+       ?rpr= MAP (crm-personel-rapor-detay.html): 001 Ali Vural İstirahat 28 Haz–1 Tem 4g
+       Kartal DH "SGK'ya bildirildi" [DEFAULT — mevcut hardcode] · 002 Selim Doğan İstirahat
+       10–11 Haz 2g Kartal DH Tamamlandı · 003 Ömer Taşkın Sağlık Kurulu 15–16 Haz 2g Gebze DH
+       Tamamlandı · 004 Nesrin Aydın İstirahat 22–23 Haz 2g Özel İzmir H. "SGK bildirimi
+       bekliyor". Kod liste satırında GÖRÜNÜR olur (GRV modeli); ayarlar-firma kanonik prefiks
+       tablosuna "RPR-2026-001 — Sağlık raporu" satırı eklenir (T2).
+     · HAKEDİŞ ÇİFT MAP (crm-finans-hakedis-detay.html TEK sayfa, İKİ param kabul eder;
+       taseron-detay ?tas= JS DATA map deseni emsal): ?th= → TH-2026-{002,005,008,009,013,014}
+       (taşeron; DEFAULT parametresizde th-014 = mevcut hardcode İÇERİK BİREBİR korunur) ·
+       ?hkd= → HKD-2026-{001..006} (kurum). HKD detay içerikleri YENİ üretilir: liste alanları
+       (kurum.html) + rapor-hakedis envanteri + kasa KSG atıflarıyla (HKD-005 ↔ KSG-004 ₺620.000,
+       HKD-004 ↔ KSG-002 ₺540.000) ÇELİŞEMEZ; kesinti şablonu kurum tipinde stopaj/teminat
+       taşeron şablonundan FARKLI olabilir — kaynakta olmayan kesinti UYDURULMAZ, brüt=net
+       gösterilip "kesinti yok" notu düşülür. taseron.html + kurum.html 12 satır kimliklenir;
+       dış köprü süpürmesi (panel/ajanda/onaylar/log/cari-detay/nakit/maliyet düz metinleri)
+       ?th=/?hkd= linkine döner. sozlesme-detay İlişkili Hakedişler TH-013/014 ayrı linklere.
+     · ?szl= MAP (crm-finans-sozlesme-detay.html; değer data-sozlesme BİREBİR: k01 k02 k03
+       t05 t06 t07): DEFAULT t05 (mevcut hardcode SZL-2025-T05). D14 açık deviri #4 KAPANIR:
+       DK10 relink — taseronlar:166 (T07) + :194 (T06) düz metinleri ?szl= linkine, taseron-
+       detay:236/:260 szlHref:null → ?szl=t07/t06 (yorum :257-259 güncellenir), taseronlar:134
+       T05 linki paramlanır. sozlesmeler.html 6 satır kimliklenir.
+     · ?form= İCMAL MAP (crm-satinalma-form-detay.html; param adı icmal-cikti.html'in MEVCUT
+       ?form= anahtarıyla AYNI — senkron): map 007-014, 016 (liste 9 kaydı) + 018 (phantom;
+       listede YOKTUR, liste satırı EKLENMEZ — MLZ-030 zinciri + log + tedarikci-detay
+       köprüleriyle erişilir). DEFAULT 018 (mevcut hardcode İÇERİK BİREBİR). 015/017 REZERVE.
+       Liste 9 satırı + dış köprüler (SAT-016 zinciri: panel/panel-ajanda/rapor-talep/termin)
+       kimliklenir. SAT-010 içeriği ÜSTTEKİ UZLAŞTIRMA maddesine göre üretilir.
+     · ?u= KULLANICI DETAY (YENİ SAYFA crm-ayarlar-kullanici-detay.html; dizin +1; DK2):
+       değer kebab-slug (?u=kemal-yapicioglu — cari/tas idiyomu), 18 kayıt = kullanicilar.html
+       DOM sırası BİREBİR (alanlar: ad, e-posta, rol, kapsam, son giriş, durum). DEFAULT
+       kemal-yapicioglu. İçerik: kimlik kartı + rol/yetki özeti (ROLES matrisiyle tutarlı) +
+       koltuk bağlamı (18/25) + davet ilişkisi (Selim Doğan Beklemede ↔ davet listesi) +
+       [MOCK-SİM] düzenleme formu (kaydetmez, toast). Kullanicilar "Düzenle" butonu ?u=
+       linkine döner (Selim Doğan'ın uçak ikonu davet sayfasına). SAYFA superadmin-only
+       (mevcut data-view="su-only" aksiyonun devamı — GV.R.scr guard'ı ayarlar bölümünde).
+     · ?islem= MASTER-DETAIL PANELLERİ (kredikarti + pluxee, SAYFA İÇİ — yeni sayfa YOK;
+       avans master-detail emsali :188-254): satır tıklaması panel seçer, ?islem= deep-link
+       replaceState ile yazılır/okunur. Değerler: kredikarti KKR son 3 hane (001-014, DEFAULT
+       014 en güncel) · pluxee PLX son 3 hane (039-051, DEFAULT 051). Modül ayrımı dosya
+       bazında — çakışma yok. Panel içerikleri satır alanlarından derlenir (uydurma yok);
+       şef budaması panel verisinde de geçerli (Garanti dışı kayıt şefte açılmaz).
+     · ?log= SATIR-EXPAND (crm-ayarlar-log.html, SAYFA İÇİ): LOG-2026-0803..0834 mevcut
+       4-haneli seri; ?log=0834 → ilgili satır expand + vurgu + pager sayfa-atlaması
+       (portal-odemeler #tks-next hedef-atlama emsali). Satır href süpürmesi: kasa-detay/
+       hakedis-detay/form-detay paramsız linkleri ?ks=/?th=/?hkd=/?form= kimlikli linke
+       döner (gorev zaten ?gorev= paramlı — D17).
+     · ÖZLÜK ÖNİZLEME PANELİ (crm-personel-ozluk.html, SAYFA İÇİ; DK2): matris hücresi
+       tıklanınca alt önizleme paneli (kişi + evrak kategorisi + durum + [MOCK] belge kartı);
+       ?evrak= paramı YOK (bilinçli — hücre kimliği kişi×kategori çifti, URL-state şişkinliği;
+       panel salt görsel katman). Kişi adı hücreden ?per= detayına linklenir.
+     · Y17 MOBİL KART ×4 (DK5; portal-odemeler emsali — ayrı kart DOM'u + data-idx + gvpage
+       senkron, data-label DEĞİL): crm-personel (6 kolon) · kasa #tblDefter (7 kolon; devir
+       colspan satırı karta "Devir" başlık kartı olarak) · crm-gorev (7 kolon) · talepler
+       (7 kolon). ≤640px tablo gizlenir kart listesi açılır; pager state tablodakiyle senkron.
+     · Y7 YAYILIMI (gvNotFound — D17'deki 4'e ek 16 dosya): cari-detay, taseron-detay,
+       arac-detay, demirbas-detay, siparis-detay, stok-detay, tedarikci-detay, gavia-firma-
+       detay + satış 6'lısı (birim/firsat/musteri/sozlesme/talep/teklif-detay) + bu dalganın
+       YENİ map'leri (santiye/isg/kasa/ymk/bil/per/rpr/hakedis/szl/form/u). Kural aynı:
+       tanınmayan param → gvNotFound; parametresiz → DEFAULT.
+     · BREADCRUMB KURALI (Y16 devamı): yeni/dönüşen detay sayfaları kayıt çözülünce
+       GV.crumb(kod) çağırır (lokal .gv-crumb İCAT EDİLMEZ); teammate dokunduğu dosyada
+       eski lokal .gv-crumb varsa GV.crumb dönüşümünü DAHİL eder (45-dosya envanterinden
+       düşülür). Statik sayfada body[data-crumb] alternatifi.
+     · DİZİN/MODULLER SENKRONU: +2 YENİ ekran (bildirim-detay + kullanici-detay) →
+       mast 136→138; santiye grubu +1, ayarlar grubu +1. Dizin satırları dalga sonunda
+       T0 tarafından eklenir (6B kuralı).
    ===================================================================== */
 (function(){
   'use strict';
