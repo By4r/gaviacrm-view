@@ -60,8 +60,20 @@
 .filter-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .filter-row .frow-lbl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);flex:none;min-width:64px}
 
+/* satır seçimi + detay paneli (Dalga 18 — ?islem= master-detail) */
+#tblPluxee tbody tr{cursor:pointer}
+#tblPluxee tbody tr.is-selected td{background:rgba(var(--acc-rgb),.06)}
+#tblPluxee tbody tr.is-selected td:first-child{box-shadow:inset 3px 0 0 var(--acc-ink)}
+.plx-detail-empty{padding:40px 22px;text-align:center;color:var(--muted);font-size:13px}
+.gv-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px;padding:20px 22px}
+.gdg-item{display:flex;flex-direction:column;gap:4px;min-width:0}
+.gdg-item.span2{grid-column:1/-1}
+.gdg-lbl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.gdg-val{font-size:14px;color:var(--ink);font-weight:600;line-height:1.4}
+
 @media(max-width:640px){
   .filter-row .frow-lbl{min-width:0;width:100%}
+  .gv-detail-grid{grid-template-columns:1fr;padding:16px}
 }
 </style>
 </head>
@@ -173,6 +185,16 @@
       </div>
       <div class="gc-foot"><span id="plxFoot">—</span></div>
     </div>
+
+    <div class="gv-card" id="plxDetailCard">
+      <div class="gc-head">
+        <div class="gc-title"><i class="fa-solid fa-receipt"></i> Hareket Detayı — <span id="plxDetailNo">—</span></div>
+        <div class="gc-head-r"><span id="plxDetailBadge"></span></div>
+      </div>
+      <div class="gc-body" id="plxDetailBody">
+        <div class="plx-detail-empty">Detayları görmek için yukarıdaki listeden bir hareket seçin.</div>
+      </div>
+    </div>
   </main>
 </div>
 
@@ -250,9 +272,13 @@
   };
   var body = document.getElementById('plxBody');
   var html = '';
+  /* [D18-B1] her hareket 'plx-051' biçiminde bir id'ye eşlenir (no'dan türetilir) —
+     satır tıklama + ?islem= deep-link + detay paneli bu id'yi paylaşır */
+  var HAREKET_BY_ID = {};
   HAREKET.forEach(function(h){
     var T = TUR_META[h.tur];
-    html += '<tr data-tur="'+h.tur+'" data-santiye="'+h.santiye+'">';
+    var rid = 'plx-' + h.no.replace('PLX-2026-', '');
+    html += '<tr data-tur="'+h.tur+'" data-santiye="'+h.santiye+'" data-id="'+rid+'">';
     html += '<td><div class="rp-cell"><div class="rp-mark" style="background:'+T.bg+';color:'+T.fg+'"><i class="fa-solid '+T.ic+'"></i></div>'
           + '<div class="rp-info"><b>'+h.no+'</b><span>'+h.tarih+'</span></div></div></td>';
     html += '<td><div class="plx-kart-cell"><b>'+h.kart+'</b>'+(h.kartno ? '<span>•'+h.kartno+'</span>' : '')+'</div></td>';
@@ -262,8 +288,46 @@
     html += '<td class="num t-strong">'+fmtTL(h.tutar)+'</td>';
     html += '<td><span class="gstat '+h.durum+'">'+h.durumLbl+'</span></td>';
     html += '</tr>';
+    HAREKET_BY_ID[rid] = h;
   });
   body.innerHTML = html;
+
+  /* ---- detay paneli (Dalga 18 — ?islem= master-detail) ---- */
+  var plxDetailNo = document.getElementById('plxDetailNo');
+  var plxDetailBadge = document.getElementById('plxDetailBadge');
+  var plxDetailBody = document.getElementById('plxDetailBody');
+  function gdgItem(lbl, val, span2){
+    return '<div class="gdg-item'+(span2 ? ' span2' : '')+'"><span class="gdg-lbl">'+lbl+'</span><span class="gdg-val">'+val+'</span></div>';
+  }
+  function renderPlxDetail(id){
+    var h = HAREKET_BY_ID[id];
+    document.querySelectorAll('#tblPluxee tbody tr').forEach(function(tr){
+      tr.classList.toggle('is-selected', tr.getAttribute('data-id') === id);
+    });
+    if(!h){
+      plxDetailNo.textContent = '—';
+      plxDetailBadge.innerHTML = '';
+      plxDetailBody.innerHTML = '<div class="plx-detail-empty">Detayları görmek için yukarıdaki listeden bir hareket seçin.</div>';
+      return;
+    }
+    var T = TUR_META[h.tur];
+    plxDetailNo.textContent = h.no;
+    plxDetailBadge.innerHTML = '<span class="gstat '+h.durum+'">'+h.durumLbl+'</span>';
+    plxDetailBody.innerHTML = '<div class="gv-detail-grid">'
+      + gdgItem('Tarih', h.tarih)
+      + gdgItem('Kart / Personel', h.kart + (h.kartno ? ' •' + h.kartno : ''))
+      + gdgItem('Şantiye', h.santiye ? SANTIYE_ADI[h.santiye] : '—')
+      + gdgItem('Tür', T.tag)
+      + gdgItem('Açıklama', h.desc, true)
+      + gdgItem('Tutar', fmtTL(h.tutar))
+      + '</div>';
+  }
+  document.getElementById('plxBody').addEventListener('click', function(e){
+    var tr = e.target.closest('tr[data-id]'); if(!tr) return;
+    var id = tr.getAttribute('data-id');
+    renderPlxDetail(id);
+    gvUrlState.set({islem: id.replace('plx-', '')});
+  });
 
   /* Yeni Kayıt — oluşturabilen roller (İK dahil: kasa mantığından farklı, D8 rol notu) */
   var OLUSTURABILIR = ['superadmin','sahip','yonetim','muhasebe'];
@@ -305,6 +369,16 @@
   });
 
   applyFilter();
+
+  /* ?islem= deep-link — geçersiz/tanınmayan koddaysa sessizce en güncel kayda
+     (plx-051) düşer; bu bir gvNotFound senaryosu değil (pluxee'de rol bazlı satır
+     budaması yok, bu yüzden ek görünürlük kontrolü gerekmiyor) */
+  (function initDetailFromUrl(){
+    var urlVal = gvUrlState.get('islem');
+    var initId = 'plx-051';
+    if(urlVal && HAREKET_BY_ID['plx-' + urlVal]) initId = 'plx-' + urlVal;
+    renderPlxDetail(initId);
+  })();
 })();
 </script>
 </body>

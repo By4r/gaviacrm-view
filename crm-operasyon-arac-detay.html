@@ -319,9 +319,20 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
   };
 
   var q = new URLSearchParams(location.search);
-  var key = q.get('arac');
-  if(!VEHICLES[key]) key = 'ARC-01';
-  var v = VEHICLES[key];
+  var rawArac = q.get('arac');
+  var key = rawArac;
+  if(!VEHICLES[key]) key = rawArac ? null : 'ARC-01';
+  var v = key && VEHICLES[key];
+
+  if(!v){
+    gvNotFound({
+      code: rawArac ? rawArac.toUpperCase() : null,
+      tur: 'araç',
+      listHref: 'crm-operasyon-arac.html', listLbl: 'Araçlara dön',
+      defHref: 'crm-operasyon-arac-detay.html', defLbl: 'Varsayılan kaydı aç'
+    });
+    return;
+  }
   var tip = TIP[v.tip];
 
   function render(){

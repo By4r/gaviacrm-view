@@ -290,7 +290,7 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
           </div>
           <div id="ajdView"><div class="ajd-fallback" id="ajdFallbackList">
             <div class="ajd-fallback-day"><i class="fa-regular fa-calendar-check"></i> Bugün — 2 Temmuz 2026, Perşembe</div>
-            <a class="tg-ev" style="--evc:var(--ok);--evt:var(--ok-tint)" href="crm-finans-hakedis-detay.html" title="14:00 · Hakediş — HKD-2026-006 işveren onay takibi — Körfez GYO — Vadi Konakları — Gönderildi 20 Haz · Elif Sarıkaya, Selin Aydemir">
+            <a class="tg-ev" style="--evc:var(--ok);--evt:var(--ok-tint)" href="crm-finans-hakedis-detay.html?hkd=006" title="14:00 · Hakediş — HKD-2026-006 işveren onay takibi — Körfez GYO — Vadi Konakları — Gönderildi 20 Haz · Elif Sarıkaya, Selin Aydemir">
               <span class="tg-evtop"><i class="fa-solid fa-file-invoice-dollar tg-ico"></i><span class="tg-time">14:00</span></span>
               <span class="tg-ttl">HKD-2026-006 işveren onay takibi — Körfez GYO</span>
               <span class="tg-meta">Vadi Konakları · Gönderildi 20 Haz · Elif Sarıkaya, Selin Aydemir</span>
@@ -361,7 +361,7 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
      yeni sayfa/veri UYDURULMADI. ---- */
   var GUNLER_0 = [
     {g:'Pazartesi', k:'Pzt', d:29, ay:'Haz', olay:[
-      {saat:'07:00', tip:'beton', baslik:'Temel B Blok betonu', santiye:'Vadi Konakları', kisi:'İbrahim Sönmez, Ramazan Kılıç', href:'crm-santiye-detay.html'}
+      {saat:'07:00', tip:'beton', baslik:'Temel B Blok betonu', santiye:'Vadi Konakları', kisi:'İbrahim Sönmez, Ramazan Kılıç', href:'crm-santiye-detay.html?santiye=vadi'}
     ]},
     {g:'Salı', k:'Sal', d:30, ay:'Haz', olay:[
       {saat:'10:00', tip:'denetim', baslik:'Aliağa Liman İşletmeleri saha denetimi', santiye:'Liman Lojistik Merkezi', kisi:'Aylin Koç, Erhan Kaya'}
@@ -370,7 +370,7 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
       {saat:'09:00', tip:'isg', baslik:'Yüksekte çalışma toolbox eğitimi', santiye:'Merkez Şantiye', kisi:'Ömer Taşkın', href:'crm-santiye-isg.html'}
     ]},
     {g:'Perşembe', k:'Per', d:2, ay:'Tem', bugun:true, olay:[
-      {saat:'14:00', tip:'hakedis', baslik:'HKD-2026-006 işveren onay takibi — Körfez GYO', santiye:'Vadi Konakları', kisi:'Gönderildi 20 Haz · Elif Sarıkaya, Selin Aydemir', href:'crm-finans-hakedis-detay.html'},
+      {saat:'14:00', tip:'hakedis', baslik:'HKD-2026-006 işveren onay takibi — Körfez GYO', santiye:'Vadi Konakları', kisi:'Gönderildi 20 Haz · Elif Sarıkaya, Selin Aydemir', href:'crm-finans-hakedis-detay.html?hkd=006'},
       {saat:'16:00', tip:'toplanti', baslik:'Haftalık saha koordinasyon toplantısı', santiye:'Liman Lojistik Merkezi', kisi:'Murat Denizli'}
     ]},
     {g:'Cuma', k:'Cum', d:3, ay:'Tem', olay:[
@@ -389,21 +389,21 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
      yoğunluğu göstermek için). */
   var GUNLER_M1 = [
     {g:'Pazartesi', k:'Pzt', d:22, ay:'Haz', olay:[
-      {saat:'08:30', tip:'isg', baslik:'ISG-2026-005 · Forklift-yaya güzergah ramak kala', santiye:'Merkez Şantiye', kisi:'Ömer Taşkın', href:'crm-santiye-isg.html'}
+      {saat:'08:30', tip:'isg', baslik:'ISG-2026-005 · Forklift-yaya güzergah ramak kala', santiye:'Merkez Şantiye', kisi:'Ömer Taşkın', href:'crm-santiye-isg-detay.html?isg=005'}
     ]},
     {g:'Salı', k:'Sal', d:23, ay:'Haz', olay:[]},
     {g:'Çarşamba', k:'Çar', d:24, ay:'Haz', olay:[
       {saat:'10:00', tip:'denetim', baslik:'Temel çukuru zemin iyileştirme kontrolü', santiye:'Merkez Şantiye', kisi:'Ömer Taşkın'}
     ]},
     {g:'Perşembe', k:'Per', d:25, ay:'Haz', olay:[
-      {saat:'09:00', tip:'isg', baslik:'ISG-2026-006 · Elektrik güvenliği toolbox eğitimi', santiye:'Vadi Konakları', kisi:'Hasan Demirci', href:'crm-santiye-isg.html'},
+      {saat:'09:00', tip:'isg', baslik:'ISG-2026-006 · Elektrik güvenliği toolbox eğitimi', santiye:'Vadi Konakları', kisi:'Hasan Demirci', href:'crm-santiye-isg-detay.html?isg=006'},
       {saat:'16:00', tip:'toplanti', baslik:'Haftalık saha koordinasyon toplantısı', santiye:'Liman Lojistik Merkezi', kisi:'Murat Denizli'}
     ]},
     {g:'Cuma', k:'Cum', d:26, ay:'Haz', olay:[
       {saat:'07:30', tip:'beton', baslik:'Perde betonu döküm hazırlığı', santiye:'Vadi Konakları', kisi:'İbrahim Sönmez, Ramazan Kılıç'}
     ]},
     {g:'Cumartesi', k:'Cmt', d:27, ay:'Haz', olay:[
-      {saat:'08:00', tip:'isg', baslik:'ISG-2026-007 · Forklift çarpması — hafif yaralanma', santiye:'Liman Lojistik Merkezi', kisi:'Aylin Koç', href:'crm-santiye-isg.html'}
+      {saat:'08:00', tip:'isg', baslik:'ISG-2026-007 · Forklift çarpması — hafif yaralanma', santiye:'Liman Lojistik Merkezi', kisi:'Aylin Koç', href:'crm-santiye-isg-detay.html?isg=007'}
     ]},
     {g:'Pazar', k:'Paz', d:28, ay:'Haz', olay:[]}
   ];

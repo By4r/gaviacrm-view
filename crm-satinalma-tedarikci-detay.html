@@ -336,9 +336,20 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
   };
 
   var q = new URLSearchParams(location.search);
-  var key = q.get('tdr');
-  if(!TDR[key]) key = 'TDR-01';
-  var item = TDR[key];
+  var rawTdr = q.get('tdr');
+  var key = rawTdr;
+  if(!TDR[key]) key = rawTdr ? null : 'TDR-01';
+  var item = key && TDR[key];
+
+  if(!item){
+    gvNotFound({
+      code: rawTdr ? rawTdr.toUpperCase() : null,
+      tur: 'tedarikçi',
+      listHref: 'crm-satinalma-tedarikciler.html', listLbl: 'Tedarikçilere dön',
+      defHref: 'crm-satinalma-tedarikci-detay.html', defLbl: 'Varsayılan kaydı aç'
+    });
+    return;
+  }
 
   function initials(name){
     var parts = name.split(/\s+/).filter(Boolean);

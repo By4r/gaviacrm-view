@@ -268,9 +268,20 @@
   };
 
   var q = new URLSearchParams(location.search);
-  var key = q.get('zmt');
-  if(!ITEMS[key]) key = '041';
-  var item = ITEMS[key];
+  var rawZmt = q.get('zmt');
+  var key = rawZmt;
+  if(!ITEMS[key]) key = rawZmt ? null : '041';
+  var item = key && ITEMS[key];
+
+  if(!item){
+    gvNotFound({
+      code: rawZmt ? rawZmt.toUpperCase() : null,
+      tur: 'demirbaş',
+      listHref: 'crm-operasyon-demirbas.html', listLbl: 'Demirbaşlara dön',
+      defHref: 'crm-operasyon-demirbas-detay.html', defLbl: 'Varsayılan kaydı aç'
+    });
+    return;
+  }
 
   function tl(n){ return '₺' + n.toLocaleString('tr-TR'); }
 

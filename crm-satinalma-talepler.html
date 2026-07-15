@@ -47,6 +47,26 @@
 @media(max-width:640px){
   .tl-desc{max-width:150px}
 }
+
+/* ---- mobil talep kartları (640px altı — D18 Y17): #tblTalep ile aynı tr kümesinden
+   üretilir, data-idx ile eşleşir; pager (data-paginate) 'gvpage' event'iyle senkron
+   kalır (portal-odemeler .tks-mrow deseni) ---- */
+.tl-mobile-list{display:none}
+.tl-mrow{padding:14px 18px;border-bottom:1px solid var(--line)}
+.tl-mrow:last-child{border-bottom:none}
+.tl-mrow-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:9px}
+.tl-mrow-top .tl-cell{flex:1}
+.tl-mrow-desc{display:block;font-size:13px;color:var(--ink-2);margin-bottom:9px;line-height:1.4}
+.tl-mrow-desc:hover{color:var(--acc-ink)}
+.tl-mrow-meta{display:flex;flex-wrap:wrap;align-items:center;gap:7px 14px;margin-bottom:10px;font-size:12px;color:var(--muted)}
+.tl-mrow-meta span{display:inline-flex;align-items:center;gap:6px}
+.tl-mrow-meta i{font-size:10.5px;color:var(--line-2)}
+.tl-mrow-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.tl-mrow-acts .ia-btn{width:36px;height:36px}
+@media(max-width:640px){
+  #tblTalep{display:none}
+  .tl-mobile-list{display:block}
+}
 </style>
 </head>
 <body data-sec="satinalma" data-screen="talepler">
@@ -254,6 +274,7 @@
             </tr>
           </tbody>
         </table>
+        <div class="tl-mobile-list" id="tlMobileList"></div>
         <div class="gv-empty" data-table-empty hidden>
           <div class="ge-ico"><i class="fa-solid fa-boxes-stacked"></i></div>
           <h4>Eşleşen talep yok</h4>
@@ -300,6 +321,118 @@
   var OLUSTURABILIR = ['superadmin','sahip','sef','satinalma'];
   document.querySelectorAll('[data-view="olusturabilir"]').forEach(function(el){
     el.hidden = OLUSTURABILIR.indexOf(GV.role) === -1;
+  });
+
+  /* ---- mobil kart listesi (D18 Y17): masaüstü #tblTalep ile aynı tr kümesinden
+     üretilir — tek veri modeli (portal-odemeler .tks-mrow deseni). Rol budaması
+     (tr.remove, yukarıda) SONRASI çağrılır. data-idx data-label YERİNE eşleşme
+     anahtarıdır. ---- */
+  var tlTable = document.getElementById('tblTalep');
+  var tlMobileList = document.getElementById('tlMobileList');
+  function buildTlCards(){
+    if(!tlTable || !tlMobileList) return;
+    var tbody = tlTable.querySelector('tbody');
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+    tlMobileList.innerHTML = '';
+    rows.forEach(function(tr, idx){
+      tr.setAttribute('data-idx', idx);
+      var card = document.createElement('div');
+      card.className = 'tl-mrow';
+      card.setAttribute('data-f', tr.getAttribute('data-f') || '');
+      card.setAttribute('data-idx', idx);
+      card.hidden = tr.hidden;
+
+      var top = document.createElement('div'); top.className = 'tl-mrow-top';
+      var cellEl = tr.querySelector('.tl-cell');
+      if(cellEl) top.appendChild(cellEl.cloneNode(true));
+      var pri = tr.querySelector('.pri');
+      if(pri) top.appendChild(pri.cloneNode(true));
+      card.appendChild(top);
+
+      var descEl = tr.querySelector('.tl-desc');
+      if(descEl){
+        var desc = document.createElement('a');
+        desc.className = 'tl-mrow-desc'; desc.href = descEl.getAttribute('href'); desc.textContent = descEl.textContent;
+        card.appendChild(desc);
+      }
+
+      var meta = document.createElement('div'); meta.className = 'tl-mrow-meta';
+      var santiyeTd = tr.children[1];
+      var edenTd = tr.children[3];
+      var site = document.createElement('span');
+      site.innerHTML = '<i class="fa-solid fa-helmet-safety"></i>';
+      site.appendChild(document.createTextNode(' ' + (santiyeTd ? santiyeTd.textContent.trim() : '—')));
+      meta.appendChild(site);
+      var eden = document.createElement('span');
+      eden.innerHTML = '<i class="fa-solid fa-user"></i>';
+      eden.appendChild(document.createTextNode(' ' + (edenTd ? edenTd.textContent.trim() : '—')));
+      meta.appendChild(eden);
+      card.appendChild(meta);
+
+      var bottom = document.createElement('div'); bottom.className = 'tl-mrow-bottom';
+      var durumTd = tr.children[5];
+      var durum = durumTd ? durumTd.querySelector('.gstat') : null;
+      var durumWrap = document.createElement('div');
+      if(durum) durumWrap.appendChild(durum.cloneNode(true));
+      bottom.appendChild(durumWrap);
+
+      var acts = document.createElement('div'); acts.className = 'tl-mrow-acts';
+      var iaBtn = tr.querySelector('.ia-btn');
+      if(iaBtn){
+        var ia = document.createElement('a');
+        ia.className = 'ia-btn'; ia.href = iaBtn.getAttribute('href');
+        ia.setAttribute('data-no-confirm', ''); ia.setAttribute('aria-label', 'Talep detayı');
+        ia.innerHTML = '<i class="fa-solid fa-arrow-up-right-from-square"></i>';
+        acts.appendChild(ia);
+      }
+      bottom.appendChild(acts);
+      card.appendChild(bottom);
+
+      tlMobileList.appendChild(card);
+    });
+  }
+  buildTlCards();
+
+  /* filtre (chip/arama) değişince tr.hidden → card.hidden aktarımı — data-idx eşleşmesi */
+  function syncTlFilterVisibility(){
+    if(!tlTable || !tlMobileList) return;
+    Array.prototype.forEach.call(tlTable.querySelectorAll('tbody tr'), function(tr){
+      var idx = tr.getAttribute('data-idx');
+      if(idx === null) return;
+      var card = tlMobileList.querySelector('.tl-mrow[data-idx="' + idx + '"]');
+      if(card) card.hidden = tr.hidden;
+    });
+  }
+
+  /* sayfalandırma (gv-pager, D17 Y5): masaüstü tabloya bağlanır (data-paginate="25",
+     13 kayıtla pager kendini gizler ama mekanizma aktif kalır). Mobil kart listesi
+     ayrı bir DOM olduğu için pager'ı görmez — 'gvpage' event'ini dinleyip aynı dilimi
+     (.gv-pg-hide) index eşleşmesiyle mobil listeye uygular (portal-odemeler deseni,
+     script satır 249-262 BİREBİR). ---- */
+  if(tlTable){
+    tlTable.addEventListener('gvpage', function(e){
+      var d = e.detail;
+      var visCards = Array.prototype.filter.call(tlMobileList.children, function(c){ return !c.hidden; });
+      visCards.forEach(function(c, i){
+        c.classList.toggle('gv-pg-hide', i < (d.page - 1) * d.size || i >= d.page * d.size);
+      });
+    });
+  }
+
+  /* ui.js'in wireTables'ı DOMContentLoaded'da chip/arama listener'larını KENDİ kurar
+     (bu script yukarıda senkron çalıştığı için o listener'lardan ÖNCE tamamlanır).
+     Kayıt sırasının ui.js'ten SONRA gelmesi için bu senkron listener'lar da
+     DOMContentLoaded'a bağlanır — aynı elemanda ui.js'in listener'ı ÖNCE, bizimki
+     SONRA tetiklenir (ekleme sırası = tetiklenme sırası), böylece tr.hidden zaten
+     güncellenmiş olur. ---- */
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.chip[data-filter]').forEach(function(ch){
+      ch.addEventListener('click', syncTlFilterVisibility);
+    });
+    document.querySelectorAll('input[data-table-search]').forEach(function(inp){
+      inp.addEventListener('input', syncTlFilterVisibility);
+    });
+    syncTlFilterVisibility();   /* ui.js'in ilk applyFilters çağrısı SONRASI durum */
   });
 })();
 </script>

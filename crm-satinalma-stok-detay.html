@@ -229,9 +229,20 @@
   var TDR_AD = {'TDR-01':'Ege Hazır Beton','TDR-02':'Trakya Beton Santrali','TDR-03':'Marmara Demir Çelik','TDR-04':'Boğaziçi Yapı Market','TDR-05':'Delta Elektrik','TDR-06':'Anadolu Hırdavat'};
 
   var q = new URLSearchParams(location.search);
-  var key = q.get('kalem');
-  if(!ITEMS[key]) key = 'demir-o16';
-  var item = ITEMS[key];
+  var rawKalem = q.get('kalem');
+  var key = rawKalem;
+  if(!ITEMS[key]) key = rawKalem ? null : 'demir-o16';
+  var item = key && ITEMS[key];
+
+  if(!item){
+    gvNotFound({
+      code: rawKalem ? rawKalem.toUpperCase() : null,
+      tur: 'stok kalemi',
+      listHref: 'crm-satinalma-stok.html', listLbl: 'Stoğa dön',
+      defHref: 'crm-satinalma-stok-detay.html', defLbl: 'Varsayılan kaydı aç'
+    });
+    return;
+  }
   var K = KAT[item.kat];
   var D = DEPO[item.depo];
 

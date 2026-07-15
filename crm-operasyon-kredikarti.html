@@ -56,10 +56,22 @@
 .filter-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .filter-row .frow-lbl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);flex:none;min-width:64px}
 
+/* satır seçimi + detay paneli (Dalga 18 — ?islem= master-detail) */
+#tblKK tbody tr{cursor:pointer}
+#tblKK tbody tr.is-selected td{background:rgba(var(--acc-rgb),.06)}
+#tblKK tbody tr.is-selected td:first-child{box-shadow:inset 3px 0 0 var(--acc-ink)}
+.kk-detail-empty{padding:40px 22px;text-align:center;color:var(--muted);font-size:13px}
+.gv-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px;padding:20px 22px}
+.gdg-item{display:flex;flex-direction:column;gap:4px;min-width:0}
+.gdg-item.span2{grid-column:1/-1}
+.gdg-lbl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.gdg-val{font-size:14px;color:var(--ink);font-weight:600;line-height:1.4}
+
 @media(max-width:980px){.kk-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:640px){
   .kk-strip{grid-template-columns:1fr}
   .filter-row .frow-lbl{min-width:0;width:100%}
+  .gv-detail-grid{grid-template-columns:1fr;padding:16px}
 }
 </style>
 </head>
@@ -173,6 +185,16 @@
       </div>
       <div class="gc-foot"><span id="kkFoot">—</span></div>
     </div>
+
+    <div class="gv-card" id="kkDetailCard">
+      <div class="gc-head">
+        <div class="gc-title"><i class="fa-solid fa-receipt"></i> Hareket Detayı — <span id="kkDetailNo">—</span></div>
+        <div class="gc-head-r"><span id="kkDetailBadge"></span></div>
+      </div>
+      <div class="gc-body" id="kkDetailBody">
+        <div class="kk-detail-empty">Detayları görmek için yukarıdaki listeden bir hareket seçin.</div>
+      </div>
+    </div>
   </main>
 </div>
 
@@ -239,6 +261,9 @@
   /* ---- hareket tablosu render ---- */
   var body = document.getElementById('kkBody');
   var html = '';
+  /* [D18-B1] her hareket 'kkr-014' biçiminde bir id'ye eşlenir (no'dan türetilir) —
+     satır tıklama + ?islem= deep-link + detay paneli bu id'yi paylaşır */
+  var HAREKET_BY_ID = {};
   HAREKET.forEach(function(h){
     var K = KARTLAR[h.banka];
     var durLbl = h.durum === 'bekliyor' ? '' : DURUM_LBL[h.durum];
@@ -248,7 +273,8 @@
     var taksitHtml = h.taksit === 'tek'
       ? '<span class="gtag">Tek Çekim</span>'
       : '<span class="gtag" style="background:var(--info-tint);color:var(--info);border-color:transparent">'+h.taksit+' Taksit</span>';
-    html += '<tr data-banka="'+h.banka+'" data-durum="'+h.durum+'">';
+    var rid = 'kkr-' + h.no.replace('KKR-2026-', '');
+    html += '<tr data-banka="'+h.banka+'" data-durum="'+h.durum+'" data-id="'+rid+'">';
     html += '<td><div class="rp-cell"><div class="rp-mark"><i class="fa-solid fa-receipt"></i></div>'
           + '<div class="rp-info"><b>'+h.no+'</b><span>'+h.tarih+'</span></div></div></td>';
     html += '<td><div class="kk-kart-cell"><b>'+K.banka+'</b><span>•'+K.no+'</span></div></td>';
@@ -258,8 +284,48 @@
     html += '<td class="num t-strong">'+fmtTL(h.tutar)+'</td>';
     html += '<td>'+durHtml+'</td>';
     html += '</tr>';
+    HAREKET_BY_ID[rid] = {h: h, K: K, durHtml: durHtml};
   });
   body.innerHTML = html;
+
+  /* ---- detay paneli (Dalga 18 — ?islem= master-detail) ---- */
+  var kkDetailNo = document.getElementById('kkDetailNo');
+  var kkDetailBadge = document.getElementById('kkDetailBadge');
+  var kkDetailBody = document.getElementById('kkDetailBody');
+  function gdgItem(lbl, val, span2){
+    return '<div class="gdg-item'+(span2 ? ' span2' : '')+'"><span class="gdg-lbl">'+lbl+'</span><span class="gdg-val">'+val+'</span></div>';
+  }
+  function renderKkDetail(id){
+    var rec = HAREKET_BY_ID[id];
+    document.querySelectorAll('#tblKK tbody tr').forEach(function(tr){
+      tr.classList.toggle('is-selected', tr.getAttribute('data-id') === id);
+    });
+    if(!rec){
+      kkDetailNo.textContent = '—';
+      kkDetailBadge.innerHTML = '';
+      kkDetailBody.innerHTML = '<div class="kk-detail-empty">Detayları görmek için yukarıdaki listeden bir hareket seçin.</div>';
+      return;
+    }
+    var h = rec.h, K = rec.K;
+    var taksitTxt = h.taksit === 'tek' ? 'Tek Çekim' : (h.taksit + ' Taksit');
+    kkDetailNo.textContent = h.no;
+    kkDetailBadge.innerHTML = rec.durHtml;
+    kkDetailBody.innerHTML = '<div class="gv-detail-grid">'
+      + gdgItem('Tarih', h.tarih)
+      + gdgItem('Kart', K.banka + ' •' + K.no)
+      + gdgItem('Kart Sahibi', K.sahip)
+      + gdgItem('Taksit', taksitTxt)
+      + gdgItem('Firma / Satıcı', h.firma, true)
+      + gdgItem('Açıklama', h.desc, true)
+      + gdgItem('Tutar', fmtTL(h.tutar))
+      + '</div>';
+  }
+  document.getElementById('kkBody').addEventListener('click', function(e){
+    var tr = e.target.closest('tr[data-id]'); if(!tr) return;
+    var id = tr.getAttribute('data-id');
+    renderKkDetail(id);
+    gvUrlState.set({islem: id.replace('kkr-', '')});
+  });
 
   /* Harcama Kaydı — oluşturabilen roller */
   var OLUSTURABILIR = ['superadmin','sahip','yonetim','muhasebe','sef'];
@@ -348,6 +414,19 @@
   document.getElementById('kkSearch').addEventListener('input', applyFilter);
 
   applyFilter();
+
+  /* ?islem= deep-link — geçersiz kod ya da şefin görmediği bir bankaya ait kayıtsa
+     sessizce en güncel kayda (kkr-014) düşer; bu bir gvNotFound senaryosu değil */
+  (function initDetailFromUrl(){
+    var urlVal = gvUrlState.get('islem');
+    var initId = 'kkr-014';
+    if(urlVal){
+      var cand = 'kkr-' + urlVal;
+      var rec = HAREKET_BY_ID[cand];
+      if(rec && !(GV.role === 'sef' && rec.h.banka !== 'garanti')) initId = cand;
+    }
+    renderKkDetail(initId);
+  })();
 })();
 </script>
 </body>

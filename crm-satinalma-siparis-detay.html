@@ -355,9 +355,20 @@
   };
 
   var q = new URLSearchParams(location.search);
-  var key = (q.get('sip') || '').replace('SIP-2026-', '');
-  if(!ITEMS[key]) key = '05';
-  var item = ITEMS[key];
+  var rawSip = q.get('sip');
+  var key = rawSip ? rawSip.replace('SIP-2026-', '') : null;
+  if(!ITEMS[key]) key = rawSip ? null : '05';
+  var item = key && ITEMS[key];
+
+  if(!item){
+    gvNotFound({
+      code: rawSip ? rawSip.toUpperCase() : null,
+      tur: 'sipariş',
+      listHref: 'crm-satinalma-siparisler.html', listLbl: 'Siparişlere dön',
+      defHref: 'crm-satinalma-siparis-detay.html', defLbl: 'Varsayılan kaydı aç'
+    });
+    return;
+  }
 
   function tl(n){ return '₺' + n.toLocaleString('tr-TR'); }
 

@@ -205,7 +205,7 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
         </table>
       </div>
       <div class="gc-foot">
-        <span><i class="fa-solid fa-circle-info"></i> Sayımlar haftalık özet şeridiyle aynı günlük toplamları listeler; yalnız YMK-2026-004 için temsili bir detay sayfası bulunur.</span>
+        <span><i class="fa-solid fa-circle-info"></i> Sayımlar haftalık özet şeridiyle aynı günlük toplamları listeler; 4 kaydın tamamı detay sayfasına bağlıdır, kalem kırılımı ve düzenleme geçmişi yalnızca YMK-2026-004 için detaylandırılmıştır.</span>
       </div>
     </div>
   </main>
@@ -347,21 +347,22 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
   strip.innerHTML = wh;
 
   /* ---- Son Sayımlar — kayıt listesi (Y2), haftalık özet şeridiyle (HAFTA dizisi)
-     BİREBİR aynı günlük toplamlar (218/225/220/223). Yalnız YMK-2026-004 gerçekten var
-     olan crm-operasyon-yemekhane-sayim-detay.html'in temsil ettiği kayıtla eşleştiği
-     için tıklanabilir — crm-santiye-isg.html'deki tek-temsili-detay emseliyle aynı
-     gerekçe: diğer 3 kayda aynı detay sayfasını bağlarsak tarih/toplam uyuşmazlığı
-     doğar, bu yüzden yalnız 004 linklenir, kalanı düz metin kalır. ---- */
+     BİREBİR aynı günlük toplamlar (218/225/220/223). D18 ?ymk= MAP dönüşümü: TÜM 4
+     kayıt crm-operasyon-yemekhane-sayim-detay.html?ymk=NNN'ye linklenir (NNN =
+     001/002/003/004, kod'daki son 3 hane). Detay sayfasında yalnız 004 zengin
+     (öğün kırılımı + düzenleme geçmişi) içerikle açılır; 001-003 temsili-derinlik
+     kuralına göre yalnız günlük genel toplamla gösterilir (bkz. o sayfanın DATA map'i). ---- */
   var SAYIMLAR = [
     {no:'YMK-2026-001', tarih:'Pzt 29 Haz 2026', toplam:218},
     {no:'YMK-2026-002', tarih:'Sal 30 Haz 2026',  toplam:225},
     {no:'YMK-2026-003', tarih:'Çar 1 Tem 2026',   toplam:220},
-    {no:'YMK-2026-004', tarih:'Per 2 Tem 2026',   toplam:genelToplam, linkli:true}
+    {no:'YMK-2026-004', tarih:'Per 2 Tem 2026',   toplam:genelToplam}
   ];
   var sonSayimBody = document.getElementById('sonSayimBody');
   var sh = '';
   SAYIMLAR.forEach(function(s){
-    var noCell = s.linkli ? '<a href="crm-operasyon-yemekhane-sayim-detay.html">'+s.no+'</a>' : s.no;
+    var ymk = s.no.slice(-3);
+    var noCell = '<a href="crm-operasyon-yemekhane-sayim-detay.html?ymk='+ymk+'">'+s.no+'</a>';
     sh += '<tr><td>'+noCell+'</td><td>'+s.tarih+'</td><td class="num t-strong">'+s.toplam+'</td></tr>';
   });
   sonSayimBody.innerHTML = sh;

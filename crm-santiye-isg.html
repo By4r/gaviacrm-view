@@ -184,14 +184,14 @@
 
   var body = document.getElementById('igBody');
   var html = '';
-  /* Yalnız ISG-2026-008, gerçekten var olan crm-santiye-isg-detay.html'in temsil ettiği
-     kayıtla eşleştiği için tıklanabilir — Dalga 6A'da tek bir temsili detay sayfası
-     üretildi (bkz. crm-santiye-isg-detay.html). Diğer 10 kayıt için aynı detay sayfasına
-     bağlarsak numara/tarih/sorumlu uyuşmazlığı doğar (ör. ISG-2026-011 tıklanınca 008'in
-     verileri görünürdü); bu yüzden yalnız 008 linklenir, kalanı düz metin kalır. */
+  /* D18 Y9: ?isg= map dönüşümü — crm-santiye-isg-detay.html artık 11 kaydın TAMAMINI
+     tanıyan bir map'e döndü (kaynak: shell.js DALGA 18 KANONİK TANIMLAR ?isg= maddesi),
+     tek-temsili gerekçesiyle 008'e kısıtlama KALKTI. Tüm satırlar ?isg=NNN (NNN = kaydın
+     3 haneli no'su) ile linklenir; parametresiz açılış ISG-2026-008 DEFAULT'a düşer. */
   KAYITLAR.forEach(function(k){
     var T = TUR[k.tur];
-    var noCell = (k.no === 'ISG-2026-008') ? '<a href="crm-santiye-isg-detay.html">'+k.no+'</a>' : k.no;
+    var noNum = k.no.slice(-3);
+    var noCell = '<a href="crm-santiye-isg-detay.html?isg='+noNum+'">'+k.no+'</a>';
     html += '<tr data-san="'+k.santiye+'" data-tur="'+k.tur+'">';
     html += '<td><div class="ig-cell"><div class="ig-mark"><i class="fa-solid '+T.ic+'"></i></div><div class="ig-info"><b>'+noCell+'</b><span>'+k.tarih+'</span></div></div></td>';
     html += '<td>'+SANTIYE_ADI[k.santiye]+'</td>';
