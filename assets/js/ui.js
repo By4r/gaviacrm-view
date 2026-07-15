@@ -6,7 +6,9 @@
    tablo arama + chip filtre yardımcıları ·
    gvChain onay zinciri (timeline + rozet + onayla/reddet/revize aksiyonu) ·
    gvUrlState (?f=&q=&page= URL-state, D17) · gvNotFound kayıt-bulunamadı kartı (D17) ·
-   gv-pager sayfalandırma (data-paginate, D17) · gv-empty "Filtreleri temizle" (D17).
+   gv-pager sayfalandırma (data-paginate, D17; data-paginate-key namespace, D18) ·
+   gv-empty "Filtreleri temizle" (D17) · gvApplyFilters + tbl._gvApply bileşik-motor
+   delegasyonu (D18 — çifte-listener bulgusunun kalıcı çözümü).
    Ortak çekirdek dosya — değişiklikler tek elden yapılır.
    ===================================================================== */
 (function(){
@@ -476,22 +478,26 @@
      Sayfa-lokal filtre motoru olan ekranlar filtre sonrası gvPagerRefresh(el) çağırır;
      ui.js applyFilters bunu kendisi yapar. Kurallar (RB §5 statik alt kümesi):
      kayıt ≤ pageSize → pager gizli · filtre değişince page=1 · geçersiz/aşkın ?page →
-     son sayfaya kelepçe · toplam kayıt sayacı · ?page= URL'de (tek listeli sayfa
-     varsayımı). Her refresh'te konteyner 'gvpage' CustomEvent yayar (gün-başlıklı
-     listelerin grup başlığı senkronu için — ayarlar-log idiyomu). ---- */
+     son sayfaya kelepçe · toplam kayıt sayacı · ?page= URL'de. D18: aynı sayfada
+     birden çok pager için data-paginate-key="defter" → parametre ?page-defter= olur
+     (anahtar verilmezse ?page=, tek-listeli sayfalar değişmez). Her refresh'te
+     konteyner 'gvpage' CustomEvent yayar (gün-başlıklı listelerin grup başlığı
+     senkronu için — ayarlar-log idiyomu). ---- */
   window.gvPager = function(el, opts){
     if(typeof el === 'string') el = document.querySelector(el);
     if(!el) return null;
     if(el._gvPager){ el._gvPager.refresh(); return el._gvPager; }
     opts = opts || {};
     var size = parseInt(el.getAttribute('data-paginate'), 10) || opts.pageSize || 25;
+    var pkey = el.getAttribute('data-paginate-key');
+    pkey = pkey ? 'page-' + pkey : 'page';
     var rowSel = el.getAttribute('data-paginate-rows') || (el.tagName === 'TABLE' ? 'tbody tr' : ':scope > *');
     var nav = document.createElement('nav');
     nav.className = 'gv-pager'; nav.hidden = true;
     nav.setAttribute('aria-label', 'Sayfalandırma');
     var anchor = el.closest('.gc-body') || el;
     anchor.parentNode.insertBefore(nav, anchor.nextSibling);
-    var page = parseInt(gvUrlState.get('page'), 10) || 1;
+    var page = parseInt(gvUrlState.get(pkey), 10) || 1;
 
     function visRows(){
       return Array.prototype.filter.call(el.querySelectorAll(rowSel), function(r){ return !r.hidden; });
@@ -536,7 +542,8 @@
       el.querySelectorAll(rowSel).forEach(function(r){ if(r.hidden) r.classList.remove('gv-pg-hide'); });
       nav.hidden = total <= size;      /* az kayıt → pager kendini gizler (RB §4) */
       if(!nav.hidden) render(total, pages);
-      gvUrlState.set({ page: page > 1 ? page : null });
+      var st = {}; st[pkey] = page > 1 ? page : null;
+      gvUrlState.set(st);
       el.dispatchEvent(new CustomEvent('gvpage', { bubbles: true, detail: { page: page, pages: pages, total: total, size: size } }));
     }
     nav.addEventListener('click', function(e){
@@ -551,7 +558,7 @@
       var top = (el.closest('.gv-card') || el).getBoundingClientRect().top + window.pageYOffset - 86;
       window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
     });
-    el._gvPager = { refresh: refresh, el: el };
+    el._gvPager = { refresh: refresh, el: el, key: pkey };
     refresh(false);
     return el._gvPager;
   };
@@ -617,6 +624,24 @@
     var term = inp ? inp.value.trim().toLocaleLowerCase('tr') : '';
     var on = card.querySelector('.chip.is-on[data-filter]');
     var f = on ? on.getAttribute('data-filter') : 'hepsi';
+    /* D17: kullanıcı değişimi URL-state'e; filtre değişti → sayfa 1 (RB §5).
+       D18: tablonun pager'ı namespace'li anahtar kullanıyorsa KENDİ anahtarı sıfırlanır. */
+    if(isChange){
+      var st0 = { q: term || null, f: f !== 'hepsi' ? f : null };
+      st0[(tbl._gvPager && tbl._gvPager.key) || 'page'] = null;
+      gvUrlState.set(st0);
+    }
+    /* D18 BİLEŞİK-MOTOR DELEGASYONU (çifte-listener bulgusunun kalıcı çözümü):
+       çok boyutlu sayfa-lokal filtre motoru olan tablo kendini tbl._gvApply = fn ile
+       kaydeder. Bu durumda satır görünürlüğü + boş durum + sayaç TAMAMEN motorundur;
+       sayfa kendi arama/chip listener'ı BAĞLAMAZ (ui.js dinler, motora devreder).
+       Ekstra boyut kontrolleri (select vb.) gvApplyFilters(tbl, true) çağırır.
+       Delegasyonda ge-clear affordance'ı üretilmez — boş durum aksiyonu sayfanındır. */
+    if(typeof tbl._gvApply === 'function'){
+      tbl._gvApply();
+      if(tbl._gvPager) tbl._gvPager.refresh(isChange === true);
+      return;
+    }
     var shown = 0;
     tbl.querySelectorAll('tbody tr').forEach(function(tr){
       var okF = (f === 'hepsi') || (tr.getAttribute('data-f') === f);
@@ -635,10 +660,9 @@
        Çok tablolu sayfada sayaç KART İÇİNE konmalı. */
     var cnt = card.querySelector('[data-table-count]') || document.querySelector('[data-table-count]');
     if(cnt) cnt.textContent = shown;
-    /* D17: kullanıcı değişimi URL-state'e; filtre değişti → sayfa 1 (RB §5) */
-    if(isChange) gvUrlState.set({ q: term || null, f: f !== 'hepsi' ? f : null, page: null });
     if(tbl._gvPager) tbl._gvPager.refresh(isChange === true);
   }
+  window.gvApplyFilters = applyFilters;
   function syncClearBtn(empty, tbl, show){
     var btn = empty.querySelector('.ge-clear');
     if(show && !btn){
