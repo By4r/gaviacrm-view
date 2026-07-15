@@ -495,7 +495,9 @@
 
   sel.addEventListener('change', function(){ render(sel.value); });
 
-  /* Açılış: ekran boş açılmasın → en yüksek bakiyeli cari önseçili (Körfez GYO).
+  /* Açılış: ekran boş açılmasın → en yüksek bakiyeli cari önseçili (Faz 2 satış
+     carileri evrene girince bu kural doğal olarak Derya Toprak'ı seçer oldu —
+     Beyar kararı 2026-07-15: kural korunur, pin YOK).
      URL ?cari= varsa (rehber/cari-detay çapraz gezinmesi) o cari default'u ezer. */
   var qCari = new URLSearchParams(location.search).get('cari');
   var initial = (qCari && CARI[qCari]) ? qCari
