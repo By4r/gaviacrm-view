@@ -138,6 +138,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
   </header>
 
   <main class="gv-main">
+    <div id="cdMain">
     <div class="gv-page-head">
       <div>
         <a class="ph-back" href="crm-cari.html"><i class="fa-solid fa-arrow-left"></i> Firma Rehberi</a>
@@ -173,7 +174,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
       </div>
       <div class="hero-stats" id="cdStats">
         <div class="hstat danger"><span class="hstat-num">₺342.000</span><span class="hstat-lbl">Açık bakiye — bizim borcumuz</span></div>
-        <a class="hstat" href="crm-finans-sozlesme-detay.html"><span class="hstat-num">SZL-2025-T05</span><span class="hstat-lbl">Aktif sözleşme <i class="fa-solid fa-arrow-right"></i></span></a>
+        <a class="hstat" href="crm-finans-sozlesme-detay.html?szl=t05"><span class="hstat-num">SZL-2025-T05</span><span class="hstat-lbl">Aktif sözleşme <i class="fa-solid fa-arrow-right"></i></span></a>
         <a class="hstat" href="crm-finans-taseron.html"><span class="hstat-num">1</span><span class="hstat-lbl">Onay bekleyen hakediş <i class="fa-solid fa-arrow-right"></i></span></a>
         <div class="hstat ok"><span class="hstat-num">1</span><span class="hstat-lbl">Aktif şantiye</span></div>
       </div>
@@ -233,7 +234,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
         </div>
         <div class="gc-body">
           <dl class="cari-hero-meta">
-            <div><dt>Sözleşme No</dt><dd><a href="crm-finans-sozlesme-detay.html" style="color:var(--acc-ink)">SZL-2025-T05</a></dd></div>
+            <div><dt>Sözleşme No</dt><dd><a href="crm-finans-sozlesme-detay.html?szl=t05" style="color:var(--acc-ink)">SZL-2025-T05</a></dd></div>
             <div><dt>Sözleşme Bedeli</dt><dd>₺450.000 (KDV hariç)</dd></div>
             <div><dt>Süre</dt><dd>1 Nisan 2026 – 30 Eylül 2026</dd></div>
             <div><dt>Kümülatif İmalat</dt><dd>%66,7 (₺300.000)</dd></div>
@@ -322,13 +323,13 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
     <section class="tab-panel" data-tab-panel="sozlesme" role="tabpanel" aria-label="Sözleşmeler ve Hakedişler" id="cdSzlTab" hidden>
       <div class="gv-card" style="margin-bottom:16px">
         <div class="szl-summary">
-          <h3><a href="crm-finans-sozlesme-detay.html" style="color:var(--ink)">SZL-2025-T05</a> — Vadi Konakları kaba inşaat</h3>
+          <h3><a href="crm-finans-sozlesme-detay.html?szl=t05" style="color:var(--ink)">SZL-2025-T05</a> — Vadi Konakları kaba inşaat</h3>
           <div class="szl-sub">Kalıp işçiliği, demir montajı, C30 beton dökümü · 1 Nisan 2026 – 30 Eylül 2026 · ₺450.000 (KDV hariç)</div>
         </div>
         <div class="kum-note" style="border-top:none;padding-top:0">
           <div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:66.7%"></div></div><span class="gbar-val">%66,7</span></div>
           <span class="kn-txt">₺300.000 kümülatif imalat / ₺450.000 sözleşme bedeli</span>
-          <a class="btn btn-ghost btn-sm" href="crm-finans-sozlesme-detay.html"><i class="fa-solid fa-file-signature"></i> Sözleşme Detayı</a>
+          <a class="btn btn-ghost btn-sm" href="crm-finans-sozlesme-detay.html?szl=t05"><i class="fa-solid fa-file-signature"></i> Sözleşme Detayı</a>
         </div>
       </div>
 
@@ -341,19 +342,19 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
             </thead>
             <tbody>
               <tr>
-                <td><a href="crm-finans-hakedis-detay.html">TH-2026-014</a></td>
+                <td><a href="crm-finans-hakedis-detay.html?th=014">TH-2026-014</a></td>
                 <td>Haziran 2026</td>
                 <td class="num">₺90.000</td>
                 <td><span class="gstat wait">Onay Bekliyor</span></td>
               </tr>
               <tr>
-                <td><a href="crm-finans-hakedis-detay.html">TH-2026-013</a></td>
+                <td><a href="crm-finans-hakedis-detay.html?th=013">TH-2026-013</a></td>
                 <td>Mayıs 2026</td>
                 <td class="num">₺210.000</td>
                 <td><span class="gstat ok">Onaylandı</span></td>
               </tr>
               <tr>
-                <td><a href="crm-finans-hakedis-detay.html">TH-2026-005</a></td>
+                <td><a href="crm-finans-hakedis-detay.html?th=005">TH-2026-005</a></td>
                 <td>Nisan 2026</td>
                 <td class="num">₺185.000</td>
                 <td><span class="gstat ok">Ödendi</span></td>
@@ -376,7 +377,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
         </div>
       </div>
     </section>
-
+    </div>
   </main>
 </div>
 
@@ -434,6 +435,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
    ve crm-cari-durum.html kayıtlarıyla BİREBİR — shell.js D11 kanoniği).
    ===================================================================== */
 (function(){
+  if(!window.GV) return;
   var REC = {
     onaran: {
       title:'Selçuk Onaran — Cari Kartı — Gavia CRM',
@@ -575,8 +577,20 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
   };
 
   var key = new URLSearchParams(location.search).get('cari');
+  if(key && !REC[key]){
+    /* D18 Y7 — tanınmayan ?cari= → gvNotFound (parametresiz hâlâ Demir-Beton default'u aynen) */
+    GV.crumb('Kayıt bulunamadı');
+    gvNotFound({
+      mount: '#cdMain',
+      code: key.toUpperCase(),
+      tur: 'cari kartı',
+      listHref: 'crm-cari.html', listLbl: 'Firma Rehberine dön',
+      defHref: 'crm-cari-detay.html', defLbl: 'Varsayılan kaydı aç'
+    });
+    return;
+  }
   var R = key && REC[key];
-  if(!R) return;   /* parametresiz / bilinmeyen → Demir-Beton default'u aynen */
+  if(!R) return;   /* parametresiz → Demir-Beton default'u aynen */
 
   document.title = R.title;
   document.getElementById('cdEyebrow').innerHTML = R.eyebrow;
