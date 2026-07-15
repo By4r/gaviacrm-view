@@ -645,7 +645,7 @@
        kartı + superadmin kartına Platform Konsolu linki. Repo genelinde placeholder
        kalıntısı 0 hedefi (grep denetimi dalga sonu QA'da).
    ─ DALGA 17 KANONİK TANIMLAR (2026-07-14 — yönlendirme çekirdeği: kayıt kimliklendirme +
-       gv-pager + bulunamadı-kartı; kaynak: tasks/plan-denetim.md D17 + DK1-DK12):
+       gv-pager + bulunamadı-kartı; kaynak: D17 denetim planı + DK1-DK12 kararları):
      · YENİ KANONİK (DK10 — Beyar direktifi): İSG-008 tek-link emsali İPTAL. Kural artık
        "HER kayıt referansı kimlikli linke gider." D14'te düz-metne çevrilen MLZ-2026-032/033
        bu dalgada ?mlz= ile YENİDEN linklenir; SZL-T06/T07 → ?szl= D18'de (Y9).
@@ -1014,6 +1014,54 @@
         + '</div>';
     menuEl.innerHTML = mh;
   }
+
+  /* ---- 2b) breadcrumb (D18 Y16 / DK4, kilit istisnası DK11) ----
+     "Bölüm › Modül [› Kayıt]" satırı her shell sayfasının main başına buradan
+     basılır — sayfa dokunuşu gerekmez. Modül = aktif menü öğesi (detay sayfaları
+     data-screen'i liste ekranına işaret ettiğinden liste etiketi çıkar). Kayıt
+     segmenti: detay sayfası param'ını çözünce GV.crumb('GRV-2026-008') çağırır
+     (statik alternatif: body[data-crumb]); kayıt eklenince modül metni listeye
+     dönen linke yükselir. Mobil sadeleşme shell.css'te (bölüm segmenti gizlenir). */
+  var crumbMain = document.querySelector('main.gv-main');
+  var crumbNav = null, crumbMod = null;
+  /* GEÇİŞ UYUMLULUĞU: 47 detay/form sayfasında D17-öncesi sayfa-lokal .gv-crumb
+     idiyomu var — çift kırıntı basmamak için shell kendi satırını o sayfalarda
+     BASTIRIR. Y16 yayılımı: lokaller GV.crumb'a devroldukça bu koşul kendiliğinden
+     devreden çıkar (dönüşüm envanteri D18 iç planında). */
+  if(document.querySelector('.gv-crumb')) crumbMain = null;
+  if(crumbMain && S){
+    var crumbVis = S.menu.filter(function(m){ return m.href && scrOk(sec, m); });
+    S.menu.forEach(function(m){ if(!crumbMod && !m.seclbl && screen && m.screen === screen) crumbMod = m; });
+    crumbNav = document.createElement('nav');
+    crumbNav.className = 'gv-crumbs';
+    crumbNav.setAttribute('aria-label', 'Sayfa yolu');
+    var crumbH = crumbVis[0]
+      ? '<a class="gvc-sec" href="'+crumbVis[0].href+'">'+S.title+'</a>'
+      : '<span class="gvc-sec">'+S.title+'</span>';
+    if(crumbMod) crumbH += '<i class="fa-solid fa-chevron-right gvc-sep"></i><span class="gvc-mod">'+crumbMod.lbl+'</span>';
+    crumbNav.innerHTML = crumbH;
+    crumbMain.insertBefore(crumbNav, crumbMain.firstChild);
+  }
+  GV.crumb = function(lbl){
+    if(!crumbNav) return;
+    var oldK = crumbNav.querySelector('.gvc-kayit'), oldS = crumbNav.querySelector('.gvc-sep-kayit');
+    if(oldK) oldK.remove();
+    if(oldS) oldS.remove();
+    if(!lbl) return;
+    /* kayıt segmenti gelince modül, listeye dönen linke yükselir (son kırıntı = düz metin kuralı) */
+    var modEl = crumbNav.querySelector('.gvc-mod');
+    if(modEl && crumbMod && crumbMod.href && modEl.tagName !== 'A'){
+      var modA = document.createElement('a');
+      modA.className = 'gvc-mod'; modA.href = crumbMod.href; modA.textContent = modEl.textContent;
+      modEl.replaceWith(modA);
+    }
+    var sepEl = document.createElement('i');
+    sepEl.className = 'fa-solid fa-chevron-right gvc-sep gvc-sep-kayit';
+    var kEl = document.createElement('span');
+    kEl.className = 'gvc-kayit'; kEl.textContent = lbl;
+    crumbNav.appendChild(sepEl); crumbNav.appendChild(kEl);
+  };
+  if(document.body.dataset.crumb) GV.crumb(document.body.dataset.crumb);
 
   /* D15: Havuz/Bana Verilenler rozetlerini claim'lere göre düzeltir; claim anında
      (sayfa yenilenmeden) düşmesi için crm-gorev/crm-panel de çağırır. Yalnız görev

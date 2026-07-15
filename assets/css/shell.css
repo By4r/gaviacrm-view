@@ -221,6 +221,16 @@ img{display:block;max-width:100%}
 .gv-page-head .ph-eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-ink);margin-bottom:6px}
 .gv-page-head .ph-sub{margin-top:5px;font-size:13.5px;color:var(--muted)}
 .gv-page-head .ph-actions{display:flex;gap:10px;flex:none}
+/* D18 Y16: breadcrumb — shell.js 2b bloğu basar; kayıt segmenti GV.crumb() */
+.gv-crumbs{display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:12px;color:var(--muted);min-width:0;flex-wrap:wrap}
+.gv-crumbs a{color:var(--muted);text-decoration:none}
+.gv-crumbs a:hover{color:var(--acc-ink);text-decoration:underline}
+.gv-crumbs .gvc-sep{font-size:9px;opacity:.55}
+.gv-crumbs .gvc-mod,.gv-crumbs .gvc-kayit{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw}
+.gv-crumbs .gvc-kayit{color:var(--ink);font-weight:600}
+@media(max-width:640px){
+  .gv-crumbs .gvc-sec,.gv-crumbs .gvc-sec+.gvc-sep{display:none}
+}
 
 .gv-overlay{position:fixed;inset:0;background:rgba(2,8,55,.5);z-index:79;opacity:0;pointer-events:none;transition:.25s}
 
