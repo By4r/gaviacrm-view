@@ -184,7 +184,9 @@
               <span><b>Başvuru Sahibi</b> akışı başlatır</span>
               <span class="tag">sabit</span>
             </div>
-            <div class="step-list" id="stepList"></div>
+            <!-- statik bake — bilinçli-boş başlangıç durumu (6B kararı: steps=[], JS render()'ın
+                 kendi boş-durum çıktısıyla VERBATIM); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+            <div class="step-list" id="stepList"><div class="step-empty"><i class="fa-solid fa-list-ol"></i><span>Henüz onay adımı yok. Aşağıdaki "Adım Ekle" ile başlayın.</span></div></div>
             <button type="button" class="step-add" id="stepAddBtn"><i class="fa-solid fa-plus"></i> Adım Ekle</button>
           </div>
           <div class="form-foot">

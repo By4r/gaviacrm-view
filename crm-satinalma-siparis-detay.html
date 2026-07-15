@@ -122,7 +122,9 @@
       <div>
         <div class="gd-eyebrow" id="gdEyebrow">Vadi Konakları · Sipariş #SIP-2026-05</div>
         <h1 id="gdTitle">Nervürlü İnşaat Demiri — 4 Kalem, 88 Ton</h1>
-        <div class="gd-badges" id="gdBadge"></div>
+        <!-- statik bake — DEFAULT (rol-agnostic) SIP-2026-05 kaydı; JS yüklenince aynı mount
+             innerHTML ile ezilir (bu dosyanın ITEMS['05'] kaydı) — D18-B2 -->
+        <div class="gd-badges" id="gdBadge"><span class="gstat warn">Kısmi Teslim</span><span class="gtag warn">87,6 / 88 t alındı</span></div>
       </div>
       <div class="ph-actions">
         <a class="btn btn-ghost btn-sm" href="crm-satinalma-siparisler.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>
@@ -137,42 +139,48 @@
             <div class="gd-label">Kalem Dökümü <span class="gtag" id="kalemTag">4 kalem</span></div>
             <table class="kal-table" id="kalemTbl"></table>
           </div>
-          <div id="uyariWrap"></div>
-          <div class="gd-block" id="aciklamaBlock" hidden>
+          <!-- statik bake — DEFAULT uyarı bloğu (ITEMS['05'].uyari) — D18-B2 -->
+          <div id="uyariWrap"><div class="danger-banner"><i class="fa-solid fa-triangle-exclamation"></i><span>Miktar Uyuşmazlığı — Ø16 nervürlü demir: 12 t sipariş edildi, irsaliyelerde toplam 11,6 t teslim alındı (IRS-2026-12: 6,4 t + IRS-2026-14: 5,2 t). Eksik 0,4 t için tedarikçiyle görüşme sürüyor; bu nedenle FTR-2026-09 muhasebe kontrolünde ve cari hesaba işlenmedi.</span></div></div>
+          <div class="gd-block" id="aciklamaBlock">
             <div class="gd-label">Açıklama</div>
-            <p class="gd-desc" id="aciklamaText"></p>
+            <p class="gd-desc" id="aciklamaText">Vadi Konakları B ve C Blok betonarme imalatı için sipariş edilen 88 tonluk nervürlü inşaat demiri iki partide teslim alındı. Ø16 kaleminde 12 tonluk sipariş miktarına karşılık 11,6 ton teslim edildi; 0,4 tonluk eksik teslim tedarikçiyle görüşülüyor. Bu eksik, Vadi şantiye deposundaki (D-VDI) Ø16 stok seviyesinin minimumun altına düşmesiyle de bağlantılı.</p>
           </div>
         </div>
 
-        <div class="gv-card" id="irsaliyeCard" hidden>
+        <div class="gv-card" id="irsaliyeCard">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-truck-ramp-box"></i> İrsaliyeler</div></div>
-          <div class="gc-body" id="irsaliyeBody" style="padding-top:4px"></div>
+          <!-- statik bake — DEFAULT irsaliye listesi (ITEMS['05'].irsaliyeler) — D18-B2 -->
+          <div class="gc-body" id="irsaliyeBody" style="padding-top:4px"><div class="irs-row"><div class="irs-ico"><i class="fa-solid fa-truck-ramp-box"></i></div><div class="irs-info"><b>IRS-2026-12</b><span class="irs-date">18 Haziran 2026</span><p>Ø12 20 t + Ø16 6,4 t + Ø20 14 t = 40,4 t</p><span class="irs-stok">Mal kabul: STK-2026-041 · D-VDI Vadi Şantiye Deposu</span></div></div><div class="irs-row"><div class="irs-ico mismatch"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="irs-info"><b>IRS-2026-14</b><span class="irs-date">26 Haziran 2026</span><p>Ø10 8 t + Ø12 18 t + Ø16 5,2 t + Ø20 16 t = 47,2 t</p><span class="irs-stok">Mal kabul: STK-2026-047 · D-VDI Vadi Şantiye Deposu</span></div></div></div>
         </div>
       </div>
 
       <!-- ============ SAĞ: bağlam ============ -->
       <div class="gv-side-stack">
         <div class="gv-card">
-          <div class="gd-block" id="tedarikciBlock"></div>
+          <!-- statik bake — DEFAULT tedarikçi bloğu, rol-agnostic (superadmin görünümü:
+               tedarikçi linkli) — D18-B2 -->
+          <div class="gd-block" id="tedarikciBlock"><div class="gd-label">Tedarikçi</div><div class="ctx-link"><div class="who-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">MD</div><div><a href="crm-satinalma-tedarikci-detay.html?tdr=TDR-03">Marmara Demir Çelik</a><span>Tedarikçi kartı</span></div></div></div>
           <div class="gd-block">
-            <div class="ctx-row"><span class="ctx-lbl">Şantiye</span><span class="ctx-val" id="ctxSantiye">—</span></div>
-            <div class="ctx-row"><span class="ctx-lbl">Sipariş tarihi</span><span class="ctx-val" id="ctxTarih">—</span></div>
-            <div class="ctx-row"><span class="ctx-lbl">Termin</span><span class="ctx-val" id="ctxTermin">—</span></div>
-            <div class="ctx-row"><span class="ctx-lbl">Ödeme koşulu</span><span class="ctx-val" id="ctxOdeme">—</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Şantiye</span><span class="ctx-val" id="ctxSantiye">Vadi Konakları</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Sipariş tarihi</span><span class="ctx-val" id="ctxTarih">2 Haziran 2026</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Termin</span><span class="ctx-val" id="ctxTermin">Planlanan tam teslim 30 Haziran 2026 — 87,6/88 t alındı</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Ödeme koşulu</span><span class="ctx-val" id="ctxOdeme">60 gün vade — 27 Ağustos 2026</span></div>
           </div>
         </div>
 
-        <div class="gv-card" id="kaynakCard" hidden>
+        <div class="gv-card" id="kaynakCard">
           <div class="gd-block">
             <div class="gd-label">Kaynak</div>
-            <div id="kaynakBody"></div>
+            <!-- statik bake — DEFAULT kaynak (ITEMS['05'].kaynak, arşiv) — D18-B2 -->
+            <div id="kaynakBody"><p class="gd-desc"><a href="crm-satinalma-talep-detay.html?mlz=031" title="Arşiv talep">MLZ-2026-031</a> — Vadi betonarme demir ihtiyacı — 26 Mayıs 2026 (arşiv kaydı, talep listesinde görünmez)</p></div>
           </div>
         </div>
 
-        <div class="gv-card" id="baglantiCard" hidden>
+        <div class="gv-card" id="baglantiCard">
           <div class="gd-block">
             <div class="gd-label">İlgili Bağlantılar</div>
-            <div id="baglantiBody"></div>
+            <!-- statik bake — DEFAULT bağlantı listesi, rol-agnostic — D18-B2 -->
+            <div id="baglantiBody"><div class="rel-form"><div class="rel-ico"><i class="fa-solid fa-building"></i></div><div class="rel-info"><a href="crm-satinalma-tedarikci-detay.html?tdr=TDR-03">Marmara Demir Çelik — Tedarikçi Kartı</a></div></div><div class="rel-form"><div class="rel-ico"><i class="fa-solid fa-file-invoice-dollar"></i></div><div class="rel-info"><a href="crm-satinalma-irsaliye-fatura.html">İrsaliye &amp; Fatura Takibi</a></div></div><div class="rel-form"><div class="rel-ico"><i class="fa-solid fa-warehouse"></i></div><div class="rel-info"><a href="crm-satinalma-stok.html">Stok &amp; Depo Hareketleri</a></div></div></div>
           </div>
         </div>
 
@@ -180,7 +188,8 @@
           <div class="gc-head">
             <div class="gc-title"><i class="fa-solid fa-diagram-project"></i> Sipariş Süreci</div>
           </div>
-          <div class="gc-body"><div id="chainEl"></div></div>
+          <!-- statik bake — DEFAULT süreç zinciri (ITEMS['05'].chain) — D18-B2 -->
+          <div class="gc-body"><div id="chainEl"><ol class="gv-chain"><li class="chain-step info"><span class="cs-node"><i class="fa-solid fa-paper-plane"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Hasan Demirci</b><span>Talep Oluşturuldu — MLZ-2026-031</span></div><div class="cs-when"><span class="cs-act">Oluşturdu</span><span class="cs-date">26 Mayıs 2026</span></div></div></div></li><li class="chain-step ok"><span class="cs-node"><i class="fa-solid fa-check"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Baran Yıldız</b><span>Talep Onayı</span></div><div class="cs-when"><span class="cs-act">Onayladı</span><span class="cs-date">28 Mayıs 2026</span></div></div></div></li><li class="chain-step ok"><span class="cs-node"><i class="fa-solid fa-check"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Baran Yıldız</b><span>İcmal Hazırlandı — 3 teklif</span></div><div class="cs-when"><span class="cs-act">Onayladı</span><span class="cs-date">1 Haziran 2026</span></div></div><div class="cs-note">Marmara Demir Çelik ₺2.840.000 seçildi (60 gün vade + tonaj sevk programı); Deta Demir Çelik ₺2.812.000 ve Nokta Hırdavat ₺2.918.000 teklifleri kıyaslandı — en ucuz Deta olmasına rağmen tonaj sevk programı gerekçesiyle Marmara seçildi.</div></div></li><li class="chain-step ok"><span class="cs-node"><i class="fa-solid fa-check"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Baran Yıldız</b><span>Sipariş Verildi — SIP-2026-05</span></div><div class="cs-when"><span class="cs-act">Onayladı</span><span class="cs-date">2 Haziran 2026</span></div></div></div></li><li class="chain-step ok"><span class="cs-node"><i class="fa-solid fa-check"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>İbrahim Sönmez</b><span>İrsaliye — IRS-2026-12 (40,4 t)</span></div><div class="cs-when"><span class="cs-act">Onayladı</span><span class="cs-date">18 Haziran 2026</span></div></div><div class="cs-note">Mal kabul stok girişi STK-2026-041, D-VDI Vadi Şantiye Deposu.</div></div></li><li class="chain-step ok"><span class="cs-node"><i class="fa-solid fa-check"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>İbrahim Sönmez</b><span>İrsaliye — IRS-2026-14 (47,2 t)</span></div><div class="cs-when"><span class="cs-act">Onayladı</span><span class="cs-date">26 Haziran 2026</span></div></div><div class="cs-note">Ø16 kaleminde 12 t sipariş / 11,6 t toplam irsaliye — 0,4 t miktar uyuşmazlığı tespit edildi (mal kabul stok girişi STK-2026-047).</div></div></li><li class="chain-step wait is-now"><span class="cs-node"><i class="fa-solid fa-hourglass-half"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Nesrin Aydın</b><span>Fatura — FTR-2026-09 (₺2.840.000)</span></div><div class="cs-when"><span class="cs-act">Onay bekliyor</span><span class="cs-date">28 Haziran 2026</span></div></div><div class="cs-note">İrsaliye toplamıyla (87,6 t) uyuşmazlık nedeniyle muhasebe kontrolünde; cari hesaba işlenmedi. Vade 27 Ağustos 2026 (60 gün).</div></div></li><li class="chain-step idle"><span class="cs-node"><i class="fa-solid fa-minus"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>—</b><span>Muhasebe Onayı</span></div><div class="cs-when"><span class="cs-act">Sırada</span></div></div></div></li></ol></div></div>
         </div>
       </div>
     </div>

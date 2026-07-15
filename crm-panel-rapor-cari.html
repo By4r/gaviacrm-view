@@ -142,26 +142,28 @@
       <div class="filtre-ozet" style="padding:14px 22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-2)" id="filtreOzet"><i class="fa-solid fa-circle-info"></i> <span>—</span></div>
     </div>
 
+    <!-- statik bake — DEFAULT (tür=tümü) 10 kayıtlık kanonik setten CANLI hesaplanan
+         KPI'lar; JS yüklenince aynı mount'lar innerHTML ile ezilir — D18-B2 -->
     <div class="kpi-grid" id="kpiGrid">
       <div class="kpi-card">
         <div class="kpi-ico"><i class="fa-solid fa-address-book"></i></div>
-        <div><div class="kpi-num num" id="kpiSayiNum">–</div><div class="kpi-lbl">Cari sayısı</div>
-        <div class="kpi-delta flat" id="kpiSayiSub"></div></div>
+        <div><div class="kpi-num num" id="kpiSayiNum">10</div><div class="kpi-lbl">Cari sayısı</div>
+        <div class="kpi-delta flat" id="kpiSayiSub"><i class="fa-solid fa-layer-group"></i> 3 kategori</div></div>
       </div>
       <div class="kpi-card danger" id="kpiBorc">
         <div class="kpi-ico"><i class="fa-solid fa-money-bill-wave"></i></div>
-        <div><div class="kpi-num num" id="kpiBorcNum">–</div><div class="kpi-lbl">Borç toplamı</div>
-        <div class="kpi-delta down" id="kpiBorcSub"></div></div>
+        <div><div class="kpi-num num" id="kpiBorcNum">₺1.240.650</div><div class="kpi-lbl">Borç toplamı</div>
+        <div class="kpi-delta down" id="kpiBorcSub"><i class="fa-solid fa-arrow-trend-down"></i> 7 hesap</div></div>
       </div>
       <div class="kpi-card" id="kpiAlacak" style="--kpi-ok:1">
         <div class="kpi-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-file-signature"></i></div>
-        <div><div class="kpi-num num" id="kpiAlacakNum">–</div><div class="kpi-lbl">Alacak toplamı</div>
-        <div class="kpi-delta up" id="kpiAlacakSub"></div></div>
+        <div><div class="kpi-num num" id="kpiAlacakNum">₺2.830.000</div><div class="kpi-lbl">Alacak toplamı</div>
+        <div class="kpi-delta up" id="kpiAlacakSub"><i class="fa-solid fa-arrow-trend-up"></i> 2 kurumun açık bakiyesi</div></div>
       </div>
       <div class="kpi-card warn" id="kpiVadesi">
         <div class="kpi-ico"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <div><div class="kpi-num num" id="kpiVadesiNum">–</div><div class="kpi-lbl">Vadesi geçen hesap</div>
-        <div class="kpi-delta down" id="kpiVadesiSub"></div></div>
+        <div><div class="kpi-num num" id="kpiVadesiNum">2</div><div class="kpi-lbl">Vadesi geçen hesap</div>
+        <div class="kpi-delta down" id="kpiVadesiSub"><i class="fa-solid fa-clock"></i> ₺553.000 toplam</div></div>
       </div>
     </div>
 

@@ -111,7 +111,8 @@
       <div>
         <div class="gd-eyebrow" id="gdEyebrow">—</div>
         <h1 id="gdTitle">—</h1>
-        <div class="gd-badges" id="gdBadges"></div>
+        <!-- statik bake — DEFAULT (SST-2026-007, ?sst= yok); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+        <div class="gd-badges" id="gdBadges"><span class="gtag tur-garanti">Garanti</span><span class="gstat warn">İşlemde</span><span class="gstat info kanal-portal"><i class="fa-solid fa-globe"></i> Portal</span></div>
       </div>
       <div class="ph-actions">
         <a class="btn btn-ghost btn-sm" href="crm-satis-talepler.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>
@@ -128,7 +129,8 @@
           </div>
           <div class="gd-block">
             <div class="gd-label">Yorumlar</div>
-            <div id="cmtList"></div>
+            <!-- statik bake — DEFAULT (SST-2026-007 yorumlar); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+            <div id="cmtList"><div class="cmt-row"><div class="cmt-ava portal">SO</div><div class="cmt-body"><div class="cmt-head"><b>Selçuk Onaran</b><span class="cmt-portal-tag">Portal</span><span>30 Haziran 2026, 11:20</span></div><div class="cmt-text">Salonun klimasının drenaj hortumundan su damlıyor, tavanda hafif bir leke oluşmaya başladı. Fotoğrafları ekledim, en kısa sürede bakabilir misiniz?</div></div></div><div class="cmt-row"><div class="cmt-ava">ES</div><div class="cmt-body"><div class="cmt-head"><b>Elif Sarıkaya</b><span>1 Temmuz 2026, 09:40</span></div><div class="cmt-text">Merhaba Selçuk Bey, fotoğraflar için teşekkürler. Garanti kapsamında değerlendiriyoruz, saha ekibimiz yerinde inceleme yapacak.</div></div></div><div class="cmt-row"><div class="cmt-ava">ES</div><div class="cmt-body"><div class="cmt-head"><b>Elif Sarıkaya</b><span>2 Temmuz 2026, 09:50</span></div><div class="cmt-text">Servis randevusu 8 Temmuz Çarşamba 10:00 için planlandı; teknik ekip drenaj hattını kontrol edip gerekirse değişecek.</div></div></div></div>
             <div class="cmt-compose">
               <div class="cmt-ava" id="cmtMeAva">·</div>
               <div class="cmt-compose-field">
@@ -141,7 +143,8 @@
 
         <div class="gv-card">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-timeline"></i> Durum Geçmişi</div></div>
-          <div class="gc-body"><div id="chainEl"></div></div>
+          <!-- statik bake — DEFAULT (SST-2026-007 durum geçmişi); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+          <div class="gc-body"><div id="chainEl"><ol class="gv-chain"><li class="chain-step info"><span class="cs-node"><i class="fa-solid fa-paper-plane"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Selçuk Onaran</b><span>Müşteri (Portal)</span></div><div class="cs-when"><span class="cs-act">Oluşturdu</span><span class="cs-date">30 Haziran 2026 11:20</span></div></div></div></li><li class="chain-step ok"><span class="cs-node"><i class="fa-solid fa-check"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Elif Sarıkaya</b><span>Teknik Müdür</span></div><div class="cs-when"><span class="cs-act">Onayladı</span><span class="cs-date">1 Temmuz 2026 09:40</span></div></div><div class="cs-note">Garanti kapsamında kabul edildi, saha ziyareti planlandı.</div></div></li></ol></div></div>
         </div>
       </div>
 
@@ -150,12 +153,14 @@
         <div class="gv-card">
           <div class="gd-block">
             <div class="gd-label">Müşteri</div>
-            <div class="ctx-link" id="musteriBlock"></div>
+            <!-- statik bake — DEFAULT (SST-2026-007 → Selçuk Onaran); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+            <div class="ctx-link" id="musteriBlock"><div class="who-mark" style="background:var(--info-tint);color:var(--info)">SO</div><div><a href="crm-satis-musteri-detay.html?mst=001">Selçuk Onaran</a><span>Kurumsal · Referans</span></div></div>
           </div>
           <div class="gd-block">
             <div class="gd-label">Birim</div>
-            <div class="ctx-link" id="birimBlock"></div>
-            <div id="kaynakRow"></div>
+            <!-- statik bake — DEFAULT (SST-2026-007 → KO-B-304 + kaynak sözleşme); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+            <div class="ctx-link" id="birimBlock"><div class="who-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)"><i class="fa-solid fa-door-closed"></i></div><div><a href="crm-satis-birim-detay.html?birim=KO-B-304">KO-B-304</a><span>Kule Ofis B Blok · 3. kat</span></div></div>
+            <div id="kaynakRow"><div class="ctx-row" style="border-top:1px dashed var(--line);margin-top:8px;padding-top:12px"><span class="ctx-lbl">Sözleşme</span><span class="ctx-val"><a href="crm-satis-sozlesme-detay.html?ssz=2025-042" style="color:var(--acc-ink)">SSZ-2025-042 · İmzalı, teslim edildi</a></span></div></div>
           </div>
         </div>
 

@@ -119,7 +119,10 @@
       <div class="gv-side-stack" style="display:flex;flex-direction:column;gap:16px">
         <div class="gv-card">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-diagram-project"></i> Onay Akışı</div></div>
-          <div class="gc-body" id="avansFormChain"></div>
+          <!-- statik bake — DEFAULT (rol-agnostic, superadmin fallback: "Deniz Aksoy") gvChain
+               çıktısı VERBATIM; JS yüklenince aynı mount innerHTML ile ezilir (gvChain çağrısı,
+               aktif rolün adıyla) — D18-B2 -->
+          <div class="gc-body" id="avansFormChain"><ol class="gv-chain"><li class="chain-step info"><span class="cs-node"><i class="fa-solid fa-paper-plane"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Deniz Aksoy</b><span>Talep Sahibi</span></div><div class="cs-when"><span class="cs-act">Oluşturdu</span><span class="cs-date">Bugün</span></div></div></div></li><li class="chain-step idle"><span class="cs-node"><i class="fa-solid fa-minus"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Hasan Demirci</b><span>Şantiye Şefi</span></div><div class="cs-when"><span class="cs-act">Sırada</span></div></div></div></li><li class="chain-step idle"><span class="cs-node"><i class="fa-solid fa-minus"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Nesrin Aydın</b><span>Muhasebe</span></div><div class="cs-when"><span class="cs-act">Sırada</span></div></div></div></li></ol></div>
           <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Onay adımları kayda göre değişebilir.</span></div>
         </div>
       </div>

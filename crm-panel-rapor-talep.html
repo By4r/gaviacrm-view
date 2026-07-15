@@ -103,21 +103,23 @@ tr.is-iptal .fr-info b{color:var(--ink-2);text-decoration:line-through;text-deco
       </div>
     </div>
 
+    <!-- statik bake — DEFAULT (rol-agnostic) yönetim görünümü; JS yüklenince aynı
+         mount'lar innerHTML/textContent ile ezilir (renderTalep/renderSat/renderTeslim) — D18-B2 -->
     <div class="kpi-grid">
       <div class="kpi-card warn" id="kpiBekleyen">
         <div class="kpi-ico"><i class="fa-solid fa-hourglass-half"></i></div>
-        <div><div class="kpi-num num" id="kpiBekleyenNum">–</div><div class="kpi-lbl">Onay bekleyen talep</div>
-        <div class="kpi-delta down" id="kpiBekleyenSub"></div></div>
+        <div><div class="kpi-num num" id="kpiBekleyenNum">7</div><div class="kpi-lbl">Onay bekleyen talep</div>
+        <div class="kpi-delta down" id="kpiBekleyenSub"><i class="fa-solid fa-clock"></i> En eski 6 gündür bekliyor</div></div>
       </div>
       <div class="kpi-card" id="kpiToplam">
         <div class="kpi-ico"><i class="fa-solid fa-boxes-stacked"></i></div>
-        <div><div class="kpi-num num" id="kpiToplamNum">–</div><div class="kpi-lbl" id="kpiToplamLbl">Bu ay oluşturulan</div>
-        <div class="kpi-delta flat" id="kpiToplamSub"></div></div>
+        <div><div class="kpi-num num" id="kpiToplamNum">13</div><div class="kpi-lbl" id="kpiToplamLbl">Bu ay oluşturulan</div>
+        <div class="kpi-delta flat" id="kpiToplamSub"><i class="fa-solid fa-helmet-safety"></i> 3 şantiyeden</div></div>
       </div>
       <div class="kpi-card danger" id="kpiRed">
         <div class="kpi-ico"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <div><div class="kpi-num num" id="kpiRedNum">–</div><div class="kpi-lbl">Reddedilen / revize</div>
-        <div class="kpi-delta down" id="kpiRedSub"></div></div>
+        <div><div class="kpi-num num" id="kpiRedNum">2</div><div class="kpi-lbl">Reddedilen / revize</div>
+        <div class="kpi-delta down" id="kpiRedSub"><i class="fa-solid fa-arrow-trend-down"></i> Revize: 1 · Red: 1</div></div>
       </div>
       <div class="kpi-card">
         <div class="kpi-ico" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-gauge-simple-high"></i></div>
@@ -275,26 +277,28 @@ tr.is-iptal .fr-info b{color:var(--ink-2);text-decoration:line-through;text-deco
       <span data-view="sef" hidden>crm-satinalma-formlar.html — Vadi Konakları</span>
     </div>
 
+    <!-- statik bake — DEFAULT (rol-agnostic) yönetim görünümü; JS yüklenince aynı
+         mount'lar innerHTML/textContent ile ezilir (renderSat) — D18-B2 -->
     <div class="kpi-grid">
       <div class="kpi-card" id="kpiSatAktif">
         <div class="kpi-ico"><i class="fa-solid fa-cart-flatbed"></i></div>
-        <div><div class="kpi-num num" id="kpiSatAktifNum">–</div><div class="kpi-lbl">Aktif form</div>
+        <div><div class="kpi-num num" id="kpiSatAktifNum">5</div><div class="kpi-lbl">Aktif form</div>
         <div class="kpi-delta flat"><i class="fa-solid fa-clock"></i> Taslak + onayda + siparişte</div></div>
       </div>
       <div class="kpi-card" id="kpiSatTutar" style="--kpi-ok:1">
         <div class="kpi-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-sack-dollar"></i></div>
-        <div><div class="kpi-num num" id="kpiSatTutarNum">–</div><div class="kpi-lbl">Sipariş tutarı</div>
-        <div class="kpi-delta flat" id="kpiSatTutarSub"></div></div>
+        <div><div class="kpi-num num" id="kpiSatTutarNum">₺434.200</div><div class="kpi-lbl">Sipariş tutarı</div>
+        <div class="kpi-delta flat" id="kpiSatTutarSub"><i class="fa-solid fa-calendar"></i> 9 form toplamı</div></div>
       </div>
       <div class="kpi-card warn" id="kpiSatBuyuk">
         <div class="kpi-ico"><i class="fa-solid fa-hourglass-half"></i></div>
-        <div><div class="kpi-num num" id="kpiSatBuyukNum">–</div><div class="kpi-lbl">Büyük tutar onayında</div>
-        <div class="kpi-delta down" id="kpiSatBuyukSub"></div></div>
+        <div><div class="kpi-num num" id="kpiSatBuyukNum">1</div><div class="kpi-lbl">Büyük tutar onayında</div>
+        <div class="kpi-delta down" id="kpiSatBuyukSub"><i class="fa-solid fa-clock"></i> ₺86.200 · Genel Müdür onayı</div></div>
       </div>
       <div class="kpi-card danger" id="kpiSatIptal">
         <div class="kpi-ico"><i class="fa-solid fa-ban"></i></div>
-        <div><div class="kpi-num num" id="kpiSatIptalNum">–</div><div class="kpi-lbl">İptal edilen</div>
-        <div class="kpi-delta down" id="kpiSatIptalSub"></div></div>
+        <div><div class="kpi-num num" id="kpiSatIptalNum">1</div><div class="kpi-lbl">İptal edilen</div>
+        <div class="kpi-delta down" id="kpiSatIptalSub"><i class="fa-solid fa-arrow-trend-down"></i> ₺15.600 · tedarikçi stok yok</div></div>
       </div>
     </div>
 
@@ -391,21 +395,23 @@ tr.is-iptal .fr-info b{color:var(--ink-2);text-decoration:line-through;text-deco
       <span data-view="sef" hidden>crm-satinalma-termin.html — Vadi Konakları</span>
     </div>
 
+    <!-- statik bake — DEFAULT (rol-agnostic) yönetim görünümü; JS yüklenince aynı
+         mount'lar innerHTML/textContent ile ezilir (renderTeslim) — D18-B2 -->
     <div class="kpi-grid">
       <div class="kpi-card" id="kpiTmYolda">
         <div class="kpi-ico"><i class="fa-solid fa-truck-ramp-box"></i></div>
-        <div><div class="kpi-num num" id="kpiTmYoldaNum">–</div><div class="kpi-lbl">Yolda / bekleyen sipariş</div>
-        <div class="kpi-delta flat" id="kpiTmYoldaSub"></div></div>
+        <div><div class="kpi-num num" id="kpiTmYoldaNum">3</div><div class="kpi-lbl">Yolda / bekleyen sipariş</div>
+        <div class="kpi-delta flat" id="kpiTmYoldaSub"><i class="fa-solid fa-cart-flatbed"></i> 3 tedarikçiden</div></div>
       </div>
       <div class="kpi-card warn" id="kpiTmBugun">
         <div class="kpi-ico"><i class="fa-solid fa-clock"></i></div>
-        <div><div class="kpi-num num" id="kpiTmBugunNum">–</div><div class="kpi-lbl">Bugün teslim</div>
-        <div class="kpi-delta flat" id="kpiTmBugunSub"></div></div>
+        <div><div class="kpi-num num" id="kpiTmBugunNum">1</div><div class="kpi-lbl">Bugün teslim</div>
+        <div class="kpi-delta flat" id="kpiTmBugunSub"><i class="fa-solid fa-helmet-safety"></i> Vadi Konakları</div></div>
       </div>
       <div class="kpi-card danger" id="kpiTmGecikti">
         <div class="kpi-ico"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <div><div class="kpi-num num" id="kpiTmGeciktiNum">–</div><div class="kpi-lbl">Geciken sipariş</div>
-        <div class="kpi-delta down" id="kpiTmGeciktiSub"></div></div>
+        <div><div class="kpi-num num" id="kpiTmGeciktiNum">1</div><div class="kpi-lbl">Geciken sipariş</div>
+        <div class="kpi-delta down" id="kpiTmGeciktiSub"><i class="fa-solid fa-arrow-trend-down"></i> 2 gün gecikme</div></div>
       </div>
       <div class="kpi-card" data-view="yonetim">
         <div class="kpi-ico" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-gauge-simple-high"></i></div>

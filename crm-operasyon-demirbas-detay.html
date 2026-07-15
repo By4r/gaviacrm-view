@@ -144,7 +144,10 @@
 
         <div class="gv-card">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> Zimmet Geçmişi</div></div>
-          <ol class="ml-timeline" id="tlList"></ol>
+          <!-- statik bake — DEFAULT (rol-agnostic) 041 zimmet geçmişi; JS yüklenince aynı
+               mount innerHTML ile ezilir — D18-B2 (ek keşif: #tlList bayraklı listede
+               yoktu ama JS'siz boş kalıyordu) -->
+          <ol class="ml-timeline" id="tlList"><li class="ml-item done"><span class="ml-dot"><i class="fa-solid fa-check"></i></span><div class="ml-body"><b>Depoya giriş</b><span>20 Ara 2025 · Merkez depo</span></div></li><li class="ml-item active"><span class="ml-dot"></span><div class="ml-body"><b>Hasan Demirci’ye zimmet verildi</b><span>3 Oca 2026 · Vadi Konakları</span></div></li></ol>
         </div>
 
         <div class="gv-card" id="borcCard" hidden>
@@ -156,7 +159,9 @@
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-right-left"></i> Zimmet İşlemleri</div>
             <span class="gtag"><i class="fa-solid fa-flask"></i> Simülasyon</span>
           </div>
-          <div class="dm-acts" id="aksiyonButtons"></div>
+          <!-- statik bake — DEFAULT (rol-agnostic) 041 kaydı; JS yüklenince aynı mount'lar
+               innerHTML ile ezilir (bu dosyanın ITEMS['041'] kaydı) — D18-B2 -->
+          <div class="dm-acts" id="aksiyonButtons"><button type="button" class="btn btn-ghost btn-sm" id="btnFlow" data-no-confirm=""><i class="fa-solid fa-rotate-left"></i> İade Al</button></div>
           <p class="dm-acts-note"><i class="fa-solid fa-circle-info"></i> Bu prototipte zimmet işlemleri yalnızca ekran üzerinde simüle edilir; kalıcı bir kayıt oluşturmaz.</p>
         </div>
       </div>
@@ -164,7 +169,7 @@
       <!-- ============ SAĞ: bağlam ============ -->
       <div class="gv-side-stack">
         <div class="gv-card">
-          <div class="gd-block" id="kisiBlock"></div>
+          <div class="gd-block" id="kisiBlock"><div class="gd-label">Zimmetli Kişi</div><div class="ctx-link"><div class="who-mark" style="background:var(--info-tint);color:var(--info)">HD</div><div><a href="crm-personel-detay.html">Hasan Demirci</a><span>Şantiye Şefi · Vadi Konakları</span></div></div></div>
           <div class="gd-block">
             <div class="ctx-row"><span class="ctx-lbl">Şantiye</span><span class="ctx-val" id="ctxSantiye">—</span></div>
             <div class="ctx-row"><span class="ctx-lbl" id="ctxTarihLbl">Zimmet tarihi</span><span class="ctx-val" id="ctxTarih">—</span></div>

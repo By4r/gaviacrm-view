@@ -112,13 +112,17 @@
           </div>
           <div class="gd-block">
             <div class="gd-label">Öğün Kırılımı</div>
-            <div id="ogunRows"></div>
+            <!-- statik bake — DEFAULT ?ymk=004 kaydı (rol-agnostik); JS yüklenince aynı
+                 mount innerHTML ile ezilir (kaynak: bu dosyanın DATA['004'] kaydı) — D18-B2 -->
+            <div id="ogunRows"><div class="ctx-row"><span class="ctx-lbl">Kahvaltı</span><span class="ctx-val">84 kişi</span></div><div class="ctx-row"><span class="ctx-lbl">Öğle</span><span class="ctx-val">93 kişi</span></div><div class="ctx-row"><span class="ctx-lbl">Akşam</span><span class="ctx-val">46 kişi</span></div><div class="ctx-row"><span class="ctx-lbl">Misafir</span><span class="ctx-val">0 kişi</span></div><div class="ctx-row"><span class="ctx-lbl">Genel Toplam</span><span class="ctx-val" style="color:var(--acc-ink)">223 kişi</span></div></div>
           </div>
         </div>
 
         <div class="gv-card">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> Düzenleme Geçmişi</div></div>
-          <div id="gecmisBody"></div>
+          <!-- statik bake — DEFAULT ?ymk=004 kaydı; JS yüklenince aynı mount innerHTML
+               ile ezilir (kaynak: bu dosyanın DATA['004'].gecmis dizisi) — D18-B2 -->
+          <div id="gecmisBody"><ol class="ml-timeline"><li class="ml-item done"><span class="ml-dot"><i class="fa-solid fa-check"></i></span><div class="ml-body"><b>Sabah sayımı girildi</b><span>2 Temmuz 2026 · 08:20 — kahvaltı kırılımı</span></div></li><li class="ml-item done"><span class="ml-dot"><i class="fa-solid fa-check"></i></span><div class="ml-body"><b>Öğle güncellendi</b><span>2 Temmuz 2026 · 13:45 — öğle kırılımı eklendi</span></div></li><li class="ml-item done"><span class="ml-dot"><i class="fa-solid fa-check"></i></span><div class="ml-body"><b>Akşam kapandı</b><span>2 Temmuz 2026 · 19:10 — akşam kırılımı eklendi, kayıt kapatıldı</span></div></li></ol></div>
         </div>
 
         <div class="gv-card">

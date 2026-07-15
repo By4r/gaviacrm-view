@@ -102,7 +102,8 @@
       </div>
     </div>
 
-    <div id="warnBand"></div>
+    <!-- statik bake — DEFAULT kayıt (demir-o16) JS'siz görünüm için; JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+    <div id="warnBand"><div class="warn-band"><i class="fa-solid fa-triangle-exclamation"></i><p>Mevcut stok (1,7 t) minimum eşiğin (5 t) altında. SIP-2026-05 sevkiyatında Ø16 kaleminde 12 t sipariş edildi, ancak irsaliyelerle yalnızca 11,6 t teslim alındı (<b>−0,4 t miktar uyuşmazlığı</b>, bkz. Marmara Demir Çelik tedarikçi kartı). Teslim alınan miktarın büyük bölümü B Blok imalatında sarf edildi; kalan stok kritik seviyede.</p></div></div>
 
     <div class="gd-grid">
       <!-- ============ SOL: içerik ============ -->
@@ -118,7 +119,7 @@
             <div style="margin-top:12px">
               <div class="gd-label" style="margin-bottom:6px">Min-Stok Eşiği</div>
               <div class="stok-bar">
-                <div class="stok-bar-track"><div class="stok-bar-fill" id="stokBarFill"></div></div>
+                <div class="stok-bar-track"><div class="stok-bar-fill danger" id="stokBarFill" style="width: 34%;"></div></div>
                 <span class="stok-bar-val" id="stokBarVal">—</span>
               </div>
             </div>
@@ -128,9 +129,9 @@
         <div class="gv-card">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> Hareket Geçmişi</div></div>
           <div class="gc-body flush">
-            <table class="gtable" id="tblGecmis" hidden>
+            <table class="gtable" id="tblGecmis">
               <thead><tr><th>Belge</th><th style="width:110px">Tarih</th><th style="width:120px">Tür</th><th>Açıklama</th></tr></thead>
-              <tbody id="gecmisBody"></tbody>
+              <tbody id="gecmisBody"><tr><td class="t-strong">STK-2026-041</td><td class="muted">18 Haz 2026</td><td><span class="mv giris">Giriş</span></td><td>IRS-2026-12 mal kabulü — Ø16 6,4 t (Ø12 20 t + Ø20 14 t ile birlikte, aynı sevkiyat)</td></tr><tr><td class="t-strong">STK-2026-047</td><td class="muted">26 Haz 2026</td><td><span class="mv giris">Giriş</span></td><td>IRS-2026-14 mal kabulü — Ø16 5,2 t (Ø10 8 t + Ø12 18 t + Ø20 16 t ile birlikte, aynı sevkiyat)</td></tr><tr><td class="t-strong">STK-2026-052</td><td class="muted">2 Tem 2026</td><td><span class="mv cikis">Çıkış</span></td><td>B Blok 3. kat demir imalatı — Ø12 4,2 t (aynı SIP-2026-05 sevkiyat kapsamı, farklı çap)</td></tr></tbody>
             </table>
             <div class="gv-empty-mini" id="gecmisEmpty" hidden>Bu dönemde bu kalem için hareket kaydı yok.</div>
           </div>
@@ -142,7 +143,7 @@
         <div class="gv-card">
           <div class="gd-block">
             <div class="gd-label">Bağlı Belgeler</div>
-            <div id="belgeList"></div>
+            <div id="belgeList"><div class="ctx-row"><span class="ctx-lbl"><i class="fa-solid fa-file-invoice" style="color:var(--acc-ink);width:16px;text-align:center;margin-right:8px"></i>Sipariş</span><span class="ctx-val"><a href="crm-satinalma-siparis-detay.html?sip=SIP-2026-05">SIP-2026-05</a></span></div><div class="ctx-row"><span class="ctx-lbl"><i class="fa-solid fa-truck-ramp-box" style="color:var(--acc-ink);width:16px;text-align:center;margin-right:8px"></i>Tedarikçi</span><span class="ctx-val"><a href="crm-satinalma-tedarikci-detay.html?tdr=TDR-03">Marmara Demir Çelik</a></span></div><div class="ctx-row" style="border-bottom:none"><span class="ctx-lbl"><i class="fa-solid fa-boxes-stacked" style="color:var(--acc-ink);width:16px;text-align:center;margin-right:8px"></i>İrsaliye &amp; Fatura</span><span class="ctx-val"><a href="crm-satinalma-irsaliye-fatura.html">Görüntüle</a></span></div></div>
           </div>
         </div>
         <div class="gv-card">
@@ -259,6 +260,8 @@
 
   if(item.uyari){
     document.getElementById('warnBand').innerHTML = '<div class="warn-band"><i class="fa-solid fa-triangle-exclamation"></i><p>' + item.uyari + '</p></div>';
+  } else {
+    document.getElementById('warnBand').innerHTML = ''; /* statik bake DEFAULT kaydın uyarısını gömer (D18-B2) — uyarısız kayıtlarda burada temizlenir */
   }
 
   document.getElementById('stDepo').innerHTML = D.ad;
@@ -270,17 +273,20 @@
   var pct = Math.min(100, Math.round((item.mevcut / item.min) * 100));
   var fill = document.getElementById('stokBarFill');
   fill.style.width = pct + '%';
-  if(item.altMin) fill.classList.add('danger');
+  fill.className = 'stok-bar-fill' + (item.altMin ? ' danger' : ''); /* statik bake DEFAULT kaydı 'danger' sınıfıyla gömer (D18-B2) — burada koşulsuz yeniden yazılır */
   document.getElementById('stokBarVal').textContent = num(item.mevcut, item.mevcut % 1 ? 1 : 0) + ' / ' + num(item.min) + ' ' + item.olcu;
 
   /* Hareket geçmişi */
   if(item.gecmis && item.gecmis.length){
     document.getElementById('tblGecmis').hidden = false;
+    document.getElementById('gecmisEmpty').hidden = true; /* statik bake DEFAULT kaydı dolu gömer (D18-B2) — burada koşulsuz senkron edilir */
     document.getElementById('gecmisBody').innerHTML = item.gecmis.map(function(h){
       return '<tr><td class="t-strong">' + h.no + '</td><td class="muted">' + h.tarih + '</td>'
         + '<td><span class="mv ' + h.tur + '">' + TUR_LBL[h.tur] + '</span></td><td>' + h.aciklama + '</td></tr>';
     }).join('');
   } else {
+    document.getElementById('tblGecmis').hidden = true; /* statik bake DEFAULT kaydı görünür+dolu gömer (D18-B2) — kayıtsız kalemlerde burada koşulsuz kapatılır */
+    document.getElementById('gecmisBody').innerHTML = '';
     document.getElementById('gecmisEmpty').hidden = false;
   }
 

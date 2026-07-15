@@ -124,7 +124,8 @@
       <div>
         <div class="gd-eyebrow" id="gdEyebrow">Vadi Konakları · B Blok · Kat 3</div>
         <h1 id="gdTitle">VK-B-11 — 3+1</h1>
-        <div class="gd-badges" id="gdBadges"></div>
+        <!-- statik bake — DEFAULT (VK-B-11, ?birim= yok); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+        <div class="gd-badges" id="gdBadges"><span class="gstat warn">Opsiyonlu</span><span class="gstat danger"><i class="fa-solid fa-triangle-exclamation"></i> Süre Yaklaşıyor</span></div>
       </div>
       <div class="ph-actions">
         <a class="btn btn-ghost btn-sm" href="crm-satis-birimler.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>
@@ -150,7 +151,8 @@
 
         <div class="gv-card" id="surecCard">
           <div class="gc-head"><div class="gc-title" id="surecTitle"><i class="fa-solid fa-route"></i> Süreç Durumu</div></div>
-          <div class="gd-block" id="surecBody"></div>
+          <!-- statik bake — DEFAULT (VK-B-11 opsiyon süreci); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+          <div class="gd-block" id="surecBody"><div class="opt-counter"><div class="opt-ring" style="background:conic-gradient(var(--danger) 86%, var(--bg) 0)"><b>12</b><span>gün kaldı</span></div><div class="opt-info"><b>Opsiyon bitiş: 14 Temmuz 2026</b><span>Başlangıç 30 Haziran 2026 · toplam 14 gün</span></div></div><p style="font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:14px"><i class="fa-solid fa-circle-info"></i> Süre dolduğunda birim otomatik olarak Satışta durumuna döner; uzatma için Satış Müdürü onayı gerekir. <span style="color:var(--danger);font-weight:700">[MOCK-SİM]</span></p></div>
         </div>
 
         <div class="gv-card">
@@ -165,17 +167,20 @@
       <div class="gv-side-stack">
         <div class="gv-card">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-id-card"></i> İlgili Müşteri</div></div>
-          <div class="gd-block" id="musteriBlock"></div>
+          <!-- statik bake — DEFAULT (VK-B-11 → Aylin Şahinoğlu); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+          <div class="gd-block" id="musteriBlock"><div class="ctx-link"><div class="who-mark" style="background:rgba(var(--acc-rgb),.14);color:var(--acc-deep)">AŞ</div><div><a href="crm-satis-musteri-detay.html?mst=003">Aylin Şahinoğlu</a><span>Bireysel · Web</span></div></div></div>
         </div>
 
         <div class="gv-card" id="relCard">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-link"></i> İlişkili Kayıtlar</div></div>
-          <div class="gd-block" id="relBody"></div>
+          <!-- statik bake — DEFAULT (VK-B-11 ilişkili kayıtlar); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+          <div class="gd-block" id="relBody"><div class="rel-form"><div class="rel-ico"><i class="fa-solid fa-file-invoice-dollar"></i></div><div class="rel-info"><a href="crm-satis-teklif-detay.html?tkf=003">TKF-2026-003</a><span>%3 indirim · Onaylı — ödeme planı hazır</span></div></div><div class="rel-form"><div class="rel-ico"><i class="fa-solid fa-money-check-dollar"></i></div><div class="rel-info"><a href="crm-satis-teklif-detay.html?tkf=003">ODP-2026-001</a><span>36 taksitli ödeme planı — teklif detayında</span></div></div><div class="rel-form"><div class="rel-ico"><i class="fa-solid fa-table-columns"></i></div><div class="rel-info"><a href="crm-satis-firsat-detay.html?frs=005">FRS-2026-005</a><span>Pipeline — Opsiyon aşaması</span></div></div></div>
         </div>
 
         <div class="gv-card">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-invoice-dollar"></i> Aksiyonlar</div></div>
-          <div class="dm-acts" id="aksiyonBody"></div>
+          <!-- statik bake — DEFAULT (VK-B-11, teklifDurum aktif); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+          <div class="dm-acts" id="aksiyonBody"><a class="btn btn-acc btn-sm" href="crm-satis-teklif-form.html?birim=VK-B-11"><i class="fa-solid fa-file-invoice-dollar"></i> Teklif Oluştur</a><a class="btn btn-ghost btn-sm" href="crm-satis-birimler.html"><i class="fa-solid fa-border-all"></i> Matriste Gör</a></div>
           <p class="dm-acts-note" id="aksiyonNote"></p>
         </div>
       </div>

@@ -147,10 +147,15 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
             <span class="gstat ok" id="vhDurumBadge">Aktif</span>
             <span class="gtag mint" id="vhTipTag">Pikap</span>
           </div>
-          <dl class="veh-hero-meta" id="vhMeta"></dl>
+          <!-- statik bake — DEFAULT (rol-agnostic) ARC-01 künye; JS yüklenince aynı mount
+               innerHTML ile ezilir — D18-B2 (ek keşif: #vhMeta bayraklı listede yoktu ama
+               JS'siz boş kalıyordu) -->
+          <dl class="veh-hero-meta" id="vhMeta"><div><dt>Şantiye</dt><dd>Vadi Konakları</dd></div><div><dt>Zimmetli</dt><dd>Hasan Demirci — Şantiye Şefi</dd></div><div><dt>Zimmet Kaydı</dt><dd><a href="crm-operasyon-demirbas-detay.html?zmt=044" style="color:var(--acc-ink)">ZMT-2026-044</a></dd></div><div><dt>Kasko Bitiş</dt><dd>15.01.2027</dd></div><div><dt>Trafik Sigortası Bitiş</dt><dd>15.01.2027</dd></div><div><dt>Güncel Kilometre</dt><dd>42.300 km</dd></div></dl>
         </div>
       </div>
-      <div class="veh-hero-stats" id="vhStats"></div>
+      <!-- statik bake — DEFAULT (rol-agnostic) ARC-01 kaydı; JS yüklenince aynı mount'lar
+           innerHTML ile ezilir (bu dosyanın VEHICLES['ARC-01'] kaydı) — D18-B2 -->
+      <div class="veh-hero-stats" id="vhStats"><div class="vh-stat warn"><div class="vh-stat-num">29.07.2026</div><div class="vh-stat-lbl">Muayene — 18 gün kaldı</div></div><div class="vh-stat"><div class="vh-stat-num">7.700 km kaldı</div><div class="vh-stat-lbl">Sonraki bakım — hedef 50.000 km</div></div><div class="vh-stat"><div class="vh-stat-num">₺9.640</div><div class="vh-stat-lbl">Aylık maliyet</div></div><div class="vh-stat"><div class="vh-stat-num">₺1.840</div><div class="vh-stat-lbl">Temmuz HGS — 22 geçiş</div></div></div>
     </div>
 
     <!-- ============ SEKMELER ============ -->
@@ -165,7 +170,7 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
     <section class="tab-panel" data-tab-panel="hgs" role="tabpanel" aria-label="HGS Geçişleri">
       <div class="gv-card">
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-road"></i> HGS Geçişleri — Temmuz 2026</div></div>
-        <div class="gc-body flush" id="hgsWrap"></div>
+        <div class="gc-body flush" id="hgsWrap"><table class="gtable" id="tblHgs"><thead><tr><th>Tarih</th><th>Gişe</th><th class="num">Tutar</th></tr></thead><tbody><tr><td>01.07.2026</td><td>Kuzey Marmara O-7 Çekmeköy</td><td class="num">₺85</td></tr><tr><td>02.07.2026</td><td>FSM Köprüsü</td><td class="num">₺95</td></tr><tr><td>03.07.2026</td><td>TEM Otoyolu Ümraniye</td><td class="num">₺80</td></tr><tr><td>04.07.2026</td><td>15 Temmuz Şehitler Köprüsü</td><td class="num">₺90</td></tr><tr><td>05.07.2026</td><td>Kuzey Marmara O-7 Çekmeköy</td><td class="num">₺85</td></tr><tr><td>07.07.2026</td><td>FSM Köprüsü</td><td class="num">₺75</td></tr><tr><td>08.07.2026</td><td>TEM Otoyolu Ümraniye</td><td class="num">₺95</td></tr><tr><td>09.07.2026</td><td>15 Temmuz Şehitler Köprüsü</td><td class="num">₺80</td></tr><tr><td>10.07.2026</td><td>Kuzey Marmara O-7 Çekmeköy</td><td class="num">₺85</td></tr><tr><td>11.07.2026</td><td>FSM Köprüsü</td><td class="num">₺90</td></tr><tr><td>14.07.2026</td><td>TEM Otoyolu Ümraniye</td><td class="num">₺75</td></tr><tr><td>15.07.2026</td><td>15 Temmuz Şehitler Köprüsü</td><td class="num">₺85</td></tr><tr><td>16.07.2026</td><td>Kuzey Marmara O-7 Çekmeköy</td><td class="num">₺95</td></tr><tr><td>17.07.2026</td><td>FSM Köprüsü</td><td class="num">₺80</td></tr><tr><td>18.07.2026</td><td>TEM Otoyolu Ümraniye</td><td class="num">₺85</td></tr><tr><td>19.07.2026</td><td>15 Temmuz Şehitler Köprüsü</td><td class="num">₺90</td></tr><tr><td>21.07.2026</td><td>Kuzey Marmara O-7 Çekmeköy</td><td class="num">₺75</td></tr><tr><td>22.07.2026</td><td>FSM Köprüsü</td><td class="num">₺85</td></tr><tr><td>23.07.2026</td><td>TEM Otoyolu Ümraniye</td><td class="num">₺95</td></tr><tr><td>24.07.2026</td><td>15 Temmuz Şehitler Köprüsü</td><td class="num">₺80</td></tr><tr><td>25.07.2026</td><td>Kuzey Marmara O-7 Çekmeköy</td><td class="num">₺85</td></tr><tr><td>28.07.2026</td><td>FSM Köprüsü</td><td class="num">₺50</td></tr><tr class="hgs-total"><td colspan="2">Temmuz Toplamı</td><td class="num">₺1.840</td></tr></tbody></table></div>
       </div>
     </section>
 
@@ -173,7 +178,7 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
     <section class="tab-panel" data-tab-panel="ceza" role="tabpanel" aria-label="Trafik Cezaları" hidden>
       <div class="gv-card">
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-gavel"></i> Trafik Cezaları</div></div>
-        <div id="cezaWrap"></div>
+        <div id="cezaWrap"><div class="ceza-row"><div class="ceza-ico" style="background:var(--warn-tint,var(--bg));color:var(--warn)"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="ceza-info"><b>Hız İhlali</b><span>12.05.2026 · <span class="gstat warn" style="margin-left:2px">Personel kesintisi — onay sürecinde</span></span></div><div class="ceza-amt"><b>₺2.167</b></div></div><div class="ceza-row"><div class="ceza-ico" style="background:var(--ok-tint,var(--bg));color:var(--ok)"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="ceza-info"><b>Park İhlali</b><span>03.04.2026 · <span class="gstat ok" style="margin-left:2px">Firma ödedi</span></span></div><div class="ceza-amt"><b>₺993</b></div></div></div>
       </div>
     </section>
 
@@ -181,7 +186,7 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
     <section class="tab-panel" data-tab-panel="kaza" role="tabpanel" aria-label="Kaza ve Hasar" hidden>
       <div class="gv-card">
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-car-burst"></i> Kaza &amp; Hasar</div></div>
-        <div id="kazaWrap"></div>
+        <div id="kazaWrap"><div class="gd-block" style="padding:20px 22px"><b style="display:block;font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:4px">Şantiye giriş rampasına çarpma</b><span style="font-size:12px;color:var(--muted)">18.06.2026</span><div class="hasar-grid"><div class="hasar-cell"><dt>Hasar Bedeli</dt><dd>₺18.500</dd></div><div class="hasar-cell"><dt>Sigorta Karşılığı (%80)</dt><dd style="color:var(--ok)">₺14.800</dd></div><div class="hasar-cell"><dt>Firma Payı</dt><dd style="color:var(--danger)">₺3.700</dd></div></div></div></div>
       </div>
     </section>
 
@@ -189,11 +194,11 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
     <section class="tab-panel" data-tab-panel="bakim" role="tabpanel" aria-label="Bakım ve Muayene" hidden>
       <div class="gv-card" style="margin-bottom:16px">
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-bell"></i> Hatırlatmalar</div></div>
-        <div class="bakim-remind" id="bakimRemindWrap"></div>
+        <div class="bakim-remind" id="bakimRemindWrap"><div class="br-card warn"><div class="br-ico"><i class="fa-solid fa-clipboard-check"></i></div><div class="br-body"><b>Muayene — 29.07.2026</b><span>18 gün kaldı, planlayın.</span></div></div><div class="br-card"><div class="br-ico"><i class="fa-solid fa-oil-can"></i></div><div class="br-body"><b>Sonraki Bakım — hedef 50.000 km</b><span>Güncel km 42.300 km — 7.700 km kaldı.</span></div></div></div>
       </div>
       <div class="gv-card">
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> Geçmiş Bakımlar</div></div>
-        <div id="bakimHistWrap"></div>
+        <div id="bakimHistWrap"><div class="bakim-hist-row"><div class="bh-ico"><i class="fa-solid fa-wrench"></i></div><div class="bh-info"><b>Periyodik bakım — yağ, filtre, fren kontrolü</b><span>15.05.2026</span></div><div class="bh-km">40.000 km</div></div><div class="bakim-hist-row"><div class="bh-ico"><i class="fa-solid fa-wrench"></i></div><div class="bh-info"><b>Yağ + filtre değişimi, genel kontrol</b><span>12.11.2025</span></div><div class="bh-km">28.500 km</div></div></div>
       </div>
     </section>
   </main>

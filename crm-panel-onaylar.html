@@ -137,6 +137,9 @@
       </div>
 
       <div class="gv-card">
+        <!-- statik bake — 12 #onBadge* mount'u ("Onay bekliyor" rozeti + yaş etiketi,
+             gvChainBadge('bekliyor') + AGE_TXT[i] çıktısı verbatim); JS yüklenince
+             aynı mount'ları innerHTML ile ezer — D18-B2 -->
         <div id="onList">
 
           <a class="apr-row" href="crm-operasyon-kasa-detay.html?ks=ksa-018" data-tur="kasa" data-santiye="vadi" data-yas="eski">
@@ -147,7 +150,7 @@
               <span>Vadi Konakları · Hasan Demirci · hafriyat nakliyesi + yakıt</span>
               <span class="apr-chain"><span class="st done"><i class="fa-solid fa-check"></i> Şef</span><i class="fa-solid fa-chevron-right sep"></i><span class="st done"><i class="fa-solid fa-check"></i> Teknik</span><i class="fa-solid fa-chevron-right sep"></i><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Genel Müdür</span></span>
             </div>
-            <div class="apr-right" id="onBadge1"></div>
+            <div class="apr-right" id="onBadge1"><span class="gstat wait">Onay bekliyor</span><span class="apr-age eski">3 gün önce</span></div>
             <i class="fa-solid fa-chevron-right apr-chev"></i>
           </a>
 
@@ -159,7 +162,7 @@
               <span>Vadi Konakları · Hasan Demirci · acil talep</span>
               <span class="apr-chain"><span class="st done"><i class="fa-solid fa-check"></i> Şef</span><i class="fa-solid fa-chevron-right sep"></i><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Satın Alma</span></span>
             </div>
-            <div class="apr-right" id="onBadge2"></div>
+            <div class="apr-right" id="onBadge2"><span class="gstat wait">Onay bekliyor</span><span class="apr-age">Bugün</span></div>
             <i class="fa-solid fa-chevron-right apr-chev"></i>
           </a>
 
@@ -171,7 +174,7 @@
               <span>Ali Vural · Vadi Konakları · maaşa mahsuben</span>
               <span class="apr-chain"><span class="st done"><i class="fa-solid fa-check"></i> Şef</span><i class="fa-solid fa-chevron-right sep"></i><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Muhasebe</span></span>
             </div>
-            <div class="apr-right" id="onBadge3"></div>
+            <div class="apr-right" id="onBadge3"><span class="gstat wait">Onay bekliyor</span><span class="apr-age eski">3 gün önce</span></div>
             <i class="fa-solid fa-chevron-right apr-chev"></i>
           </a>
 
@@ -183,7 +186,7 @@
               <span>Ali Vural · 6–10 Temmuz</span>
               <span class="apr-chain"><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Şantiye Şefi</span><i class="fa-solid fa-chevron-right sep"></i><span class="st"><i class="fa-regular fa-circle"></i> İK</span></span>
             </div>
-            <div class="apr-right" id="onBadge4"></div>
+            <div class="apr-right" id="onBadge4"><span class="gstat wait">Onay bekliyor</span><span class="apr-age">Dün</span></div>
             <i class="fa-solid fa-chevron-right apr-chev"></i>
           </a>
 
@@ -195,7 +198,7 @@
               <span>Vadi Konakları · Hasan Demirci · nakliye + işçilik avansı</span>
               <span class="apr-chain"><span class="st done"><i class="fa-solid fa-check"></i> Şef</span><i class="fa-solid fa-chevron-right sep"></i><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Teknik Müdür</span></span>
             </div>
-            <div class="apr-right" id="onBadge5"></div>
+            <div class="apr-right" id="onBadge5"><span class="gstat wait">Onay bekliyor</span><span class="apr-age">Bugün</span></div>
             <i class="fa-solid fa-chevron-right apr-chev"></i>
           </a>
 
@@ -207,7 +210,7 @@
               <span>Vadi Konakları · Demir-Beton İnş. Ltd. · Haziran 2026 dönemi</span>
               <span class="apr-chain"><span class="st done"><i class="fa-solid fa-check"></i> Teknik Müdür</span><i class="fa-solid fa-chevron-right sep"></i><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Muhasebe</span></span>
             </div>
-            <div class="apr-right" id="onBadge6"></div>
+            <div class="apr-right" id="onBadge6"><span class="gstat wait">Onay bekliyor</span><span class="apr-age eski">4 gün önce</span></div>
             <i class="fa-solid fa-chevron-right apr-chev"></i>
           </a>
 
@@ -219,7 +222,7 @@
               <span>Vadi Konakları · ElektroMek Taahhüt · Haziran 2026 dönemi</span>
               <span class="apr-chain"><span class="st done"><i class="fa-solid fa-check"></i> Teknik Müdür</span><i class="fa-solid fa-chevron-right sep"></i><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Muhasebe</span></span>
             </div>
-            <div class="apr-right" id="onBadge7"></div>
+            <div class="apr-right" id="onBadge7"><span class="gstat wait">Onay bekliyor</span><span class="apr-age">Dün</span></div>
             <i class="fa-solid fa-chevron-right apr-chev"></i>
           </a>
 
@@ -231,7 +234,7 @@
               <span>Musa Erdem · Vadi Konakları · maaşa mahsuben</span>
               <span class="apr-chain"><span class="st done"><i class="fa-solid fa-check"></i> Musa Erdem</span><i class="fa-solid fa-chevron-right sep"></i><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Şantiye Şefi</span></span>
             </div>
-            <div class="apr-right" id="onBadge8"></div>
+            <div class="apr-right" id="onBadge8"><span class="gstat wait">Onay bekliyor</span><span class="apr-age">Dün</span></div>
             <i class="fa-solid fa-chevron-right apr-chev"></i>
           </a>
 
@@ -243,7 +246,7 @@
               <span>Liman Lojistik Merkezi · Halil Güneş</span>
               <span class="apr-chain"><span class="st done"><i class="fa-solid fa-check"></i> Şantiye Şefi</span><i class="fa-solid fa-chevron-right sep"></i><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Satın Alma</span></span>
             </div>
-            <div class="apr-right" id="onBadge9"></div>
+            <div class="apr-right" id="onBadge9"><span class="gstat wait">Onay bekliyor</span><span class="apr-age eski">3 gün önce</span></div>
             <i class="fa-solid fa-chevron-right apr-chev"></i>
           </a>
 
@@ -255,7 +258,7 @@
               <span>Liman Lojistik Merkezi · Şükrü Aslan</span>
               <span class="apr-chain"><span class="st done"><i class="fa-solid fa-check"></i> Şantiye Şefi</span><i class="fa-solid fa-chevron-right sep"></i><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Satın Alma</span></span>
             </div>
-            <div class="apr-right" id="onBadge10"></div>
+            <div class="apr-right" id="onBadge10"><span class="gstat wait">Onay bekliyor</span><span class="apr-age">Dün</span></div>
             <i class="fa-solid fa-chevron-right apr-chev"></i>
           </a>
 
@@ -267,7 +270,7 @@
               <span>Merkez Şantiye · Ömer Taşkın</span>
               <span class="apr-chain"><span class="st done"><i class="fa-solid fa-check"></i> Şantiye Şefi</span><i class="fa-solid fa-chevron-right sep"></i><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Satın Alma</span></span>
             </div>
-            <div class="apr-right" id="onBadge11"></div>
+            <div class="apr-right" id="onBadge11"><span class="gstat wait">Onay bekliyor</span><span class="apr-age">Dün</span></div>
             <i class="fa-solid fa-chevron-right apr-chev"></i>
           </a>
 
@@ -279,7 +282,7 @@
               <span>Vadi Konakları · İbrahim Sönmez</span>
               <span class="apr-chain"><span class="st done"><i class="fa-solid fa-check"></i> Şantiye Şefi</span><i class="fa-solid fa-chevron-right sep"></i><span class="st now"><i class="fa-solid fa-hourglass-half"></i> Satın Alma</span></span>
             </div>
-            <div class="apr-right" id="onBadge12"></div>
+            <div class="apr-right" id="onBadge12"><span class="gstat wait">Onay bekliyor</span><span class="apr-age">2 gün önce</span></div>
             <i class="fa-solid fa-chevron-right apr-chev"></i>
           </a>
 

@@ -127,7 +127,8 @@
           </form>
 
           <!-- ============ DİNAMİK ALAN SETİ — hareket türüne göre değişir ============ -->
-          <div class="dyn-fields" id="dynFields"></div>
+          <!-- statik bake — DEFAULT 'giriş' hareket türü alan seti (FIELD_SETS.giris); JS yüklenince aynı mount innerHTML ile ezilir (radio değişince yeniden render olur) — D18-B2 -->
+          <div class="dyn-fields" id="dynFields"><div class="gfield"><label for="dyn0">İrsaliye No</label><input type="text" id="dyn0" placeholder="ör. IRS-2026-15"></div><div class="gfield"><label for="dyn1">Tedarikçi</label><select id="dyn1"><option>Ege Hazır Beton</option><option>Trakya Beton Santrali</option><option>Marmara Demir Çelik</option><option>Boğaziçi Yapı Market</option><option>Delta Elektrik</option><option>Anadolu Hırdavat</option><option>Diğer</option></select></div></div>
         </div>
         <div class="gd-block">
           <div class="gd-label">Not / Açıklama</div>

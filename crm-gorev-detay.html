@@ -155,7 +155,9 @@
       <div>
         <div class="gd-eyebrow" id="gdEyebrow">—</div>
         <h1 id="gdTitle">—</h1>
-        <div class="gd-badges" id="gdBadges"></div>
+        <!-- statik bake — DEFAULT ?gorev=008 kaydı (rol-agnostik); JS yüklenince aynı
+             mount innerHTML ile ezilir (kaynak: bu dosyanın GOREV['008'] kaydı) — D18-B2 -->
+        <div class="gd-badges" id="gdBadges"><span class="gstat danger">Gecikti</span><span class="gpri high">Yüksek öncelik</span></div>
       </div>
       <div class="ph-actions">
         <a class="btn btn-ghost btn-sm" href="crm-gorev.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>
@@ -185,7 +187,7 @@
           </div>
           <div class="gd-block">
             <div class="gd-label">Yorumlar</div>
-            <div id="gdComments"></div>
+            <div id="gdComments"><div class="cmt-row"><div class="cmt-ava">MD</div><div class="cmt-body"><div class="cmt-head"><b>Murat Denizli</b><span>28 Haziran, 09:12</span></div><div class="cmt-text">Perde betonu döküldükten sonra kür sürecini takip edip fotoğraflı rapor bekliyorum.</div></div></div><div class="cmt-row"><div class="cmt-ava">HD</div><div class="cmt-body"><div class="cmt-head"><b>Hasan Demirci</b><span>30 Haziran, 14:20</span></div><div class="cmt-text">Kalıp söküm bugün yapıldı, kür örtüsü seriliyor. Yarın ilk fotoğrafları paylaşacağım.</div></div></div><div class="cmt-row"><div class="cmt-ava">MD</div><div class="cmt-body"><div class="cmt-head"><b>Murat Denizli</b><span>2 Temmuz, 08:05</span></div><div class="cmt-text">Termin dün geçti, rapor henüz gelmedi. Lütfen bugün öğleden önce paylaşın.</div></div></div></div>
             <div class="cmt-compose">
               <div class="cmt-ava" id="cmtMeAva">·</div>
               <div class="cmt-compose-field">

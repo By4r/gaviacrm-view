@@ -113,7 +113,9 @@
         <div class="gv-card">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-user-shield"></i> Bölüm Erişimim</div></div>
           <div class="gc-body">
-            <div class="acc-chips" id="prfSecs"></div>
+            <!-- statik bake — DEFAULT/superadmin rol-agnostic bölüm çipleri; JS yüklenince
+                 aktif personanın secs listesiyle aynı mount innerHTML ile ezilir — D18-B2 -->
+            <div class="acc-chips" id="prfSecs"><span class="acc-chip"><i class="fa-solid fa-gauge-high"></i> Panel</span><span class="acc-chip"><i class="fa-solid fa-helmet-safety"></i> Şantiye</span><span class="acc-chip"><i class="fa-solid fa-list-check"></i> Görev</span><span class="acc-chip"><i class="fa-solid fa-users"></i> Personel</span><span class="acc-chip"><i class="fa-solid fa-clipboard-list"></i> Operasyon</span><span class="acc-chip"><i class="fa-solid fa-cart-flatbed"></i> Satın Alma</span><span class="acc-chip"><i class="fa-solid fa-address-book"></i> Cari</span><span class="acc-chip"><i class="fa-solid fa-file-signature"></i> Finans</span><span class="acc-chip"><i class="fa-solid fa-sliders"></i> Ayarlar</span></div>
             <div class="acc-note"><i class="fa-solid fa-circle-info"></i> Erişim yetkileri rolünüz üzerinden tanımlanır; değişiklik talebi için firma yöneticinize başvurun.</div>
           </div>
         </div>

@@ -148,7 +148,8 @@
       <div>
         <div class="gd-eyebrow" id="gdEyebrow">—</div>
         <h1 id="gdTitle">—</h1>
-        <div class="gd-badges" id="gdBadges"></div>
+        <!-- statik bake — DEFAULT (SSZ-2026-003, ?ssz= yok); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+        <div class="gd-badges" id="gdBadges"><span class="gstat ok">İmzalı</span><span class="gtag extra-tag">Tekrar Müşteri</span></div>
       </div>
       <div class="ph-actions">
         <a class="btn btn-ghost btn-sm" href="crm-satis-sozlesmeler.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>
@@ -168,7 +169,8 @@
         <div class="gv-card" id="odemeCard">
           <div class="gd-block">
             <div class="gd-label" id="odemeLabel">Ödeme Planı</div>
-            <div id="odemeBody"></div>
+            <!-- statik bake — DEFAULT (SSZ-2026-003 ödeme planı); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+            <div id="odemeBody"><div class="tbl-scroll"><table class="pay-table"><thead><tr><th>#</th><th>Açıklama</th><th class="num">Tutar</th><th>Vade</th><th>Durum</th></tr></thead><tbody><tr><td class="no-col">—</td><td>Peşinat (%15)</td><td class="num">₺918.000</td><td>İmza günü</td><td><span class="gstat ok">Ödendi</span></td></tr><tr><td class="no-col">1–14</td><td>Taksit (ödenen)</td><td class="num">₺1.610.000</td><td>Aylık</td><td><span class="gstat ok">Ödendi</span></td></tr><tr><td class="no-col">15–36</td><td>Taksit (bekleyen)</td><td class="num">₺2.530.000</td><td>Aylık</td><td><span class="gstat wait">Bekliyor</span></td></tr><tr><td class="no-col">—</td><td>Teslim bedeli</td><td class="num">₺1.062.000</td><td>Teslimde</td><td><span class="gstat wait">Bekliyor</span></td></tr></tbody></table></div><div class="kalan-banner"><span class="kb-lbl">Kalan Bakiye</span><span class="kb-val">₺3.592.000</span></div></div>
           </div>
         </div>
 
@@ -216,7 +218,8 @@
               <div class="party-info"><b>Yapıtaş İnşaat A.Ş.</b><span>Satıcı</span></div>
               <span class="party-role">Taraf A</span>
             </div>
-            <div class="party-row" id="musteriRow"></div>
+            <!-- statik bake — DEFAULT (SSZ-2026-003 → Selçuk Onaran); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+            <div class="party-row" id="musteriRow"><div class="party-mark" style="background:var(--info-tint);color:var(--info)">SO</div><div class="party-info"><b><a href="crm-satis-musteri-detay.html?mst=001" style="color:inherit">Selçuk Onaran</a></b><span>Kurumsal · Referans</span></div><span class="party-role">Taraf B</span></div>
           </div>
           <div class="gd-block">
             <div class="ctx-row"><span class="ctx-lbl">Birim / Paket</span><span class="ctx-val" id="ctxBirim">—</span></div>

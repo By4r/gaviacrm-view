@@ -1052,7 +1052,10 @@ a.sc-row:hover{background:var(--bg)}
       <!-- notlarım — günlük kısa notlar (localStorage, bu tarayıcıya özel) [MOCK-SİM] -->
       <div class="gv-card" data-view="yonetim sef kisisel ik satinalma muhasebe">
         <div class="sc-head"><i class="fa-regular fa-note-sticky"></i><b>Notlarım</b><span class="sc-cnt" id="ntCnt"></span></div>
-        <div id="ntList"></div>
+        <!-- statik bake — localStorage boş (varsayılan yeni-tarayıcı durumu); JS yüklenince
+             render() aynı mount'u innerHTML ile ezer (gvPanelNotlar key'i doluysa gerçek
+             notlar basılır) — D18-B2 -->
+        <div id="ntList"><div class="nt-empty">Henüz not yok — güne dair kısa notlarınızı buraya ekleyin.</div></div>
         <div class="nt-add">
           <input id="ntInput" type="text" maxlength="120" placeholder="Kısa not ekle…" aria-label="Yeni not">
           <button class="btn btn-acc btn-sm" id="ntBtn" aria-label="Not ekle"><i class="fa-solid fa-plus"></i></button>

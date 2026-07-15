@@ -77,7 +77,9 @@
       <div>
         <div class="ph-eyebrow">Analiz</div>
         <h1>İş Programı Raporu</h1>
-        <div class="ph-sub" id="ipSub">Yükleniyor…</div>
+        <!-- statik bake — DEFAULT (Vadi Konakları, rol-agnostic) render(); JS yüklenince
+             aynı mount'lar innerHTML/textContent ile ezilir — D18-B2 -->
+        <div class="ph-sub" id="ipSub">Vadi Konakları · 7 ana kalem · genel ilerleme %68</div>
       </div>
       <div class="ph-actions">
         <a class="btn btn-ghost btn-sm rp-back" href="crm-panel-raporlar.html"><i class="fa-solid fa-arrow-left"></i> Rapor Merkezi</a>
@@ -88,7 +90,7 @@
     <div class="santiye-row">
       <span class="frow-lbl">Şantiye</span>
       <div class="chips" id="ipChips">
-        <button class="chip" data-santiye="vadi">Vadi Konakları</button>
+        <button class="chip is-on" data-santiye="vadi">Vadi Konakları</button>
         <button class="chip" data-santiye="liman">Liman Lojistik Merkezi</button>
         <button class="chip" data-santiye="merkez">Merkez Şantiye</button>
       </div>
@@ -97,23 +99,23 @@
     <div class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-ico"><i class="fa-solid fa-list-check"></i></div>
-        <div><div class="kpi-num num" id="kpiToplam">—</div><div class="kpi-lbl">Toplam kalem</div>
+        <div><div class="kpi-num num" id="kpiToplam">7</div><div class="kpi-lbl">Toplam kalem</div>
         <div class="kpi-delta flat"><i class="fa-solid fa-calendar-days"></i> İş programı ana kalemleri</div></div>
       </div>
       <div class="kpi-card" id="kpiGecikenCard">
         <div class="kpi-ico"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <div><div class="kpi-num num" id="kpiGeciken">—</div><div class="kpi-lbl">Geciken kalem</div>
+        <div><div class="kpi-num num" id="kpiGeciken">0</div><div class="kpi-lbl">Geciken kalem</div>
         <div class="kpi-delta flat"><i class="fa-solid fa-hourglass-half"></i> Sapma negatif olan kalemler</div></div>
       </div>
       <div class="kpi-card" id="kpiSapmaCard">
         <div class="kpi-ico"><i class="fa-solid fa-arrow-trend-down"></i></div>
-        <div><div class="kpi-num num" id="kpiSapma" style="font-size:19px">—</div><div class="kpi-lbl">En büyük sapma</div>
-        <div class="kpi-delta flat" id="kpiSapmaSub"><i class="fa-solid fa-circle-info"></i> —</div></div>
+        <div><div class="kpi-num num" id="kpiSapma" style="font-size:19px;color:var(--ok)">+2 gün</div><div class="kpi-lbl">En büyük sapma</div>
+        <div class="kpi-delta flat" id="kpiSapmaSub"><i class="fa-solid fa-circle-info"></i> Kaba İnşaat — A, B, C Blok</div></div>
       </div>
       <div class="kpi-card">
         <div class="kpi-ico" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)"><i class="fa-solid fa-flag-checkered"></i></div>
-        <div><div class="kpi-num num compact" id="kpiGenel" style="font-size:19px">—</div><div class="kpi-lbl">Genel ilerleme</div>
-        <div class="kpi-delta flat" id="kpiGenelSub"><i class="fa-solid fa-circle-info"></i> —</div></div>
+        <div><div class="kpi-num num compact" id="kpiGenel" style="font-size:19px">%68</div><div class="kpi-lbl">Genel ilerleme</div>
+        <div class="kpi-delta flat" id="kpiGenelSub"><i class="fa-solid fa-circle-info"></i> Programında — kaba inşaat 2 gün önde</div></div>
       </div>
     </div>
 
@@ -130,18 +132,18 @@
               <th>Durum</th>
             </tr>
           </thead>
-          <tbody id="ipBody"></tbody>
+          <tbody id="ipBody"><tr><td><div class="pg-kalem">Temel ve Bodrum Betonu</div></td><td><div class="pg-dates"><b>Planlanan:</b> 04.03.2024 – 12.09.2024<br><b>Gerçekleşen:</b> Tamamlandı · 12.09.2024</div></td><td><div class="prog-cell"><div class="pc-row"><span class="pc-lbl">Plan</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill plan" style="width:100%"></div></div><span class="gbar-val">%100</span></div></div><div class="pc-row"><span class="pc-lbl">Gerçek</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill " style="width:100%"></div></div><span class="gbar-val">%100</span></div></div></div></td><td class="num"><span class="sapma-val flat"><i class="fa-solid fa-minus"></i> Sapma yok</span></td><td><span class="gstat ok">Tamamlandı — planında bitti</span></td></tr><tr><td><div class="pg-kalem">Kaba İnşaat — A, B, C Blok</div></td><td><div class="pg-dates"><b>Planlanan:</b> 16.09.2024 – 15.08.2026<br><b>Gerçekleşen:</b> Devam ediyor · tahmini 13.08.2026</div></td><td><div class="prog-cell"><div class="pc-row"><span class="pc-lbl">Plan</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill plan" style="width:90%"></div></div><span class="gbar-val">%90</span></div></div><div class="pc-row"><span class="pc-lbl">Gerçek</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill " style="width:94%"></div></div><span class="gbar-val">%94</span></div></div></div></td><td class="num"><span class="sapma-val ok"><i class="fa-solid fa-arrow-trend-up"></i> +2 gün</span></td><td><span class="gstat ok">Programın önünde</span></td></tr><tr><td><div class="pg-kalem">Çatı ve Cephe İmalatı</div></td><td><div class="pg-dates"><b>Planlanan:</b> 01.09.2026 – 31.10.2026<br><b>Gerçekleşen:</b> Henüz başlamadı</div></td><td><div class="prog-cell"><div class="pc-row"><span class="pc-lbl">Plan</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill plan" style="width:0%"></div></div><span class="gbar-val">%0</span></div></div><div class="pc-row"><span class="pc-lbl">Gerçek</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill " style="width:0%"></div></div><span class="gbar-val">%0</span></div></div></div></td><td class="num"><span class="sapma-val flat"><i class="fa-solid fa-minus"></i> Sapma yok</span></td><td><span class="gstat off">Planlandı</span></td></tr><tr><td><div class="pg-kalem">İnce İşler ve Tesisat</div></td><td><div class="pg-dates"><b>Planlanan:</b> 01.06.2026 – 30.11.2026<br><b>Gerçekleşen:</b> Devam ediyor</div></td><td><div class="prog-cell"><div class="pc-row"><span class="pc-lbl">Plan</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill plan" style="width:55%"></div></div><span class="gbar-val">%55</span></div></div><div class="pc-row"><span class="pc-lbl">Gerçek</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill " style="width:58%"></div></div><span class="gbar-val">%58</span></div></div></div></td><td class="num"><span class="sapma-val flat"><i class="fa-solid fa-minus"></i> Sapma yok</span></td><td><span class="gstat info">Programında</span></td></tr><tr><td><div class="pg-kalem">Elektrik &amp; Tesisat</div></td><td><div class="pg-dates"><b>Planlanan:</b> 01.07.2026 – 15.12.2026<br><b>Gerçekleşen:</b> Devam ediyor</div></td><td><div class="prog-cell"><div class="pc-row"><span class="pc-lbl">Plan</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill plan" style="width:40%"></div></div><span class="gbar-val">%40</span></div></div><div class="pc-row"><span class="pc-lbl">Gerçek</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill " style="width:41%"></div></div><span class="gbar-val">%41</span></div></div></div></td><td class="num"><span class="sapma-val flat"><i class="fa-solid fa-minus"></i> Sapma yok</span></td><td><span class="gstat info">Programında</span></td></tr><tr><td><div class="pg-kalem">Çevre Düzenleme</div></td><td><div class="pg-dates"><b>Planlanan:</b> 01.10.2026 – 31.12.2026<br><b>Gerçekleşen:</b> Erken hazırlık aşaması</div></td><td><div class="prog-cell"><div class="pc-row"><span class="pc-lbl">Plan</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill plan" style="width:10%"></div></div><span class="gbar-val">%10</span></div></div><div class="pc-row"><span class="pc-lbl">Gerçek</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill " style="width:12%"></div></div><span class="gbar-val">%12</span></div></div></div></td><td class="num"><span class="sapma-val flat"><i class="fa-solid fa-minus"></i> Sapma yok</span></td><td><span class="gstat info">Programında</span></td></tr><tr><td><div class="pg-kalem">Teslim</div></td><td><div class="pg-dates"><b>Planlanan:</b> Aralık 2026<br><b>Gerçekleşen:</b> —</div></td><td><div class="prog-cell"><div class="pc-row"><span class="pc-lbl">Plan</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill plan" style="width:0%"></div></div><span class="gbar-val">%0</span></div></div><div class="pc-row"><span class="pc-lbl">Gerçek</span><div class="gbar"><div class="gbar-track"><div class="gbar-fill " style="width:0%"></div></div><span class="gbar-val">%0</span></div></div></div></td><td class="num"><span class="sapma-val flat"><i class="fa-solid fa-minus"></i> Sapma yok</span></td><td><span class="gstat off">Planlandı</span></td></tr></tbody>
         </table>
       </div>
     </div>
 
     <div class="gv-card" style="margin-top:20px">
       <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-triangle-exclamation"></i> Kritik Gecikmeler</div></div>
-      <div id="ipCrit"></div>
+      <div id="ipCrit"><div class="gv-empty"><div class="ge-ico"><i class="fa-solid fa-circle-check"></i></div><h4>Kritik gecikme yok</h4><p>Vadi Konakları iş programı takviminde şu anda gecikmiş bir kalem bulunmuyor.</p></div></div>
     </div>
 
     <div class="gv-card" style="margin-top:20px">
-      <div class="gc-body" id="ipBackWrap"></div>
+      <div class="gc-body" id="ipBackWrap"><a class="gc-link" href="crm-santiye-detay.html"><i class="fa-solid fa-arrow-right"></i> Şantiye Kartını Gör</a></div>
     </div>
   </main>
 </div>

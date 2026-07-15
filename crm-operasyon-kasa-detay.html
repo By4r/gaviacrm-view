@@ -98,7 +98,8 @@
       <div>
         <div class="gd-eyebrow">Vadi Konakları · Kasa Raporu #KSA-2026-018</div>
         <h1>Hafriyat nakliye bedeli nakit ödemesi</h1>
-        <div class="gd-badges" id="gdBadge"></div>
+        <!-- statik bake (D18-B2): JS load'da aynı mount'u kanonik veriden yeniden basar -->
+        <div class="gd-badges" id="gdBadge"><span class="gstat wait">Onay bekliyor</span><span class="gtag">Ödeme</span></div>
       </div>
       <div class="ph-actions">
         <a class="btn btn-ghost btn-sm" href="crm-operasyon-kasa.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>
@@ -195,7 +196,8 @@
           <div class="gc-head">
             <div class="gc-title"><i class="fa-solid fa-stamp"></i> Onay Zinciri</div>
           </div>
-          <div class="gc-body"><div id="chainEl"></div></div>
+          <!-- statik bake (D18-B2): JS load'da aynı mount'u kanonik veriden yeniden basar -->
+          <div class="gc-body"><div id="chainEl"><ol class="gv-chain"><li class="chain-step info"><span class="cs-node"><i class="fa-solid fa-paper-plane"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Hasan Demirci</b><span>Şantiye Şefi</span></div><div class="cs-when"><span class="cs-act">Oluşturdu</span><span class="cs-date">29 Haziran 2026 08:40</span></div></div></div></li><li class="chain-step ok"><span class="cs-node"><i class="fa-solid fa-check"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Elif Sarıkaya</b><span>Teknik Müdür</span></div><div class="cs-when"><span class="cs-act">Onayladı</span><span class="cs-date">29 Haziran 2026 15:10</span></div></div><div class="cs-note">Kalemler bütçe dahilinde, onaylandı.</div></div></li><li class="chain-step wait is-now"><span class="cs-node"><i class="fa-solid fa-hourglass-half"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Murat Denizli</b><span>Genel Müdür</span></div><div class="cs-when"><span class="cs-act">Onay bekliyor</span></div></div></div></li><li class="chain-step idle"><span class="cs-node"><i class="fa-solid fa-minus"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Nesrin Aydın</b><span>Muhasebe</span></div><div class="cs-when"><span class="cs-act">Sırada</span></div></div></div></li></ol></div></div>
           <div class="chain-acts" data-view="onayci-simdi" hidden>
             <button class="btn btn-sm btn-acc" data-chain-act="onayla" data-chain-name="KSA-2026-018"><i class="fa-solid fa-check"></i> Onayla</button>
             <button class="btn btn-sm btn-ghost" data-chain-act="revize" data-chain-name="KSA-2026-018"><i class="fa-solid fa-rotate-left"></i> Revize İste</button>

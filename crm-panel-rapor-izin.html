@@ -111,27 +111,29 @@
       <div class="filtre-ozet" id="filtreOzet"><i class="fa-solid fa-circle-info"></i> <span>—</span></div>
     </div>
 
-    <!-- KPI'lar seçili dönem/şantiye setindeki kayıtlardan CANLI hesaplanır (sabit set değil) -->
+    <!-- KPI'lar seçili dönem/şantiye setindeki kayıtlardan CANLI hesaplanır (sabit set değil).
+         statik bake — DEFAULT (Tümü dönem/şantiye) sayaçları; JS yüklenince aynı mount'lar
+         innerHTML/textContent ile ezilir — D18-B2 -->
     <div class="kpi-grid" id="kpiGrid">
       <div class="kpi-card warn" id="kpiBekliyor">
         <div class="kpi-ico"><i class="fa-solid fa-hourglass-half"></i></div>
-        <div><div class="kpi-num num" id="kpiBekliyorNum">–</div><div class="kpi-lbl">Bekliyor</div>
-        <div class="kpi-delta flat" id="kpiBekliyorSub"></div></div>
+        <div><div class="kpi-num num" id="kpiBekliyorNum">1</div><div class="kpi-lbl">Bekliyor</div>
+        <div class="kpi-delta flat" id="kpiBekliyorSub"><i class="fa-solid fa-calendar"></i> 5 gün · Ali Vural</div></div>
       </div>
       <div class="kpi-card" id="kpiOnaylandi" style="--kpi-ok:1">
         <div class="kpi-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-check"></i></div>
-        <div><div class="kpi-num num" id="kpiOnaylandiNum">–</div><div class="kpi-lbl">Onaylandı</div>
-        <div class="kpi-delta flat" id="kpiOnaylandiSub"></div></div>
+        <div><div class="kpi-num num" id="kpiOnaylandiNum">2</div><div class="kpi-lbl">Onaylandı</div>
+        <div class="kpi-delta flat" id="kpiOnaylandiSub"><i class="fa-solid fa-calendar"></i> 4 gün · Aylin Koç, Ramazan Kılıç</div></div>
       </div>
       <div class="kpi-card danger" id="kpiReddedildi">
         <div class="kpi-ico"><i class="fa-solid fa-xmark"></i></div>
-        <div><div class="kpi-num num" id="kpiReddedildiNum">–</div><div class="kpi-lbl">Reddedildi</div>
-        <div class="kpi-delta flat" id="kpiReddedildiSub"></div></div>
+        <div><div class="kpi-num num" id="kpiReddedildiNum">1</div><div class="kpi-lbl">Reddedildi</div>
+        <div class="kpi-delta flat" id="kpiReddedildiSub"><i class="fa-solid fa-calendar"></i> 4 gün · Nesrin Aydın</div></div>
       </div>
       <div class="kpi-card" id="kpiRevize">
         <div class="kpi-ico" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-rotate-left"></i></div>
-        <div><div class="kpi-num num" id="kpiRevizeNum">–</div><div class="kpi-lbl">Revize</div>
-        <div class="kpi-delta flat" id="kpiRevizeSub"></div></div>
+        <div><div class="kpi-num num" id="kpiRevizeNum">1</div><div class="kpi-lbl">Revize</div>
+        <div class="kpi-delta flat" id="kpiRevizeSub"><i class="fa-solid fa-calendar"></i> 5 gün · Ömer Taşkın</div></div>
       </div>
     </div>
 
@@ -211,11 +213,11 @@
 
     <!-- ============ TÜR KIRILIMI — görünür kayıtlardan CANLI derlenir (Tümü'de rapor-personel.html:145-151 ile birebir: Yıllık 3/12g · Raporlu 1/1g · Babalık 1/5g) ============ -->
     <div class="gv-card" style="margin-bottom:20px">
-      <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-layer-group"></i> Tür Kırılımı</div><span class="ph-sub" id="turScopeLbl" style="margin:0"></span></div>
+      <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-layer-group"></i> Tür Kırılımı</div><span class="ph-sub" id="turScopeLbl" style="margin:0">tüm kayıtlar</span></div>
       <div class="gc-body flush">
         <table class="gtable" id="tblTur">
           <thead><tr><th>Tür</th><th class="num">Kayıt</th><th class="num">Gün</th></tr></thead>
-          <tbody id="tblTurBody"></tbody>
+          <tbody id="tblTurBody"><tr><td>Yıllık İzin</td><td class="num">3</td><td class="num">12</td></tr><tr><td>Raporlu</td><td class="num">1</td><td class="num">1</td></tr><tr><td>Babalık İzni</td><td class="num">1</td><td class="num">5</td></tr><tr class="bm-total"><td>Toplam</td><td class="num">5</td><td class="num">18</td></tr></tbody>
         </table>
       </div>
       <div class="gc-body" style="padding-top:0">

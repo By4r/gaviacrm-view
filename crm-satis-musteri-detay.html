@@ -150,7 +150,8 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
       <div class="mst-hero-id">
         <div class="mst-hero-mark" id="mMark">—</div>
         <div class="mst-hero-info">
-          <div class="mst-hero-tags" id="mTags"></div>
+          <!-- statik bake — DEFAULT (MST-2026-003, ?mst= yok); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+          <div class="mst-hero-tags" id="mTags"><span class="gtag" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink);border-color:transparent">Bireysel</span><span class="gstat warn">Opsiyon — bitiş 14 Tem</span></div>
           <dl class="mst-hero-meta">
             <div><dt>Kaynak</dt><dd id="mKaynak">—</dd></div>
             <div><dt>Temsilci</dt><dd id="mTemsilci">—</dd></div>
@@ -166,10 +167,12 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
             <div><dt>Son Temas</dt><dd id="mSonTemas">—</dd></div>
             <div style="grid-column:1/-1"><dt>Sonraki Adım</dt><dd id="mSonrakiAdim">—</dd></div>
           </dl>
-          <div class="tag-row" id="mEtiketler"></div>
+          <!-- statik bake — DEFAULT (MST-2026-003 etiketleri); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+          <div class="tag-row" id="mEtiketler"><span class="gtag">Opsiyon — Acil</span><span class="gtag">İlk Konut</span><span class="gtag">Web Lead</span></div>
         </div>
       </div>
-      <div class="hero-stats" id="mStats"></div>
+      <!-- statik bake — DEFAULT (MST-2026-003 hero stat'ları); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+      <div class="hero-stats" id="mStats"><div class="hstat warn"><span class="hstat-num">14 Tem</span><span class="hstat-lbl">Opsiyon bitiş tarihi</span></div><a class="hstat" href="crm-satis-teklif-detay.html?tkf=003"><span class="hstat-num">TKF-2026-003</span><span class="hstat-lbl">Onaylı teklif · %3 indirim <i class="fa-solid fa-arrow-right"></i></span></a><a class="hstat" href="crm-satis-birim-detay.html?birim=VK-B-11"><span class="hstat-num">VK-B-11</span><span class="hstat-lbl">İlgili birim <i class="fa-solid fa-arrow-right"></i></span></a><div class="hstat"><span class="hstat-num">2</span><span class="hstat-lbl">Açık fırsat — FRS-005, FRS-018</span></div></div>
     </div>
 
     <!-- ============ SEKMELER ============ -->
@@ -190,7 +193,8 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
         </div>
         <div class="gv-card">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-link"></i> İlişkili Kayıtlar</div></div>
-          <div class="gc-body" style="padding-top:6px" id="ozetLinkler"></div>
+          <!-- statik bake — DEFAULT (MST-2026-003 ilişkili kayıtlar + ödeme planı özeti); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+        <div class="gc-body" style="padding-top:6px" id="ozetLinkler"><div class="ctx-row"><span class="ctx-lbl"><i class="fa-solid fa-building-circle-check" style="color:var(--acc-ink);width:16px;text-align:center;margin-right:8px"></i>Opsiyonlu birim · bitiş 14 Tem</span><span class="ctx-val"><a href="crm-satis-birim-detay.html?birim=VK-B-11">VK-B-11</a></span></div><div class="ctx-row"><span class="ctx-lbl"><i class="fa-solid fa-file-invoice-dollar" style="color:var(--acc-ink);width:16px;text-align:center;margin-right:8px"></i>Onaylı teklif · %3 indirim</span><span class="ctx-val"><a href="crm-satis-teklif-detay.html?tkf=003">TKF-2026-003</a></span></div><div class="ctx-row"><span class="ctx-lbl"><i class="fa-solid fa-table-columns" style="color:var(--acc-ink);width:16px;text-align:center;margin-right:8px"></i>Opsiyon aşamasındaki fırsat</span><span class="ctx-val"><a href="crm-satis-firsat-detay.html?frs=005">FRS-2026-005</a></span></div><div class="ctx-row"><span class="ctx-lbl"><i class="fa-solid fa-table-columns" style="color:var(--acc-ink);width:16px;text-align:center;margin-right:8px"></i>VK-B-12 · sunum aşaması</span><span class="ctx-val"><a href="crm-satis-firsat-detay.html?frs=018">FRS-2026-018</a></span></div><div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line)"><div style="font-size:12px;font-weight:800;color:var(--ink);margin-bottom:10px">ODP-2026-001 — Ödeme Planı (VK-B-11)</div><div class="ctx-row"><span class="ctx-lbl">Liste fiyatı</span><span class="ctx-val">₺6.120.000 <span class="muted" style="font-weight:500">(%3 indirim)</span></span></div><div class="ctx-row"><span class="ctx-lbl">Net tutar</span><span class="ctx-val" style="color:var(--acc-ink)">₺5.940.000</span></div><div class="ctx-row"><span class="ctx-lbl">Peşinat</span><span class="ctx-val">₺1.485.000 (%25)</span></div><div class="ctx-row"><span class="ctx-lbl">Taksit</span><span class="ctx-val">36 × ₺103.750</span></div><div class="ctx-row"><span class="ctx-lbl">Teslimde</span><span class="ctx-val">₺720.000</span></div></div></div>
         </div>
       </div>
       <div class="gv-card" id="cariCard" hidden>
@@ -203,7 +207,8 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
     <section class="tab-panel" data-tab-panel="notlar" role="tabpanel" aria-label="Görüşme Notları" hidden>
       <div class="gv-card">
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-comments"></i> Görüşme Geçmişi</div></div>
-        <div id="notlarList"></div>
+        <!-- statik bake — DEFAULT (MST-2026-003 görüşme notları, sekme JS'siz gizli kalır); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+        <div id="notlarList"><div class="note-item"><div class="note-dot"><i class="fa-solid fa-comment"></i></div><div class="note-body"><div class="note-head"><span class="note-who">Selin Acar</span><span class="note-date">9 Temmuz 2026</span></div><p class="note-txt">Opsiyon bitiş tarihi hatırlatıldı; sözleşme evraklarının hazırlanması için randevu 13 Temmuz’a alındı.</p></div></div><div class="note-item"><div class="note-dot"><i class="fa-solid fa-comment"></i></div><div class="note-body"><div class="note-head"><span class="note-who">Selin Acar</span><span class="note-date">27 Haziran 2026</span></div><p class="note-txt">ODP-2026-001 ödeme planı müşteriyle telefonda gözden geçirildi, taksit tutarı onaylandı.</p></div></div><div class="note-item"><div class="note-dot"><i class="fa-solid fa-comment"></i></div><div class="note-body"><div class="note-head"><span class="note-who">Selin Acar</span><span class="note-date">20 Haziran 2026</span></div><p class="note-txt">TKF-2026-003 teklifi %3 indirimle onaylandı, opsiyon süresi 14 Temmuz’a uzatıldı.</p></div></div><div class="note-item"><div class="note-dot"><i class="fa-solid fa-comment"></i></div><div class="note-body"><div class="note-head"><span class="note-who">Selin Acar</span><span class="note-date">12 Haziran 2026</span></div><p class="note-txt">VK-B-11 dairesi için saha gezisi yapıldı, kat planı ve teslim tarihi paylaşıldı.</p></div></div><div class="note-item"><div class="note-dot"><i class="fa-solid fa-comment"></i></div><div class="note-body"><div class="note-head"><span class="note-who">Selin Acar</span><span class="note-date">2 Mayıs 2026</span></div><p class="note-txt">Web formu üzerinden gelen ilk talep değerlendirildi, bütçe ve proje tercihi netleştirildi.</p></div></div></div>
       </div>
     </section>
 
@@ -214,7 +219,8 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
         <div class="gc-body flush">
           <table class="gtable">
             <thead><tr><th class="col-tno">Teklif</th><th>Birim / Paket</th><th class="num col-tut">Tutar</th><th class="col-tst">Durum</th></tr></thead>
-            <tbody id="tekliflerBody"></tbody>
+            <!-- statik bake — DEFAULT (MST-2026-003 teklif geçmişi, sekme JS'siz gizli kalır); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+            <tbody id="tekliflerBody"><tr><td><a href="crm-satis-teklif-detay.html?tkf=003" style="color:var(--ink);font-weight:700">TKF-2026-003</a></td><td>VK-B-11 · 3+1 daire</td><td class="num">₺5.940.000</td><td><span class="gstat ok">Onaylı</span></td></tr></tbody>
           </table>
         </div>
       </div>
@@ -226,7 +232,8 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-folder-open"></i> Müşteri Dosyaları</div>
           <span class="gtag"><i class="fa-solid fa-flask"></i> Simülasyon</span>
         </div>
-        <div id="dosyalarList"></div>
+        <!-- statik bake — DEFAULT (MST-2026-003 dosyaları, sekme JS'siz gizli kalır); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+        <div id="dosyalarList"><div class="file-row"><div class="file-ico pdf"><i class="fa-solid fa-file-pdf"></i></div><div class="file-info"><b>aylin-sahinoglu-kimlik.pdf</b><span>220 KB</span></div><button class="ia-btn" data-demo="İndirme hazırlanıyor (demo)" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button></div><div class="file-row"><div class="file-ico pdf"><i class="fa-solid fa-file-pdf"></i></div><div class="file-info"><b>odp-2026-001-odeme-plani.pdf</b><span>96 KB</span></div><button class="ia-btn" data-demo="İndirme hazırlanıyor (demo)" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button></div><div class="file-row"><div class="file-ico img"><i class="fa-solid fa-file-image"></i></div><div class="file-info"><b>vk-b-11-kat-plani.jpg</b><span>1,4 MB</span></div><button class="ia-btn" data-demo="İndirme hazırlanıyor (demo)" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button></div></div>
       </div>
     </section>
 

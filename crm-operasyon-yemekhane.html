@@ -98,7 +98,9 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
       <div>
         <div class="ph-eyebrow">Günlük Kayıt</div>
         <h1>Yemekhane</h1>
-        <div class="ph-sub" id="ykSub">Yükleniyor…</div>
+        <!-- statik bake — DEFAULT (rol-agnostic) 2 Temmuz günü; JS yüklenince aynı mount
+             innerHTML ile ezilir (kaynak: bu dosyanın YERLER dizisi) — D18-B2 -->
+        <div class="ph-sub" id="ykSub">223 kişi · 3 şantiye + 3 taşeron ekibi · 2 Temmuz 2026, Perşembe</div>
       </div>
       <div class="ph-actions">
         <a class="btn btn-acc btn-sm" href="crm-operasyon-yemekhane-sayim-form.html"><i class="fa-solid fa-plus"></i> Sayım Gir</a>
@@ -108,18 +110,18 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
     <div class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-ico"><i class="fa-solid fa-utensils"></i></div>
-        <div><div class="kpi-num num" id="kpiToplam">—</div><div class="kpi-lbl">Bugün toplam yemek</div>
+        <div><div class="kpi-num num" id="kpiToplam">223</div><div class="kpi-lbl">Bugün toplam yemek</div>
         <div class="kpi-delta flat"><i class="fa-solid fa-calendar-day"></i> 2 Temmuz 2026</div></div>
       </div>
       <div class="kpi-card">
         <div class="kpi-ico" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-bowl-food"></i></div>
-        <div><div class="kpi-num num" id="kpiOgle">—</div><div class="kpi-lbl">En yoğun öğün — öğle</div>
+        <div><div class="kpi-num num" id="kpiOgle">93</div><div class="kpi-lbl">En yoğun öğün — öğle</div>
         <div class="kpi-delta flat"><i class="fa-solid fa-sun"></i> Vardiya molası</div></div>
       </div>
       <div class="kpi-card">
         <div class="kpi-ico" style="background:var(--warn-tint);color:var(--warn)"><i class="fa-solid fa-people-group"></i></div>
-        <div><div class="kpi-num num" id="kpiTaseron">—</div><div class="kpi-lbl">Taşeron ekibi kişi sayısı</div>
-        <div class="kpi-delta flat" id="kpiTaseronYuzde">—</div></div>
+        <div><div class="kpi-num num" id="kpiTaseron">58</div><div class="kpi-lbl">Taşeron ekibi kişi sayısı</div>
+        <div class="kpi-delta flat" id="kpiTaseronYuzde"><i class="fa-solid fa-chart-pie"></i> Toplamın %26’i</div></div>
       </div>
       <div class="kpi-card">
         <div class="kpi-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-helmet-safety"></i></div>
@@ -158,15 +160,15 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
               <th class="col-tutar num">Tutar</th>
             </tr>
           </thead>
-          <tbody id="ykBody"></tbody>
+          <tbody id="ykBody"><tr class="" data-firma="yapitas" data-kahvalti="32" data-ogle="35" data-aksam="18"><td><div class="yk-cell"><div class="yk-mark"><i class="fa-solid fa-helmet-safety"></i></div><div class="yk-info"><b>Vadi Konakları</b><span>Öz kadro</span></div></div></td><td><span class="gstat yk-tur-badge off">Yapıtaş</span></td><td class="num yk-num">32</td><td class="num yk-num">35</td><td class="num yk-num">18</td><td class="num"><span class="yk-total">85</span></td><td class="num yk-tutar">₺6.100</td></tr><tr class="is-tas" data-firma="demir-beton" data-kahvalti="9" data-ogle="10" data-aksam="6"><td><div class="yk-cell"><div class="yk-mark tas"><i class="fa-solid fa-people-group"></i></div><div class="yk-info"><b>Demir-Beton İnş. Ltd.</b><span>Taşeron ekibi · Vadi Konakları</span></div></div></td><td><span class="gstat yk-tur-badge info">Taşeron</span></td><td class="num yk-num">9</td><td class="num yk-num">10</td><td class="num yk-num">6</td><td class="num"><span class="yk-total">25</span></td><td class="num yk-tutar">₺1.800</td></tr><tr class="is-tas" data-firma="elektromek" data-kahvalti="5" data-ogle="6" data-aksam="3"><td><div class="yk-cell"><div class="yk-mark tas"><i class="fa-solid fa-people-group"></i></div><div class="yk-info"><b>ElektroMek Taahhüt</b><span>Taşeron ekibi · Vadi Konakları</span></div></div></td><td><span class="gstat yk-tur-badge info">Taşeron</span></td><td class="num yk-num">5</td><td class="num yk-num">6</td><td class="num yk-num">3</td><td class="num"><span class="yk-total">14</span></td><td class="num yk-tutar">₺1.015</td></tr><tr class="" data-firma="yapitas" data-kahvalti="20" data-ogle="22" data-aksam="10"><td><div class="yk-cell"><div class="yk-mark"><i class="fa-solid fa-helmet-safety"></i></div><div class="yk-info"><b>Liman Lojistik Merkezi</b><span>Öz kadro</span></div></div></td><td><span class="gstat yk-tur-badge off">Yapıtaş</span></td><td class="num yk-num">20</td><td class="num yk-num">22</td><td class="num yk-num">10</td><td class="num"><span class="yk-total">52</span></td><td class="num yk-tutar">₺3.730</td></tr><tr class="is-tas" data-firma="yalitim" data-kahvalti="7" data-ogle="8" data-aksam="4"><td><div class="yk-cell"><div class="yk-mark tas"><i class="fa-solid fa-people-group"></i></div><div class="yk-info"><b>Yalıtım Kardeşler</b><span>Taşeron ekibi · Liman Lojistik Merkezi</span></div></div></td><td><span class="gstat yk-tur-badge info">Taşeron</span></td><td class="num yk-num">7</td><td class="num yk-num">8</td><td class="num yk-num">4</td><td class="num"><span class="yk-total">19</span></td><td class="num yk-tutar">₺1.370</td></tr><tr class="" data-firma="yapitas" data-kahvalti="11" data-ogle="12" data-aksam="5"><td><div class="yk-cell"><div class="yk-mark"><i class="fa-solid fa-helmet-safety"></i></div><div class="yk-info"><b>Merkez Şantiye</b><span>Öz kadro</span></div></div></td><td><span class="gstat yk-tur-badge off">Yapıtaş</span></td><td class="num yk-num">11</td><td class="num yk-num">12</td><td class="num yk-num">5</td><td class="num"><span class="yk-total">28</span></td><td class="num yk-tutar">₺2.005</td></tr></tbody>
           <tfoot>
             <tr>
               <td class="t-strong" id="ftLabel" colspan="2">Genel Toplam</td>
-              <td class="num t-strong" id="ftKahvalti">—</td>
-              <td class="num t-strong" id="ftOgle">—</td>
-              <td class="num t-strong" id="ftAksam">—</td>
-              <td class="num t-strong" id="ftToplam">—</td>
-              <td class="num yk-tutar-total" id="ftTutar">—</td>
+              <td class="num t-strong" id="ftKahvalti">84</td>
+              <td class="num t-strong" id="ftOgle">93</td>
+              <td class="num t-strong" id="ftAksam">46</td>
+              <td class="num t-strong" id="ftToplam">223</td>
+              <td class="num yk-tutar-total" id="ftTutar">₺16.020</td>
             </tr>
           </tfoot>
         </table>
@@ -174,7 +176,7 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
       <!-- Maliyet katmanı (madde 11): birim maliyet mock, KDV dahil — kahvaltı ₺50 · öğle ₺90 · akşam ₺75
            (bkz. shell.js DALGA 5C KANONİK TANIMLAR). Tutar = yukarıdaki kişi sayıları × birim fiyat;
            YERLER dizisindeki öğün SAYILARINA dokunulmadı, yalnız bu katman eklendi. -->
-      <div class="my-strip" id="maliyetStrip"></div>
+      <div class="my-strip" id="maliyetStrip"><div class="my-item acc"><div class="my-num">₺16.020</div><div class="my-lbl">Bugünkü toplam yemekhane maliyeti</div><div class="my-sub">84 kahvaltı × ₺50 + 93 öğle × ₺90 + 46 akşam × ₺75</div></div><div class="my-item"><div class="my-num">₺11.835</div><div class="my-lbl">Öz kadro payı</div><div class="my-sub">Şantiye kadrosu yemekleri</div></div><div class="my-item"><div class="my-num">₺4.185</div><div class="my-lbl">Taşeron payı — 58 öğün</div><div class="my-sub">Ayrı gösterilir; hakediş kesintisi muhasebe tarafından ayrıca değerlendirilir.</div></div></div>
       <div class="gc-foot" style="border-top:1px dashed var(--line-2)">
         <span><i class="fa-solid fa-circle-info"></i> Taşeron öğün maliyeti firma bazında ayrı izlenir; hakediş kesintisi muhasebe tarafından ayrıca değerlendirilir.</span>
       </div>
@@ -185,7 +187,7 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
         <div class="gc-title"><i class="fa-solid fa-calendar-week"></i> Haftalık Özet <span style="font-weight:600;color:var(--muted);font-size:12px">— Firma Geneli</span></div>
         <span class="ph-sub" style="margin:0">29 Haziran – 5 Temmuz 2026</span>
       </div>
-      <div class="week-strip" id="weekStrip"></div>
+      <div class="week-strip" id="weekStrip"><div class="week-day"><div class="wd-lbl">Pzt</div><div class="wd-date">29 Haz</div><div class="wd-num">218</div><div class="wd-sub">kişi</div></div><div class="week-day"><div class="wd-lbl">Sal</div><div class="wd-date">30 Haz</div><div class="wd-num">225</div><div class="wd-sub">kişi</div></div><div class="week-day"><div class="wd-lbl">Çar</div><div class="wd-date">1 Tem</div><div class="wd-num">220</div><div class="wd-sub">kişi</div></div><div class="week-day is-today"><div class="wd-lbl">Per</div><div class="wd-date">2 Tem</div><div class="wd-num">223</div><div class="wd-sub">kişi</div></div><div class="week-day"><div class="wd-lbl">Cum</div><div class="wd-date">3 Tem</div><div class="wd-num tbd">—</div><div class="wd-sub">henüz kaydedilmedi</div></div><div class="week-day"><div class="wd-lbl">Cmt</div><div class="wd-date">4 Tem</div><div class="wd-num tbd">—</div><div class="wd-sub">henüz kaydedilmedi</div></div><div class="week-day"><div class="wd-lbl">Paz</div><div class="wd-date">5 Tem</div><div class="wd-num tbd">—</div><div class="wd-sub">henüz kaydedilmedi</div></div></div>
     </div>
 
     <div class="gv-card" style="margin-top:20px">
@@ -201,7 +203,7 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
               <th class="num">Toplam</th>
             </tr>
           </thead>
-          <tbody id="sonSayimBody"></tbody>
+          <tbody id="sonSayimBody"><tr><td><a href="crm-operasyon-yemekhane-sayim-detay.html?ymk=001">YMK-2026-001</a></td><td>Pzt 29 Haz 2026</td><td class="num t-strong">218</td></tr><tr><td><a href="crm-operasyon-yemekhane-sayim-detay.html?ymk=002">YMK-2026-002</a></td><td>Sal 30 Haz 2026</td><td class="num t-strong">225</td></tr><tr><td><a href="crm-operasyon-yemekhane-sayim-detay.html?ymk=003">YMK-2026-003</a></td><td>Çar 1 Tem 2026</td><td class="num t-strong">220</td></tr><tr><td><a href="crm-operasyon-yemekhane-sayim-detay.html?ymk=004">YMK-2026-004</a></td><td>Per 2 Tem 2026</td><td class="num t-strong">223</td></tr></tbody>
         </table>
       </div>
       <div class="gc-foot">

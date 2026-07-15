@@ -121,7 +121,8 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
       <div class="tdr-hero-id">
         <div class="tdr-hero-mark" id="tMark">—</div>
         <div class="tdr-hero-info">
-          <div class="tdr-hero-tags" id="tTags"></div>
+          <!-- statik bake — DEFAULT kayıt (TDR-01) JS'siz görünüm için; JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+          <div class="tdr-hero-tags" id="tTags"><span class="gtag" style="border-color:transparent"><i class="fa-solid fa-tag"></i> Beton</span><span class="gstat ok">%96 performans</span></div>
           <dl class="tdr-hero-meta">
             <div><dt>Yetkili Kişi</dt><dd id="tYetkili">—</dd></div>
             <div><dt>Telefon</dt><dd id="tTel">—</dd></div>
@@ -132,7 +133,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
           </dl>
         </div>
       </div>
-      <div class="hero-stats" id="tStats"></div>
+      <div class="hero-stats" id="tStats"><div class="hstat"><span class="hstat-num">%96</span><span class="hstat-lbl">Performans skoru</span></div><a class="hstat" href="crm-satinalma-siparis-detay.html?sip=SIP-2026-07"><span class="hstat-num">SIP-2026-07</span><span class="hstat-lbl">Aktif sipariş <i class="fa-solid fa-arrow-right"></i></span></a><div class="hstat ok"><span class="hstat-num">₺54.900</span><span class="hstat-lbl">Cari bakiye — alacaklı</span></div><div class="hstat"><span class="hstat-num">2</span><span class="hstat-lbl">Kazanılan sipariş (2026)</span></div></div>
     </div>
 
     <!-- ============ SEKMELER ============ -->
@@ -147,7 +148,8 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
     <section class="tab-panel" data-tab-panel="kunye" role="tabpanel" aria-label="Künye">
       <div class="gv-card">
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-circle-info"></i> Firma Bilgileri</div></div>
-        <div class="gc-body" id="kunyeBody"></div>
+        <!-- statik bake — DEFAULT kayıt (TDR-01) JS'siz görünüm için; JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+        <div class="gc-body" id="kunyeBody"><div class="ctx-row"><span class="ctx-lbl">Unvan</span><span class="ctx-val">Ege Hazır Beton</span></div><div class="ctx-row"><span class="ctx-lbl">Kategori</span><span class="ctx-val">Beton</span></div><div class="ctx-row"><span class="ctx-lbl">Yetkili Kişi</span><span class="ctx-val">Kadir Solmaz</span></div><div class="ctx-row"><span class="ctx-lbl">Telefon</span><span class="ctx-val">0536 218 77 41</span></div><div class="ctx-row"><span class="ctx-lbl">Adres</span><span class="ctx-val">Hadımköy Beton Tesisi, İstanbul</span></div><div class="ctx-row"><span class="ctx-lbl">Ödeme Vadesi</span><span class="ctx-val">30 gün (kısmi ödemeli)</span></div><div class="ctx-row" style="border-bottom:none"><span class="ctx-lbl">Tedarik Başlangıcı</span><span class="ctx-val">Mart 2024</span></div></div>
       </div>
     </section>
 
@@ -158,7 +160,8 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
         <div class="gc-body flush">
           <table class="gtable">
             <thead><tr><th>Belge</th><th>Açıklama</th><th class="num col-tut">Tutar</th><th class="col-tst">Durum</th></tr></thead>
-            <tbody id="teklifBody"></tbody>
+            <!-- statik bake — DEFAULT kayıt (TDR-01) JS'siz görünüm için; JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+            <tbody id="teklifBody"><tr><td><a href="crm-satinalma-icmal-cikti.html?form=SAT-2026-018" style="color:var(--ink);font-weight:700">SAT-2026-018</a></td><td>Vadi Konakları mekanik tesisat paketi icmali<span class="teklif-not">Seçilen tedarikçi Deta Demir Çelik — kayıt-dışı teklifçi, kart yok.</span></td><td class="num">₺699.100</td><td><span class="gstat danger">Kaybedildi</span></td></tr><tr><td><a href="crm-satinalma-siparis-detay.html?sip=SIP-2026-01" style="color:var(--ink);font-weight:700">SIP-2026-01</a></td><td>C30/37 hazır beton — 850 m³ (Vadi Konakları)<span class="teklif-not">FTR-2026-01..03 ödendi.</span></td><td class="num">₺1.487.500</td><td><span class="gstat ok">Kapandı</span></td></tr><tr><td><a href="crm-satinalma-siparis-detay.html?sip=SIP-2026-07" style="color:var(--ink);font-weight:700">SIP-2026-07</a></td><td>Şap betonu — 120 m³ (Vadi Konakları)<span class="teklif-not">Termin 9 Temmuz 2026.</span></td><td class="num">₺186.000</td><td><span class="gstat wait">Onaylandı</span></td></tr></tbody>
           </table>
         </div>
       </div>
@@ -170,13 +173,14 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-gauge-high"></i> Performans Skoru</div></div>
         <div class="gc-body">
           <div class="gbar" style="margin-bottom:14px">
-            <div class="gbar-track"><div class="gbar-fill" id="perfFill"></div></div>
+            <div class="gbar-track"><div class="gbar-fill" id="perfFill" style="width: 96%;"></div></div>
             <span class="gbar-val" id="perfVal">—</span>
           </div>
           <p style="font-size:13px;line-height:1.7;color:var(--ink-2)" id="perfNot">—</p>
         </div>
       </div>
-      <div class="gv-card" id="gecikmeCard">
+      <!-- DEFAULT kayıt (TDR-01) gecikme kaydı taşımıyor — JS aynı koşulda kartı hidden yapar (script satır ~420); statik bake bu davranışı birebir yansıtır — D18-B2 -->
+      <div class="gv-card" id="gecikmeCard" hidden>
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> Gecikme / Uyuşmazlık Kayıtları</div></div>
         <div id="gecikmeList"></div>
       </div>
@@ -186,7 +190,8 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
     <section class="tab-panel" data-tab-panel="cari" role="tabpanel" aria-label="Cari Hesap" hidden>
       <div class="gv-card">
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-scale-balanced"></i> Cari Bakiye</div></div>
-        <div class="gc-body" id="cariBody"></div>
+        <!-- statik bake — DEFAULT kayıt (TDR-01) JS'siz görünüm için; JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+        <div class="gc-body" id="cariBody"><div class="ctx-row"><span class="ctx-lbl">Bakiye</span><span class="ctx-val" style="color:var(--ok)">₺54.900 alacaklı</span></div><div class="ctx-row"><span class="ctx-lbl">5 Haz 2026 — Beton irsaliyesi (C30, 30 m³)</span><span class="ctx-val">+₺39.000</span></div><div class="ctx-row"><span class="ctx-lbl">18 Haz 2026 — Ödeme (kısmi)</span><span class="ctx-val">−₺20.000</span></div><div class="ctx-row"><span class="ctx-lbl">2 Tem 2026 — Beton irsaliyesi (4. mikser)</span><span class="ctx-val">+₺35.900</span></div><div class="ctx-row" style="border-bottom:none;margin-top:6px"><span class="ctx-lbl">&nbsp;</span><span class="ctx-val"><a href="crm-cari-durum.html" style="color:var(--acc-ink)">Cari Durum ekranında gör <i class="fa-solid fa-arrow-right"></i></a></span></div></div>
       </div>
     </section>
 
@@ -413,6 +418,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
   document.getElementById('perfNot').textContent = item.perfNot;
 
   if(item.gecikme.length){
+    document.getElementById('gecikmeCard').hidden = false; /* statik bake DEFAULT kayıt için hidden gömer (D18-B2) — burada koşulsuz açılır */
     document.getElementById('gecikmeList').innerHTML = item.gecikme.map(function(g){
       return '<div class="gecikme-item"><div class="gecikme-dot">' + g.gun + '</div>'
         + '<div class="gecikme-body"><b>' + g.tarih + '</b><span>' + g.aciklama + '</span></div></div>';

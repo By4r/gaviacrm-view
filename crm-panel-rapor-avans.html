@@ -107,30 +107,30 @@
           </div>
         </div>
       </div>
-      <div class="filtre-ozet" id="filtreOzet"><i class="fa-solid fa-circle-info"></i> <span>—</span></div>
+      <div class="filtre-ozet" id="filtreOzet"><i class="fa-solid fa-circle-info"></i> <span><b>5</b> kayıt gösteriliyor · <b>₺32.000</b> toplam</span></div>
     </div>
 
     <!-- KPI'lar seçili dönem/şantiye setindeki kayıtlardan CANLI hesaplanır (sabit set değil) -->
     <div class="kpi-grid" id="kpiGrid">
       <div class="kpi-card warn" id="kpiBekliyor">
         <div class="kpi-ico"><i class="fa-solid fa-hourglass-half"></i></div>
-        <div><div class="kpi-num num" id="kpiBekliyorNum">–</div><div class="kpi-lbl">Bekliyor</div>
-        <div class="kpi-delta flat" id="kpiBekliyorSub"></div></div>
+        <div><div class="kpi-num num" id="kpiBekliyorNum">₺7.500</div><div class="kpi-lbl">Bekliyor</div>
+        <div class="kpi-delta flat" id="kpiBekliyorSub"><i class="fa-solid fa-user"></i> 2 kayıt — Musa Erdem, Ali Vural</div></div>
       </div>
       <div class="kpi-card" id="kpiOnaylandi" style="--kpi-ok:1">
         <div class="kpi-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-check"></i></div>
-        <div><div class="kpi-num num" id="kpiOnaylandiNum">–</div><div class="kpi-lbl">Onaylandı / Ödendi</div>
-        <div class="kpi-delta flat" id="kpiOnaylandiSub"></div></div>
+        <div><div class="kpi-num num" id="kpiOnaylandiNum">₺8.000</div><div class="kpi-lbl">Onaylandı / Ödendi</div>
+        <div class="kpi-delta flat" id="kpiOnaylandiSub"><i class="fa-solid fa-user"></i> 1 kayıt — Hasan Demirci</div></div>
       </div>
       <div class="kpi-card danger" id="kpiReddedildi">
         <div class="kpi-ico"><i class="fa-solid fa-xmark"></i></div>
-        <div><div class="kpi-num num" id="kpiReddedildiNum">–</div><div class="kpi-lbl">Reddedildi</div>
-        <div class="kpi-delta flat" id="kpiReddedildiSub"></div></div>
+        <div><div class="kpi-num num" id="kpiReddedildiNum">₺6.500</div><div class="kpi-lbl">Reddedildi</div>
+        <div class="kpi-delta flat" id="kpiReddedildiSub"><i class="fa-solid fa-user"></i> 1 kayıt — Baran Yıldız</div></div>
       </div>
       <div class="kpi-card" id="kpiRevize">
         <div class="kpi-ico" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-rotate-left"></i></div>
-        <div><div class="kpi-num num" id="kpiRevizeNum">–</div><div class="kpi-lbl">Revize</div>
-        <div class="kpi-delta flat" id="kpiRevizeSub"></div></div>
+        <div><div class="kpi-num num" id="kpiRevizeNum">₺10.000</div><div class="kpi-lbl">Revize</div>
+        <div class="kpi-delta flat" id="kpiRevizeSub"><i class="fa-solid fa-user"></i> 1 kayıt — Aylin Koç</div></div>
       </div>
     </div>
 
@@ -206,11 +206,13 @@
          avn-013/012/011: zincire Genel Müdür eklenir (₺6.000 üzeri tutarlarda devreye giriyor,
          kayıt bazlı doğrulama: 8.000/6.500/10.000 hepsi GM'li; 3.500/4.000 GM'siz) → "gm". -->
     <div class="gv-card" style="margin-bottom:20px">
-      <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-diagram-project"></i> Zincir Aşama Kırılımı</div><span class="ph-sub" id="zincirScopeLbl" style="margin:0"></span></div>
+      <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-diagram-project"></i> Zincir Aşama Kırılımı</div><span class="ph-sub" id="zincirScopeLbl" style="margin:0">tüm kayıtlar</span></div>
       <div class="gc-body flush">
+        <!-- statik bake — DEFAULT (dönem=tümü, şantiye=tümü) 5 kayıtlık görünür setten
+             CANLI hesaplanan zincir kırılımı; JS yüklenince render() aynı mount'u ezer — D18-B2 -->
         <table class="gtable" id="tblZincir">
           <thead><tr><th>Zincir Tipi</th><th class="num">Kayıt</th><th class="num">Tutar</th></tr></thead>
-          <tbody id="tblZincirBody"></tbody>
+          <tbody id="tblZincirBody"><tr><td>Standart (Şef → Muhasebe)</td><td class="num">2</td><td class="num">₺7.500</td></tr><tr><td>GM Onaylı (+ Genel Müdür)</td><td class="num">3</td><td class="num">₺24.500</td></tr><tr class="bm-total"><td>Toplam</td><td class="num">5</td><td class="num">₺32.000</td></tr></tbody>
         </table>
       </div>
       <div class="gc-body" style="padding-top:0">

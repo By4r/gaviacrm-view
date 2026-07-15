@@ -144,7 +144,8 @@
                     <div class="slider-val" id="indVal">%3,0</div>
                   </div>
                   <div class="slider-scale"><span>%0</span><span>%3</span><span>%7</span><span>%12</span></div>
-                  <div class="esik-badge" id="esikBadge"></div>
+                  <!-- statik bake — DEFAULT (Aylin Şahinoğlu / VK-A-11, %3 indirim slider varsayılanı); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+                  <div class="esik-badge ok" id="esikBadge"><i class="fa-solid fa-user-check"></i> Temsilci yetkisinde — ek onay gerekmez.</div>
                   <div class="net-strip">
                     <span class="ns-lbl">Net Tutar</span>
                     <span class="ns-val" id="netVal">—</span>
@@ -169,7 +170,8 @@
                     <input type="number" id="fTeslim" min="0" max="100" step="1" value="12">
                   </div>
                 </div>
-                <div class="odp-summary" id="odpSummary"></div>
+                <!-- statik bake — DEFAULT (VK-A-11 fiyatı, %25 peşin / 36 taksit / %12 teslim varsayılanları); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+                <div class="odp-summary" id="odpSummary"><div class="odp-row"><span>Peşinat tutarı</span><b>₺1.484.100</b></div><div class="odp-row"><span>Aylık taksit × 36</span><b>₺103.887</b></div><div class="odp-row"><span>Teslim ödemesi</span><b>₺712.368</b></div><div class="odp-row tot"><span>Net Tutar (kontrol)</span><b>₺5.936.400</b></div></div>
               </div>
 
               <div class="gfield full">

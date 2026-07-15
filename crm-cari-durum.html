@@ -135,7 +135,7 @@
             </optgroup>
             <optgroup label="Müşteri · Satış">
               <option value="onaran">Selçuk Onaran — CAR-2026-021</option>
-              <option value="toprak">Derya Toprak — CAR-2026-022</option>
+              <option value="toprak" selected>Derya Toprak — CAR-2026-022</option>
             </optgroup>
             <optgroup label="Taşeron">
               <option value="demir-beton">Demir-Beton İnş. Ltd.</option>
@@ -155,13 +155,16 @@
     </div>
 
     <!-- kritik cariler — bakiye büyüklüğüne göre triage -->
+    <!-- statik bake — kritik cariler (bakiyeye göre ilk 5, CARI havuzundan
+         balanceOf() ile hesaplanan sıralama) VERBATIM; JS yüklenince aynı mount
+         innerHTML ile ezilir — D18-B2 -->
     <div class="gv-card" id="critCard" style="margin-bottom:16px">
       <div class="gc-head">
         <div class="gc-title"><i class="fa-solid fa-triangle-exclamation"></i> Kritik Cariler</div>
         <span class="gc-link" style="color:var(--muted);cursor:default">Bakiye büyüklüğüne göre · en yüksek 5</span>
       </div>
       <div class="gc-body flush">
-        <div class="crit-list" id="critList"></div>
+        <div class="crit-list" id="critList"><button type="button" class="crit-row is-active" data-key="toprak"><span class="crit-mark" style="background:rgba(63,213,173,.12);color:var(--acc-ink)">DT</span><span class="crit-main"><span class="crit-name">Derya Toprak</span><span class="crit-sub">Müşteri · Satış · Vadi Konakları</span><span class="crit-bar"><span class="crit-bar-fill" style="width:100%;background:var(--ok)"></span></span></span><span class="crit-amt"><span class="crit-val">₺4.560.000</span><span class="gstat ok">Alacak</span></span></button><button type="button" class="crit-row" data-key="onaran"><span class="crit-mark" style="background:rgba(63,213,173,.12);color:var(--acc-ink)">SO</span><span class="crit-main"><span class="crit-name">Selçuk Onaran</span><span class="crit-sub">Müşteri · Satış · Kule Ofis B Blok · Vadi Konakları</span><span class="crit-bar"><span class="crit-bar-fill" style="width:79%;background:var(--ok)"></span></span></span><span class="crit-amt"><span class="crit-val">₺3.592.000</span><span class="gstat ok">Alacak</span></span></button><button type="button" class="crit-row" data-key="korfez-gyo"><span class="crit-mark" style="background:rgba(63,213,173,.12);color:var(--acc-ink)">KG</span><span class="crit-main"><span class="crit-name">Körfez GYO</span><span class="crit-sub">Müşteri-Kurum · Vadi Konakları</span><span class="crit-bar"><span class="crit-bar-fill" style="width:41%;background:var(--ok)"></span></span></span><span class="crit-amt"><span class="crit-val">₺1.850.000</span><span class="gstat ok">Alacak</span></span></button><button type="button" class="crit-row" data-key="aliaga-liman"><span class="crit-mark" style="background:rgba(63,213,173,.12);color:var(--acc-ink)">AL</span><span class="crit-main"><span class="crit-name">Aliağa Liman İşletmeleri</span><span class="crit-sub">Müşteri-Kurum · Liman Lojistik Merkezi</span><span class="crit-bar"><span class="crit-bar-fill" style="width:21%;background:var(--ok)"></span></span></span><span class="crit-amt"><span class="crit-val">₺980.000</span><span class="gstat ok">Alacak</span></span></button><button type="button" class="crit-row" data-key="bogazici-yapi-market"><span class="crit-mark" style="background:var(--warn-tint);color:var(--warn)">BY</span><span class="crit-main"><span class="crit-name">Boğaziçi Yapı Market</span><span class="crit-sub">Tedarikçi · Vadi Konakları</span><span class="crit-bar"><span class="crit-bar-fill" style="width:9%;background:var(--danger)"></span></span></span><span class="crit-amt"><span class="crit-val">₺418.200</span><span class="gstat danger">Borç</span></span></button></div>
       </div>
     </div>
 
@@ -174,18 +177,21 @@
       </div>
     </div>
 
-    <!-- seçili cari detayı -->
-    <div id="acctDetail">
+    <!-- statik bake — DEFAULT seçili cari (en yüksek bakiyeli: Derya Toprak, JS'nin
+         "?cari= yoksa critTop[0]" davranışıyla BİREBİR — balanceOf() sıralamasında en
+         yüksek); acctDetail JS'siz kabukta da "show" sınıfıyla açık gelir, JS yüklenince
+         render('toprak') aynı mount'ları innerHTML ile ezer — D18-B2 -->
+    <div id="acctDetail" class="show">
       <div class="gv-card" style="margin-bottom:16px">
         <div class="acct-head">
-          <div class="acct-mark" id="acctMark">—</div>
+          <div class="acct-mark" id="acctMark" style="background: rgba(63, 213, 173, 0.12); color: var(--acc-ink);">DT</div>
           <div class="acct-id">
-            <h2 id="acctName">—</h2>
+            <h2 id="acctName">Derya Toprak</h2>
             <div class="acct-meta">
-              <span id="acctTur"><i class="fa-solid fa-tag"></i> —</span>
-              <span><i class="fa-solid fa-id-card"></i> <span id="acctKisi">—</span></span>
-              <span><i class="fa-solid fa-phone"></i> <span id="acctTel">—</span></span>
-              <span><i class="fa-solid fa-helmet-safety"></i> <span id="acctSantiye">—</span></span>
+              <span id="acctTur"><i class="fa-solid fa-house-circle-check"></i> Müşteri · Satış</span>
+              <span><i class="fa-solid fa-id-card"></i> <span id="acctKisi">CAR-2026-022 · CRM MST-2026-002</span></span>
+              <span><i class="fa-solid fa-phone"></i> <span id="acctTel">0532 000 47 82</span></span>
+              <span><i class="fa-solid fa-helmet-safety"></i> <span id="acctSantiye">Vadi Konakları</span></span>
             </div>
           </div>
         </div>
@@ -197,12 +203,12 @@
           <div><div class="kpi-num num" id="kpiBorcVal">₺0</div><div class="kpi-lbl">Borç (biz borçluyuz)</div></div>
         </div>
         <div class="kpi-card" id="kpiAlacak">
-          <div class="kpi-ico"><i class="fa-solid fa-file-signature"></i></div>
-          <div><div class="kpi-num num" id="kpiAlacakVal">₺0</div><div class="kpi-lbl">Alacak (bize borçlu)</div></div>
+          <div class="kpi-ico" style="background: var(--ok-tint); color: var(--ok);"><i class="fa-solid fa-file-signature"></i></div>
+          <div><div class="kpi-num num" id="kpiAlacakVal">₺4.560.000</div><div class="kpi-lbl">Alacak (bize borçlu)</div></div>
         </div>
         <div class="kpi-card" id="kpiNet">
-          <div class="kpi-ico"><i class="fa-solid fa-scale-balanced"></i></div>
-          <div><div class="kpi-num num" id="kpiNetVal">₺0</div><div class="kpi-lbl" id="kpiNetLbl">Net bakiye</div></div>
+          <div class="kpi-ico" style="background: var(--ok-tint); color: var(--ok);"><i class="fa-solid fa-scale-balanced"></i></div>
+          <div><div class="kpi-num num" id="kpiNetVal">₺4.560.000</div><div class="kpi-lbl" id="kpiNetLbl">Net bakiye — bizim alacağımız</div></div>
         </div>
       </div>
 
@@ -222,7 +228,7 @@
                 <th class="num col-tutar">Yürüyen Bakiye</th>
               </tr>
             </thead>
-            <tbody id="ekstreBody"></tbody>
+            <tbody id="ekstreBody"><tr><td class="muted">20 Şub 2026</td><td class="t-strong">SSZ-2026-004 paket satış tahakkuku (A-03 · A-09 · C-21)</td><td class="num">₺13.665.000</td><td class="num">—</td><td class="num" style="font-weight:800;color:var(--ok)">₺13.665.000 Alacak</td></tr><tr><td class="muted">20 Şub 2026</td><td class="t-strong">Peşin ödeme tahsilatı (%50)</td><td class="num">—</td><td class="num">₺6.825.000</td><td class="num" style="font-weight:800;color:var(--ok)">₺6.840.000 Alacak</td></tr><tr><td class="muted">20 May 2026</td><td class="t-strong">Taksit tahsilatları 1–4</td><td class="num">—</td><td class="num">₺2.280.000</td><td class="num" style="font-weight:800;color:var(--ok)">₺4.560.000 Alacak</td></tr></tbody>
           </table>
           <div class="ekstre-empty" id="ekstreEmpty" hidden>
             <i class="fa-solid fa-inbox"></i>

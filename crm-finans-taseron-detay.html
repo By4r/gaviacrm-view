@@ -94,12 +94,14 @@
 
   <main class="gv-main">
     <!-- D18 Y16: lokal .gv-crumb kaldırıldı — kırıntı shell'den (GV.crumb ile kayıt segmenti) -->
+    <!-- statik bake — DEFAULT taşeron (TAS-01, DATA map VERBATIM); JS yüklenince aynı
+         mount innerHTML ile ezilir — D18-B2 -->
     <div id="tasMain">
     <div class="gd-head">
       <div>
         <div class="gd-eyebrow" id="gdEyebrow">—</div>
         <h1 id="gdTitle">—</h1>
-        <div class="gd-badges" id="gdBadges"></div>
+        <div class="gd-badges" id="gdBadges"><span class="gtag mint">Betonarme kalıp + demir işçiliği</span><span class="gtag"><i class="fa-solid fa-helmet-safety"></i> Vadi Konakları</span><span class="gstat warn">2 uyarı</span></div>
       </div>
       <div class="ph-actions">
         <a class="btn btn-ghost btn-sm" href="crm-finans-taseronlar.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>
@@ -119,14 +121,14 @@
         <div class="gv-card">
           <div class="gd-block">
             <div class="gd-label">Performans Değerlendirmesi — 6 Kriter</div>
-            <div class="crit-grid" id="critGrid"></div>
+            <div class="crit-grid" id="critGrid"><div class="crit-box "><i class="fa-solid fa-hourglass-half"></i><b>Süre</b><span>Uygun</span></div><div class="crit-box "><i class="fa-solid fa-star"></i><b>Kalite</b><span>Uygun</span></div><div class="crit-box is-warn"><i class="fa-solid fa-file-invoice-dollar"></i><b>Hakediş</b><span>Uyarı</span></div><div class="crit-box is-warn"><i class="fa-solid fa-shield-halved"></i><b>İSG</b><span>Uyarı</span></div><div class="crit-box "><i class="fa-solid fa-truck-ramp-box"></i><b>Gecikme</b><span>Uygun</span></div><div class="crit-box "><i class="fa-solid fa-circle-check"></i><b>Teslim</b><span>Uygun</span></div></div>
           </div>
         </div>
 
         <div class="gv-card" id="warnCard">
           <div class="gd-block">
             <div class="gd-label">Uyarılar</div>
-            <div id="warnBody"></div>
+            <div id="warnBody"><div class="tw-badge"><i class="fa-solid fa-shield-halved"></i><span><b>İSG uyarısı</b> — <a href="crm-santiye-isg-detay.html">ISG-2026-008</a> iskele korkuluk eksikliği, B Blok. Aksiyon bekliyor; korkuluk montajı tamamlanana kadar yükseklik çalışması sınırlandırıldı.</span></div><div class="tw-badge"><i class="fa-solid fa-file-invoice-dollar"></i><span><b>Hakediş ihtilafı</b> — <a href="crm-finans-hakedis-detay.html?th=014">TH-2026-014</a> ₺90.000 tutarında Haziran hakedişinde metraj itirazı (gönderildi 28 Haz, bekliyor); anlaşmazlık çözülene kadar ödeme bloke.</span></div></div>
           </div>
         </div>
 
@@ -137,7 +139,7 @@
           <div class="gc-body flush">
             <table class="gtable" id="tblHakedis">
               <thead><tr><th>Hakediş</th><th>Dönem</th><th class="num">Net Tutar</th><th>Durum</th></tr></thead>
-              <tbody id="tblHakedisBody"></tbody>
+              <tbody id="tblHakedisBody"><tr><td class="t-strong"><a href="crm-finans-hakedis-detay.html?th=014" style="color:inherit">TH-2026-014</a></td><td>Haziran 2026</td><td class="num">₺90.000</td><td><span class="gstat warn">Onay Bekliyor</span></td></tr><tr><td class="t-strong"><a href="crm-finans-hakedis-detay.html?th=013" style="color:inherit">TH-2026-013</a></td><td>Mayıs 2026</td><td class="num">₺210.000</td><td><span class="gstat info">Onaylandı</span></td></tr><tr><td class="t-strong"><a href="crm-finans-hakedis-detay.html?th=005" style="color:inherit">TH-2026-005</a></td><td>Nisan 2026</td><td class="num">₺185.000</td><td><span class="gstat ok">Ödendi</span></td></tr></tbody>
             </table>
           </div>
         </div>
