@@ -23,3 +23,9 @@ Thumbs.db
 # Geçici / scratch
 _scratch/
 *.log
+
+# Yerel QA araçları — node_modules dadamutfak'a symlink (playwright); repo buildless,
+# bağımlılık/manifest commit edilmez
+node_modules
+package.json
+package-lock.json
