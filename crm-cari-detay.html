@@ -465,6 +465,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
          +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-calendar-days"></i> Son tahsilat</span><span class="br-val" style="font-weight:700;color:var(--ink)">15 Haz 2026 · 14. taksit</span></div>'
          +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-clock"></i> Sonraki vade</span><span class="br-val" style="font-weight:700;color:var(--ink)">15 Tem 2026 · ₺115.000</span></div>',
       ekstre:'crm-cari-durum.html?cari=onaran',
+      szlTabLbl:'<i class="fa-solid fa-file-signature"></i> Sözleşmeler &amp; Ödemeler',
       szlOzet:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Satış Sözleşmeleri</div><a class="gc-link" href="#" data-tab-goto="sozlesme">Detay <i class="fa-solid fa-arrow-right"></i></a></div>'
            +'<div class="gc-body"><dl class="cari-hero-meta">'
            +'<div><dt>SSZ-2026-003 — VK-C-18</dt><dd><a href="crm-satis-sozlesme-detay.html?ssz=2026-003" style="color:var(--acc-ink)">₺6.120.000 · 14/36 taksit ödendi</a></dd></div>'
@@ -534,6 +535,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
          +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-scale-balanced"></i> Kalan bakiye (alacağımız)</span><span class="br-val" style="color:var(--ok)">₺4.560.000</span></div>'
          +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-clock"></i> Gecikme</span><span class="br-val" style="font-weight:700;color:var(--danger)">12 gün</span></div>',
       ekstre:'crm-cari-durum.html?cari=toprak',
+      szlTabLbl:'<i class="fa-solid fa-file-signature"></i> Sözleşmeler &amp; Ödemeler',
       szlOzet:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Satış Sözleşmesi Özeti</div><a class="gc-link" href="#" data-tab-goto="sozlesme">Detay <i class="fa-solid fa-arrow-right"></i></a></div>'
            +'<div class="gc-body"><dl class="cari-hero-meta">'
            +'<div><dt>Sözleşme No</dt><dd><a href="crm-satis-sozlesme-detay.html?ssz=2026-004" style="color:var(--acc-ink)">SSZ-2026-004</a></dd></div>'
@@ -573,10 +575,418 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
            +'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-invoice-dollar"></i> Teklif Geçmişi</div></div>'
            +'<div class="szl-summary" style="padding-top:0"><h3><a href="crm-satis-teklif-detay.html?tkf=002" style="color:var(--ink)">TKF-2026-002</a> — 3 daire paketi · %6 indirim</h3>'
            +'<div class="szl-sub">Durum: <span class="gstat ok">Onaylı</span> (müdür onaylı) · satış tamamlandı → SSZ-2026-004</div></div></div>'
+    },
+
+    /* ============ [S0 ④b — DK10, Beyar kararı 2026-07-15] Rehberin kalan carileri:
+       temsili-derinlik kayıtları. Kaynaklar VERBATIM: crm-cari-durum.html CARI
+       map'i (kişi/tel/şantiye/hareket) + crm-cari.html bakiyeleri + rapor-cari
+       vade bilgisi + tedarikciler TDR kartları. Kanoniği olmayan alan (vergi no,
+       IBAN, e-posta) BASILMAZ — uydurma yasak. Zengin sekme derinliği yalnız
+       mevcut 3 kayıtta (Demir-Beton default + onaran + toprak). ============ */
+    'korfez-gyo': {
+      title:'Körfez GYO — Cari Kartı — Gavia CRM',
+      eyebrow:'Rehber &amp; Hesap · Müşteri-Kurum',
+      name:'Körfez GYO',
+      sub:'Vadi Konakları işvereni · ilgili kişi Selin Aydemir',
+      mark:'KG', markBg:'rgba(63,213,173,.12)', markFg:'var(--acc-ink)',
+      tags:'<span class="gtag mint">Müşteri-Kurum</span>'
+          +'<span class="gstat ok"><i class="fa-solid fa-circle-check"></i> Açık alacak ₺1.850.000</span>',
+      meta:'<div><dt>İlgili Kişi</dt><dd>Selin Aydemir · Proje Müdürü</dd></div>'
+          +'<div><dt>Telefon</dt><dd>0532 240 18 55</dd></div>'
+          +'<div><dt>İlişkili Şantiye</dt><dd>Vadi Konakları</dd></div>'
+          +'<div><dt>Son Hareket</dt><dd>20 Haz 2026</dd></div>',
+      stats:'<div class="hstat ok"><span class="hstat-num">₺1.850.000</span><span class="hstat-lbl">Açık bakiye — alacağımız</span></div>'
+           +'<a class="hstat" href="crm-finans-kurum.html"><span class="hstat-num">HKD-2026-006</span><span class="hstat-lbl">Son hakediş ₺1.630.000 — gönderildi <i class="fa-solid fa-arrow-right"></i></span></a>'
+           +'<div class="hstat"><span class="hstat-num">1</span><span class="hstat-lbl">Aktif şantiye</span></div>',
+      kunyeTitle:'<i class="fa-solid fa-building"></i> Firma Künyesi',
+      kunye:'<div><dt>Ünvan</dt><dd>Körfez GYO</dd></div>'
+           +'<div><dt>Cari Türü</dt><dd>Müşteri-Kurum — Vadi Konakları konut projesi işvereni</dd></div>'
+           +'<div><dt>İlgili Kişi</dt><dd>Selin Aydemir · Proje Müdürü</dd></div>'
+           +'<div><dt>İlişkili Şantiye</dt><dd>Vadi Konakları — kurum hakedişleri</dd></div>',
+      kunyeFoot:'<i class="fa-solid fa-circle-info"></i> Hakediş belgeleri Finans &gt; Kurum Hakedişleri ekranındadır.',
+      bal:'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-scale-balanced"></i> Açık bakiye (alacağımız)</span><span class="br-val" style="color:var(--ok)">₺1.850.000</span></div>'
+         +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-calendar-days"></i> Son hareket</span><span class="br-val" style="font-weight:700;color:var(--ink)">20 Haz 2026 · Hakediş #6 faturası</span></div>',
+      ekstre:'crm-cari-durum.html?cari=korfez-gyo',
+      szlOzet:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Hakediş Özeti</div>'
+           +'<a class="gc-link" href="crm-finans-kurum.html">Kurum Hakedişleri <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><dl class="cari-hero-meta">'
+           +'<div><dt>Son Hakediş</dt><dd><a href="crm-finans-kurum.html" style="color:var(--acc-ink)">HKD-2026-006 — ₺1.630.000 (gönderildi)</a></dd></div>'
+           +'<div><dt>Son Tahsilat</dt><dd>12 Haz 2026 · ₺400.000 (banka havalesi)</dd></div>'
+           +'<div><dt>Açık Bakiye</dt><dd>₺1.850.000 — alacağımız</dd></div>'
+           +'</dl></div>',
+      kisiler:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-id-card"></i> İlgili Kişiler</div></div>'
+           +'<div class="person-card"><div class="person-mark" style="background:rgba(63,213,173,.12);color:var(--acc-ink)">SA</div>'
+           +'<div class="person-info"><h3>Selin Aydemir</h3><span>Proje Müdürü · Körfez GYO</span></div></div>'
+           +'<div class="person-contact"><div class="pc-row"><i class="fa-solid fa-phone"></i> <a href="tel:05322401855">0532 240 18 55</a></div>'
+           +'<div class="pc-row"><i class="fa-solid fa-building"></i> Vadi Konakları</div></div>',
+      hareket:[
+        ['01 Haz 2026','Ara hakediş #5 faturası','₺620.000','—','₺620.000'],
+        ['12 Haz 2026','Tahsilat (banka havalesi)','—','₺400.000','₺220.000'],
+        ['20 Haz 2026','Hakediş #6 faturası (gönderildi)','₺1.630.000','—','₺1.850.000']
+      ],
+      szlTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Kurum Hakedişleri</div>'
+           +'<a class="gc-link" href="crm-finans-kurum.html">Hakediş listesi <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Bu carinin hakediş belgeleri Finans &gt; Kurum Hakedişleri ekranında takip edilir; ekstre karşılıkları Cari Hareketler sekmesindedir.</p></div></div>',
+      firsatTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-chart-line"></i> Fırsatlar &amp; Teklifler</div></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Satış fırsatı veya teklif kaydı yok — kurum hakediş carisidir.</p></div></div>'
+    },
+    'aliaga-liman': {
+      title:'Aliağa Liman İşletmeleri — Cari Kartı — Gavia CRM',
+      eyebrow:'Rehber &amp; Hesap · Müşteri-Kurum',
+      name:'Aliağa Liman İşletmeleri',
+      sub:'Liman Lojistik Merkezi işvereni · ilgili kişi Erhan Kaya',
+      mark:'AL', markBg:'rgba(63,213,173,.12)', markFg:'var(--acc-ink)',
+      tags:'<span class="gtag mint">Müşteri-Kurum</span>'
+          +'<span class="gstat ok"><i class="fa-solid fa-circle-check"></i> Açık alacak ₺980.000</span>',
+      meta:'<div><dt>İlgili Kişi</dt><dd>Erhan Kaya · Yatırım Md.</dd></div>'
+          +'<div><dt>Telefon</dt><dd>0232 618 44 09</dd></div>'
+          +'<div><dt>İlişkili Şantiye</dt><dd>Liman Lojistik Merkezi</dd></div>'
+          +'<div><dt>Son Hareket</dt><dd>18 Haz 2026</dd></div>',
+      stats:'<div class="hstat ok"><span class="hstat-num">₺980.000</span><span class="hstat-lbl">Açık bakiye — alacağımız</span></div>'
+           +'<a class="hstat" href="crm-finans-kurum.html"><span class="hstat-num">18 Haz</span><span class="hstat-lbl">Ara hakediş faturası — açık <i class="fa-solid fa-arrow-right"></i></span></a>'
+           +'<div class="hstat"><span class="hstat-num">1</span><span class="hstat-lbl">Aktif şantiye</span></div>',
+      kunyeTitle:'<i class="fa-solid fa-building"></i> Firma Künyesi',
+      kunye:'<div><dt>Ünvan</dt><dd>Aliağa Liman İşletmeleri</dd></div>'
+           +'<div><dt>Cari Türü</dt><dd>Müşteri-Kurum — Liman Lojistik Merkezi ticari proje işvereni</dd></div>'
+           +'<div><dt>İlgili Kişi</dt><dd>Erhan Kaya · Yatırım Müdürü</dd></div>'
+           +'<div><dt>İlişkili Şantiye</dt><dd>Liman Lojistik Merkezi (Aliağa/İzmir)</dd></div>',
+      kunyeFoot:'<i class="fa-solid fa-circle-info"></i> Hakediş belgeleri Finans &gt; Kurum Hakedişleri ekranındadır.',
+      bal:'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-scale-balanced"></i> Açık bakiye (alacağımız)</span><span class="br-val" style="color:var(--ok)">₺980.000</span></div>'
+         +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-calendar-days"></i> Son hareket</span><span class="br-val" style="font-weight:700;color:var(--ink)">18 Haz 2026 · Ara hakediş faturası</span></div>',
+      ekstre:'crm-cari-durum.html?cari=aliaga-liman',
+      szlOzet:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Hakediş Özeti</div>'
+           +'<a class="gc-link" href="crm-finans-kurum.html">Kurum Hakedişleri <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><dl class="cari-hero-meta">'
+           +'<div><dt>Açık Kalem</dt><dd>18 Haz 2026 ara hakediş faturası — ₺980.000</dd></div>'
+           +'<div><dt>Önceki Hakedişler</dt><dd>HKD-2026-001/002 ödemeleri kasa giriş serisi (KSG) öncesi tamamlandı</dd></div>'
+           +'</dl></div>',
+      kisiler:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-id-card"></i> İlgili Kişiler</div></div>'
+           +'<div class="person-card"><div class="person-mark" style="background:rgba(63,213,173,.12);color:var(--acc-ink)">EK</div>'
+           +'<div class="person-info"><h3>Erhan Kaya</h3><span>Yatırım Müdürü · Aliağa Liman İşletmeleri</span></div></div>'
+           +'<div class="person-contact"><div class="pc-row"><i class="fa-solid fa-phone"></i> <a href="tel:02326184409">0232 618 44 09</a></div>'
+           +'<div class="pc-row"><i class="fa-solid fa-building"></i> Liman Lojistik Merkezi</div></div>',
+      hareket:[
+        ['18 Haz 2026','Ara hakediş faturası','₺980.000','—','₺980.000']
+      ],
+      szlTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Kurum Hakedişleri</div>'
+           +'<a class="gc-link" href="crm-finans-kurum.html">Hakediş listesi <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Bu carinin hakediş belgeleri Finans &gt; Kurum Hakedişleri ekranında takip edilir; ekstre karşılıkları Cari Hareketler sekmesindedir.</p></div></div>',
+      firsatTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-chart-line"></i> Fırsatlar &amp; Teklifler</div></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Satış fırsatı veya teklif kaydı yok — kurum hakediş carisidir.</p></div></div>'
+    },
+    'sapanca-belediyesi': {
+      title:'Sapanca Belediyesi — Cari Kartı — Gavia CRM',
+      eyebrow:'Rehber &amp; Hesap · Müşteri-Kurum',
+      name:'Sapanca Belediyesi',
+      sub:'Göl Evleri 2. Etap (planlama) · ilgili kişi Zeynep Ulusoy',
+      mark:'SB', markBg:'rgba(63,213,173,.12)', markFg:'var(--acc-ink)',
+      tags:'<span class="gtag mint">Müşteri-Kurum</span>'
+          +'<span class="gstat off"><i class="fa-solid fa-hourglass-half"></i> Hareket yok — planlama</span>',
+      meta:'<div><dt>İlgili Kişi</dt><dd>Zeynep Ulusoy · Fen İşleri Md.</dd></div>'
+          +'<div><dt>Telefon</dt><dd>0264 582 11 30</dd></div>'
+          +'<div><dt>İlişkili Şantiye</dt><dd>Göl Evleri 2. Etap</dd></div>'
+          +'<div><dt>Proje Durumu</dt><dd>Planlama · başlangıç 09/2026</dd></div>',
+      stats:'<div class="hstat"><span class="hstat-num">—</span><span class="hstat-lbl">Açık bakiye yok</span></div>'
+           +'<div class="hstat"><span class="hstat-num">GE2</span><span class="hstat-lbl">Göl Evleri 2. Etap — planlama</span></div>',
+      kunyeTitle:'<i class="fa-solid fa-building"></i> Firma Künyesi',
+      kunye:'<div><dt>Ünvan</dt><dd>Sapanca Belediyesi</dd></div>'
+           +'<div><dt>Cari Türü</dt><dd>Müşteri-Kurum — Göl Evleri 2. Etap proje paydaşı</dd></div>'
+           +'<div><dt>İlgili Kişi</dt><dd>Zeynep Ulusoy · Fen İşleri Müdürü</dd></div>'
+           +'<div><dt>İlişkili Şantiye</dt><dd>Göl Evleri 2. Etap (Sapanca/Sakarya) — planlama, başlangıç 09/2026</dd></div>',
+      kunyeFoot:'<i class="fa-solid fa-circle-info"></i> Sözleşme/hakediş süreci proje başlangıcıyla açılacaktır.',
+      bal:'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-scale-balanced"></i> Açık bakiye</span><span class="br-val" style="font-weight:700;color:var(--ink)">—</span></div>'
+         +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-hourglass-half"></i> Durum</span><span class="br-val" style="font-weight:700;color:var(--ink)">Sözleşme/hakediş süreci başlamadı</span></div>',
+      ekstre:'crm-cari-durum.html?cari=sapanca-belediyesi',
+      szlOzet:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Proje Durumu</div></div>'
+           +'<div class="gc-body"><dl class="cari-hero-meta">'
+           +'<div><dt>Proje</dt><dd>Göl Evleri 2. Etap — konut (Sapanca/Sakarya)</dd></div>'
+           +'<div><dt>Durum</dt><dd>Planlama · saha başlangıcı 09/2026</dd></div>'
+           +'</dl></div>',
+      kisiler:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-id-card"></i> İlgili Kişiler</div></div>'
+           +'<div class="person-card"><div class="person-mark" style="background:rgba(63,213,173,.12);color:var(--acc-ink)">ZU</div>'
+           +'<div class="person-info"><h3>Zeynep Ulusoy</h3><span>Fen İşleri Müdürü · Sapanca Belediyesi</span></div></div>'
+           +'<div class="person-contact"><div class="pc-row"><i class="fa-solid fa-phone"></i> <a href="tel:02645821130">0264 582 11 30</a></div>'
+           +'<div class="pc-row"><i class="fa-solid fa-building"></i> Göl Evleri 2. Etap</div></div>',
+      hareket:[],
+      szlTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Sözleşmeler</div></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Sözleşme kaydı yok — proje planlama aşamasında (başlangıç 09/2026).</p></div></div>',
+      firsatTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-chart-line"></i> Fırsatlar &amp; Teklifler</div></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Satış fırsatı veya teklif kaydı yok — kurum proje paydaşıdır.</p></div></div>'
+    },
+    'yalitim-kardesler': {
+      title:'Yalıtım Kardeşler — Cari Kartı — Gavia CRM',
+      eyebrow:'Rehber &amp; Hesap · Taşeron',
+      name:'Yalıtım Kardeşler',
+      sub:'Liman Lojistik Merkezi · yalıtım taşeronu · ilgili kişi Cemal Boz',
+      mark:'YK', markBg:'var(--info-tint)', markFg:'var(--info)',
+      tags:'<span class="gtag" style="background:var(--info-tint);color:var(--info);border-color:transparent">Taşeron</span>'
+          +'<span class="gstat warn"><i class="fa-solid fa-scale-balanced"></i> Borç ₺128.500</span>',
+      meta:'<div><dt>İlgili Kişi</dt><dd>Cemal Boz</dd></div>'
+          +'<div><dt>Telefon</dt><dd>0505 322 90 14</dd></div>'
+          +'<div><dt>İlişkili Şantiye</dt><dd>Liman Lojistik Merkezi</dd></div>'
+          +'<div><dt>Son Hareket</dt><dd>30 Haz 2026</dd></div>',
+      stats:'<div class="hstat danger"><span class="hstat-num">₺128.500</span><span class="hstat-lbl">Açık bakiye — bizim borcumuz</span></div>'
+           +'<a class="hstat" href="crm-finans-taseron.html"><span class="hstat-num">Hakedişler</span><span class="hstat-lbl">Taşeron hakediş takibi <i class="fa-solid fa-arrow-right"></i></span></a>'
+           +'<div class="hstat ok"><span class="hstat-num">1</span><span class="hstat-lbl">Aktif şantiye</span></div>',
+      kunyeTitle:'<i class="fa-solid fa-building"></i> Firma Künyesi',
+      kunye:'<div><dt>Ünvan</dt><dd>Yalıtım Kardeşler</dd></div>'
+           +'<div><dt>Cari Türü</dt><dd>Taşeron — su/ısı yalıtım imalatları</dd></div>'
+           +'<div><dt>İlgili Kişi</dt><dd>Cemal Boz</dd></div>'
+           +'<div><dt>İlişkili Şantiye</dt><dd>Liman Lojistik Merkezi — yalıtım iş kalemleri</dd></div>',
+      kunyeFoot:'<i class="fa-solid fa-circle-info"></i> Sözleşme ve hakediş belgeleri Finans modülündedir.',
+      bal:'<div class="bal-row borc"><span class="br-lbl"><i class="fa-solid fa-scale-balanced"></i> Açık bakiye (bizim borcumuz)</span><span class="br-val">₺128.500</span></div>'
+         +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-calendar-days"></i> Son hareket</span><span class="br-val" style="font-weight:700;color:var(--ink)">30 Haz 2026 · Malzeme faturası girişi</span></div>',
+      ekstre:'crm-cari-durum.html?cari=yalitim-kardesler',
+      szlOzet:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Sözleşme &amp; Hakediş</div>'
+           +'<a class="gc-link" href="crm-finans-taseron.html">Taşeron Hakedişleri <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><dl class="cari-hero-meta">'
+           +'<div><dt>Açık Kalem</dt><dd>30 Haz 2026 malzeme faturası — ₺128.500</dd></div>'
+           +'<div><dt>Saha Ekibi</dt><dd>Liman Lojistik Merkezi — 8 kişi (kanonik headcount)</dd></div>'
+           +'</dl></div>',
+      kisiler:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-id-card"></i> İlgili Kişiler</div></div>'
+           +'<div class="person-card"><div class="person-mark" style="background:var(--info-tint);color:var(--info)">CB</div>'
+           +'<div class="person-info"><h3>Cemal Boz</h3><span>Yalıtım Kardeşler · saha sorumlusu</span></div></div>'
+           +'<div class="person-contact"><div class="pc-row"><i class="fa-solid fa-phone"></i> <a href="tel:05053229014">0505 322 90 14</a></div>'
+           +'<div class="pc-row"><i class="fa-solid fa-building"></i> Liman Lojistik Merkezi</div></div>',
+      hareket:[
+        ['30 Haz 2026','Malzeme faturası girişi','—','₺128.500','₺128.500','Borç']
+      ],
+      szlTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Sözleşmeler &amp; Hakedişler</div>'
+           +'<a class="gc-link" href="crm-finans-sozlesmeler.html">Sözleşme listesi <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Taşeron sözleşme ve hakediş belgeleri Finans modülünde takip edilir; ekstre karşılıkları Cari Hareketler sekmesindedir.</p></div></div>',
+      firsatTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-chart-line"></i> Fırsatlar &amp; Teklifler</div></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Satış fırsatı veya teklif kaydı yok — taşeron carisidir.</p></div></div>'
+    },
+    'elektromek': {
+      title:'ElektroMek Taahhüt — Cari Kartı — Gavia CRM',
+      eyebrow:'Rehber &amp; Hesap · Taşeron',
+      name:'ElektroMek Taahhüt',
+      sub:'Vadi Konakları · elektrik taşeronu · ilgili kişi Tolga Şener',
+      mark:'EM', markBg:'var(--info-tint)', markFg:'var(--info)',
+      tags:'<span class="gtag" style="background:var(--info-tint);color:var(--info);border-color:transparent">Taşeron</span>'
+          +'<span class="gstat warn"><i class="fa-solid fa-scale-balanced"></i> Borç ₺76.200</span>',
+      meta:'<div><dt>İlgili Kişi</dt><dd>Tolga Şener</dd></div>'
+          +'<div><dt>Telefon</dt><dd>0533 765 42 08</dd></div>'
+          +'<div><dt>İlişkili Şantiye</dt><dd>Vadi Konakları</dd></div>'
+          +'<div><dt>Son Hareket</dt><dd>01 Tem 2026</dd></div>',
+      stats:'<div class="hstat danger"><span class="hstat-num">₺76.200</span><span class="hstat-lbl">Açık bakiye — bizim borcumuz</span></div>'
+           +'<a class="hstat" href="crm-finans-taseron.html"><span class="hstat-num">Hakedişler</span><span class="hstat-lbl">Taşeron hakediş takibi <i class="fa-solid fa-arrow-right"></i></span></a>'
+           +'<div class="hstat ok"><span class="hstat-num">1</span><span class="hstat-lbl">Aktif şantiye</span></div>',
+      kunyeTitle:'<i class="fa-solid fa-building"></i> Firma Künyesi',
+      kunye:'<div><dt>Ünvan</dt><dd>ElektroMek Taahhüt</dd></div>'
+           +'<div><dt>Cari Türü</dt><dd>Taşeron — elektrik tesisat imalatları</dd></div>'
+           +'<div><dt>İlgili Kişi</dt><dd>Tolga Şener</dd></div>'
+           +'<div><dt>İlişkili Şantiye</dt><dd>Vadi Konakları — elektrik şaft iş kalemleri</dd></div>',
+      kunyeFoot:'<i class="fa-solid fa-circle-info"></i> Sözleşme ve hakediş belgeleri Finans modülündedir.',
+      bal:'<div class="bal-row borc"><span class="br-lbl"><i class="fa-solid fa-scale-balanced"></i> Açık bakiye (bizim borcumuz)</span><span class="br-val">₺76.200</span></div>'
+         +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-calendar-days"></i> Son hareket</span><span class="br-val" style="font-weight:700;color:var(--ink)">01 Tem 2026 · Elektrik şaft iş kalemi (hakediş)</span></div>',
+      ekstre:'crm-cari-durum.html?cari=elektromek',
+      szlOzet:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Sözleşme &amp; Hakediş</div>'
+           +'<a class="gc-link" href="crm-finans-taseron.html">Taşeron Hakedişleri <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><dl class="cari-hero-meta">'
+           +'<div><dt>Açık Kalem</dt><dd>01 Tem 2026 elektrik şaft iş kalemi (hakediş) — ₺76.200</dd></div>'
+           +'<div><dt>Saha Ekibi</dt><dd>Vadi Konakları — 6 kişi (kanonik headcount)</dd></div>'
+           +'</dl></div>',
+      kisiler:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-id-card"></i> İlgili Kişiler</div></div>'
+           +'<div class="person-card"><div class="person-mark" style="background:var(--info-tint);color:var(--info)">TŞ</div>'
+           +'<div class="person-info"><h3>Tolga Şener</h3><span>ElektroMek Taahhüt · saha sorumlusu</span></div></div>'
+           +'<div class="person-contact"><div class="pc-row"><i class="fa-solid fa-phone"></i> <a href="tel:05337654208">0533 765 42 08</a></div>'
+           +'<div class="pc-row"><i class="fa-solid fa-building"></i> Vadi Konakları</div></div>',
+      hareket:[
+        ['01 Tem 2026','Elektrik şaft iş kalemi (hakediş)','—','₺76.200','₺76.200','Borç']
+      ],
+      szlTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Sözleşmeler &amp; Hakedişler</div>'
+           +'<a class="gc-link" href="crm-finans-sozlesmeler.html">Sözleşme listesi <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Taşeron sözleşme ve hakediş belgeleri Finans modülünde takip edilir; ekstre karşılıkları Cari Hareketler sekmesindedir.</p></div></div>',
+      firsatTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-chart-line"></i> Fırsatlar &amp; Teklifler</div></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Satış fırsatı veya teklif kaydı yok — taşeron carisidir.</p></div></div>'
+    },
+    'ege-hazir-beton': {
+      title:'Ege Hazır Beton — Cari Kartı — Gavia CRM',
+      eyebrow:'Rehber &amp; Hesap · Tedarikçi',
+      name:'Ege Hazır Beton',
+      sub:'Beton tedarikçisi (TDR-01) · ilgili kişi Kadir Solmaz',
+      mark:'EB', markBg:'var(--warn-tint)', markFg:'var(--warn)',
+      tags:'<span class="gtag" style="background:var(--warn-tint);color:var(--warn);border-color:transparent">Tedarikçi</span>'
+          +'<span class="gstat warn"><i class="fa-solid fa-scale-balanced"></i> Borç ₺54.900</span>',
+      meta:'<div><dt>İlgili Kişi</dt><dd>Kadir Solmaz</dd></div>'
+          +'<div><dt>Telefon</dt><dd>0536 218 77 41</dd></div>'
+          +'<div><dt>İlişkili Şantiye</dt><dd>Vadi Konakları</dd></div>'
+          +'<div><dt>Tedarikçi Kartı</dt><dd><a href="crm-satinalma-tedarikci-detay.html?tdr=TDR-01" style="color:var(--acc-ink)">TDR-01</a></dd></div>',
+      stats:'<div class="hstat danger"><span class="hstat-num">₺54.900</span><span class="hstat-lbl">Açık bakiye — bizim borcumuz</span></div>'
+           +'<a class="hstat" href="crm-satinalma-siparis-detay.html?sip=SIP-2026-07"><span class="hstat-num">SIP-2026-07</span><span class="hstat-lbl">Açık sipariş <i class="fa-solid fa-arrow-right"></i></span></a>'
+           +'<a class="hstat" href="crm-satinalma-tedarikci-detay.html?tdr=TDR-01"><span class="hstat-num">%96</span><span class="hstat-lbl">Termin performansı — TDR-01 <i class="fa-solid fa-arrow-right"></i></span></a>',
+      kunyeTitle:'<i class="fa-solid fa-building"></i> Firma Künyesi',
+      kunye:'<div><dt>Ünvan</dt><dd>Ege Hazır Beton</dd></div>'
+           +'<div><dt>Cari Türü</dt><dd>Tedarikçi — hazır beton (TDR-01)</dd></div>'
+           +'<div><dt>İlgili Kişi</dt><dd>Kadir Solmaz</dd></div>'
+           +'<div><dt>İlişkili Şantiye</dt><dd>Vadi Konakları — beton irsaliyeleri</dd></div>'
+           +'<div><dt>Hizmet İlişkisi</dt><dd>Beton Pompası Putzmeister M42 (MKN-03) hizmet tedarikçisi</dd></div>',
+      kunyeFoot:'<i class="fa-solid fa-circle-info"></i> Sipariş ve irsaliye belgeleri Satın Alma modülündedir.',
+      bal:'<div class="bal-row borc"><span class="br-lbl"><i class="fa-solid fa-scale-balanced"></i> Açık bakiye (bizim borcumuz)</span><span class="br-val">₺54.900</span></div>'
+         +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-calendar-days"></i> Son hareket</span><span class="br-val" style="font-weight:700;color:var(--ink)">02 Tem 2026 · Beton irsaliyesi (4. mikser)</span></div>',
+      ekstre:'crm-cari-durum.html?cari=ege-hazir-beton',
+      szlOzet:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-truck-ramp-box"></i> Tedarik İlişkisi</div>'
+           +'<a class="gc-link" href="crm-satinalma-tedarikci-detay.html?tdr=TDR-01">TDR-01 kartı <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><dl class="cari-hero-meta">'
+           +'<div><dt>Açık Sipariş</dt><dd><a href="crm-satinalma-siparis-detay.html?sip=SIP-2026-07" style="color:var(--acc-ink)">SIP-2026-07</a></dd></div>'
+           +'<div><dt>Son İrsaliye</dt><dd>02 Tem 2026 · beton (4. mikser) — ₺35.900</dd></div>'
+           +'<div><dt>Son Ödeme</dt><dd>18 Haz 2026 · ₺20.000 (kısmi)</dd></div>'
+           +'</dl></div>',
+      kisiler:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-id-card"></i> İlgili Kişiler</div></div>'
+           +'<div class="person-card"><div class="person-mark" style="background:var(--warn-tint);color:var(--warn)">KS</div>'
+           +'<div class="person-info"><h3>Kadir Solmaz</h3><span>Ege Hazır Beton · satış temsilcisi</span></div></div>'
+           +'<div class="person-contact"><div class="pc-row"><i class="fa-solid fa-phone"></i> <a href="tel:05362187741">0536 218 77 41</a></div>'
+           +'<div class="pc-row"><i class="fa-solid fa-building"></i> Vadi Konakları</div></div>',
+      hareket:[
+        ['05 Haz 2026','Beton irsaliyesi (C30, 30 m³)','—','₺39.000','₺39.000','Borç'],
+        ['18 Haz 2026','Ödeme (kısmi)','₺20.000','—','₺19.000','Borç'],
+        ['02 Tem 2026','Beton irsaliyesi (4. mikser)','—','₺35.900','₺54.900','Borç']
+      ],
+      szlTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Sipariş &amp; İrsaliye</div>'
+           +'<a class="gc-link" href="crm-satinalma-tedarikci-detay.html?tdr=TDR-01">Tedarikçi kartı <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Sipariş, irsaliye ve fatura belgeleri Satın Alma modülünde (TDR-01) takip edilir; ekstre karşılıkları Cari Hareketler sekmesindedir.</p></div></div>',
+      firsatTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-chart-line"></i> Fırsatlar &amp; Teklifler</div></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Satış fırsatı veya teklif kaydı yok — tedarikçi carisidir.</p></div></div>'
+    },
+    'marmara-demir-celik': {
+      title:'Marmara Demir Çelik — Cari Kartı — Gavia CRM',
+      eyebrow:'Rehber &amp; Hesap · Tedarikçi',
+      name:'Marmara Demir Çelik',
+      sub:'Demir &amp; çelik tedarikçisi (TDR-03) · ilgili kişi Burcu İnan',
+      mark:'MD', markBg:'var(--warn-tint)', markFg:'var(--warn)',
+      tags:'<span class="gtag" style="background:var(--warn-tint);color:var(--warn);border-color:transparent">Tedarikçi</span>'
+          +'<span class="gstat danger"><i class="fa-solid fa-triangle-exclamation"></i> Vadesi geçti · 17 gün</span>',
+      meta:'<div><dt>İlgili Kişi</dt><dd>Burcu İnan</dd></div>'
+          +'<div><dt>Telefon</dt><dd>0212 466 90 23</dd></div>'
+          +'<div><dt>İlişkili Şantiye</dt><dd>Liman Lojistik Merkezi</dd></div>'
+          +'<div><dt>Tedarikçi Kartı</dt><dd><a href="crm-satinalma-tedarikci-detay.html?tdr=TDR-03" style="color:var(--acc-ink)">TDR-03</a></dd></div>',
+      stats:'<div class="hstat danger"><span class="hstat-num">₺211.000</span><span class="hstat-lbl">Açık bakiye — bizim borcumuz (vadesi 17 gün geçti)</span></div>'
+           +'<a class="hstat" href="crm-satinalma-siparis-detay.html?sip=SIP-2026-05"><span class="hstat-num">SIP-2026-05</span><span class="hstat-lbl">Son sipariş <i class="fa-solid fa-arrow-right"></i></span></a>'
+           +'<a class="hstat" href="crm-satinalma-tedarikci-detay.html?tdr=TDR-03"><span class="hstat-num">%91</span><span class="hstat-lbl">Termin performansı — TDR-03 <i class="fa-solid fa-arrow-right"></i></span></a>',
+      kunyeTitle:'<i class="fa-solid fa-building"></i> Firma Künyesi',
+      kunye:'<div><dt>Ünvan</dt><dd>Marmara Demir Çelik</dd></div>'
+           +'<div><dt>Cari Türü</dt><dd>Tedarikçi — inşaat demiri ve çelik (TDR-03)</dd></div>'
+           +'<div><dt>İlgili Kişi</dt><dd>Burcu İnan</dd></div>'
+           +'<div><dt>İlişkili Şantiye</dt><dd>Liman Lojistik Merkezi — demir sevkiyatları</dd></div>',
+      kunyeFoot:'<i class="fa-solid fa-circle-info"></i> Sipariş ve irsaliye belgeleri Satın Alma modülündedir.',
+      bal:'<div class="bal-row borc odue"><span class="br-lbl"><i class="fa-solid fa-triangle-exclamation"></i> Vadesi geçen tutar</span><span class="br-val">₺211.000</span></div>'
+         +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-calendar-days"></i> Son hareket</span><span class="br-val" style="font-weight:700;color:var(--ink)">15 Haz 2026 · Demir sevkiyatı faturası</span></div>'
+         +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-clock"></i> Gecikme</span><span class="br-val" style="font-weight:700;color:var(--danger)">17 gün</span></div>',
+      ekstre:'crm-cari-durum.html?cari=marmara-demir-celik',
+      szlOzet:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-truck-ramp-box"></i> Tedarik İlişkisi</div>'
+           +'<a class="gc-link" href="crm-satinalma-tedarikci-detay.html?tdr=TDR-03">TDR-03 kartı <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><dl class="cari-hero-meta">'
+           +'<div><dt>Son Sipariş</dt><dd><a href="crm-satinalma-siparis-detay.html?sip=SIP-2026-05" style="color:var(--acc-ink)">SIP-2026-05</a></dd></div>'
+           +'<div><dt>Açık Fatura</dt><dd>15 Haz 2026 demir sevkiyatı — ₺211.000 (vadesi 17 gün geçti)</dd></div>'
+           +'</dl></div>',
+      kisiler:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-id-card"></i> İlgili Kişiler</div></div>'
+           +'<div class="person-card"><div class="person-mark" style="background:var(--warn-tint);color:var(--warn)">Bİ</div>'
+           +'<div class="person-info"><h3>Burcu İnan</h3><span>Marmara Demir Çelik · satış temsilcisi</span></div></div>'
+           +'<div class="person-contact"><div class="pc-row"><i class="fa-solid fa-phone"></i> <a href="tel:02124669023">0212 466 90 23</a></div>'
+           +'<div class="pc-row"><i class="fa-solid fa-building"></i> Liman Lojistik Merkezi</div></div>',
+      hareket:[
+        ['15 Haz 2026','Demir sevkiyatı faturası','—','₺211.000','₺211.000','Borç']
+      ],
+      szlTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Sipariş &amp; İrsaliye</div>'
+           +'<a class="gc-link" href="crm-satinalma-tedarikci-detay.html?tdr=TDR-03">Tedarikçi kartı <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Sipariş, irsaliye ve fatura belgeleri Satın Alma modülünde (TDR-03) takip edilir; ekstre karşılıkları Cari Hareketler sekmesindedir.</p></div></div>',
+      firsatTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-chart-line"></i> Fırsatlar &amp; Teklifler</div></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Satış fırsatı veya teklif kaydı yok — tedarikçi carisidir.</p></div></div>'
+    },
+    'anadolu-hirdavat': {
+      title:'Anadolu Hırdavat — Cari Kartı — Gavia CRM',
+      eyebrow:'Rehber &amp; Hesap · Tedarikçi',
+      name:'Anadolu Hırdavat',
+      sub:'Hırdavat &amp; sarf tedarikçisi (TDR-06) · ilgili kişi Fatih Coşkun',
+      mark:'AH', markBg:'var(--warn-tint)', markFg:'var(--warn)',
+      tags:'<span class="gtag" style="background:var(--warn-tint);color:var(--warn);border-color:transparent">Tedarikçi</span>'
+          +'<span class="gstat warn"><i class="fa-solid fa-scale-balanced"></i> Borç ₺9.850</span>',
+      meta:'<div><dt>İlgili Kişi</dt><dd>Fatih Coşkun</dd></div>'
+          +'<div><dt>Telefon</dt><dd>0216 349 82 17</dd></div>'
+          +'<div><dt>İlişkili Şantiye</dt><dd>Merkez Şantiye</dd></div>'
+          +'<div><dt>Tedarikçi Kartı</dt><dd><a href="crm-satinalma-tedarikci-detay.html?tdr=TDR-06" style="color:var(--acc-ink)">TDR-06</a></dd></div>',
+      stats:'<div class="hstat danger"><span class="hstat-num">₺9.850</span><span class="hstat-lbl">Açık bakiye — bizim borcumuz</span></div>'
+           +'<a class="hstat" href="crm-satinalma-tedarikci-detay.html?tdr=TDR-06"><span class="hstat-num">%97</span><span class="hstat-lbl">Termin performansı — TDR-06 <i class="fa-solid fa-arrow-right"></i></span></a>'
+           +'<div class="hstat ok"><span class="hstat-num">1</span><span class="hstat-lbl">Aktif şantiye</span></div>',
+      kunyeTitle:'<i class="fa-solid fa-building"></i> Firma Künyesi',
+      kunye:'<div><dt>Ünvan</dt><dd>Anadolu Hırdavat</dd></div>'
+           +'<div><dt>Cari Türü</dt><dd>Tedarikçi — hırdavat ve sarf malzemeleri (TDR-06)</dd></div>'
+           +'<div><dt>İlgili Kişi</dt><dd>Fatih Coşkun</dd></div>'
+           +'<div><dt>İlişkili Şantiye</dt><dd>Merkez Şantiye — hırdavat alımları</dd></div>',
+      kunyeFoot:'<i class="fa-solid fa-circle-info"></i> Sipariş ve irsaliye belgeleri Satın Alma modülündedir.',
+      bal:'<div class="bal-row borc"><span class="br-lbl"><i class="fa-solid fa-scale-balanced"></i> Açık bakiye (bizim borcumuz)</span><span class="br-val">₺9.850</span></div>'
+         +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-calendar-days"></i> Son hareket</span><span class="br-val" style="font-weight:700;color:var(--ink)">29 Haz 2026 · Hırdavat malzeme alımı</span></div>',
+      ekstre:'crm-cari-durum.html?cari=anadolu-hirdavat',
+      szlOzet:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-truck-ramp-box"></i> Tedarik İlişkisi</div>'
+           +'<a class="gc-link" href="crm-satinalma-tedarikci-detay.html?tdr=TDR-06">TDR-06 kartı <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><dl class="cari-hero-meta">'
+           +'<div><dt>Son Alım</dt><dd>29 Haz 2026 hırdavat malzeme alımı — ₺9.850</dd></div>'
+           +'<div><dt>Arşiv Referansı</dt><dd>SAT-2026-010 (kaynak teli + gaz tüpü, Liman) — tamamlandı</dd></div>'
+           +'</dl></div>',
+      kisiler:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-id-card"></i> İlgili Kişiler</div></div>'
+           +'<div class="person-card"><div class="person-mark" style="background:var(--warn-tint);color:var(--warn)">FC</div>'
+           +'<div class="person-info"><h3>Fatih Coşkun</h3><span>Anadolu Hırdavat · satış temsilcisi</span></div></div>'
+           +'<div class="person-contact"><div class="pc-row"><i class="fa-solid fa-phone"></i> <a href="tel:02163498217">0216 349 82 17</a></div>'
+           +'<div class="pc-row"><i class="fa-solid fa-building"></i> Merkez Şantiye</div></div>',
+      hareket:[
+        ['29 Haz 2026','Hırdavat malzeme alımı','—','₺9.850','₺9.850','Borç']
+      ],
+      szlTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Sipariş &amp; İrsaliye</div>'
+           +'<a class="gc-link" href="crm-satinalma-tedarikci-detay.html?tdr=TDR-06">Tedarikçi kartı <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Sipariş, irsaliye ve fatura belgeleri Satın Alma modülünde (TDR-06) takip edilir; ekstre karşılıkları Cari Hareketler sekmesindedir.</p></div></div>',
+      firsatTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-chart-line"></i> Fırsatlar &amp; Teklifler</div></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Satış fırsatı veya teklif kaydı yok — tedarikçi carisidir.</p></div></div>'
+    },
+    'bogazici-yapi-market': {
+      title:'Boğaziçi Yapı Market — Cari Kartı — Gavia CRM',
+      eyebrow:'Rehber &amp; Hesap · Tedarikçi',
+      name:'Boğaziçi Yapı Market',
+      sub:'Yapı market &amp; doğrama tedarikçisi (TDR-04) · ilgili kişi Cem Aydoğan',
+      mark:'BY', markBg:'var(--warn-tint)', markFg:'var(--warn)',
+      tags:'<span class="gtag" style="background:var(--warn-tint);color:var(--warn);border-color:transparent">Tedarikçi</span>'
+          +'<span class="gstat warn"><i class="fa-solid fa-clock"></i> FTR-2026-06 · vade 15 Tem</span>',
+      meta:'<div><dt>İlgili Kişi</dt><dd>Cem Aydoğan</dd></div>'
+          +'<div><dt>Telefon</dt><dd>0212 000 45 61</dd></div>'
+          +'<div><dt>İlişkili Şantiye</dt><dd>Vadi Konakları</dd></div>'
+          +'<div><dt>Tedarikçi Kartı</dt><dd><a href="crm-satinalma-tedarikci-detay.html?tdr=TDR-04" style="color:var(--acc-ink)">TDR-04</a></dd></div>',
+      stats:'<div class="hstat danger"><span class="hstat-num">₺418.200</span><span class="hstat-lbl">Açık bakiye — bizim borcumuz</span></div>'
+           +'<div class="hstat"><span class="hstat-num">15 Tem</span><span class="hstat-lbl">FTR-2026-06 fatura vadesi</span></div>'
+           +'<a class="hstat" href="crm-satinalma-tedarikci-detay.html?tdr=TDR-04"><span class="hstat-num">%94</span><span class="hstat-lbl">Termin performansı — TDR-04 <i class="fa-solid fa-arrow-right"></i></span></a>',
+      kunyeTitle:'<i class="fa-solid fa-building"></i> Firma Künyesi',
+      kunye:'<div><dt>Ünvan</dt><dd>Boğaziçi Yapı Market</dd></div>'
+           +'<div><dt>Cari Türü</dt><dd>Tedarikçi — yapı market ve PVC doğrama (TDR-04)</dd></div>'
+           +'<div><dt>İlgili Kişi</dt><dd>Cem Aydoğan</dd></div>'
+           +'<div><dt>İlişkili Şantiye</dt><dd>Vadi Konakları — PVC doğrama tedariki</dd></div>',
+      kunyeFoot:'<i class="fa-solid fa-circle-info"></i> Sipariş ve irsaliye belgeleri Satın Alma modülündedir.',
+      bal:'<div class="bal-row borc"><span class="br-lbl"><i class="fa-solid fa-scale-balanced"></i> Açık bakiye (bizim borcumuz)</span><span class="br-val">₺418.200</span></div>'
+         +'<div class="bal-row"><span class="br-lbl"><i class="fa-solid fa-clock"></i> Fatura vadesi</span><span class="br-val" style="font-weight:700;color:var(--ink)">15 Tem 2026 · FTR-2026-06</span></div>',
+      ekstre:'crm-cari-durum.html?cari=bogazici-yapi-market',
+      szlOzet:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-truck-ramp-box"></i> Tedarik İlişkisi</div>'
+           +'<a class="gc-link" href="crm-satinalma-tedarikci-detay.html?tdr=TDR-04">TDR-04 kartı <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><dl class="cari-hero-meta">'
+           +'<div><dt>Açık Fatura</dt><dd>FTR-2026-06 · PVC doğrama — ₺418.200 (vade 15 Tem 2026)</dd></div>'
+           +'<div><dt>Teslimat</dt><dd>12 Haz 2026 · Vadi Konakları PVC doğrama</dd></div>'
+           +'</dl></div>',
+      kisiler:'<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-id-card"></i> İlgili Kişiler</div></div>'
+           +'<div class="person-card"><div class="person-mark" style="background:var(--warn-tint);color:var(--warn)">CA</div>'
+           +'<div class="person-info"><h3>Cem Aydoğan</h3><span>Boğaziçi Yapı Market · kurumsal satış</span></div></div>'
+           +'<div class="person-contact"><div class="pc-row"><i class="fa-solid fa-phone"></i> <a href="tel:02120004561">0212 000 45 61</a></div>'
+           +'<div class="pc-row"><i class="fa-solid fa-building"></i> Vadi Konakları</div></div>',
+      hareket:[
+        ['12 Haz 2026','PVC doğrama faturası (FTR-2026-06 · vade 15 Tem)','—','₺418.200','₺418.200','Borç']
+      ],
+      szlTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-signature"></i> Sipariş &amp; İrsaliye</div>'
+           +'<a class="gc-link" href="crm-satinalma-tedarikci-detay.html?tdr=TDR-04">Tedarikçi kartı <i class="fa-solid fa-arrow-right"></i></a></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Sipariş, irsaliye ve fatura belgeleri Satın Alma modülünde (TDR-04) takip edilir; ekstre karşılıkları Cari Hareketler sekmesindedir.</p></div></div>',
+      firsatTab:'<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-chart-line"></i> Fırsatlar &amp; Teklifler</div></div>'
+           +'<div class="gc-body"><p style="font-size:12.5px;color:var(--muted);line-height:1.6">Satış fırsatı veya teklif kaydı yok — tedarikçi carisidir.</p></div></div>'
     }
   };
 
   var key = new URLSearchParams(location.search).get('cari');
+  /* [S0 ④b] demir-beton = sayfanın statik default içeriği; alias param default'a düşer */
+  if(key === 'demir-beton') key = null;
   if(key && !REC[key]){
     /* D18 Y7 — tanınmayan ?cari= → gvNotFound (parametresiz hâlâ Demir-Beton default'u aynen) */
     GV.crumb('Kayıt bulunamadı');
@@ -609,23 +1019,27 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
   document.getElementById('cdSzlTab').innerHTML = R.szlTab;
   document.getElementById('cdFirsatTab').innerHTML = R.firsatTab;
   var szlTabBtn = document.querySelector('.gv-tab[data-tab="sozlesme"]');
-  if(szlTabBtn) szlTabBtn.innerHTML = '<i class="fa-solid fa-file-signature"></i> Sözleşmeler &amp; Ödemeler';
+  if(szlTabBtn && R.szlTabLbl) szlTabBtn.innerHTML = R.szlTabLbl;
 
-  /* hareket ekstresi — müşteri defter tarafı: yürüyen bakiye ALACAK (ok rengi) */
+  /* hareket ekstresi — yürüyen bakiye yönü satırın 6. elemanından (yoksa Alacak;
+     [S0 ④b] taşeron/tedarikçi kayıtları Borç yönü basar — cari-durum running mantığı) */
   var hb = '';
   R.hareket.forEach(function(h){
+    var yon = h[5] || 'Alacak';
+    var renk = yon === 'Borç' ? 'var(--danger)' : 'var(--ok)';
     hb += '<tr><td class="muted">'+h[0]+'</td><td class="t-strong">'+h[1]+'</td>'
         + '<td class="num">'+h[2]+'</td><td class="num">'+h[3]+'</td>'
-        + '<td class="num" style="font-weight:800;color:var(--ok)">'+h[4]+' Alacak</td></tr>';
+        + '<td class="num" style="font-weight:800;color:'+renk+'">'+h[4]+' '+yon+'</td></tr>';
   });
+  if(!hb) hb = '<tr><td colspan="5" class="muted" style="padding:14px 6px">Cari hareket kaydı yok — sözleşme/hakediş süreci başlamadı.</td></tr>';
   document.getElementById('cdHareketBody').innerHTML = hb;
 
   /* ekstre linkleri → doğru cari-durum kaydı */
   document.querySelectorAll('a[href^="crm-cari-durum.html"]').forEach(function(a){ a.href = R.ekstre; });
 
-  /* künye kartı alt notu Demir-Beton'a özel — müşteri kartında nötrle */
+  /* künye kartı alt notu Demir-Beton'a özel — kayıt kendi notunu getirir, yoksa müşteri nötrlemesi */
   var kf = document.getElementById('cdKunye').closest('.gv-card').querySelector('.gc-foot span');
-  if(kf) kf.innerHTML = '<i class="fa-solid fa-circle-info"></i> Satış süreci belgeleri Sözleşmeler sekmesinde; görüşme geçmişi CRM kartındadır.';
+  if(kf) kf.innerHTML = R.kunyeFoot || '<i class="fa-solid fa-circle-info"></i> Satış süreci belgeleri Sözleşmeler sekmesinde; görüşme geçmişi CRM kartındadır.';
 
   /* tab-goto linkleri yeniden bağla (innerHTML ile yenilenen bölgeler için) */
   document.querySelectorAll('#cdSzlOzet [data-tab-goto]').forEach(function(el){
