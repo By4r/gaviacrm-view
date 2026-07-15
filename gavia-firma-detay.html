@@ -118,7 +118,7 @@ body{font-family:var(--font);color:var(--on-dark)}
 .pc-fitem span{font-size:13.5px;color:#fff;font-weight:600;line-height:1.4}
 
 /* ---- IBAN / yetkili satırları ---- */
-.pc-line-row{display:flex;align-items:center;gap:13px;padding:13px 0;border-bottom:1px solid var(--gv-border-dark)}
+.pc-line-row{display:flex;align-items:center;gap:13px;padding:13px 22px;border-bottom:1px solid var(--gv-border-dark)}
 .pc-line-row:last-child{border-bottom:none}
 .pc-line-ico{width:34px;height:34px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:12.5px;background:rgba(255,255,255,.05);color:var(--on-dark)}
 .pc-line-info{flex:1;min-width:0;line-height:1.4}
@@ -177,7 +177,7 @@ body{font-family:var(--font);color:var(--on-dark)}
 
 /* ---- boş durum ---- */
 .pc-empty{padding:38px 20px;text-align:center}
-.pc-empty i{font-size:26px;color:var(--on-dark-faint);margin-bottom:12px}
+.pc-empty > i{font-size:26px;color:var(--on-dark-faint);margin-bottom:12px}
 .pc-empty p{font-size:13px;color:var(--on-dark-mut);max-width:340px;margin:0 auto 14px;line-height:1.5}
 
 /* ---- fatura tablosu ---- */
@@ -194,6 +194,7 @@ body{font-family:var(--font);color:var(--on-dark)}
   .pc-card-body{padding:16px}
   .pc-card-head{padding:14px 16px}
   .pc-card-foot{padding:12px 16px}
+  .pc-line-row{padding:13px 16px}
 }
 </style>
 </head>
