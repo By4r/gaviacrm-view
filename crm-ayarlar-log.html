@@ -107,7 +107,7 @@
     <div class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-ico"><i class="fa-solid fa-clock-rotate-left"></i></div>
-        <div><div class="kpi-num">14</div><div class="kpi-lbl">Bugünkü işlem</div></div>
+        <div><div class="kpi-num">20</div><div class="kpi-lbl">Bugünkü işlem</div></div>
       </div>
       <div class="kpi-card">
         <div class="kpi-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-stamp"></i></div>
@@ -119,7 +119,7 @@
       </div>
       <div class="kpi-card danger">
         <div class="kpi-ico"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <div><div class="kpi-num">3</div><div class="kpi-lbl">Kritik değişiklik · son 3 gün</div></div>
+        <div><div class="kpi-num">6</div><div class="kpi-lbl">Kritik değişiklik · son 3 gün</div></div>
       </div>
     </div>
 
@@ -127,13 +127,13 @@
       <div class="filter-bar">
         <div class="fb-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="logSearch" placeholder="Kayıt, belge no veya kullanıcı ara"></div>
         <div class="chips" id="logChips">
-          <button class="chip is-on" data-mod-f="hepsi">Tümü <span class="ch-cnt">32</span></button>
+          <button class="chip is-on" data-mod-f="hepsi">Tümü <span class="ch-cnt">38</span></button>
           <button class="chip" data-mod-f="kasa">Kasa <span class="ch-cnt">7</span></button>
           <button class="chip" data-mod-f="gorev">Görev <span class="ch-cnt">6</span></button>
-          <button class="chip" data-mod-f="satinalma">Satın Alma <span class="ch-cnt">4</span></button>
+          <button class="chip" data-mod-f="satinalma">Satın Alma <span class="ch-cnt">6</span></button>
           <button class="chip" data-mod-f="puantaj">Puantaj <span class="ch-cnt">5</span></button>
-          <button class="chip" data-mod-f="hakedis">Hakediş <span class="ch-cnt">4</span></button>
-          <button class="chip" data-mod-f="ayarlar">Ayarlar <span class="ch-cnt">6</span></button>
+          <button class="chip" data-mod-f="hakedis">Hakediş <span class="ch-cnt">5</span></button>
+          <button class="chip" data-mod-f="ayarlar">Ayarlar <span class="ch-cnt">9</span></button>
         </div>
         <select id="logUser" aria-label="Kullanıcı filtresi" style="font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 10px;outline:none">
           <option value="hepsi" selected>Tüm kullanıcılar</option>
@@ -190,9 +190,64 @@
       </div>
 
       <div id="logList" data-paginate="25" data-paginate-rows=".log-row">
-        <!-- ============ BUGÜN — 2 TEMMUZ (14) ============ -->
-        <div class="log-day" data-day="d0">Bugün — 2 Temmuz <span class="ld-cnt" data-day-cnt>14 kayıt</span></div>
+        <!-- ============ BUGÜN — 2 TEMMUZ (20) ============ -->
+        <div class="log-day" data-day="d0">Bugün — 2 Temmuz <span class="ld-cnt" data-day-cnt>20 kayıt</span></div>
 
+        <!-- ============ Dalga 4-ek — §9'un 16 loglanabilir işlem türünün eksik 6'sı
+             (Kayıt silme · Dosya yükleme · Dosya indirme · Sözleşme yükleme · Paket
+             değişikliği · Abonelik güncelleme). Bu gecenin gerçek ekranlarına bağlı:
+             SIP-2026-08/SAT-2026-018 (satınalma) · SZL-2026-K03 (sözleşme-revizyon) ·
+             crm-ayarlar-paket-degistir.html / -abonelik-iptal.html (SaaS akışları). ============ -->
+        <div class="log-row" data-day="d0" data-mod="ayarlar" data-user="Kemal Yapıcıoğlu" data-type="kritik" data-santiye="genel" data-kayit="" data-ip="88.243">
+          <div class="log-ico danger"><i class="fa-solid fa-rotate"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Kemal Yapıcıoğlu</b> abonelik otomatik yenileme tercihini güncelledi — <b>Kapalı → Açık</b></div>
+            <div class="log-meta"><span class="lm-mod">Ayarlar</span><span>LOG-2026-0840</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="gstat danger">Kritik</span>
+          <span class="log-time">17:40</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="ayarlar" data-user="Kemal Yapıcıoğlu" data-type="kritik" data-santiye="genel" data-kayit="" data-ip="88.243">
+          <div class="log-ico danger"><i class="fa-solid fa-layer-group"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Kemal Yapıcıoğlu</b> <a href="crm-ayarlar-paket-degistir.html">paket değişikliği talebi</a> oluşturdu — <b>Professional → CRM + Sales</b></div>
+            <div class="log-meta"><span class="lm-mod">Ayarlar</span><span>LOG-2026-0839</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="gstat danger">Kritik</span>
+          <span class="log-time">17:35</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="hakedis" data-user="Murat Denizli" data-type="kayit" data-santiye="genel" data-kayit="SZL-2026-K03" data-ip="88.243">
+          <div class="log-ico info"><i class="fa-solid fa-file-arrow-up"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Murat Denizli</b> <a href="crm-finans-sozlesme-revizyon.html?szl=k03">SZL-2026-K03</a> sözleşme taslağını inceleme için yükledi (Sapanca Belediyesi, imza bekliyor)</div>
+            <div class="log-meta"><span class="lm-mod">Hakediş</span><span>LOG-2026-0838</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="log-time">17:30</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="ayarlar" data-user="Kemal Yapıcıoğlu" data-type="kritik" data-santiye="genel" data-kayit="" data-ip="88.243">
+          <div class="log-ico danger"><i class="fa-solid fa-trash"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Kemal Yapıcıoğlu</b> süresi dolmuş kullanıcı davetini sildi (mimar.ozturk@yapitas.example)</div>
+            <div class="log-meta"><span class="lm-mod">Ayarlar</span><span>LOG-2026-0837</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="log-time">17:25</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="satinalma" data-user="Nesrin Aydın" data-type="kayit" data-santiye="vadi" data-kayit="SAT-2026-018" data-ip="88.243">
+          <div class="log-ico"><i class="fa-solid fa-file-arrow-down"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Nesrin Aydın</b> <a href="crm-satinalma-icmal-cikti.html?form=SAT-2026-018">SAT-2026-018</a> icmal çıktısını PDF olarak indirdi</div>
+            <div class="log-meta"><span class="lm-mod">Satın Alma</span><span>LOG-2026-0836</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
+          </div>
+          <span class="log-time">17:20</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="satinalma" data-user="Baran Yıldız" data-type="kayit" data-santiye="merkez" data-kayit="SIP-2026-08" data-ip="88.243">
+          <div class="log-ico"><i class="fa-solid fa-file-arrow-up"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Baran Yıldız</b> <a href="crm-satinalma-siparis-detay.html?sip=SIP-2026-08">SIP-2026-08</a> siparişi için tedarikçi teklif dosyasını yükledi</div>
+            <div class="log-meta"><span class="lm-mod">Satın Alma</span><span>LOG-2026-0835</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
+          </div>
+          <span class="log-time">17:15</span>
+        </div>
         <div class="log-row" data-day="d0" data-mod="puantaj" data-user="Hasan Demirci" data-type="kayit" data-santiye="vadi" data-kayit="" data-ip="31.155">
           <div class="log-ico info"><i class="fa-solid fa-user-clock"></i></div>
           <div class="log-body">
@@ -471,7 +526,7 @@
 
       <div class="gc-foot">
         <span style="display:flex;align-items:center;gap:8px"><i class="fa-solid fa-circle-info" style="color:var(--acc-ink)"></i> Kayıtlar salt-okunurdur ve silinemez; 24 ay saklanır. Bu ekranı yalnız Gavia Platform Yöneticisi ve Firma Sahibi görüntüler.</span>
-        <span><span data-log-count>32</span> kayıt</span>
+        <span><span data-log-count>38</span> kayıt</span>
       </div>
     </div>
   </main>
