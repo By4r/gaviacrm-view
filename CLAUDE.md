@@ -46,6 +46,10 @@ bilgisi, ticari detay hiçbir commit'e girmez. Mock veriler tamamen kurgusaldır
 onayı olmadan yapılmaz.** Agent'lar working tree'de serbestçe dosya üretir; commit/push
 kararı her zaman Beyar'a sorulur. Bu kural teammate/subagent'lar için de geçerlidir.
 
+**Aktif dalga sürecinde `git clean` çalıştırılmaz** — `tasks/` altındaki gitignored
+doğrulama dosyaları (`kordon.md`, `handoff.md`) kaybolur. Bu dosyalar izlenmediği için
+commit'ten geri getirilemez; kaybolurlarsa dalga sonu doğrulaması dayanaksız kalır.
+
 ## Referans UI Dili
 
 Yapı, layout, etkileşim ve component dili şu referanstan devralınır:
