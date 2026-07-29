@@ -18,14 +18,17 @@
 <style>
 /* ============ SAYFAYA ÖZEL — Pluxee Kart ============ */
 
-/* kart ızgarası — KPI altı, tablo üstü (Dalga 8, kasa/demirbas mark idiyomunun kart-karo uyarlaması) */
+/* kart ızgarası — KPI altı, tablo üstü (Dalga 8, kasa/demirbas mark idiyomunun kart-karo uyarlaması);
+   D19/S12: kasa .ks-card gibi SEÇİCİ — tıklanınca alttaki Kart Defteri o karta filtrelenir */
 .plx-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:24px}
 .plx-card{
   background:var(--paper);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-sm);
-  padding:16px 18px;transition:.22s var(--ease);
+  padding:16px 18px;cursor:pointer;transition:.22s var(--ease);text-align:left;font-family:inherit;width:100%
 }
 .plx-card:hover{transform:translateY(-2px);box-shadow:var(--sh-md)}
-.plx-card.is-off{opacity:.6}
+.plx-card.is-on{border-color:var(--acc-ink);box-shadow:0 0 0 3px rgba(var(--acc-rgb),.14)}
+.plx-card.is-off{opacity:.6;cursor:default}
+.plx-card.is-off:hover{transform:none;box-shadow:var(--sh-sm)}
 .plx-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px}
 .plx-who{min-width:0;line-height:1.35}
 .plx-name{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -39,29 +42,63 @@
 @media(max-width:980px){.plx-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.plx-grid{grid-template-columns:1fr}}
 
-/* hareket tablosu */
-#tblPluxee{min-width:920px}
-.col-santiye{width:130px}
-.col-tur{width:110px}
-.col-tutar{width:110px}
-.col-durum{width:150px}
+/* ============ D19/S12 — Kart Defteri (crm-operasyon-kasa.html #tblDefter kolon
+   düzeninin birebir devralımı: df-no/df-date/df-firm/df-desc/df-in/df-out/df-bak,
+   df-devir/df-total/df-mevcut satır dili, df-donem rozeti) ============ */
+#tblPluxee{min-width:940px}
+#tblPluxee td,#tblPluxee th{font-variant-numeric:tabular-nums}
+#tblPluxee .df-no{width:36px;color:var(--muted);font-size:12px;font-weight:600}
+#tblPluxee .df-date{width:86px;white-space:nowrap;color:var(--ink-2);font-weight:600;font-size:12.5px}
+#tblPluxee .df-firm{font-weight:700;color:var(--ink);white-space:nowrap;max-width:210px;overflow:hidden;text-overflow:ellipsis}
+#tblPluxee .df-desc{color:var(--ink-2);font-size:12.5px;max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#tblPluxee .num{white-space:nowrap}
+#tblPluxee .df-in{color:var(--ok);font-weight:700}
+#tblPluxee .df-out{color:var(--danger);font-weight:700}
+#tblPluxee .df-bak{font-weight:800;color:var(--ink)}
+tr.df-devir td{background:var(--bg);font-weight:800;color:var(--ink-2);letter-spacing:.02em}
+tr.df-total td{background:var(--bg);border-top:2px solid var(--line-2);font-weight:800;color:var(--ink)}
+tr.df-mevcut td{background:rgba(var(--acc-rgb),.08);font-weight:800;color:var(--ink);font-size:14px}
+tr.df-mevcut .df-bak{color:var(--acc-deep)}
+.df-head-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.df-donem{font-size:12px;font-weight:700;color:var(--ink-2);background:var(--bg);border:1px solid var(--line);padding:6px 12px;border-radius:var(--r-pill);display:inline-flex;align-items:center;gap:7px}
+.df-donem i{font-size:11px;color:var(--muted)}
 
-.rp-cell{display:flex;align-items:center;gap:12px;min-width:0}
-.rp-mark{width:38px;height:38px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:14px;background:var(--ok-tint);color:var(--ok)}
-.rp-info{min-width:0;line-height:1.35}
-.rp-info b{display:block;font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap}
-.rp-info span{font-size:11.5px;color:var(--muted)}
-
-.plx-kart-cell{line-height:1.35}
-.plx-kart-cell b{display:block;font-size:13.5px;font-weight:700;color:var(--ink)}
-.plx-kart-cell span{font-size:11.5px;color:var(--muted)}
+/* ============ Y17 MOBİL KART — Kart Defteri #tblPluxee (kasa emsali:
+   ayrı kart DOM'u + data-idx + gvpage senkron, data-label KULLANILMAZ) ============ */
+.df-mobile-list{display:none}
+.df-mrow{padding:13px 18px;border-bottom:1px solid var(--line)}
+.df-mrow:last-child{border-bottom:none}
+.df-mrow-top{display:flex;align-items:baseline;gap:8px;margin-bottom:5px}
+.df-mrow-no{font-size:11px;font-weight:700;color:var(--muted);flex:none}
+.df-mrow-date{font-size:12.5px;color:var(--ink-2);flex:1}
+.df-mrow-bak{font-size:13.5px;font-weight:800;color:var(--ink);flex:none}
+.df-mrow-firm{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.df-mrow-desc{font-size:12px;color:var(--muted);margin-bottom:7px;line-height:1.4}
+.df-mrow-amt{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
+.df-mrow-amt b{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
+.df-mrow-amt .df-in{color:var(--ok)}
+.df-mrow-amt .df-out{color:var(--danger)}
+.df-mrow.devir,.df-mrow.total{background:var(--bg)}
+.df-mrow-title{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);margin-bottom:9px}
+.df-mrow-line{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--muted);padding:3px 0}
+.df-mrow-line b{font-variant-numeric:tabular-nums;color:var(--ink-2);font-weight:700}
+.df-mrow-line.df-mrow-bal{border-top:1px solid var(--line);margin-top:5px;padding-top:9px}
+.df-mrow-line.df-mrow-bal b{font-size:14.5px;color:var(--ink);font-weight:800}
+.df-mrow.mevcut{background:rgba(var(--acc-rgb),.08)}
+.df-mrow.mevcut .df-mrow-title{color:var(--acc-deep)}
+.df-mrow.mevcut .df-mrow-line b{color:var(--acc-deep);font-size:15px}
+@media(max-width:640px){
+  #tblPluxee{display:none}
+  .df-mobile-list{display:block}
+}
 
 .filter-bar.stack{flex-direction:column;align-items:stretch;gap:12px}
 .filter-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .filter-row .frow-lbl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);flex:none;min-width:64px}
 
-/* satır seçimi + detay paneli (Dalga 18 — ?islem= master-detail) */
-#tblPluxee tbody tr{cursor:pointer}
+/* satır seçimi + detay paneli (Dalga 18 — ?islem= master-detail); yalnız data-id
+   taşıyan gerçek işlem satırları tıklanabilir — df-devir/df-total/df-mevcut hariç */
+#tblPluxee tbody tr[data-id]{cursor:pointer}
 #tblPluxee tbody tr.is-selected td{background:rgba(var(--acc-rgb),.06)}
 #tblPluxee tbody tr.is-selected td:first-child{box-shadow:inset 3px 0 0 var(--acc-ink)}
 .plx-detail-empty{padding:40px 22px;text-align:center;color:var(--muted);font-size:13px}
@@ -133,11 +170,21 @@
       </div>
     </div>
 
-    <!-- kart ızgarası — 12 aktif + 1 pasif, statik özet (filtrelerden bağımsız) -->
-    <!-- statik bake — DEFAULT rol-agnostik 12 aktif + 1 pasif kart (KARTLAR/PASİF VERBATIM); JS devralır — D18-B2 -->
-    <div class="plx-grid" id="plxGrid"><div class="plx-card"><div class="plx-top"><div class="plx-who"><div class="plx-name">Ali Vural</div><span class="plx-no">•4471</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Vadi Konakları</div><div class="plx-bakiye">₺980</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 1 Tem 2026</div></div><div class="plx-card"><div class="plx-top"><div class="plx-who"><div class="plx-name">İbrahim Sönmez</div><span class="plx-no">•4482</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Vadi Konakları</div><div class="plx-bakiye">₺1.050</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 1 Tem 2026</div></div><div class="plx-card"><div class="plx-top"><div class="plx-who"><div class="plx-name">Ramazan Kılıç</div><span class="plx-no">•4493</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Vadi Konakları</div><div class="plx-bakiye">₺860</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 1 Tem 2026</div></div><div class="plx-card"><div class="plx-top"><div class="plx-who"><div class="plx-name">Selim Doğan</div><span class="plx-no">•4504</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Vadi Konakları</div><div class="plx-bakiye">₺1.180</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 2 Tem 2026</div></div><div class="plx-card"><div class="plx-top"><div class="plx-who"><div class="plx-name">Musa Erdem</div><span class="plx-no">•4515</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Vadi Konakları</div><div class="plx-bakiye">₺720</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 1 Tem 2026</div></div><div class="plx-card"><div class="plx-top"><div class="plx-who"><div class="plx-name">Veli Şimşek</div><span class="plx-no">•4526</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Vadi Konakları</div><div class="plx-bakiye">₺990</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 2 Tem 2026</div></div><div class="plx-card"><div class="plx-top"><div class="plx-who"><div class="plx-name">Şükrü Aslan</div><span class="plx-no">•5871</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Liman Lojistik Merkezi</div><div class="plx-bakiye">₺1.100</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 1 Tem 2026</div></div><div class="plx-card"><div class="plx-top"><div class="plx-who"><div class="plx-name">Halil Güneş</div><span class="plx-no">•5882</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Liman Lojistik Merkezi</div><div class="plx-bakiye">₺640</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 30 Haz 2026</div></div><div class="plx-card"><div class="plx-top"><div class="plx-who"><div class="plx-name">Metin Çetin</div><span class="plx-no">•5893</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Liman Lojistik Merkezi</div><div class="plx-bakiye">₺950</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 1 Tem 2026</div></div><div class="plx-card"><div class="plx-top"><div class="plx-who"><div class="plx-name">Osman Polat</div><span class="plx-no">•5904</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Liman Lojistik Merkezi</div><div class="plx-bakiye">₺820</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 2 Tem 2026</div></div><div class="plx-card"><div class="plx-top"><div class="plx-who"><div class="plx-name">Recep Yaman</div><span class="plx-no">•6231</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Merkez Şantiye</div><div class="plx-bakiye">₺1.140</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 1 Tem 2026</div></div><div class="plx-card"><div class="plx-top"><div class="plx-who"><div class="plx-name">İlyas Kurt</div><span class="plx-no">•6242</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Merkez Şantiye</div><div class="plx-bakiye">₺810</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 2 Tem 2026</div></div><div class="plx-card is-off"><div class="plx-top"><div class="plx-who"><div class="plx-name">Sadık Öz</div><span class="plx-no">•6253</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Merkez Şantiye</div><div class="plx-bakiye"><span class="gstat off">Kayıp — kart pasif</span></div><div class="plx-foot">Bildirim: 30 Haz 2026</div></div></div>
+    <!-- kart ızgarası — 12 aktif + 1 pasif; D19/S12: kasa .ks-card gibi SEÇİCİ, karta
+         tıklanınca alttaki Kart Defteri o karta filtrelenir. Pasif kart (Sadık Öz) is-off
+         idiyomuyla seçilemez (button değil, data-plx yok). -->
+    <!-- statik bake — DEFAULT seçili kart 4471 Ali Vural (KARTLAR/PASİF VERBATIM); JS devralır — D18-B2 -->
+    <div class="plx-grid" id="plxGrid"><button type="button" class="plx-card is-on" data-plx="4471"><div class="plx-top"><div class="plx-who"><div class="plx-name">Ali Vural</div><span class="plx-no">•4471</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Vadi Konakları</div><div class="plx-bakiye">₺830</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 1 Tem 2026</div></button><button type="button" class="plx-card" data-plx="4482"><div class="plx-top"><div class="plx-who"><div class="plx-name">İbrahim Sönmez</div><span class="plx-no">•4482</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Vadi Konakları</div><div class="plx-bakiye">₺850</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 1 Tem 2026</div></button><button type="button" class="plx-card" data-plx="4493"><div class="plx-top"><div class="plx-who"><div class="plx-name">Ramazan Kılıç</div><span class="plx-no">•4493</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Vadi Konakları</div><div class="plx-bakiye">₺880</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 1 Tem 2026</div></button><button type="button" class="plx-card" data-plx="4504"><div class="plx-top"><div class="plx-who"><div class="plx-name">Selim Doğan</div><span class="plx-no">•4504</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Vadi Konakları</div><div class="plx-bakiye">₺890</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 2 Tem 2026</div></button><button type="button" class="plx-card" data-plx="4515"><div class="plx-top"><div class="plx-who"><div class="plx-name">Musa Erdem</div><span class="plx-no">•4515</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Vadi Konakları</div><div class="plx-bakiye">₺1.250</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 1 Tem 2026</div></button><button type="button" class="plx-card" data-plx="4526"><div class="plx-top"><div class="plx-who"><div class="plx-name">Veli Şimşek</div><span class="plx-no">•4526</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Vadi Konakları</div><div class="plx-bakiye">₺910</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 2 Tem 2026</div></button><button type="button" class="plx-card" data-plx="5871"><div class="plx-top"><div class="plx-who"><div class="plx-name">Şükrü Aslan</div><span class="plx-no">•5871</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Liman Lojistik Merkezi</div><div class="plx-bakiye">₺840</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 1 Tem 2026</div></button><button type="button" class="plx-card" data-plx="5882"><div class="plx-top"><div class="plx-who"><div class="plx-name">Halil Güneş</div><span class="plx-no">•5882</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Liman Lojistik Merkezi</div><div class="plx-bakiye">₺1.250</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 30 Haz 2026</div></button><button type="button" class="plx-card" data-plx="5893"><div class="plx-top"><div class="plx-who"><div class="plx-name">Metin Çetin</div><span class="plx-no">•5893</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Liman Lojistik Merkezi</div><div class="plx-bakiye">₺870</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 1 Tem 2026</div></button><button type="button" class="plx-card" data-plx="5904"><div class="plx-top"><div class="plx-who"><div class="plx-name">Osman Polat</div><span class="plx-no">•5904</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Liman Lojistik Merkezi</div><div class="plx-bakiye">₺900</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 2 Tem 2026</div></button><button type="button" class="plx-card" data-plx="6231"><div class="plx-top"><div class="plx-who"><div class="plx-name">Recep Yaman</div><span class="plx-no">•6231</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Merkez Şantiye</div><div class="plx-bakiye">₺860</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 1 Tem 2026</div></button><button type="button" class="plx-card" data-plx="6242"><div class="plx-top"><div class="plx-who"><div class="plx-name">İlyas Kurt</div><span class="plx-no">•6242</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Merkez Şantiye</div><div class="plx-bakiye">₺910</div><div class="plx-bakiye-lbl">güncel bakiye</div><div class="plx-foot">Son işlem: 2 Tem 2026</div></button><div class="plx-card is-off"><div class="plx-top"><div class="plx-who"><div class="plx-name">Sadık Öz</div><span class="plx-no">•6253</span></div><div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div><div class="plx-santiye">Merkez Şantiye</div><div class="plx-bakiye"><span class="gstat off">Kayıp — kart pasif</span></div><div class="plx-foot">Bildirim: 30 Haz 2026</div></div></div>
 
-    <div class="gv-card">
+    <!-- ============ D19/S12 — Kart Defteri (crm-operasyon-kasa.html #tblDefter kolon
+         düzenine paralel; yürüyen bakiye KART BAZLI — devir/yükleme-harcama/güncel bakiye) ============ -->
+    <div class="gv-card" style="margin-bottom:18px">
+      <div class="gc-head">
+        <div class="gc-title"><i class="fa-solid fa-book"></i> Kart Defteri — <span id="dfKart">Ali Vural •4471</span></div>
+        <div class="df-head-tools">
+          <span class="df-donem"><i class="fa-solid fa-calendar-days"></i> 01 – 15 Temmuz 2026 · cari dönem</span>
+        </div>
+      </div>
       <div class="filter-bar stack">
         <div class="filter-row">
           <div class="fb-search" style="max-width:360px">
@@ -148,37 +195,115 @@
         <div class="filter-row">
           <span class="frow-lbl">Tür</span>
           <div class="chips" id="plxTurChips">
-            <button class="chip is-on" data-tur="hepsi">Tümü <span class="ch-cnt">13</span></button>
+            <button class="chip is-on" data-tur="hepsi">Tümü <span class="ch-cnt">2</span></button>
             <button class="chip" data-tur="yukleme">Yükleme <span class="ch-cnt">1</span></button>
-            <button class="chip" data-tur="harcama">Harcama <span class="ch-cnt">11</span></button>
+            <button class="chip" data-tur="harcama">Harcama <span class="ch-cnt">1</span></button>
           </div>
         </div>
         <div class="filter-row">
           <span class="frow-lbl">Şantiye</span>
           <div class="chips" id="plxSantiyeChips">
-            <button class="chip is-on" data-santiye="hepsi">Tümü <span class="ch-cnt">13</span></button>
-            <button class="chip" data-santiye="vadi">Vadi <span class="ch-cnt">5</span></button>
-            <button class="chip" data-santiye="liman">Liman <span class="ch-cnt">4</span></button>
-            <button class="chip" data-santiye="merkez">Merkez <span class="ch-cnt">3</span></button>
+            <button class="chip is-on" data-santiye="hepsi">Tümü <span class="ch-cnt">2</span></button>
+            <button class="chip" data-santiye="vadi">Vadi <span class="ch-cnt">2</span></button>
+            <button class="chip" data-santiye="liman">Liman <span class="ch-cnt">0</span></button>
+            <button class="chip" data-santiye="merkez">Merkez <span class="ch-cnt">0</span></button>
           </div>
         </div>
       </div>
       <div class="gc-body flush">
-        <table class="gtable" id="tblPluxee">
+        <table class="gtable" id="tblPluxee" data-paginate="25">
           <thead>
             <tr>
-              <th>Kayıt</th>
+              <th class="df-no">#</th>
+              <th class="df-date">Tarih</th>
               <th>Kart / Personel</th>
-              <th class="col-santiye">Şantiye</th>
-              <th class="col-tur">Tür</th>
               <th>Açıklama</th>
-              <th class="num col-tutar">Tutar</th>
-              <th class="col-durum">Durum</th>
+              <th class="num">Yükleme</th>
+              <th class="num">Harcama</th>
+              <th class="num">Bakiye</th>
             </tr>
           </thead>
-          <!-- statik bake — DEFAULT 13 kanonik hareket (HAREKET dizisi VERBATIM); JS devralır — D18-B2 -->
-          <tbody id="plxBody"><tr data-tur="harcama" data-santiye="vadi" data-id="plx-051" class="is-selected"><td><div class="rp-cell"><div class="rp-mark" style="background:rgba(var(--acc-rgb),.1);color:var(--acc-ink)"><i class="fa-solid fa-cart-shopping"></i></div><div class="rp-info"><b>PLX-2026-051</b><span>2 Temmuz 2026</span></div></div></td><td><div class="plx-kart-cell"><b>Veli Şimşek</b><span>•4526</span></div></td><td>Vadi Konakları</td><td><span class="gtag">Harcama</span></td><td>Sarf malzeme</td><td class="num t-strong">₺340</td><td><span class="gstat ok">Kayıtlı</span></td></tr><tr data-tur="harcama" data-santiye="merkez" data-id="plx-050"><td><div class="rp-cell"><div class="rp-mark" style="background:rgba(var(--acc-rgb),.1);color:var(--acc-ink)"><i class="fa-solid fa-cart-shopping"></i></div><div class="rp-info"><b>PLX-2026-050</b><span>2 Temmuz 2026</span></div></div></td><td><div class="plx-kart-cell"><b>İlyas Kurt</b><span>•6242</span></div></td><td>Merkez Şantiye</td><td><span class="gtag">Harcama</span></td><td>Ekmek/pastane alışverişi</td><td class="num t-strong">₺340</td><td><span class="gstat ok">Kayıtlı</span></td></tr><tr data-tur="harcama" data-santiye="liman" data-id="plx-049"><td><div class="rp-cell"><div class="rp-mark" style="background:rgba(var(--acc-rgb),.1);color:var(--acc-ink)"><i class="fa-solid fa-cart-shopping"></i></div><div class="rp-info"><b>PLX-2026-049</b><span>2 Temmuz 2026</span></div></div></td><td><div class="plx-kart-cell"><b>Osman Polat</b><span>•5904</span></div></td><td>Liman Lojistik Merkezi</td><td><span class="gtag">Harcama</span></td><td>Bakkal alışverişi</td><td class="num t-strong">₺350</td><td><span class="gstat ok">Kayıtlı</span></td></tr><tr data-tur="harcama" data-santiye="vadi" data-id="plx-048"><td><div class="rp-cell"><div class="rp-mark" style="background:rgba(var(--acc-rgb),.1);color:var(--acc-ink)"><i class="fa-solid fa-cart-shopping"></i></div><div class="rp-info"><b>PLX-2026-048</b><span>2 Temmuz 2026</span></div></div></td><td><div class="plx-kart-cell"><b>Selim Doğan</b><span>•4504</span></div></td><td>Vadi Konakları</td><td><span class="gtag">Harcama</span></td><td>Öğle yemeği</td><td class="num t-strong">₺360</td><td><span class="gstat ok">Kayıtlı</span></td></tr><tr data-tur="harcama" data-santiye="vadi" data-id="plx-047"><td><div class="rp-cell"><div class="rp-mark" style="background:rgba(var(--acc-rgb),.1);color:var(--acc-ink)"><i class="fa-solid fa-cart-shopping"></i></div><div class="rp-info"><b>PLX-2026-047</b><span>1 Temmuz 2026</span></div></div></td><td><div class="plx-kart-cell"><b>Ramazan Kılıç</b><span>•4493</span></div></td><td>Vadi Konakları</td><td><span class="gtag">Harcama</span></td><td>Sarf malzeme alışverişi</td><td class="num t-strong">₺370</td><td><span class="gstat ok">Kayıtlı</span></td></tr><tr data-tur="harcama" data-santiye="liman" data-id="plx-046"><td><div class="rp-cell"><div class="rp-mark" style="background:rgba(var(--acc-rgb),.1);color:var(--acc-ink)"><i class="fa-solid fa-cart-shopping"></i></div><div class="rp-info"><b>PLX-2026-046</b><span>1 Temmuz 2026</span></div></div></td><td><div class="plx-kart-cell"><b>Metin Çetin</b><span>•5893</span></div></td><td>Liman Lojistik Merkezi</td><td><span class="gtag">Harcama</span></td><td>Ekmek/pastane alışverişi</td><td class="num t-strong">₺380</td><td><span class="gstat ok">Kayıtlı</span></td></tr><tr data-tur="harcama" data-santiye="merkez" data-id="plx-045"><td><div class="rp-cell"><div class="rp-mark" style="background:rgba(var(--acc-rgb),.1);color:var(--acc-ink)"><i class="fa-solid fa-cart-shopping"></i></div><div class="rp-info"><b>PLX-2026-045</b><span>1 Temmuz 2026</span></div></div></td><td><div class="plx-kart-cell"><b>Recep Yaman</b><span>•6231</span></div></td><td>Merkez Şantiye</td><td><span class="gtag">Harcama</span></td><td>Akşam yemeği</td><td class="num t-strong">₺390</td><td><span class="gstat ok">Kayıtlı</span></td></tr><tr data-tur="harcama" data-santiye="vadi" data-id="plx-044"><td><div class="rp-cell"><div class="rp-mark" style="background:rgba(var(--acc-rgb),.1);color:var(--acc-ink)"><i class="fa-solid fa-cart-shopping"></i></div><div class="rp-info"><b>PLX-2026-044</b><span>1 Temmuz 2026</span></div></div></td><td><div class="plx-kart-cell"><b>İbrahim Sönmez</b><span>•4482</span></div></td><td>Vadi Konakları</td><td><span class="gtag">Harcama</span></td><td>Temizlik malzemesi</td><td class="num t-strong">₺400</td><td><span class="gstat ok">Kayıtlı</span></td></tr><tr data-tur="harcama" data-santiye="liman" data-id="plx-043"><td><div class="rp-cell"><div class="rp-mark" style="background:rgba(var(--acc-rgb),.1);color:var(--acc-ink)"><i class="fa-solid fa-cart-shopping"></i></div><div class="rp-info"><b>PLX-2026-043</b><span>1 Temmuz 2026</span></div></div></td><td><div class="plx-kart-cell"><b>Şükrü Aslan</b><span>•5871</span></div></td><td>Liman Lojistik Merkezi</td><td><span class="gtag">Harcama</span></td><td>Öğle yemeği</td><td class="num t-strong">₺410</td><td><span class="gstat ok">Kayıtlı</span></td></tr><tr data-tur="harcama" data-santiye="vadi" data-id="plx-042"><td><div class="rp-cell"><div class="rp-mark" style="background:rgba(var(--acc-rgb),.1);color:var(--acc-ink)"><i class="fa-solid fa-cart-shopping"></i></div><div class="rp-info"><b>PLX-2026-042</b><span>1 Temmuz 2026</span></div></div></td><td><div class="plx-kart-cell"><b>Ali Vural</b><span>•4471</span></div></td><td>Vadi Konakları</td><td><span class="gtag">Harcama</span></td><td>Haftalık market alışverişi</td><td class="num t-strong">₺420</td><td><span class="gstat ok">Kayıtlı</span></td></tr><tr data-tur="yukleme" data-santiye="" data-id="plx-041"><td><div class="rp-cell"><div class="rp-mark" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-arrow-up-from-bracket"></i></div><div class="rp-info"><b>PLX-2026-041</b><span>1 Temmuz 2026</span></div></div></td><td><div class="plx-kart-cell"><b>12 kart (toplu)</b></div></td><td><span class="muted">—</span></td><td><span class="gtag mint">Yükleme</span></td><td>Aylık toplu yükleme — 12 kart × ₺1.250 (Nesrin Aydın)</td><td class="num t-strong">₺15.000</td><td><span class="gstat ok">Kayıtlı</span></td></tr><tr data-tur="diger" data-santiye="merkez" data-id="plx-040"><td><div class="rp-cell"><div class="rp-mark" style="background:var(--bg);color:var(--muted)"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="rp-info"><b>PLX-2026-040</b><span>30 Haziran 2026</span></div></div></td><td><div class="plx-kart-cell"><b>Sadık Öz</b><span>•6253</span></div></td><td>Merkez Şantiye</td><td><span class="gtag">Bildirim</span></td><td>Kayıp bildirimi — kart pasifleştirildi</td><td class="num t-strong">₺—</td><td><span class="gstat off">Pasifleştirildi</span></td></tr><tr data-tur="harcama" data-santiye="liman" data-id="plx-039"><td><div class="rp-cell"><div class="rp-mark" style="background:rgba(var(--acc-rgb),.1);color:var(--acc-ink)"><i class="fa-solid fa-cart-shopping"></i></div><div class="rp-info"><b>PLX-2026-039</b><span>30 Haziran 2026</span></div></div></td><td><div class="plx-kart-cell"><b>Halil Güneş</b><span>•5882</span></div></td><td>Liman Lojistik Merkezi</td><td><span class="gtag">Harcama</span></td><td>Bakkal alışverişi</td><td class="num t-strong">₺210</td><td><span class="gstat ok">Kayıtlı</span></td></tr></tbody>
+          <!-- statik bake (D18-B2): JS load'da aynı mount'u KARTLAR kanonik verisinden yeniden basar.
+               Her kart: yükleme/harcama satır(lar)ı · df-total · df-mevcut (DEVİR SATIRI YOK —
+               S12/Q1 revizesi: her kartta devir ₺0'a kilitlenir, bakiye = ₺1.250 − Temmuz harcaması,
+               Beyar onaylı, bkz. shell.js D8 satır 185-200).
+               Toplam: yükleme ₺15.000 (12×₺1.250, PLX-2026-041) · harcama ₺3.760 (10 işlem) ·
+               mevcut ₺11.240 (12 aktif kart) — G1-G4 ile birebir. -->
+          <tbody id="plxBody">
+            <!-- 4471 Ali Vural — yükleme ₺1.250 · harcama ₺420 · mevcut ₺830 -->
+            <tr data-plx="4471" data-id="plx-041" data-tur="yukleme" data-santiye="vadi"><td class="df-no">1</td><td class="df-date">1 Tem</td><td class="df-firm">Ali Vural <span class="plx-no">•4471</span></td><td class="df-desc">Aylık toplu yükleme (12 kart × ₺1.250) — PLX-2026-041</td><td class="num df-in">₺1.250</td><td class="num"></td><td class="num df-bak">₺1.250</td></tr>
+            <tr data-plx="4471" data-id="plx-042" data-tur="harcama" data-santiye="vadi"><td class="df-no">2</td><td class="df-date">1 Tem</td><td class="df-firm">Ali Vural <span class="plx-no">•4471</span></td><td class="df-desc">Haftalık market alışverişi — PLX-2026-042</td><td class="num"></td><td class="num df-out">₺420</td><td class="num df-bak">₺830</td></tr>
+            <tr class="df-total" data-plx="4471"><td></td><td colspan="3">YÜKLEME – HARCAMA</td><td class="num df-in">₺1.250</td><td class="num df-out">₺420</td><td class="num df-bak">₺830</td></tr>
+            <tr class="df-mevcut" data-plx="4471"><td></td><td colspan="3">GÜNCEL BAKİYE</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺830</td></tr>
+
+            <!-- 4482 İbrahim Sönmez — yükleme ₺1.250 · harcama ₺400 · mevcut ₺850 -->
+            <tr data-plx="4482" data-id="plx-041" data-tur="yukleme" data-santiye="vadi" hidden><td class="df-no">1</td><td class="df-date">1 Tem</td><td class="df-firm">İbrahim Sönmez <span class="plx-no">•4482</span></td><td class="df-desc">Aylık toplu yükleme (12 kart × ₺1.250) — PLX-2026-041</td><td class="num df-in">₺1.250</td><td class="num"></td><td class="num df-bak">₺1.250</td></tr>
+            <tr data-plx="4482" data-id="plx-044" data-tur="harcama" data-santiye="vadi" hidden><td class="df-no">2</td><td class="df-date">1 Tem</td><td class="df-firm">İbrahim Sönmez <span class="plx-no">•4482</span></td><td class="df-desc">Temizlik malzemesi — PLX-2026-044</td><td class="num"></td><td class="num df-out">₺400</td><td class="num df-bak">₺850</td></tr>
+            <tr class="df-total" data-plx="4482" hidden><td></td><td colspan="3">YÜKLEME – HARCAMA</td><td class="num df-in">₺1.250</td><td class="num df-out">₺400</td><td class="num df-bak">₺850</td></tr>
+            <tr class="df-mevcut" data-plx="4482" hidden><td></td><td colspan="3">GÜNCEL BAKİYE</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺850</td></tr>
+
+            <!-- 4493 Ramazan Kılıç — yükleme ₺1.250 · harcama ₺370 · mevcut ₺880 -->
+            <tr data-plx="4493" data-id="plx-041" data-tur="yukleme" data-santiye="vadi" hidden><td class="df-no">1</td><td class="df-date">1 Tem</td><td class="df-firm">Ramazan Kılıç <span class="plx-no">•4493</span></td><td class="df-desc">Aylık toplu yükleme (12 kart × ₺1.250) — PLX-2026-041</td><td class="num df-in">₺1.250</td><td class="num"></td><td class="num df-bak">₺1.250</td></tr>
+            <tr data-plx="4493" data-id="plx-047" data-tur="harcama" data-santiye="vadi" hidden><td class="df-no">2</td><td class="df-date">1 Tem</td><td class="df-firm">Ramazan Kılıç <span class="plx-no">•4493</span></td><td class="df-desc">Sarf malzeme alışverişi — PLX-2026-047</td><td class="num"></td><td class="num df-out">₺370</td><td class="num df-bak">₺880</td></tr>
+            <tr class="df-total" data-plx="4493" hidden><td></td><td colspan="3">YÜKLEME – HARCAMA</td><td class="num df-in">₺1.250</td><td class="num df-out">₺370</td><td class="num df-bak">₺880</td></tr>
+            <tr class="df-mevcut" data-plx="4493" hidden><td></td><td colspan="3">GÜNCEL BAKİYE</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺880</td></tr>
+
+            <!-- 4504 Selim Doğan — yükleme ₺1.250 · harcama ₺360 · mevcut ₺890 -->
+            <tr data-plx="4504" data-id="plx-041" data-tur="yukleme" data-santiye="vadi" hidden><td class="df-no">1</td><td class="df-date">1 Tem</td><td class="df-firm">Selim Doğan <span class="plx-no">•4504</span></td><td class="df-desc">Aylık toplu yükleme (12 kart × ₺1.250) — PLX-2026-041</td><td class="num df-in">₺1.250</td><td class="num"></td><td class="num df-bak">₺1.250</td></tr>
+            <tr data-plx="4504" data-id="plx-048" data-tur="harcama" data-santiye="vadi" hidden><td class="df-no">2</td><td class="df-date">2 Tem</td><td class="df-firm">Selim Doğan <span class="plx-no">•4504</span></td><td class="df-desc">Öğle yemeği — PLX-2026-048</td><td class="num"></td><td class="num df-out">₺360</td><td class="num df-bak">₺890</td></tr>
+            <tr class="df-total" data-plx="4504" hidden><td></td><td colspan="3">YÜKLEME – HARCAMA</td><td class="num df-in">₺1.250</td><td class="num df-out">₺360</td><td class="num df-bak">₺890</td></tr>
+            <tr class="df-mevcut" data-plx="4504" hidden><td></td><td colspan="3">GÜNCEL BAKİYE</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺890</td></tr>
+
+            <!-- 4515 Musa Erdem — yükleme ₺1.250 · harcama yok · mevcut ₺1.250 -->
+            <tr data-plx="4515" data-id="plx-041" data-tur="yukleme" data-santiye="vadi" hidden><td class="df-no">1</td><td class="df-date">1 Tem</td><td class="df-firm">Musa Erdem <span class="plx-no">•4515</span></td><td class="df-desc">Aylık toplu yükleme (12 kart × ₺1.250) — PLX-2026-041</td><td class="num df-in">₺1.250</td><td class="num"></td><td class="num df-bak">₺1.250</td></tr>
+            <tr class="df-total" data-plx="4515" hidden><td></td><td colspan="3">YÜKLEME – HARCAMA</td><td class="num df-in">₺1.250</td><td class="num df-out">₺0</td><td class="num df-bak">₺1.250</td></tr>
+            <tr class="df-mevcut" data-plx="4515" hidden><td></td><td colspan="3">GÜNCEL BAKİYE</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺1.250</td></tr>
+
+            <!-- 4526 Veli Şimşek — yükleme ₺1.250 · harcama ₺340 · mevcut ₺910 -->
+            <tr data-plx="4526" data-id="plx-041" data-tur="yukleme" data-santiye="vadi" hidden><td class="df-no">1</td><td class="df-date">1 Tem</td><td class="df-firm">Veli Şimşek <span class="plx-no">•4526</span></td><td class="df-desc">Aylık toplu yükleme (12 kart × ₺1.250) — PLX-2026-041</td><td class="num df-in">₺1.250</td><td class="num"></td><td class="num df-bak">₺1.250</td></tr>
+            <tr data-plx="4526" data-id="plx-051" data-tur="harcama" data-santiye="vadi" hidden><td class="df-no">2</td><td class="df-date">2 Tem</td><td class="df-firm">Veli Şimşek <span class="plx-no">•4526</span></td><td class="df-desc">Sarf malzeme — PLX-2026-051</td><td class="num"></td><td class="num df-out">₺340</td><td class="num df-bak">₺910</td></tr>
+            <tr class="df-total" data-plx="4526" hidden><td></td><td colspan="3">YÜKLEME – HARCAMA</td><td class="num df-in">₺1.250</td><td class="num df-out">₺340</td><td class="num df-bak">₺910</td></tr>
+            <tr class="df-mevcut" data-plx="4526" hidden><td></td><td colspan="3">GÜNCEL BAKİYE</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺910</td></tr>
+
+            <!-- 5871 Şükrü Aslan — yükleme ₺1.250 · harcama ₺410 · mevcut ₺840 -->
+            <tr data-plx="5871" data-id="plx-041" data-tur="yukleme" data-santiye="liman" hidden><td class="df-no">1</td><td class="df-date">1 Tem</td><td class="df-firm">Şükrü Aslan <span class="plx-no">•5871</span></td><td class="df-desc">Aylık toplu yükleme (12 kart × ₺1.250) — PLX-2026-041</td><td class="num df-in">₺1.250</td><td class="num"></td><td class="num df-bak">₺1.250</td></tr>
+            <tr data-plx="5871" data-id="plx-043" data-tur="harcama" data-santiye="liman" hidden><td class="df-no">2</td><td class="df-date">1 Tem</td><td class="df-firm">Şükrü Aslan <span class="plx-no">•5871</span></td><td class="df-desc">Öğle yemeği — PLX-2026-043</td><td class="num"></td><td class="num df-out">₺410</td><td class="num df-bak">₺840</td></tr>
+            <tr class="df-total" data-plx="5871" hidden><td></td><td colspan="3">YÜKLEME – HARCAMA</td><td class="num df-in">₺1.250</td><td class="num df-out">₺410</td><td class="num df-bak">₺840</td></tr>
+            <tr class="df-mevcut" data-plx="5871" hidden><td></td><td colspan="3">GÜNCEL BAKİYE</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺840</td></tr>
+
+            <!-- 5882 Halil Güneş — yükleme ₺1.250 · harcama yok bu dönem (30 Haz ₺210 PLX-2026-039 pencere dışı) · mevcut ₺1.250 -->
+            <tr data-plx="5882" data-id="plx-041" data-tur="yukleme" data-santiye="liman" hidden><td class="df-no">1</td><td class="df-date">1 Tem</td><td class="df-firm">Halil Güneş <span class="plx-no">•5882</span></td><td class="df-desc">Aylık toplu yükleme (12 kart × ₺1.250) — PLX-2026-041</td><td class="num df-in">₺1.250</td><td class="num"></td><td class="num df-bak">₺1.250</td></tr>
+            <tr class="df-total" data-plx="5882" hidden><td></td><td colspan="3">YÜKLEME – HARCAMA</td><td class="num df-in">₺1.250</td><td class="num df-out">₺0</td><td class="num df-bak">₺1.250</td></tr>
+            <tr class="df-mevcut" data-plx="5882" hidden><td></td><td colspan="3">GÜNCEL BAKİYE</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺1.250</td></tr>
+
+            <!-- 5893 Metin Çetin — yükleme ₺1.250 · harcama ₺380 · mevcut ₺870 -->
+            <tr data-plx="5893" data-id="plx-041" data-tur="yukleme" data-santiye="liman" hidden><td class="df-no">1</td><td class="df-date">1 Tem</td><td class="df-firm">Metin Çetin <span class="plx-no">•5893</span></td><td class="df-desc">Aylık toplu yükleme (12 kart × ₺1.250) — PLX-2026-041</td><td class="num df-in">₺1.250</td><td class="num"></td><td class="num df-bak">₺1.250</td></tr>
+            <tr data-plx="5893" data-id="plx-046" data-tur="harcama" data-santiye="liman" hidden><td class="df-no">2</td><td class="df-date">1 Tem</td><td class="df-firm">Metin Çetin <span class="plx-no">•5893</span></td><td class="df-desc">Ekmek/pastane alışverişi — PLX-2026-046</td><td class="num"></td><td class="num df-out">₺380</td><td class="num df-bak">₺870</td></tr>
+            <tr class="df-total" data-plx="5893" hidden><td></td><td colspan="3">YÜKLEME – HARCAMA</td><td class="num df-in">₺1.250</td><td class="num df-out">₺380</td><td class="num df-bak">₺870</td></tr>
+            <tr class="df-mevcut" data-plx="5893" hidden><td></td><td colspan="3">GÜNCEL BAKİYE</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺870</td></tr>
+
+            <!-- 5904 Osman Polat — yükleme ₺1.250 · harcama ₺350 · mevcut ₺900 -->
+            <tr data-plx="5904" data-id="plx-041" data-tur="yukleme" data-santiye="liman" hidden><td class="df-no">1</td><td class="df-date">1 Tem</td><td class="df-firm">Osman Polat <span class="plx-no">•5904</span></td><td class="df-desc">Aylık toplu yükleme (12 kart × ₺1.250) — PLX-2026-041</td><td class="num df-in">₺1.250</td><td class="num"></td><td class="num df-bak">₺1.250</td></tr>
+            <tr data-plx="5904" data-id="plx-049" data-tur="harcama" data-santiye="liman" hidden><td class="df-no">2</td><td class="df-date">2 Tem</td><td class="df-firm">Osman Polat <span class="plx-no">•5904</span></td><td class="df-desc">Bakkal alışverişi — PLX-2026-049</td><td class="num"></td><td class="num df-out">₺350</td><td class="num df-bak">₺900</td></tr>
+            <tr class="df-total" data-plx="5904" hidden><td></td><td colspan="3">YÜKLEME – HARCAMA</td><td class="num df-in">₺1.250</td><td class="num df-out">₺350</td><td class="num df-bak">₺900</td></tr>
+            <tr class="df-mevcut" data-plx="5904" hidden><td></td><td colspan="3">GÜNCEL BAKİYE</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺900</td></tr>
+
+            <!-- 6231 Recep Yaman — yükleme ₺1.250 · harcama ₺390 · mevcut ₺860 -->
+            <tr data-plx="6231" data-id="plx-041" data-tur="yukleme" data-santiye="merkez" hidden><td class="df-no">1</td><td class="df-date">1 Tem</td><td class="df-firm">Recep Yaman <span class="plx-no">•6231</span></td><td class="df-desc">Aylık toplu yükleme (12 kart × ₺1.250) — PLX-2026-041</td><td class="num df-in">₺1.250</td><td class="num"></td><td class="num df-bak">₺1.250</td></tr>
+            <tr data-plx="6231" data-id="plx-045" data-tur="harcama" data-santiye="merkez" hidden><td class="df-no">2</td><td class="df-date">1 Tem</td><td class="df-firm">Recep Yaman <span class="plx-no">•6231</span></td><td class="df-desc">Akşam yemeği — PLX-2026-045</td><td class="num"></td><td class="num df-out">₺390</td><td class="num df-bak">₺860</td></tr>
+            <tr class="df-total" data-plx="6231" hidden><td></td><td colspan="3">YÜKLEME – HARCAMA</td><td class="num df-in">₺1.250</td><td class="num df-out">₺390</td><td class="num df-bak">₺860</td></tr>
+            <tr class="df-mevcut" data-plx="6231" hidden><td></td><td colspan="3">GÜNCEL BAKİYE</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺860</td></tr>
+
+            <!-- 6242 İlyas Kurt — yükleme ₺1.250 · harcama ₺340 · mevcut ₺910 -->
+            <tr data-plx="6242" data-id="plx-041" data-tur="yukleme" data-santiye="merkez" hidden><td class="df-no">1</td><td class="df-date">1 Tem</td><td class="df-firm">İlyas Kurt <span class="plx-no">•6242</span></td><td class="df-desc">Aylık toplu yükleme (12 kart × ₺1.250) — PLX-2026-041</td><td class="num df-in">₺1.250</td><td class="num"></td><td class="num df-bak">₺1.250</td></tr>
+            <tr data-plx="6242" data-id="plx-050" data-tur="harcama" data-santiye="merkez" hidden><td class="df-no">2</td><td class="df-date">2 Tem</td><td class="df-firm">İlyas Kurt <span class="plx-no">•6242</span></td><td class="df-desc">Ekmek/pastane alışverişi — PLX-2026-050</td><td class="num"></td><td class="num df-out">₺340</td><td class="num df-bak">₺910</td></tr>
+            <tr class="df-total" data-plx="6242" hidden><td></td><td colspan="3">YÜKLEME – HARCAMA</td><td class="num df-in">₺1.250</td><td class="num df-out">₺340</td><td class="num df-bak">₺910</td></tr>
+            <tr class="df-mevcut" data-plx="6242" hidden><td></td><td colspan="3">GÜNCEL BAKİYE</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺910</td></tr>
+          </tbody>
         </table>
+        <!-- statik bake (D18-B2): JS load'da aynı mount'u kanonik veriden yeniden basar (yalnız
+             seçili kart 4471 görünür durumda basılır; diğerleri buildDefterCards() ile üretilir) -->
+        <div class="df-mobile-list" id="tblPluxeeMobile"><div class="df-mrow" data-plx="4471" data-idx="0"><div class="df-mrow-top"><span class="df-mrow-no">#1</span><span class="df-mrow-date">1 Tem</span><span class="df-mrow-bak num">₺1.250</span></div><div class="df-mrow-firm">Ali Vural •4471</div><div class="df-mrow-desc">Aylık toplu yükleme (12 kart × ₺1.250) — PLX-2026-041</div><div class="df-mrow-amt"><span>Yükleme</span><b class="df-in">₺1.250</b></div></div><div class="df-mrow" data-plx="4471" data-idx="1"><div class="df-mrow-top"><span class="df-mrow-no">#2</span><span class="df-mrow-date">1 Tem</span><span class="df-mrow-bak num">₺830</span></div><div class="df-mrow-firm">Ali Vural •4471</div><div class="df-mrow-desc">Haftalık market alışverişi — PLX-2026-042</div><div class="df-mrow-amt"><span>Harcama</span><b class="df-out">₺420</b></div></div><div class="df-mrow total" data-plx="4471" data-idx="2"><div class="df-mrow-title">YÜKLEME – HARCAMA</div><div class="df-mrow-line"><span>Yükleme</span><b class="df-in">₺1.250</b></div><div class="df-mrow-line"><span>Harcama</span><b class="df-out">₺420</b></div><div class="df-mrow-line df-mrow-bal"><span>Bakiye</span><b>₺830</b></div></div><div class="df-mrow mevcut" data-plx="4471" data-idx="3"><div class="df-mrow-title">GÜNCEL BAKİYE</div><div class="df-mrow-line df-mrow-bal"><span>Bakiye</span><b>₺830</b></div></div></div>
         <div class="gv-empty" id="plxEmpty" hidden>
           <div class="ge-ico"><i class="fa-solid fa-credit-card"></i></div>
           <h4>Eşleşen hareket yok</h4>
@@ -188,14 +313,14 @@
       <div class="gc-foot"><span id="plxFoot">—</span></div>
     </div>
 
-    <!-- statik bake — DEFAULT seçili kayıt plx-051 (initDetailFromUrl ?islem= yoksa
-         en güncel kayda düşer, PLX-2026-051 VERBATIM); JS devralır — D18-B2 -->
+    <!-- statik bake — DEFAULT seçili karta ait en güncel hareket plx-042 (initDetailFromUrl
+         ?islem= yoksa seçili kartın son işlemine düşer, PLX-2026-042 VERBATIM); JS devralır — D18-B2 -->
     <div class="gv-card" id="plxDetailCard">
       <div class="gc-head">
-        <div class="gc-title"><i class="fa-solid fa-receipt"></i> Hareket Detayı — <span id="plxDetailNo">PLX-2026-051</span></div>
+        <div class="gc-title"><i class="fa-solid fa-receipt"></i> Hareket Detayı — <span id="plxDetailNo">PLX-2026-042</span></div>
         <div class="gc-head-r"><span id="plxDetailBadge"><span class="gstat ok">Kayıtlı</span></span></div>
       </div>
-      <div class="gc-body" id="plxDetailBody"><div class="gv-detail-grid"><div class="gdg-item"><span class="gdg-lbl">Tarih</span><span class="gdg-val">2 Temmuz 2026</span></div><div class="gdg-item"><span class="gdg-lbl">Kart / Personel</span><span class="gdg-val">Veli Şimşek •4526</span></div><div class="gdg-item"><span class="gdg-lbl">Şantiye</span><span class="gdg-val">Vadi Konakları</span></div><div class="gdg-item"><span class="gdg-lbl">Tür</span><span class="gdg-val"><span class="gtag">Harcama</span></span></div><div class="gdg-item span2"><span class="gdg-lbl">Açıklama</span><span class="gdg-val">Sarf malzeme</span></div><div class="gdg-item"><span class="gdg-lbl">Tutar</span><span class="gdg-val">₺340</span></div></div></div>
+      <div class="gc-body" id="plxDetailBody"><div class="gv-detail-grid"><div class="gdg-item"><span class="gdg-lbl">Tarih</span><span class="gdg-val">1 Temmuz 2026</span></div><div class="gdg-item"><span class="gdg-lbl">Kart / Personel</span><span class="gdg-val">Ali Vural •4471</span></div><div class="gdg-item"><span class="gdg-lbl">Şantiye</span><span class="gdg-val">Vadi Konakları</span></div><div class="gdg-item"><span class="gdg-lbl">Tür</span><span class="gdg-val"><span class="gtag">Harcama</span></span></div><div class="gdg-item span2"><span class="gdg-lbl">Açıklama</span><span class="gdg-val">Haftalık market alışverişi</span></div><div class="gdg-item"><span class="gdg-lbl">Tutar</span><span class="gdg-val">₺420</span></div></div></div>
     </div>
   </main>
 </div>
@@ -206,56 +331,86 @@
 (function(){
   if(!window.GV) return;
 
-  /* ---- mock veri — shell.js DALGA 8 kanonik bloğu BİREBİR (Pluxee Kart) ----
-     Kart bakiyeleri ₺580–₺1.180 arası, 12 aktif kart toplamı ₺11.240 (KPI ile birebir).
-     Hareket tablosu: 041 toplu yükleme (kanonik) + 10 Temmuz harcaması (toplam ₺3.760,
-     KPI ile birebir) + 1 Haziran-sonu harcaması (KPI dışı) + 1 kayıp bildirimi. */
+  /* ---- mock veri — shell.js DALGA 8 kanonik bloğu + D19/S12 kasa-format kart defteri ----
+     Her kartın devir'i (dönem başı) + tx dizisi (yükleme/harcama, tarih sırasıyla) tutulur;
+     yürüyen bakiye ₺0'lık devir'den başlayarak her satırda hesaplanır — KART BAZLI (D19/S12).
+     S12/Q1 revizesi (Beyar onaylı): Σdevir kordon G1-G3 tarafından matematiksel olarak 0'a
+     kilitlendiği için (11.240 − 15.000 + 3.760 = 0) devir satırı TÜMÜYLE KALKTI; her kartın
+     bakiyesi ₺1.250 − o kartın Temmuz harcamasına eşitlendi (shell.js D8 satır 185-200,
+     kanonik kaynak). Temmuz harcaması olmayan kartlar (Musa Erdem, Halil Güneş) tam ₺1.250'de
+     kalır. 12 aktif kart toplamı: mevcut ₺11.240 (G1) · yükleme ₺15.000/12×₺1.250/PLX-2026-041
+     (G2) · harcama ₺3.760/10 işlem (G3). */
   var SANTIYE_ADI = {vadi:'Vadi Konakları', liman:'Liman Lojistik Merkezi', merkez:'Merkez Şantiye'};
+  var YUKLEME_DESC = 'Aylık toplu yükleme (12 kart × ₺1.250)';
   var KARTLAR = [
-    {no:'4471', ad:'Ali Vural',       santiye:'vadi',   bakiye:980,  son:'1 Tem 2026'},
-    {no:'4482', ad:'İbrahim Sönmez',  santiye:'vadi',   bakiye:1050, son:'1 Tem 2026'},
-    {no:'4493', ad:'Ramazan Kılıç',   santiye:'vadi',   bakiye:860,  son:'1 Tem 2026'},
-    {no:'4504', ad:'Selim Doğan',     santiye:'vadi',   bakiye:1180, son:'2 Tem 2026'},
-    {no:'4515', ad:'Musa Erdem',      santiye:'vadi',   bakiye:720,  son:'1 Tem 2026'},
-    {no:'4526', ad:'Veli Şimşek',     santiye:'vadi',   bakiye:990,  son:'2 Tem 2026'},
-    {no:'5871', ad:'Şükrü Aslan',     santiye:'liman',  bakiye:1100, son:'1 Tem 2026'},
-    {no:'5882', ad:'Halil Güneş',     santiye:'liman',  bakiye:640,  son:'30 Haz 2026'},
-    {no:'5893', ad:'Metin Çetin',     santiye:'liman',  bakiye:950,  son:'1 Tem 2026'},
-    {no:'5904', ad:'Osman Polat',     santiye:'liman',  bakiye:820,  son:'2 Tem 2026'},
-    {no:'6231', ad:'Recep Yaman',     santiye:'merkez', bakiye:1140, son:'1 Tem 2026'},
-    {no:'6242', ad:'İlyas Kurt',      santiye:'merkez', bakiye:810,  son:'2 Tem 2026'}
+    {no:'4471', ad:'Ali Vural',      santiye:'vadi',   bakiye:830,  son:'1 Tem 2026', tx:[
+      {id:'041', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'yukleme', no:'PLX-2026-041', desc:YUKLEME_DESC, tutar:1250},
+      {id:'042', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'harcama', no:'PLX-2026-042', desc:'Haftalık market alışverişi', tutar:420}
+    ]},
+    {no:'4482', ad:'İbrahim Sönmez', santiye:'vadi',   bakiye:850,  son:'1 Tem 2026', tx:[
+      {id:'041', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'yukleme', no:'PLX-2026-041', desc:YUKLEME_DESC, tutar:1250},
+      {id:'044', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'harcama', no:'PLX-2026-044', desc:'Temizlik malzemesi', tutar:400}
+    ]},
+    {no:'4493', ad:'Ramazan Kılıç',  santiye:'vadi',   bakiye:880,  son:'1 Tem 2026', tx:[
+      {id:'041', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'yukleme', no:'PLX-2026-041', desc:YUKLEME_DESC, tutar:1250},
+      {id:'047', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'harcama', no:'PLX-2026-047', desc:'Sarf malzeme alışverişi', tutar:370}
+    ]},
+    {no:'4504', ad:'Selim Doğan',    santiye:'vadi',   bakiye:890,  son:'2 Tem 2026', tx:[
+      {id:'041', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'yukleme', no:'PLX-2026-041', desc:YUKLEME_DESC, tutar:1250},
+      {id:'048', tarih:'2 Tem', tarihUzun:'2 Temmuz 2026', tur:'harcama', no:'PLX-2026-048', desc:'Öğle yemeği', tutar:360}
+    ]},
+    {no:'4515', ad:'Musa Erdem',     santiye:'vadi',   bakiye:1250, son:'1 Tem 2026', tx:[
+      {id:'041', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'yukleme', no:'PLX-2026-041', desc:YUKLEME_DESC, tutar:1250}
+    ]},
+    {no:'4526', ad:'Veli Şimşek',    santiye:'vadi',   bakiye:910,  son:'2 Tem 2026', tx:[
+      {id:'041', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'yukleme', no:'PLX-2026-041', desc:YUKLEME_DESC, tutar:1250},
+      {id:'051', tarih:'2 Tem', tarihUzun:'2 Temmuz 2026', tur:'harcama', no:'PLX-2026-051', desc:'Sarf malzeme', tutar:340}
+    ]},
+    {no:'5871', ad:'Şükrü Aslan',    santiye:'liman',  bakiye:840,  son:'1 Tem 2026', tx:[
+      {id:'041', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'yukleme', no:'PLX-2026-041', desc:YUKLEME_DESC, tutar:1250},
+      {id:'043', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'harcama', no:'PLX-2026-043', desc:'Öğle yemeği', tutar:410}
+    ]},
+    {no:'5882', ad:'Halil Güneş',    santiye:'liman',  bakiye:1250, son:'30 Haz 2026', tx:[
+      {id:'041', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'yukleme', no:'PLX-2026-041', desc:YUKLEME_DESC, tutar:1250}
+    ]},
+    {no:'5893', ad:'Metin Çetin',    santiye:'liman',  bakiye:870,  son:'1 Tem 2026', tx:[
+      {id:'041', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'yukleme', no:'PLX-2026-041', desc:YUKLEME_DESC, tutar:1250},
+      {id:'046', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'harcama', no:'PLX-2026-046', desc:'Ekmek/pastane alışverişi', tutar:380}
+    ]},
+    {no:'5904', ad:'Osman Polat',    santiye:'liman',  bakiye:900,  son:'2 Tem 2026', tx:[
+      {id:'041', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'yukleme', no:'PLX-2026-041', desc:YUKLEME_DESC, tutar:1250},
+      {id:'049', tarih:'2 Tem', tarihUzun:'2 Temmuz 2026', tur:'harcama', no:'PLX-2026-049', desc:'Bakkal alışverişi', tutar:350}
+    ]},
+    {no:'6231', ad:'Recep Yaman',    santiye:'merkez', bakiye:860,  son:'1 Tem 2026', tx:[
+      {id:'041', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'yukleme', no:'PLX-2026-041', desc:YUKLEME_DESC, tutar:1250},
+      {id:'045', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'harcama', no:'PLX-2026-045', desc:'Akşam yemeği', tutar:390}
+    ]},
+    {no:'6242', ad:'İlyas Kurt',     santiye:'merkez', bakiye:910,  son:'2 Tem 2026', tx:[
+      {id:'041', tarih:'1 Tem', tarihUzun:'1 Temmuz 2026', tur:'yukleme', no:'PLX-2026-041', desc:YUKLEME_DESC, tutar:1250},
+      {id:'050', tarih:'2 Tem', tarihUzun:'2 Temmuz 2026', tur:'harcama', no:'PLX-2026-050', desc:'Ekmek/pastane alışverişi', tutar:340}
+    ]}
   ];
   var PASIF = {no:'6253', ad:'Sadık Öz', santiye:'merkez', son:'30 Haz 2026'};
+  var KARTLAR_BY_NO = {};
+  KARTLAR.forEach(function(k){ KARTLAR_BY_NO[k.no] = k; });
 
-  var HAREKET = [
-    {no:'PLX-2026-051', tarih:'2 Temmuz 2026',   kart:'Veli Şimşek',    kartno:'4526', santiye:'vadi',   tur:'harcama', tag:'Market', desc:'Sarf malzeme',                 tutar:340,   durum:'ok',  durumLbl:'Kayıtlı'},
-    {no:'PLX-2026-050', tarih:'2 Temmuz 2026',   kart:'İlyas Kurt',     kartno:'6242', santiye:'merkez', tur:'harcama', tag:'Fırın',  desc:'Ekmek/pastane alışverişi',     tutar:340,   durum:'ok',  durumLbl:'Kayıtlı'},
-    {no:'PLX-2026-049', tarih:'2 Temmuz 2026',   kart:'Osman Polat',    kartno:'5904', santiye:'liman',  tur:'harcama', tag:'Market', desc:'Bakkal alışverişi',            tutar:350,   durum:'ok',  durumLbl:'Kayıtlı'},
-    {no:'PLX-2026-048', tarih:'2 Temmuz 2026',   kart:'Selim Doğan',    kartno:'4504', santiye:'vadi',   tur:'harcama', tag:'Yemek',  desc:'Öğle yemeği',                  tutar:360,   durum:'ok',  durumLbl:'Kayıtlı'},
-    {no:'PLX-2026-047', tarih:'1 Temmuz 2026',   kart:'Ramazan Kılıç',  kartno:'4493', santiye:'vadi',   tur:'harcama', tag:'Market', desc:'Sarf malzeme alışverişi',      tutar:370,   durum:'ok',  durumLbl:'Kayıtlı'},
-    {no:'PLX-2026-046', tarih:'1 Temmuz 2026',   kart:'Metin Çetin',    kartno:'5893', santiye:'liman',  tur:'harcama', tag:'Fırın',  desc:'Ekmek/pastane alışverişi',     tutar:380,   durum:'ok',  durumLbl:'Kayıtlı'},
-    {no:'PLX-2026-045', tarih:'1 Temmuz 2026',   kart:'Recep Yaman',    kartno:'6231', santiye:'merkez', tur:'harcama', tag:'Yemek',  desc:'Akşam yemeği',                 tutar:390,   durum:'ok',  durumLbl:'Kayıtlı'},
-    {no:'PLX-2026-044', tarih:'1 Temmuz 2026',   kart:'İbrahim Sönmez', kartno:'4482', santiye:'vadi',   tur:'harcama', tag:'Market', desc:'Temizlik malzemesi',           tutar:400,   durum:'ok',  durumLbl:'Kayıtlı'},
-    {no:'PLX-2026-043', tarih:'1 Temmuz 2026',   kart:'Şükrü Aslan',    kartno:'5871', santiye:'liman',  tur:'harcama', tag:'Yemek',  desc:'Öğle yemeği',                  tutar:410,   durum:'ok',  durumLbl:'Kayıtlı'},
-    {no:'PLX-2026-042', tarih:'1 Temmuz 2026',   kart:'Ali Vural',      kartno:'4471', santiye:'vadi',   tur:'harcama', tag:'Market', desc:'Haftalık market alışverişi',   tutar:420,   durum:'ok',  durumLbl:'Kayıtlı'},
-    {no:'PLX-2026-041', tarih:'1 Temmuz 2026',   kart:'12 kart (toplu)',kartno:null,  santiye:'',       tur:'yukleme', tag:'Yükleme', desc:'Aylık toplu yükleme — 12 kart × ₺1.250 (Nesrin Aydın)', tutar:15000, durum:'ok', durumLbl:'Kayıtlı'},
-    {no:'PLX-2026-040', tarih:'30 Haziran 2026', kart:'Sadık Öz',       kartno:'6253', santiye:'merkez', tur:'diger',   tag:'Bildirim', desc:'Kayıp bildirimi — kart pasifleştirildi', tutar:null, durum:'off', durumLbl:'Pasifleştirildi'},
-    {no:'PLX-2026-039', tarih:'30 Haziran 2026', kart:'Halil Güneş',    kartno:'5882', santiye:'liman',  tur:'harcama', tag:'Market', desc:'Bakkal alışverişi',            tutar:210,   durum:'ok',  durumLbl:'Kayıtlı'}
-  ];
+  function fmtTL(n){
+    if(n == null) return '₺—';
+    return (n < 0 ? '−' : '') + '₺' + Math.abs(n).toLocaleString('tr-TR');
+  }
+  function cardName(k){ return k.ad + ' •' + k.no; }
 
-  function fmtTL(n){ return n == null ? '₺—' : '₺' + n.toLocaleString('tr-TR'); }
-
-  /* ---- kart ızgarası render ---- */
+  /* ---- kart ızgarası render — D19/S12: kasa .ks-card gibi SEÇİCİ ---- */
   var grid = document.getElementById('plxGrid');
   var gh = '';
   KARTLAR.forEach(function(k){
-    gh += '<div class="plx-card">'
+    gh += '<button type="button" class="plx-card" data-plx="'+k.no+'">'
         +   '<div class="plx-top"><div class="plx-who"><div class="plx-name">'+k.ad+'</div><span class="plx-no">•'+k.no+'</span></div>'
         +   '<div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div>'
         +   '<div class="plx-santiye">'+SANTIYE_ADI[k.santiye]+'</div>'
         +   '<div class="plx-bakiye">'+fmtTL(k.bakiye)+'</div><div class="plx-bakiye-lbl">güncel bakiye</div>'
         +   '<div class="plx-foot">Son işlem: '+k.son+'</div>'
-        + '</div>';
+        + '</button>';
   });
   gh += '<div class="plx-card is-off">'
       +   '<div class="plx-top"><div class="plx-who"><div class="plx-name">'+PASIF.ad+'</div><span class="plx-no">•'+PASIF.no+'</span></div>'
@@ -266,33 +421,102 @@
       + '</div>';
   grid.innerHTML = gh;
 
-  /* ---- hareket tablosu render ---- */
-  var TUR_META = {
-    yukleme: {ic:'fa-arrow-up-from-bracket', bg:'var(--ok-tint)',   fg:'var(--ok)',   tag:'<span class="gtag mint">Yükleme</span>'},
-    harcama: {ic:'fa-cart-shopping',         bg:'rgba(var(--acc-rgb),.1)', fg:'var(--acc-ink)', tag:'<span class="gtag">Harcama</span>'},
-    diger:   {ic:'fa-triangle-exclamation',  bg:'var(--bg)',        fg:'var(--muted)', tag:'<span class="gtag">Bildirim</span>'}
-  };
-  var body = document.getElementById('plxBody');
-  var html = '';
-  /* [D18-B1] her hareket 'plx-051' biçiminde bir id'ye eşlenir (no'dan türetilir) —
-     satır tıklama + ?islem= deep-link + detay paneli bu id'yi paylaşır */
-  var HAREKET_BY_ID = {};
-  HAREKET.forEach(function(h){
-    var T = TUR_META[h.tur];
-    var rid = 'plx-' + h.no.replace('PLX-2026-', '');
-    html += '<tr data-tur="'+h.tur+'" data-santiye="'+h.santiye+'" data-id="'+rid+'">';
-    html += '<td><div class="rp-cell"><div class="rp-mark" style="background:'+T.bg+';color:'+T.fg+'"><i class="fa-solid '+T.ic+'"></i></div>'
-          + '<div class="rp-info"><b>'+h.no+'</b><span>'+h.tarih+'</span></div></div></td>';
-    html += '<td><div class="plx-kart-cell"><b>'+h.kart+'</b>'+(h.kartno ? '<span>•'+h.kartno+'</span>' : '')+'</div></td>';
-    html += '<td>'+(h.santiye ? SANTIYE_ADI[h.santiye] : '<span class="muted">—</span>')+'</td>';
-    html += '<td>'+T.tag+'</td>';
-    html += '<td>'+h.desc+'</td>';
-    html += '<td class="num t-strong">'+fmtTL(h.tutar)+'</td>';
-    html += '<td><span class="gstat '+h.durum+'">'+h.durumLbl+'</span></td>';
-    html += '</tr>';
-    HAREKET_BY_ID[rid] = h;
-  });
-  body.innerHTML = html;
+  /* ---- Kart Defteri render — kasa #tblDefter kolon düzeni: yükleme/harcama satırları +
+     toplam + güncel bakiye, kart bazında bloklar (D19/S12). DEVİR SATIRI YOK — S12/Q1
+     revizesi: her kartta devir ₺0'a kilitli, yürüyen bakiye ₺0'dan başlar. ---- */
+  var ISLEM_BY_ID = {};   /* [D18-B1] 'plx-042' → {kart, t}; satır tıklama + ?islem= + detay paylaşır */
+  function buildLedgerRows(){
+    var html = '';
+    KARTLAR.forEach(function(k){
+      var run = 0, toplamIn = 0, toplamOut = 0;
+      k.tx.forEach(function(t, i){
+        var inAmt = t.tur === 'yukleme' ? t.tutar : null;
+        var outAmt = t.tur === 'harcama' ? t.tutar : null;
+        run += (inAmt || 0) - (outAmt || 0);
+        toplamIn += inAmt || 0; toplamOut += outAmt || 0;
+        var rid = 'plx-' + t.id;
+        html += '<tr data-plx="'+k.no+'" data-id="'+rid+'" data-tur="'+t.tur+'" data-santiye="'+k.santiye+'">'
+          + '<td class="df-no">'+(i + 1)+'</td><td class="df-date">'+t.tarih+'</td>'
+          + '<td class="df-firm">'+k.ad+' <span class="plx-no">•'+k.no+'</span></td>'
+          + '<td class="df-desc">'+t.desc+' — '+t.no+'</td>'
+          + '<td class="num df-in">'+(inAmt != null ? fmtTL(inAmt) : '')+'</td>'
+          + '<td class="num df-out">'+(outAmt != null ? fmtTL(outAmt) : '')+'</td>'
+          + '<td class="num df-bak">'+fmtTL(run)+'</td></tr>';
+        ISLEM_BY_ID[rid] = {kart:k, t:t};
+      });
+      html += '<tr class="df-total" data-plx="'+k.no+'"><td></td><td colspan="3">YÜKLEME – HARCAMA</td><td class="num df-in">'+fmtTL(toplamIn)+'</td><td class="num df-out">'+fmtTL(toplamOut)+'</td><td class="num df-bak">'+fmtTL(run)+'</td></tr>';
+      html += '<tr class="df-mevcut" data-plx="'+k.no+'"><td></td><td colspan="3">GÜNCEL BAKİYE</td><td class="num"></td><td class="num"></td><td class="num df-bak">'+fmtTL(run)+'</td></tr>';
+    });
+    document.getElementById('plxBody').innerHTML = html;
+  }
+  buildLedgerRows();
+
+  /* ============ Y17 MOBİL KART — Kart Defteri #tblPluxee (kasa emsali: tablo
+     satırlarıyla AYNI veri kaynağından ayrı kart DOM'u + data-idx + gvpage senkron;
+     data-label KULLANILMAZ). Kart data-idx'i seçili kart İÇİNDEKİ 0-tabanlı sıra. ============ */
+  var dfMobileList = document.getElementById('tblPluxeeMobile');
+  function dfCardBody(tr){
+    if(tr.classList.contains('df-devir') || tr.classList.contains('df-total') || tr.classList.contains('df-mevcut')){
+      var label = tr.children[1].textContent.trim();
+      var bakEl = tr.querySelector('.df-bak');
+      var bak = bakEl ? bakEl.textContent.trim() : '';
+      if(tr.classList.contains('df-total')){
+        var girenEl = tr.querySelector('.df-in'), cikanEl = tr.querySelector('.df-out');
+        return '<div class="df-mrow-title">' + label + '</div>'
+          + '<div class="df-mrow-line"><span>Yükleme</span><b class="df-in">' + (girenEl ? girenEl.textContent.trim() : '₺0') + '</b></div>'
+          + '<div class="df-mrow-line"><span>Harcama</span><b class="df-out">' + (cikanEl ? cikanEl.textContent.trim() : '₺0') + '</b></div>'
+          + '<div class="df-mrow-line df-mrow-bal"><span>Bakiye</span><b>' + bak + '</b></div>';
+      }
+      return '<div class="df-mrow-title">' + label + '</div>'
+        + '<div class="df-mrow-line df-mrow-bal"><span>Bakiye</span><b>' + bak + '</b></div>';
+    }
+    var no = tr.children[0].textContent.trim();
+    var tarih = tr.children[1].textContent.trim();
+    var firm = tr.children[2].innerHTML;
+    var desc = tr.children[3].textContent.trim();
+    var girenEl = tr.querySelector('.df-in'), cikanEl = tr.querySelector('.df-out');
+    var hasIn = girenEl && girenEl.textContent.trim();
+    var hasOut = cikanEl && cikanEl.textContent.trim();
+    var bak = tr.querySelector('.df-bak').textContent.trim();
+    var amtLbl = hasIn ? 'Yükleme' : (hasOut ? 'Harcama' : '');
+    var amtCls = hasIn ? 'df-in' : (hasOut ? 'df-out' : '');
+    var amtVal = hasIn ? girenEl.textContent.trim() : (hasOut ? cikanEl.textContent.trim() : '—');
+    return '<div class="df-mrow-top"><span class="df-mrow-no">#' + no + '</span><span class="df-mrow-date">' + tarih + '</span><span class="df-mrow-bak num">' + bak + '</span></div>'
+      + '<div class="df-mrow-firm">' + firm + '</div>'
+      + (desc ? '<div class="df-mrow-desc">' + desc + '</div>' : '')
+      + '<div class="df-mrow-amt"><span>' + amtLbl + '</span><b class="' + amtCls + '">' + amtVal + '</b></div>';
+  }
+  function buildLedgerCards(){
+    var tbody = document.getElementById('plxBody');
+    if(!dfMobileList || !tbody) return;
+    dfMobileList.innerHTML = '';
+    var counters = {};
+    Array.prototype.forEach.call(tbody.children, function(tr){
+      var plx = tr.getAttribute('data-plx'); if(!plx) return;
+      var idx = counters[plx] || 0; counters[plx] = idx + 1;
+      var card = document.createElement('div');
+      card.className = 'df-mrow';
+      if(tr.classList.contains('df-devir')) card.classList.add('devir');
+      else if(tr.classList.contains('df-total')) card.classList.add('total');
+      else if(tr.classList.contains('df-mevcut')) card.classList.add('mevcut');
+      card.setAttribute('data-plx', plx);
+      card.setAttribute('data-idx', idx);
+      card.hidden = tr.hidden;
+      card.innerHTML = dfCardBody(tr);
+      dfMobileList.appendChild(card);
+    });
+  }
+  var tblPluxee = document.getElementById('tblPluxee');
+  if(tblPluxee){
+    tblPluxee.addEventListener('gvpage', function(e){
+      var d = e.detail;
+      Array.prototype.forEach.call(dfMobileList.children, function(card){
+        if(card.hidden) return;   /* farklı kart — pager zaten görmüyor */
+        var idx = parseInt(card.getAttribute('data-idx'), 10);
+        card.classList.toggle('gv-pg-hide', idx < (d.page - 1) * d.size || idx >= d.page * d.size);
+      });
+    });
+  }
 
   /* ---- detay paneli (Dalga 18 — ?islem= master-detail) ---- */
   var plxDetailNo = document.getElementById('plxDetailNo');
@@ -302,26 +526,26 @@
     return '<div class="gdg-item'+(span2 ? ' span2' : '')+'"><span class="gdg-lbl">'+lbl+'</span><span class="gdg-val">'+val+'</span></div>';
   }
   function renderPlxDetail(id){
-    var h = HAREKET_BY_ID[id];
-    document.querySelectorAll('#tblPluxee tbody tr').forEach(function(tr){
+    var rec = ISLEM_BY_ID[id];
+    document.querySelectorAll('#tblPluxee tbody tr[data-id]').forEach(function(tr){
       tr.classList.toggle('is-selected', tr.getAttribute('data-id') === id);
     });
-    if(!h){
+    if(!rec){
       plxDetailNo.textContent = '—';
       plxDetailBadge.innerHTML = '';
       plxDetailBody.innerHTML = '<div class="plx-detail-empty">Detayları görmek için yukarıdaki listeden bir hareket seçin.</div>';
       return;
     }
-    var T = TUR_META[h.tur];
-    plxDetailNo.textContent = h.no;
-    plxDetailBadge.innerHTML = '<span class="gstat '+h.durum+'">'+h.durumLbl+'</span>';
+    var k = rec.kart, t = rec.t;
+    plxDetailNo.textContent = t.no;
+    plxDetailBadge.innerHTML = '<span class="gstat ok">Kayıtlı</span>';
     plxDetailBody.innerHTML = '<div class="gv-detail-grid">'
-      + gdgItem('Tarih', h.tarih)
-      + gdgItem('Kart / Personel', h.kart + (h.kartno ? ' •' + h.kartno : ''))
-      + gdgItem('Şantiye', h.santiye ? SANTIYE_ADI[h.santiye] : '—')
-      + gdgItem('Tür', T.tag)
-      + gdgItem('Açıklama', h.desc, true)
-      + gdgItem('Tutar', fmtTL(h.tutar))
+      + gdgItem('Tarih', t.tarihUzun)
+      + gdgItem('Kart / Personel', cardName(k))
+      + gdgItem('Şantiye', SANTIYE_ADI[k.santiye])
+      + gdgItem('Tür', t.tur === 'yukleme' ? '<span class="gtag mint">Yükleme</span>' : '<span class="gtag">Harcama</span>')
+      + gdgItem('Açıklama', t.desc, true)
+      + gdgItem('Tutar', fmtTL(t.tutar))
       + '</div>';
   }
   document.getElementById('plxBody').addEventListener('click', function(e){
@@ -337,13 +561,32 @@
     el.hidden = OLUSTURABILIR.indexOf(GV.role) === -1;
   });
 
-  /* ---- iki boyutlu filtre (Tür + Şantiye) + serbest metin — kasa/demirbas AND deseni,
-     ui.js'in tek-boyutlu data-filter primitifiyle çakışmaması için tamamen sayfa-lokal ---- */
-  var curTur = 'hepsi', curSantiye = 'hepsi';
+  /* ============ D19/S12 — kart seçimi + üç boyutlu filtre (Kart + Tür + Şantiye) + serbest
+     metin; kart seçimi PRİMER kapsam (kasa .ks-card→#tblDefter idiyomu), Tür/Şantiye/arama
+     yalnız seçili kartın işlem satırlarını daraltır — devir/toplam/mevcut çerçeve satırları
+     kart seçimiyle görünür kalır, alt-filtreden etkilenmez. ============ */
+  var curPlx = '4471', curTur = 'hepsi', curSantiye = 'hepsi';
+  var dfKart = document.getElementById('dfKart');
+  function recalcChips(){
+    var rows = document.querySelectorAll('#tblPluxee tbody tr[data-plx="'+curPlx+'"][data-tur]');
+    document.querySelectorAll('#plxTurChips .chip[data-tur]').forEach(function(ch){
+      var t = ch.getAttribute('data-tur'), n = 0;
+      rows.forEach(function(tr){ if(t === 'hepsi' || tr.getAttribute('data-tur') === t) n++; });
+      var cnt = ch.querySelector('.ch-cnt'); if(cnt) cnt.textContent = n;
+    });
+    document.querySelectorAll('#plxSantiyeChips .chip[data-santiye]').forEach(function(ch){
+      var s = ch.getAttribute('data-santiye'), n = 0;
+      rows.forEach(function(tr){ if(s === 'hepsi' || tr.getAttribute('data-santiye') === s) n++; });
+      var cnt = ch.querySelector('.ch-cnt'); if(cnt) cnt.textContent = n;
+    });
+  }
   function applyFilter(){
     var term = document.getElementById('plxSearch').value.trim().toLocaleLowerCase('tr');
-    var shown = 0;
+    var shown = 0, total = 0;
     document.querySelectorAll('#tblPluxee tbody tr').forEach(function(tr){
+      if(tr.getAttribute('data-plx') !== curPlx){ tr.hidden = true; return; }
+      if(!tr.hasAttribute('data-tur')){ tr.hidden = false; return; }   /* devir/total/mevcut çerçevesi */
+      total++;
       var okTur = curTur === 'hepsi' || tr.getAttribute('data-tur') === curTur;
       var okSantiye = curSantiye === 'hepsi' || tr.getAttribute('data-santiye') === curSantiye;
       var okTerm = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
@@ -352,8 +595,27 @@
       if(show) shown++;
     });
     document.getElementById('plxEmpty').hidden = shown !== 0;
-    document.getElementById('plxFoot').textContent = shown + ' hareket gösteriliyor · toplam ' + HAREKET.length + ' kayıt';
+    document.getElementById('plxFoot').textContent = shown + ' hareket gösteriliyor · toplam ' + total + ' kayıt';
+    buildLedgerCards();
+    gvPagerRefresh('#tblPluxee', true);
   }
+  function setCard(no){
+    if(!KARTLAR_BY_NO[no]) return;
+    curPlx = no;
+    document.querySelectorAll('#plxGrid .plx-card[data-plx]').forEach(function(c){
+      c.classList.toggle('is-on', c.getAttribute('data-plx') === no);
+    });
+    if(dfKart) dfKart.textContent = cardName(KARTLAR_BY_NO[no]);
+    recalcChips();
+    applyFilter();
+  }
+  document.getElementById('plxGrid').addEventListener('click', function(e){
+    var c = e.target.closest('.plx-card[data-plx]'); if(!c) return;
+    setCard(c.getAttribute('data-plx'));
+    gvUrlState.set({kart: curPlx});
+    var k = KARTLAR_BY_NO[curPlx], lastTx = k.tx[k.tx.length - 1];
+    renderPlxDetail('plx-' + lastTx.id);
+  });
   document.getElementById('plxSearch').addEventListener('input', applyFilter);
   document.getElementById('plxTurChips').addEventListener('click', function(e){
     var ch = e.target.closest('.chip[data-tur]'); if(!ch) return;
@@ -370,15 +632,23 @@
     applyFilter();
   });
 
-  applyFilter();
+  /* ?kart= ile açılış kartı seçilebilir (kasa ?santiye= emsali); yoksa/tanınmıyorsa
+     varsayılan ilk kart (Ali Vural •4471) seçili gelir (D19/S12 "makul varsayılan") */
+  var plxParam = new URLSearchParams(location.search).get('kart');
+  setCard(plxParam && KARTLAR_BY_NO[plxParam] ? plxParam : '4471');
 
-  /* ?islem= deep-link — geçersiz/tanınmayan koddaysa sessizce en güncel kayda
-     (plx-051) düşer; bu bir gvNotFound senaryosu değil (pluxee'de rol bazlı satır
-     budaması yok, bu yüzden ek görünürlük kontrolü gerekmiyor) */
+  /* ?islem= deep-link — geçersiz/tanınmayan koddaysa ya da seçili kartın dışında bir
+     kayıtsa sessizce seçili kartın en güncel işlemine düşer; bu bir gvNotFound senaryosu
+     değil (pluxee'de rol bazlı satır budaması yok) */
   (function initDetailFromUrl(){
     var urlVal = gvUrlState.get('islem');
-    var initId = 'plx-051';
-    if(urlVal && HAREKET_BY_ID['plx-' + urlVal]) initId = 'plx-' + urlVal;
+    var k = KARTLAR_BY_NO[curPlx], lastTx = k.tx[k.tx.length - 1];
+    var initId = 'plx-' + lastTx.id;
+    if(urlVal){
+      var cand = 'plx-' + urlVal;
+      var rec = ISLEM_BY_ID[cand];
+      if(rec && rec.kart.no === curPlx) initId = cand;
+    }
     renderPlxDetail(initId);
   })();
 })();
