@@ -165,21 +165,21 @@
   /* ---- işlem bağlamı — kanonik dosya adları + mock alanlar (shell.js isim listesinden) ---- */
   var ISLEM_META = {
     'kasa-fisi':          {label:'Kasa Fişi',            ic:'fa-cash-register',       liste:'crm-operasyon-kasa.html',       form:'crm-operasyon-kasa-form.html',       detay:'crm-operasyon-kasa-detay.html?ks=ksa-021',
-      alanLbl:'Tutar', alanVal:'₺18.400', santiye:'Vadi Konakları', talepRol:'Vadi Şefi', talepKisi:'Hasan Demirci', onayci1Rol:'Muhasebe', onayci1Kisi:'Nesrin Aydın', onayci2Rol:null, onayci2Kisi:null, tarih:'2 Temmuz 2026', kayitOrn:'KSA-2026-0142'},
+      alanLbl:'Tutar', alanVal:'₺18.400', santiye:'Vadi Konakları', talepRol:'Vadi Şefi', talepKisi:'Hasan Demirci', onayci1Rol:'Muhasebe', onayci1Kisi:'Nesrin Aydın', onayci2Rol:null, onayci2Kisi:null, tarih:'2 Temmuz 2026', kayitOrn:'KSA-2026-0142', limitTur:'santiye'},
     'malzeme-talebi':     {label:'Malzeme Talebi',       ic:'fa-boxes-stacked',       liste:'crm-satinalma-talepler.html',   form:'crm-satinalma-talep-form.html',      detay:'crm-satinalma-talep-detay.html',
-      alanLbl:'Miktar', alanVal:'240 torba (çimento)', santiye:'Merkez Şantiye', talepRol:'Merkez Şefi', talepKisi:'Ömer Taşkın', onayci1Rol:'Satın Alma', onayci1Kisi:'Baran Yıldız', onayci2Rol:'Muhasebe', onayci2Kisi:'Nesrin Aydın', tarih:'2 Temmuz 2026', kayitOrn:'MLZ-2026-0058'},
+      alanLbl:'Miktar', alanVal:'240 torba (çimento)', santiye:'Merkez Şantiye', talepRol:'Merkez Şefi', talepKisi:'Ömer Taşkın', onayci1Rol:'Satın Alma', onayci1Kisi:'Baran Yıldız', onayci2Rol:'Muhasebe', onayci2Kisi:'Nesrin Aydın', tarih:'2 Temmuz 2026', kayitOrn:'MLZ-2026-0058', limitTur:'stok'},
     'izin-talebi':        {label:'İzin Talebi',          ic:'fa-umbrella-beach',      liste:'crm-personel-izin.html',        form:'crm-personel-izin-form.html',        detay:'crm-personel-izin-detay.html',
-      alanLbl:'Gün Sayısı', alanVal:'5 gün (yıllık izin)', santiye:'Vadi Konakları', talepRol:'Saha Personeli', talepKisi:'Ali Vural', onayci1Rol:'Vadi Şefi', onayci1Kisi:'Hasan Demirci', onayci2Rol:'İK / Muhasebe', onayci2Kisi:'Nesrin Aydın', tarih:'2 Temmuz 2026', kayitOrn:'IZN-2026-0031'},
+      alanLbl:'Gün Sayısı', alanVal:'5 gün (yıllık izin)', santiye:'Vadi Konakları', talepRol:'Saha Personeli', talepKisi:'Ali Vural', onayci1Rol:'Vadi Şefi', onayci1Kisi:'Hasan Demirci', onayci2Rol:'İK / Muhasebe', onayci2Kisi:'Nesrin Aydın', tarih:'2 Temmuz 2026', kayitOrn:'IZN-2026-0031', limitTur:'kullanici'},
     'avans-talebi':       {label:'Avans Talebi',         ic:'fa-hand-holding-dollar', liste:'crm-personel-avans.html',       form:'crm-personel-avans-form.html',       detay:'crm-personel-avans-detay.html',
-      alanLbl:'Tutar', alanVal:'₺5.000', santiye:'Vadi Konakları', talepRol:'Formen', talepKisi:'İbrahim Sönmez', onayci1Rol:'Vadi Şefi', onayci1Kisi:'Hasan Demirci', onayci2Rol:'Muhasebe', onayci2Kisi:'Nesrin Aydın', tarih:'2 Temmuz 2026', kayitOrn:'AVN-2026-0027'},
+      alanLbl:'Tutar', alanVal:'₺5.000', santiye:'Vadi Konakları', talepRol:'Formen', talepKisi:'İbrahim Sönmez', onayci1Rol:'Vadi Şefi', onayci1Kisi:'Hasan Demirci', onayci2Rol:'Muhasebe', onayci2Kisi:'Nesrin Aydın', tarih:'2 Temmuz 2026', kayitOrn:'AVN-2026-0027', limitTur:'proje'},
     'hakedis':            {label:'Hakediş',              ic:'fa-file-signature',      liste:'crm-finans-taseron.html',       form:'crm-finans-hakedis-form.html',       detay:'crm-finans-hakedis-detay.html',
-      alanLbl:'Tutar', alanVal:'₺620.000', santiye:'Vadi Konakları', talepRol:'Teknik Müdür', talepKisi:'Elif Sarıkaya', onayci1Rol:'Genel Müdür', onayci1Kisi:'Murat Denizli', onayci2Rol:null, onayci2Kisi:null, tarih:'2 Temmuz 2026', kayitOrn:'HKD-2026-0012'},
+      alanLbl:'Tutar', alanVal:'₺620.000', santiye:'Vadi Konakları', talepRol:'Teknik Müdür', talepKisi:'Elif Sarıkaya', onayci1Rol:'Genel Müdür', onayci1Kisi:'Murat Denizli', onayci2Rol:null, onayci2Kisi:null, tarih:'2 Temmuz 2026', kayitOrn:'HKD-2026-0012', limitTur:'proje'},
     'satinalma-siparisi': {label:'Satın Alma Siparişi',  ic:'fa-cart-shopping',       liste:'crm-satinalma-siparisler.html', form:'crm-satinalma-formlar.html',         detay:'crm-satinalma-siparis-detay.html',
-      alanLbl:'Tutar', alanVal:'₺46.500', santiye:'Liman Lojistik Merkezi', talepRol:'Liman Şefi', talepKisi:'Aylin Koç', onayci1Rol:'Satın Alma', onayci1Kisi:'Baran Yıldız', onayci2Rol:'Muhasebe', onayci2Kisi:'Nesrin Aydın', tarih:'2 Temmuz 2026', kayitOrn:'SAT-2026-0044'},
+      alanLbl:'Tutar', alanVal:'₺46.500', santiye:'Liman Lojistik Merkezi', talepRol:'Liman Şefi', talepKisi:'Aylin Koç', onayci1Rol:'Satın Alma', onayci1Kisi:'Baran Yıldız', onayci2Rol:'Muhasebe', onayci2Kisi:'Nesrin Aydın', tarih:'2 Temmuz 2026', kayitOrn:'SAT-2026-0044', limitTur:'stok'},
     'puantaj':            {label:'Puantaj',              ic:'fa-user-clock',          liste:'crm-operasyon-puantaj.html',    form:'crm-operasyon-puantaj.html',         detay:'crm-operasyon-puantaj.html',
-      alanLbl:'Dönem', alanVal:'Temmuz 2026 (1-2 Tem)', santiye:'Merkez Şantiye', talepRol:'Merkez Şefi', talepKisi:'Ömer Taşkın', onayci1Rol:'Muhasebe', onayci1Kisi:'Nesrin Aydın', onayci2Rol:null, onayci2Kisi:null, tarih:'2 Temmuz 2026', kayitOrn:'PUAN-2026-Tem-M'},
+      alanLbl:'Dönem', alanVal:'Temmuz 2026 (1-2 Tem)', santiye:'Merkez Şantiye', talepRol:'Merkez Şefi', talepKisi:'Ömer Taşkın', onayci1Rol:'Muhasebe', onayci1Kisi:'Nesrin Aydın', onayci2Rol:null, onayci2Kisi:null, tarih:'2 Temmuz 2026', kayitOrn:'PUAN-2026-Tem-M', limitTur:'santiye'},
     'paket-degisikligi':  {label:'Paket Değişikliği',    ic:'fa-puzzle-piece',        liste:'crm-ayarlar-moduller.html',     form:'crm-ayarlar-paket-degistir.html',    detay:'crm-ayarlar-moduller.html',
-      alanLbl:'Paket', alanVal:'Professional → Kurumsal', santiye:'Yapıtaş İnşaat A.Ş. (firma geneli)', talepRol:'Firma Sahibi', talepKisi:'Murat Denizli', onayci1Rol:'Teknik Müdür', onayci1Kisi:'Elif Sarıkaya', onayci2Rol:null, onayci2Kisi:null, tarih:'2 Temmuz 2026', kayitOrn:'PKT-2026-004'}
+      alanLbl:'Paket', alanVal:'Professional → Kurumsal', santiye:'Yapıtaş İnşaat A.Ş. (firma geneli)', talepRol:'Firma Sahibi', talepKisi:'Murat Denizli', onayci1Rol:'Teknik Müdür', onayci1Kisi:'Elif Sarıkaya', onayci2Rol:null, onayci2Kisi:null, tarih:'2 Temmuz 2026', kayitOrn:'PKT-2026-004', limitTur:'crm'}
   };
   var ISLEM_DEFAULT = 'kasa-fisi';
 
@@ -311,7 +311,10 @@
     'liste-panel':  function(){ setCta(ctaPrimary, donusHref, 'fa-list', 'Listeye Dön', 'btn-acc'); setCta(ctaSecondary, 'crm-panel.html', 'fa-gauge-high', 'Ana Panele Dön', 'btn-ghost'); },
     'aciklama-liste':function(){ setCta(ctaPrimary, M.form, 'fa-comment-dots', 'Açıklama Ekle ve Gönder', 'btn-acc'); setCta(ctaSecondary, donusHref, 'fa-list', 'Listeye Dön', 'btn-ghost'); },
     'belge-liste':  function(){ setCta(ctaPrimary, M.form, 'fa-file-arrow-up', 'Belge Yükle', 'btn-acc'); setCta(ctaSecondary, donusHref, 'fa-list', 'Listeye Dön', 'btn-ghost'); },
-    'limit':        function(){ setCta(ctaPrimary, 'crm-sistem-limit-asildi.html?islem='+islemKey+'&kayit='+encodeURIComponent(kayitNo), 'fa-gauge-high', 'Limit Detayını Gör', 'btn-acc'); setCta(ctaSecondary, 'crm-ayarlar-paket-degistir.html', 'fa-arrow-up-right-dots', 'Paketi Yükselt', 'btn-ghost'); }
+    /* crm-sistem-limit-asildi.html (d1-saas) ?tur= okur: kullanici·santiye·depolama·sms·
+       proje·portal·crm·stok — ISLEM_META.limitTur'dan tek yerden eşlenir (madde: küçük
+       düzeltme, taksonomi 1:1 uyumu için). */
+    'limit':        function(){ setCta(ctaPrimary, 'crm-sistem-limit-asildi.html?tur='+(M.limitTur||'crm')+'&islem='+islemKey+'&kayit='+encodeURIComponent(kayitNo), 'fa-gauge-high', 'Limit Detayını Gör', 'btn-acc'); setCta(ctaSecondary, 'crm-ayarlar-paket-degistir.html', 'fa-arrow-up-right-dots', 'Paketi Yükselt', 'btn-ghost'); }
   };
   (CTA_KIND[D.cta] || CTA_KIND['liste-panel'])();
 
