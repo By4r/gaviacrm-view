@@ -89,6 +89,13 @@
 
 .gstat.expired{background:var(--danger);color:#fff}
 
+/* ---- madde 9 / D19 ZORUNLU EVRAK SETİ: ilk 3 kategori (01-03) zorunlu bayrağı taşır;
+   set ve sıra DEĞİŞMEZ, yalnız görsel işaretleme eklendi ---- */
+.doc-req-badge{font-size:8.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--acc-ink);background:rgba(var(--acc-rgb),.12);padding:2px 7px;border-radius:20px}
+/* zorunlusu eksik personel için ayrı uyarı rozeti — mevcut .gstat dilinden, yeni rozet İCAT EDİLMEDİ */
+.req-eksik-badge{margin-top:4px}
+.req-eksik-badge .gstat{font-size:10px;padding:3px 8px;white-space:nowrap}
+
 @media (max-width:640px){
   .op-person{gap:10px}
 }
@@ -119,15 +126,15 @@
       <div>
         <div class="ph-eyebrow">İnsan Kaynağı</div>
         <h1>Özlük &amp; Evrak</h1>
-        <div class="ph-sub" id="phSub"><span data-table-count>22</span> personel · 12 evrak türü · uygunluk matrisi</div>
+        <div class="ph-sub" id="phSub"><span data-table-count>25</span> personel · 12 evrak türü · uygunluk matrisi</div>
       </div>
     </div>
 
     <div class="kpi-grid">
       <div class="kpi-card" style="--kpi-ok:1">
         <div class="kpi-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-folder-tree"></i></div>
-        <div><div class="kpi-num num" id="kpiTamNum">13</div><div class="kpi-lbl">Dosyası tam personel</div>
-        <div class="kpi-delta flat" id="kpiTamDelta"><i class="fa-solid fa-users"></i> 22 personelin 13'ü</div></div>
+        <div><div class="kpi-num num" id="kpiTamNum">15</div><div class="kpi-lbl">Dosyası tam personel</div>
+        <div class="kpi-delta flat" id="kpiTamDelta"><i class="fa-solid fa-users"></i> 25 personelin 15'i</div></div>
       </div>
       <div class="kpi-card warn">
         <div class="kpi-ico"><i class="fa-solid fa-hourglass-half"></i></div>
@@ -136,13 +143,13 @@
       </div>
       <div class="kpi-card danger">
         <div class="kpi-ico"><i class="fa-solid fa-file-circle-xmark"></i></div>
-        <div><div class="kpi-num num" id="kpiEksikNum">6</div><div class="kpi-lbl">Eksik evrak</div>
-        <div class="kpi-delta flat" id="kpiEksikDelta"><i class="fa-solid fa-user"></i> 5 personelde — 2 belge süresi dolmuş</div></div>
+        <div><div class="kpi-num num" id="kpiEksikNum">7</div><div class="kpi-lbl">Eksik evrak</div>
+        <div class="kpi-delta flat" id="kpiEksikDelta"><i class="fa-solid fa-user"></i> 6 personelde — 2 belge süresi dolmuş</div></div>
       </div>
       <div class="kpi-card">
         <div class="kpi-ico"><i class="fa-solid fa-file-shield"></i></div>
-        <div><div class="kpi-num num" id="kpiToplamKayitNum">264</div><div class="kpi-lbl">Toplam evrak kaydı</div>
-        <div class="kpi-delta flat" id="kpiToplamKayitDelta"><i class="fa-solid fa-layer-group"></i> 12 evrak türü × 22 personel</div></div>
+        <div><div class="kpi-num num" id="kpiToplamKayitNum">300</div><div class="kpi-lbl">Toplam evrak kaydı</div>
+        <div class="kpi-delta flat" id="kpiToplamKayitDelta"><i class="fa-solid fa-layer-group"></i> 12 evrak türü × 25 personel</div></div>
       </div>
     </div>
 
@@ -153,9 +160,9 @@
           <input type="text" placeholder="Personel ara" data-table-search="#tblMatris">
         </div>
         <div class="chips" data-target="#tblMatris">
-          <button class="chip is-on" data-filter="hepsi">Tümü <span class="ch-cnt">22</span></button>
-          <button class="chip" data-filter="eksik">Eksik / Uyarı Var <span class="ch-cnt">9</span></button>
-          <button class="chip" data-filter="tam">Dosyası Tam <span class="ch-cnt">13</span></button>
+          <button class="chip is-on" data-filter="hepsi">Tümü <span class="ch-cnt">25</span></button>
+          <button class="chip" data-filter="eksik">Eksik / Uyarı Var <span class="ch-cnt">10</span></button>
+          <button class="chip" data-filter="tam">Dosyası Tam <span class="ch-cnt">15</span></button>
         </div>
       </div>
       <div class="gc-body flush">
@@ -164,9 +171,9 @@
           <thead>
             <tr>
               <th>Personel</th>
-              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">01</span><i class="fa-solid fa-id-card"></i> Kimlik fotokopisi</div></th>
-              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">02</span><i class="fa-solid fa-file-signature"></i> İş sözleşmesi</div></th>
-              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">03</span><i class="fa-solid fa-building-columns"></i> SGK işe giriş bildirgesi</div></th>
+              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">01</span><i class="fa-solid fa-id-card"></i> Kimlik fotokopisi<span class="doc-req-badge">Zorunlu</span></div></th>
+              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">02</span><i class="fa-solid fa-file-signature"></i> İş sözleşmesi<span class="doc-req-badge">Zorunlu</span></div></th>
+              <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">03</span><i class="fa-solid fa-building-columns"></i> SGK işe giriş bildirgesi<span class="doc-req-badge">Zorunlu</span></div></th>
               <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">04</span><i class="fa-solid fa-house-chimney"></i> İkametgâh</div></th>
               <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">05</span><i class="fa-solid fa-scale-balanced"></i> Adli sicil kaydı</div></th>
               <th class="doc-col"><div class="doc-col-head"><span class="doc-col-num">06</span><i class="fa-solid fa-notes-medical"></i> Sağlık raporu</div></th>
@@ -560,6 +567,57 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
+            <!-- pasif kayıtlar (madde 8 / D19 — 3 kayıt, mevcut 22 aktife EK; F4: matris 22 → 25).
+                 023 Kudret Beşikçi zorunlu evrak eksikliği taşır (istifa öncesi SGK evrakı
+                 tamamlanmamış — madde 9 uyarı rozetinin somut örneği) -->
+            <tr data-f="eksik" data-santiye="vadi-konaklari" data-durum="pasif" data-per="023">
+              <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">KB</div><div class="gcell-info"><div class="gcell-name">Kudret Beşikçi</div><span class="gcell-sub">Düz İşçi · ayrıldı</span><div class="req-eksik-badge"><span class="gstat danger" data-tip="Zorunlu evrak eksik: SGK işe giriş bildirgesi">Zorunlu Eksik</span></div></div></div></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell">
+                <span class="doc-dot danger" data-tip="SGK işe giriş bildirgesi teslim edilmedi"><i class="fa-solid fa-xmark"></i></span>
+                <span class="doc-cap danger">Eksik</span>
+              </td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+            </tr>
+            <tr data-f="tam" data-durum="pasif" data-per="024">
+              <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">HU</div><div class="gcell-info"><div class="gcell-name">Hikmet Uğurlu</div><span class="gcell-sub">Operatör · ayrıldı</span></div></div></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+            </tr>
+            <tr data-f="tam" data-durum="pasif" data-per="025">
+              <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">NÇ</div><div class="gcell-info"><div class="gcell-name">Nadir Çamlıca</div><span class="gcell-sub">Düz İşçi · ayrıldı</span></div></div></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+              <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
+            </tr>
           </tbody>
         </table>
         </div>
@@ -618,7 +676,9 @@
   if(!window.GV) return;
   if(GV.role === 'sef'){
     document.querySelectorAll('#tblMatris tbody tr').forEach(function(tr){
-      if(tr.getAttribute('data-santiye') !== 'vadi-konaklari') tr.remove();
+      /* pasif kayıtlar (madde 8) şef görünümüne hiç girmez — crm-personel.html ile
+         aynı kural (F5 kordonunun bu sayfadaki karşılığı) */
+      if(tr.getAttribute('data-santiye') !== 'vadi-konaklari' || tr.getAttribute('data-durum') === 'pasif') tr.remove();
     });
     var counts = {hepsi:0, eksik:0, tam:0};
     document.querySelectorAll('#tblMatris tbody tr').forEach(function(tr){
