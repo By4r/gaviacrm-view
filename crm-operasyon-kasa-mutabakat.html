@@ -192,11 +192,22 @@
               <th>Durum</th>
             </tr>
           </thead>
+          <!-- statik bake (D18-B2) — Vadi Konakları varsayılanı; JS load'da renderRows()
+               AYNI MT.vadi.rows veri kaynağından yeniden basar (kasa.html df-mobile-list
+               emsali) — bake ile JS çıktısı birebir aynı olmalı, senkronsuzluk YOK. -->
           <tbody id="mtRows">
-            <!-- JS ile doldurulur -->
+            <tr><td class="mt-kayit">KSG-2026-007</td><td class="mt-desc">Genel merkez kasa beslemesi</td><td class="num">₺120.000</td><td class="num">₺120.000</td><td class="num mt-eslesti">₺0</td><td><i class="fa-solid fa-circle-check mt-eslesti"></i> Eşleşti</td></tr>
+            <tr><td class="mt-kayit">KSG-2026-008</td><td class="mt-desc">Körfez GYO ek iş bedeli tahsilatı</td><td class="num">₺66.400</td><td class="num">₺66.400</td><td class="num mt-eslesti">₺0</td><td><i class="fa-solid fa-circle-check mt-eslesti"></i> Eşleşti</td></tr>
+            <tr><td class="mt-kayit">KSA-2026-023…020</td><td class="mt-desc">1-2 Temmuz gün-sonu giderleri (16 kayıt, onaylı)</td><td class="num">₺133.930 çıkış</td><td class="num">₺133.930 çıkış</td><td class="num mt-eslesti">₺0</td><td><i class="fa-solid fa-circle-check mt-eslesti"></i> Eşleşti</td></tr>
+            <tr><td class="mt-kayit">KSA-2026-021</td><td class="mt-desc">Nakliye + işçilik avansı — onay bekliyor</td><td class="num">₺18.400 çıkış</td><td class="num mt-yok">—</td><td class="num mt-farkli">₺18.400</td><td><i class="fa-solid fa-triangle-exclamation mt-farkli"></i> Fark Var</td></tr>
           </tbody>
         </table>
-        <div class="mt-mobile-list" id="mtRowsMobile"></div>
+        <div class="mt-mobile-list" id="mtRowsMobile">
+          <div class="mt-mrow"><div class="mt-mrow-top"><span class="mt-mrow-no">KSG-2026-007</span><span class="mt-eslesti"><i class="fa-solid fa-circle-check"></i> Eşleşti</span></div><div class="mt-mrow-desc">Genel merkez kasa beslemesi</div><div class="mt-mrow-cols"><span>Şantiye<b>₺120.000</b></span><span>Muhasebe<b>₺120.000</b></span><span>Fark<b class="mt-eslesti">₺0</b></span></div></div>
+          <div class="mt-mrow"><div class="mt-mrow-top"><span class="mt-mrow-no">KSG-2026-008</span><span class="mt-eslesti"><i class="fa-solid fa-circle-check"></i> Eşleşti</span></div><div class="mt-mrow-desc">Körfez GYO ek iş bedeli tahsilatı</div><div class="mt-mrow-cols"><span>Şantiye<b>₺66.400</b></span><span>Muhasebe<b>₺66.400</b></span><span>Fark<b class="mt-eslesti">₺0</b></span></div></div>
+          <div class="mt-mrow"><div class="mt-mrow-top"><span class="mt-mrow-no">KSA-2026-023…020</span><span class="mt-eslesti"><i class="fa-solid fa-circle-check"></i> Eşleşti</span></div><div class="mt-mrow-desc">1-2 Temmuz gün-sonu giderleri (16 kayıt, onaylı)</div><div class="mt-mrow-cols"><span>Şantiye<b>₺133.930 çıkış</b></span><span>Muhasebe<b>₺133.930 çıkış</b></span><span>Fark<b class="mt-eslesti">₺0</b></span></div></div>
+          <div class="mt-mrow"><div class="mt-mrow-top"><span class="mt-mrow-no">KSA-2026-021</span><span class="mt-farkli"><i class="fa-solid fa-triangle-exclamation"></i> Fark Var</span></div><div class="mt-mrow-desc">Nakliye + işçilik avansı — onay bekliyor</div><div class="mt-mrow-cols"><span>Şantiye<b>₺18.400 çıkış</b></span><span>Muhasebe<b>—</b></span><span>Fark<b class="mt-farkli">₺18.400</b></span></div></div>
+        </div>
       </div>
       <div class="gc-foot">
         <span id="mtFoot"><i class="fa-solid fa-circle-info" style="color:var(--acc-ink)"></i> Fark, henüz onaylanmamış kayıtlardan kaynaklanır — kayıt onaylandığında muhasebe defterine otomatik işlenir.</span>
