@@ -112,6 +112,7 @@
           <button class="chip is-on" data-filter="hepsi">Tümü <span class="ch-cnt">6</span></button>
           <button class="chip" data-filter="kurum">Kurum <span class="ch-cnt">3</span></button>
           <button class="chip" data-filter="taseron">Taşeron <span class="ch-cnt">3</span></button>
+          <button class="chip" data-filter="yaklasan"><i class="fa-solid fa-triangle-exclamation"></i> Süresi Yaklaşan <span class="ch-cnt">1</span></button>
         </div>
       </div>
       <div class="gc-body flush">
@@ -143,7 +144,7 @@
               <td><span class="gstat ok">Yürürlükte</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-finans-sozlesme-detay.html?szl=k01" data-no-confirm aria-label="Sözleşme detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="kurum" data-sozlesme="k02">
+            <tr data-f="kurum" data-sozlesme="k02" data-yaklasan="1">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">AL</div>
@@ -250,6 +251,34 @@
   document.querySelectorAll('[data-view="olusturabilir"]').forEach(function(el){
     el.hidden = OLUSTURABILIR.indexOf(GV.role) === -1;
   });
+
+  /* §19 revizyon (D4/Finans) — "Süresi Yaklaşan" chip'i 3. boyut (kurum/taseron chip'iyle
+     AYNI data-f alanını paylaşamaz, ui.js chip motoru tek değerli eşleşir) — bu yüzden
+     D18 "_gvApply bileşik-motor delegasyonu" deseniyle sayfa-lokal filtre kuruluyor.
+     data-yaklasan="1" yalnız k02 satırında (kordon: sözleşmeler KPI'sindeki "Süresi 90
+     gün içinde dolan: 1" rakamıyla BİREBİR — ikinci bir kayıt eklenmez). */
+  var tblSozlesme = document.getElementById('tblSozlesme');
+  if(tblSozlesme){
+    tblSozlesme._gvApply = function(){
+      var card = tblSozlesme.closest('.gv-card');
+      var inp = card.querySelector('input[data-table-search]');
+      var term = inp ? inp.value.trim().toLocaleLowerCase('tr') : '';
+      var on = card.querySelector('.chip.is-on[data-filter]');
+      var f = on ? on.getAttribute('data-filter') : 'hepsi';
+      var shown = 0;
+      tblSozlesme.querySelectorAll('tbody tr').forEach(function(tr){
+        var okF = f === 'hepsi' ? true : f === 'yaklasan' ? tr.hasAttribute('data-yaklasan') : tr.getAttribute('data-f') === f;
+        var okT = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
+        var show = okF && okT;
+        tr.hidden = !show;
+        if(show) shown++;
+      });
+      var empty = card.querySelector('[data-table-empty]');
+      if(empty) empty.hidden = shown !== 0;
+      var cnt = card.querySelector('[data-table-count]') || document.querySelector('[data-table-count]');
+      if(cnt) cnt.textContent = shown;
+    };
+  }
 })();
 </script>
 </body>
