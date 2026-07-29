@@ -38,16 +38,20 @@
 
 /* ============ D19/S12 — Kart Defteri (crm-operasyon-kasa.html #tblDefter kolon
    düzeninin birebir devralımı: df-no/df-date/df-firm/df-desc/df-in/df-out/df-bak,
-   df-devir/df-total/df-mevcut satır dili, df-donem rozeti). Kredi kartında "giren"
-   kolonu yok — tek yönlü harcama akışı df-out'ta, taksit bilgisi ayrı kolonda kalır. */
-#tblKK{min-width:960px}
+   df-devir/df-total/df-mevcut satır dili, df-donem rozeti, df-wait onayda rozeti).
+   Kredi kartı da İKİ yönlüdür — harcama (df-out, borç artar) ve karta ödeme/ekstre
+   ödemesi (df-in, borç azalır) — kasa'nın giriş/çıkış çiftiyle birebir aynı desen.
+   Banka/kart seçimi TEK yapısal fark: df-firm hücresi kasa'daki "ödeyen firma" yerine
+   banka+kart son 4 haneyi taşır (madde 5b); satıcı adı + taksit bilgisi df-desc içine
+   katılır (ayrı kolon YOK — önceki turun hatası tekrarlanmaz). */
+#tblKK{min-width:940px}
 #tblKK td,#tblKK th{font-variant-numeric:tabular-nums}
 #tblKK .df-no{width:36px;color:var(--muted);font-size:12px;font-weight:600}
 #tblKK .df-date{width:86px;white-space:nowrap;color:var(--ink-2);font-weight:600;font-size:12.5px}
-#tblKK .df-firm{font-weight:700;color:var(--ink);white-space:nowrap;max-width:190px;overflow:hidden;text-overflow:ellipsis}
-#tblKK .df-desc{color:var(--ink-2);font-size:12.5px;max-width:230px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#tblKK .col-taksit{width:110px}
+#tblKK .df-firm{font-weight:700;color:var(--ink);white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+#tblKK .df-desc{color:var(--ink-2);font-size:12.5px;max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #tblKK .num{white-space:nowrap}
+#tblKK .df-in{color:var(--ok);font-weight:700}
 #tblKK .df-out{color:var(--danger);font-weight:700}
 #tblKK .df-bak{font-weight:800;color:var(--ink)}
 tr.df-devir td{background:var(--bg);font-weight:800;color:var(--ink-2);letter-spacing:.02em}
@@ -72,6 +76,7 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
 .df-mrow-desc{font-size:12px;color:var(--muted);margin-bottom:7px;line-height:1.4}
 .df-mrow-amt{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
 .df-mrow-amt b{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
+.df-mrow-amt .df-in{color:var(--ok)}
 .df-mrow-amt .df-out{color:var(--danger)}
 .df-mrow.devir,.df-mrow.total{background:var(--bg)}
 .df-mrow-title{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);margin-bottom:9px}
@@ -86,16 +91,6 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
   #tblKK{display:none}
   .df-mobile-list{display:block}
 }
-
-.rp-cell{display:flex;align-items:center;gap:12px;min-width:0}
-.rp-mark{width:38px;height:38px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:14px;background:rgba(var(--acc-rgb),.1);color:var(--acc-ink)}
-.rp-info{min-width:0;line-height:1.35}
-.rp-info b{display:block;font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap}
-.rp-info span{font-size:11.5px;color:var(--muted)}
-
-.kk-kart-cell{line-height:1.35}
-.kk-kart-cell b{display:block;font-size:13px;font-weight:700;color:var(--ink)}
-.kk-kart-cell span{font-size:11.5px;color:var(--muted)}
 
 .filter-bar.stack{flex-direction:column;align-items:stretch;gap:12px}
 .filter-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -201,9 +196,9 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
         <div class="filter-row">
           <span class="frow-lbl">Banka</span>
           <div class="chips" id="kkBankaChips">
-            <button class="chip is-on" data-banka="hepsi">Tümü <span class="ch-cnt">14</span></button>
-            <button class="chip" data-banka="garanti">Garanti BBVA <span class="ch-cnt">6</span></button>
-            <button class="chip" data-banka="akbank">Akbank <span class="ch-cnt">3</span></button>
+            <button class="chip is-on" data-banka="hepsi">Tümü <span class="ch-cnt">16</span></button>
+            <button class="chip" data-banka="garanti">Garanti BBVA <span class="ch-cnt">7</span></button>
+            <button class="chip" data-banka="akbank">Akbank <span class="ch-cnt">4</span></button>
             <button class="chip" data-banka="is">İş Bankası <span class="ch-cnt">3</span></button>
             <button class="chip" data-banka="ykb">Yapı Kredi <span class="ch-cnt">2</span></button>
           </div>
@@ -225,55 +220,62 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <th class="df-no">#</th>
               <th class="df-date">Tarih</th>
               <th>Banka / Kart</th>
-              <th>Firma / Satıcı</th>
               <th>Açıklama</th>
-              <th class="col-taksit">Taksit</th>
-              <th class="num">Tutar</th>
+              <th class="num">Karta Ödeme</th>
+              <th class="num">Harcama</th>
               <th class="num">Dönem Borcu</th>
             </tr>
           </thead>
           <!-- statik bake (D18-B2): JS load'da aynı mount'u KARTLAR kanonik verisinden yeniden basar.
-               Her banka: df-devir (ekstre öncesi borç) · harcama satırları · df-total · df-mevcut.
-               Toplam: limit ₺525.000 (G5) · dönem borcu ₺234.650/%45 (G6) · kullanılabilir ₺290.350 (G7) ·
-               14 hareket, KKR-2026-014 muhasebe onayında ₺8.400 (G8). -->
+               Her banka: df-devir (ekstre öncesi borç) · harcama (df-out) + karta ödeme (df-in)
+               satırları · df-total (ÖDEME – HARCAMA) · df-mevcut. Devir, eklenen karta ödeme
+               tutarı kadar yükseltilerek dengelendi (devir + harcama − ödeme = dönem borcu);
+               nihai dönem borcu değerleri (117.400/41.300/63.800/12.150) ve toplamlar
+               (limit ₺525.000 (G5) · dönem borcu ₺234.650/%45 (G6) · kullanılabilir ₺290.350
+               (G7)) DEĞİŞMEDİ. 16 hareket (14 harcama + 2 karta ödeme — KKR-015 Garanti
+               ₺20.000, KKR-016 Akbank ₺15.000); KKR-2026-014 muhasebe onayında ₺8.400 (G8). -->
           <tbody id="kkBody">
-            <!-- Garanti BBVA •4512 — devir ₺85.050 · harcama ₺32.350 (6 işlem) · dönem borcu ₺117.400 -->
-            <tr class="df-devir" data-banka="garanti"><td></td><td colspan="5">EKSTRE ÖNCESİ DÖNEM BORCU</td><td class="num"></td><td class="num df-bak">₺85.050</td></tr>
-            <tr data-banka="garanti" data-durum="onaylandi" data-id="kkr-001"><td class="df-no">1</td><td class="df-date">18 Haz</td><td class="df-firm">Garanti BBVA <span class="kk-no">•4512</span></td><td class="df-desc">Anadolu Hırdavat</td><td class="df-desc">Hırdavat malzeme — KKR-2026-001</td><td><span class="gtag">Tek Çekim</span></td><td class="num df-out">₺1.650</td><td class="num df-bak">₺86.700</td></tr>
-            <tr data-banka="garanti" data-durum="onaylandi" data-id="kkr-004"><td class="df-no">2</td><td class="df-date">22 Haz</td><td class="df-firm">Garanti BBVA <span class="kk-no">•4512</span></td><td class="df-desc">Petrol Ofisi</td><td class="df-desc">Akaryakıt — KKR-2026-004</td><td><span class="gtag">Tek Çekim</span></td><td class="num df-out">₺3.400</td><td class="num df-bak">₺90.100</td></tr>
-            <tr data-banka="garanti" data-durum="onaylandi" data-id="kkr-007"><td class="df-no">3</td><td class="df-date">25 Haz</td><td class="df-firm">Garanti BBVA <span class="kk-no">•4512</span></td><td class="df-desc">Petrol Ofisi</td><td class="df-desc">Akaryakıt — KKR-2026-007</td><td><span class="gtag">Tek Çekim</span></td><td class="num df-out">₺3.100</td><td class="num df-bak">₺93.200</td></tr>
-            <tr data-banka="garanti" data-durum="onaylandi" data-id="kkr-009"><td class="df-no">4</td><td class="df-date">27 Haz</td><td class="df-firm">Garanti BBVA <span class="kk-no">•4512</span></td><td class="df-desc">Lastik Center</td><td class="df-desc">Araç lastik değişimi — KKR-2026-009</td><td><span class="gtag" style="background:var(--info-tint);color:var(--info);border-color:transparent">3 Taksit</span></td><td class="num df-out">₺9.600</td><td class="num df-bak">₺102.800</td></tr>
-            <tr data-banka="garanti" data-durum="onaylandi" data-id="kkr-012"><td class="df-no">5</td><td class="df-date">30 Haz</td><td class="df-firm">Garanti BBVA <span class="kk-no">•4512</span></td><td class="df-desc">Anadolu Hırdavat</td><td class="df-desc">Hırdavat malzeme — KKR-2026-012</td><td><span class="gtag" style="background:var(--info-tint);color:var(--info);border-color:transparent">3 Taksit</span></td><td class="num df-out">₺6.200</td><td class="num df-bak">₺109.000</td></tr>
-            <tr data-banka="garanti" data-durum="bekliyor" data-id="kkr-014" class="is-selected"><td class="df-no">6</td><td class="df-date">2 Tem</td><td class="df-firm">Garanti BBVA <span class="kk-no">•4512</span><span class="df-wait"><i class="fa-solid fa-hourglass-half"></i> onayda</span></td><td class="df-desc">Otel — Liman şantiye ekibi konaklama</td><td class="df-desc">Konaklama (3 gece, 4 kişi) — KKR-2026-014</td><td><span class="gtag">Tek Çekim</span></td><td class="num df-out">₺8.400</td><td class="num df-bak">₺117.400</td></tr>
-            <tr class="df-total" data-banka="garanti"><td></td><td colspan="5">TOPLAM HARCAMA</td><td class="num df-out">₺32.350</td><td class="num df-bak">₺117.400</td></tr>
-            <tr class="df-mevcut" data-banka="garanti"><td></td><td colspan="5">GÜNCEL DÖNEM BORCU</td><td class="num"></td><td class="num df-bak">₺117.400</td></tr>
+            <!-- Garanti BBVA •4512 — devir ₺105.050 (₺85.050 + ₺20.000 karta ödeme öncesi) ·
+                 harcama ₺32.350 (6 işlem) · ödeme ₺20.000 (1 işlem, KKR-015) · dönem borcu ₺117.400 -->
+            <tr class="df-devir" data-banka="garanti"><td></td><td colspan="3">EKSTRE ÖNCESİ DÖNEM BORCU</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺105.050</td></tr>
+            <tr data-banka="garanti" data-durum="onaylandi" data-id="kkr-001"><td class="df-no">1</td><td class="df-date">18 Haz</td><td class="df-firm">Garanti BBVA <span class="kk-no">•4512</span></td><td class="df-desc">Anadolu Hırdavat — Hırdavat malzeme — KKR-2026-001</td><td class="num"></td><td class="num df-out">₺1.650</td><td class="num df-bak">₺106.700</td></tr>
+            <tr data-banka="garanti" data-durum="onaylandi" data-id="kkr-015"><td class="df-no">2</td><td class="df-date">19 Haz</td><td class="df-firm">Garanti BBVA <span class="kk-no">•4512</span></td><td class="df-desc">Genel Merkez — Ekstre ödemesi (banka havalesi) — KKR-2026-015</td><td class="num df-in">₺20.000</td><td class="num"></td><td class="num df-bak">₺86.700</td></tr>
+            <tr data-banka="garanti" data-durum="onaylandi" data-id="kkr-004"><td class="df-no">3</td><td class="df-date">22 Haz</td><td class="df-firm">Garanti BBVA <span class="kk-no">•4512</span></td><td class="df-desc">Petrol Ofisi — Akaryakıt — KKR-2026-004</td><td class="num"></td><td class="num df-out">₺3.400</td><td class="num df-bak">₺90.100</td></tr>
+            <tr data-banka="garanti" data-durum="onaylandi" data-id="kkr-007"><td class="df-no">4</td><td class="df-date">25 Haz</td><td class="df-firm">Garanti BBVA <span class="kk-no">•4512</span></td><td class="df-desc">Petrol Ofisi — Akaryakıt — KKR-2026-007</td><td class="num"></td><td class="num df-out">₺3.100</td><td class="num df-bak">₺93.200</td></tr>
+            <tr data-banka="garanti" data-durum="onaylandi" data-id="kkr-009"><td class="df-no">5</td><td class="df-date">27 Haz</td><td class="df-firm">Garanti BBVA <span class="kk-no">•4512</span></td><td class="df-desc">Lastik Center — Araç lastik değişimi (3 Taksit) — KKR-2026-009</td><td class="num"></td><td class="num df-out">₺9.600</td><td class="num df-bak">₺102.800</td></tr>
+            <tr data-banka="garanti" data-durum="onaylandi" data-id="kkr-012"><td class="df-no">6</td><td class="df-date">30 Haz</td><td class="df-firm">Garanti BBVA <span class="kk-no">•4512</span></td><td class="df-desc">Anadolu Hırdavat — Hırdavat malzeme (3 Taksit) — KKR-2026-012</td><td class="num"></td><td class="num df-out">₺6.200</td><td class="num df-bak">₺109.000</td></tr>
+            <tr data-banka="garanti" data-durum="bekliyor" data-id="kkr-014" class="is-selected"><td class="df-no">7</td><td class="df-date">2 Tem</td><td class="df-firm">Garanti BBVA <span class="kk-no">•4512</span><span class="df-wait"><i class="fa-solid fa-hourglass-half"></i> onayda</span></td><td class="df-desc">Otel — Liman şantiye ekibi konaklama — Konaklama (3 gece, 4 kişi) — KKR-2026-014</td><td class="num"></td><td class="num df-out">₺8.400</td><td class="num df-bak">₺117.400</td></tr>
+            <tr class="df-total" data-banka="garanti"><td></td><td colspan="3">ÖDEME – HARCAMA</td><td class="num df-in">₺20.000</td><td class="num df-out">₺32.350</td><td class="num df-bak">₺117.400</td></tr>
+            <tr class="df-mevcut" data-banka="garanti"><td></td><td colspan="3">GÜNCEL DÖNEM BORCU</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺117.400</td></tr>
 
-            <!-- Akbank •7789 — devir ₺29.910 · harcama ₺11.390 (3 işlem) · dönem borcu ₺41.300 -->
-            <tr class="df-devir" data-banka="akbank"><td></td><td colspan="5">EKSTRE ÖNCESİ DÖNEM BORCU</td><td class="num"></td><td class="num df-bak">₺29.910</td></tr>
-            <tr data-banka="akbank" data-durum="onaylandi" data-id="kkr-003"><td class="df-no">1</td><td class="df-date">21 Haz</td><td class="df-firm">Akbank <span class="kk-no">•7789</span></td><td class="df-desc">Lastik Center</td><td class="df-desc">Araç lastik değişimi — KKR-2026-003</td><td><span class="gtag" style="background:var(--info-tint);color:var(--info);border-color:transparent">3 Taksit</span></td><td class="num df-out">₺7.800</td><td class="num df-bak">₺37.710</td></tr>
-            <tr data-banka="akbank" data-durum="ok" data-id="kkr-008"><td class="df-no">2</td><td class="df-date">26 Haz</td><td class="df-firm">Akbank <span class="kk-no">•7789</span></td><td class="df-desc">Hepsiburada</td><td class="df-desc">E-ticaret sarf malzeme — KKR-2026-008</td><td><span class="gtag">Tek Çekim</span></td><td class="num df-out">₺740</td><td class="num df-bak">₺38.450</td></tr>
-            <tr data-banka="akbank" data-durum="ok" data-id="kkr-013"><td class="df-no">3</td><td class="df-date">1 Tem</td><td class="df-firm">Akbank <span class="kk-no">•7789</span></td><td class="df-desc">Petrol Ofisi</td><td class="df-desc">Akaryakıt — KKR-2026-013</td><td><span class="gtag">Tek Çekim</span></td><td class="num df-out">₺2.850</td><td class="num df-bak">₺41.300</td></tr>
-            <tr class="df-total" data-banka="akbank"><td></td><td colspan="5">TOPLAM HARCAMA</td><td class="num df-out">₺11.390</td><td class="num df-bak">₺41.300</td></tr>
-            <tr class="df-mevcut" data-banka="akbank"><td></td><td colspan="5">GÜNCEL DÖNEM BORCU</td><td class="num"></td><td class="num df-bak">₺41.300</td></tr>
+            <!-- Akbank •7789 — devir ₺44.910 (₺29.910 + ₺15.000 karta ödeme öncesi) ·
+                 harcama ₺11.390 (3 işlem) · ödeme ₺15.000 (1 işlem, KKR-016) · dönem borcu ₺41.300 -->
+            <tr class="df-devir" data-banka="akbank"><td></td><td colspan="3">EKSTRE ÖNCESİ DÖNEM BORCU</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺44.910</td></tr>
+            <tr data-banka="akbank" data-durum="onaylandi" data-id="kkr-016"><td class="df-no">1</td><td class="df-date">20 Haz</td><td class="df-firm">Akbank <span class="kk-no">•7789</span></td><td class="df-desc">Genel Merkez — Ekstre ödemesi (banka havalesi) — KKR-2026-016</td><td class="num df-in">₺15.000</td><td class="num"></td><td class="num df-bak">₺29.910</td></tr>
+            <tr data-banka="akbank" data-durum="onaylandi" data-id="kkr-003"><td class="df-no">2</td><td class="df-date">21 Haz</td><td class="df-firm">Akbank <span class="kk-no">•7789</span></td><td class="df-desc">Lastik Center — Araç lastik değişimi (3 Taksit) — KKR-2026-003</td><td class="num"></td><td class="num df-out">₺7.800</td><td class="num df-bak">₺37.710</td></tr>
+            <tr data-banka="akbank" data-durum="ok" data-id="kkr-008"><td class="df-no">3</td><td class="df-date">26 Haz</td><td class="df-firm">Akbank <span class="kk-no">•7789</span></td><td class="df-desc">Hepsiburada — E-ticaret sarf malzeme — KKR-2026-008</td><td class="num"></td><td class="num df-out">₺740</td><td class="num df-bak">₺38.450</td></tr>
+            <tr data-banka="akbank" data-durum="ok" data-id="kkr-013"><td class="df-no">4</td><td class="df-date">1 Tem</td><td class="df-firm">Akbank <span class="kk-no">•7789</span></td><td class="df-desc">Petrol Ofisi — Akaryakıt — KKR-2026-013</td><td class="num"></td><td class="num df-out">₺2.850</td><td class="num df-bak">₺41.300</td></tr>
+            <tr class="df-total" data-banka="akbank"><td></td><td colspan="3">ÖDEME – HARCAMA</td><td class="num df-in">₺15.000</td><td class="num df-out">₺11.390</td><td class="num df-bak">₺41.300</td></tr>
+            <tr class="df-mevcut" data-banka="akbank"><td></td><td colspan="3">GÜNCEL DÖNEM BORCU</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺41.300</td></tr>
 
-            <!-- İş Bankası •2301 — devir ₺57.270 · harcama ₺6.530 (3 işlem) · dönem borcu ₺63.800 -->
-            <tr class="df-devir" data-banka="is"><td></td><td colspan="5">EKSTRE ÖNCESİ DÖNEM BORCU</td><td class="num"></td><td class="num df-bak">₺57.270</td></tr>
-            <tr data-banka="is" data-durum="onaylandi" data-id="kkr-002"><td class="df-no">1</td><td class="df-date">19 Haz</td><td class="df-firm">İş Bankası <span class="kk-no">•2301</span></td><td class="df-desc">Petrol Ofisi</td><td class="df-desc">Akaryakıt — KKR-2026-002</td><td><span class="gtag">Tek Çekim</span></td><td class="num df-out">₺2.900</td><td class="num df-bak">₺60.170</td></tr>
-            <tr data-banka="is" data-durum="onaylandi" data-id="kkr-006"><td class="df-no">2</td><td class="df-date">24 Haz</td><td class="df-firm">İş Bankası <span class="kk-no">•2301</span></td><td class="df-desc">Anadolu Hırdavat</td><td class="df-desc">Hırdavat malzeme — KKR-2026-006</td><td><span class="gtag">Tek Çekim</span></td><td class="num df-out">₺2.450</td><td class="num df-bak">₺62.620</td></tr>
-            <tr data-banka="is" data-durum="onaylandi" data-id="kkr-011"><td class="df-no">3</td><td class="df-date">29 Haz</td><td class="df-firm">İş Bankası <span class="kk-no">•2301</span></td><td class="df-desc">Ofix</td><td class="df-desc">Ofis sarf malzemesi — KKR-2026-011</td><td><span class="gtag">Tek Çekim</span></td><td class="num df-out">₺1.180</td><td class="num df-bak">₺63.800</td></tr>
-            <tr class="df-total" data-banka="is"><td></td><td colspan="5">TOPLAM HARCAMA</td><td class="num df-out">₺6.530</td><td class="num df-bak">₺63.800</td></tr>
-            <tr class="df-mevcut" data-banka="is"><td></td><td colspan="5">GÜNCEL DÖNEM BORCU</td><td class="num"></td><td class="num df-bak">₺63.800</td></tr>
+            <!-- İş Bankası •2301 — devir ₺57.270 · harcama ₺6.530 (3 işlem) · bu dönem ödeme yok · dönem borcu ₺63.800 -->
+            <tr class="df-devir" data-banka="is"><td></td><td colspan="3">EKSTRE ÖNCESİ DÖNEM BORCU</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺57.270</td></tr>
+            <tr data-banka="is" data-durum="onaylandi" data-id="kkr-002"><td class="df-no">1</td><td class="df-date">19 Haz</td><td class="df-firm">İş Bankası <span class="kk-no">•2301</span></td><td class="df-desc">Petrol Ofisi — Akaryakıt — KKR-2026-002</td><td class="num"></td><td class="num df-out">₺2.900</td><td class="num df-bak">₺60.170</td></tr>
+            <tr data-banka="is" data-durum="onaylandi" data-id="kkr-006"><td class="df-no">2</td><td class="df-date">24 Haz</td><td class="df-firm">İş Bankası <span class="kk-no">•2301</span></td><td class="df-desc">Anadolu Hırdavat — Hırdavat malzeme — KKR-2026-006</td><td class="num"></td><td class="num df-out">₺2.450</td><td class="num df-bak">₺62.620</td></tr>
+            <tr data-banka="is" data-durum="onaylandi" data-id="kkr-011"><td class="df-no">3</td><td class="df-date">29 Haz</td><td class="df-firm">İş Bankası <span class="kk-no">•2301</span></td><td class="df-desc">Ofix — Ofis sarf malzemesi — KKR-2026-011</td><td class="num"></td><td class="num df-out">₺1.180</td><td class="num df-bak">₺63.800</td></tr>
+            <tr class="df-total" data-banka="is"><td></td><td colspan="3">ÖDEME – HARCAMA</td><td class="num df-in">₺0</td><td class="num df-out">₺6.530</td><td class="num df-bak">₺63.800</td></tr>
+            <tr class="df-mevcut" data-banka="is"><td></td><td colspan="3">GÜNCEL DÖNEM BORCU</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺63.800</td></tr>
 
-            <!-- Yapı Kredi •9944 — devir ₺9.310 · harcama ₺2.840 (2 işlem) · dönem borcu ₺12.150 -->
-            <tr class="df-devir" data-banka="ykb"><td></td><td colspan="5">EKSTRE ÖNCESİ DÖNEM BORCU</td><td class="num"></td><td class="num df-bak">₺9.310</td></tr>
-            <tr data-banka="ykb" data-durum="ok" data-id="kkr-005"><td class="df-no">1</td><td class="df-date">23 Haz</td><td class="df-firm">Yapı Kredi <span class="kk-no">•9944</span></td><td class="df-desc">Ofix</td><td class="df-desc">Ofis sarf malzemesi — KKR-2026-005</td><td><span class="gtag">Tek Çekim</span></td><td class="num df-out">₺890</td><td class="num df-bak">₺10.200</td></tr>
-            <tr data-banka="ykb" data-durum="ok" data-id="kkr-010"><td class="df-no">2</td><td class="df-date">28 Haz</td><td class="df-firm">Yapı Kredi <span class="kk-no">•9944</span></td><td class="df-desc">Petrol Ofisi</td><td class="df-desc">Akaryakıt — KKR-2026-010</td><td><span class="gtag">Tek Çekim</span></td><td class="num df-out">₺1.950</td><td class="num df-bak">₺12.150</td></tr>
-            <tr class="df-total" data-banka="ykb"><td></td><td colspan="5">TOPLAM HARCAMA</td><td class="num df-out">₺2.840</td><td class="num df-bak">₺12.150</td></tr>
-            <tr class="df-mevcut" data-banka="ykb"><td></td><td colspan="5">GÜNCEL DÖNEM BORCU</td><td class="num"></td><td class="num df-bak">₺12.150</td></tr>
+            <!-- Yapı Kredi •9944 — devir ₺9.310 · harcama ₺2.840 (2 işlem) · bu dönem ödeme yok · dönem borcu ₺12.150 -->
+            <tr class="df-devir" data-banka="ykb"><td></td><td colspan="3">EKSTRE ÖNCESİ DÖNEM BORCU</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺9.310</td></tr>
+            <tr data-banka="ykb" data-durum="ok" data-id="kkr-005"><td class="df-no">1</td><td class="df-date">23 Haz</td><td class="df-firm">Yapı Kredi <span class="kk-no">•9944</span></td><td class="df-desc">Ofix — Ofis sarf malzemesi — KKR-2026-005</td><td class="num"></td><td class="num df-out">₺890</td><td class="num df-bak">₺10.200</td></tr>
+            <tr data-banka="ykb" data-durum="ok" data-id="kkr-010"><td class="df-no">2</td><td class="df-date">28 Haz</td><td class="df-firm">Yapı Kredi <span class="kk-no">•9944</span></td><td class="df-desc">Petrol Ofisi — Akaryakıt — KKR-2026-010</td><td class="num"></td><td class="num df-out">₺1.950</td><td class="num df-bak">₺12.150</td></tr>
+            <tr class="df-total" data-banka="ykb"><td></td><td colspan="3">ÖDEME – HARCAMA</td><td class="num df-in">₺0</td><td class="num df-out">₺2.840</td><td class="num df-bak">₺12.150</td></tr>
+            <tr class="df-mevcut" data-banka="ykb"><td></td><td colspan="3">GÜNCEL DÖNEM BORCU</td><td class="num"></td><td class="num"></td><td class="num df-bak">₺12.150</td></tr>
           </tbody>
         </table>
         <!-- statik bake (D18-B2): JS load'da aynı mount'u kanonik veriden yeniden basar -->
-        <div class="df-mobile-list" id="tblKKMobile"><div class="df-mrow devir" data-banka="garanti" data-idx="0"><div class="df-mrow-title">EKSTRE ÖNCESİ DÖNEM BORCU</div><div class="df-mrow-line df-mrow-bal"><span>Bakiye</span><b>₺85.050</b></div></div><div class="df-mrow" data-banka="garanti" data-idx="1"><div class="df-mrow-top"><span class="df-mrow-no">#1</span><span class="df-mrow-date">18 Haz</span><span class="df-mrow-bak num">₺86.700</span></div><div class="df-mrow-firm">Garanti BBVA •4512</div><div class="df-mrow-desc">Anadolu Hırdavat — Hırdavat malzeme — KKR-2026-001</div><div class="df-mrow-amt"><span>Tutar</span><b class="df-out">₺1.650</b></div></div></div>
+        <div class="df-mobile-list" id="tblKKMobile"><div class="df-mrow devir" data-banka="garanti" data-idx="0"><div class="df-mrow-title">EKSTRE ÖNCESİ DÖNEM BORCU</div><div class="df-mrow-line df-mrow-bal"><span>Dönem Borcu</span><b>₺85.050</b></div></div><div class="df-mrow" data-banka="garanti" data-idx="1"><div class="df-mrow-top"><span class="df-mrow-no">#1</span><span class="df-mrow-date">18 Haz</span><span class="df-mrow-bak num">₺86.700</span></div><div class="df-mrow-firm">Garanti BBVA •4512</div><div class="df-mrow-desc">Anadolu Hırdavat — Hırdavat malzeme — KKR-2026-001</div><div class="df-mrow-amt"><span>Tutar</span><b class="df-out">₺1.650</b></div></div></div>
         <div class="gv-empty" id="kkEmpty" hidden>
           <div class="ge-ico"><i class="fa-solid fa-building-columns"></i></div>
           <h4>Eşleşen hareket yok</h4>
@@ -306,15 +308,17 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
      başlayarak her satırda hesaplanır — KART BAZLI (D19/S12, kasa .ks-card→#tblDefter emsali).
      devir + Σharcama = borc her kartta BİREBİR kapanır (G5-G9 ile tutarlı). */
   var KARTLAR = {
-    garanti: {banka:'Garanti BBVA', no:'4512', sahip:'Hasan Demirci',        limit:150000, devir:85050, borc:117400, ekstre:"Ayın 8'i",  mark:'G', bg:'rgba(var(--acc-rgb),.12)', fg:'var(--acc-ink)', tx:[
+    garanti: {banka:'Garanti BBVA', no:'4512', sahip:'Hasan Demirci',        limit:150000, devir:105050, borc:117400, ekstre:"Ayın 8'i",  mark:'G', bg:'rgba(var(--acc-rgb),.12)', fg:'var(--acc-ink)', tx:[
       {id:'001', tarih:'18 Haz', tarihUzun:'18 Haziran 2026', firma:'Anadolu Hırdavat', desc:'Hırdavat malzeme',              taksit:'tek', tutar:1650, durum:'onaylandi'},
+      {id:'015', tarih:'19 Haz', tarihUzun:'19 Haziran 2026', firma:'Genel Merkez',     desc:'Ekstre ödemesi (banka havalesi)', taksit:'tek', tutar:20000, durum:'onaylandi', yon:'odeme'},
       {id:'004', tarih:'22 Haz', tarihUzun:'22 Haziran 2026', firma:'Petrol Ofisi',     desc:'Akaryakıt',                    taksit:'tek', tutar:3400, durum:'onaylandi'},
       {id:'007', tarih:'25 Haz', tarihUzun:'25 Haziran 2026', firma:'Petrol Ofisi',     desc:'Akaryakıt',                    taksit:'tek', tutar:3100, durum:'onaylandi'},
       {id:'009', tarih:'27 Haz', tarihUzun:'27 Haziran 2026', firma:'Lastik Center',    desc:'Araç lastik değişimi',          taksit:3,     tutar:9600, durum:'onaylandi'},
       {id:'012', tarih:'30 Haz', tarihUzun:'30 Haziran 2026', firma:'Anadolu Hırdavat', desc:'Hırdavat malzeme',              taksit:3,     tutar:6200, durum:'onaylandi'},
       {id:'014', tarih:'2 Tem',  tarihUzun:'2 Temmuz 2026',   firma:'Otel — Liman şantiye ekibi konaklama', desc:'Konaklama (3 gece, 4 kişi)', taksit:'tek', tutar:8400, durum:'bekliyor'}
     ]},
-    akbank: {banka:'Akbank', no:'7789', sahip:'Baran Yıldız', limit:100000, devir:29910, borc:41300, ekstre:"Ayın 15'i", mark:'A', bg:'var(--info-tint)', fg:'var(--info)', tx:[
+    akbank: {banka:'Akbank', no:'7789', sahip:'Baran Yıldız', limit:100000, devir:44910, borc:41300, ekstre:"Ayın 15'i", mark:'A', bg:'var(--info-tint)', fg:'var(--info)', tx:[
+      {id:'016', tarih:'20 Haz', tarihUzun:'20 Haziran 2026', firma:'Genel Merkez',  desc:'Ekstre ödemesi (banka havalesi)', taksit:'tek', tutar:15000, durum:'onaylandi', yon:'odeme'},
       {id:'003', tarih:'21 Haz', tarihUzun:'21 Haziran 2026', firma:'Lastik Center', desc:'Araç lastik değişimi',   taksit:3,     tutar:7800, durum:'onaylandi'},
       {id:'008', tarih:'26 Haz', tarihUzun:'26 Haziran 2026', firma:'Hepsiburada',   desc:'E-ticaret sarf malzeme', taksit:'tek', tutar:740,  durum:'ok'},
       {id:'013', tarih:'1 Tem',  tarihUzun:'1 Temmuz 2026',   firma:'Petrol Ofisi',  desc:'Akaryakıt',              taksit:'tek', tutar:2850, durum:'ok'}
@@ -334,11 +338,6 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
 
   function fmtTL(n){ return '₺' + n.toLocaleString('tr-TR'); }
   function pct(borc, limit){ return Math.round(borc / limit * 100); }
-  function taksitTag(t){
-    return t === 'tek'
-      ? '<span class="gtag">Tek Çekim</span>'
-      : '<span class="gtag" style="background:var(--info-tint);color:var(--info);border-color:transparent">'+t+' Taksit</span>';
-  }
 
   /* ---- kart şeridi render — D19/S12: kasa .ks-card gibi SEÇİCİ ---- */
   var strip = document.getElementById('kkStrip');
@@ -361,31 +360,36 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
   /* [D17 Y15] "Tümünü Göster" karosu KALDIRILDI (Beyar, DK12) — banka-filtre sıfırlama
      işini alttaki "Tümü" chip'i zaten yapıyor; kart şeridi salt kart seçicidir. */
 
-  /* ---- Kart Defteri render — kasa #tblDefter kolon düzeni: devir + harcama satırları +
-     toplam + güncel dönem borcu, banka bazında bloklar (D19/S12) ---- */
+  /* ---- Kart Defteri render — kasa #tblDefter kolon düzenini BİREBİR devralır: devir +
+     harcama (df-out, borç artar) / karta ödeme (df-in, borç azalır) satırları + toplam +
+     güncel dönem borcu, banka bazında bloklar (D19/S12) — kasa'nın giriş/çıkış çiftiyle
+     birebir aynı desen. df-firm hücresi kasa'daki "ödeyen firma" yerine banka+kart son 4
+     haneyi taşır (TEK yapısal fark, madde 5b); satıcı adı + taksit bilgisi df-desc içine
+     katılır (ayrı kolon YOK — önceki turun hatası tekrarlanmaz). ---- */
   var ISLEM_BY_ID = {};   /* [D18-B1] 'kkr-014' → {K, t, key}; satır tıklama + ?islem= + detay paylaşır */
   function buildLedgerRows(){
     var html = '';
     KART_ORDER.forEach(function(key){
       var K = KARTLAR[key];
-      var run = K.devir, toplamOut = 0;
-      html += '<tr class="df-devir" data-banka="'+key+'"><td></td><td colspan="5">EKSTRE ÖNCESİ DÖNEM BORCU</td><td class="num"></td><td class="num df-bak">'+fmtTL(run)+'</td></tr>';
+      var run = K.devir, toplamIn = 0, toplamOut = 0;
+      html += '<tr class="df-devir" data-banka="'+key+'"><td></td><td colspan="3">EKSTRE ÖNCESİ DÖNEM BORCU</td><td class="num"></td><td class="num"></td><td class="num df-bak">'+fmtTL(run)+'</td></tr>';
       K.tx.forEach(function(t, i){
-        run += t.tutar; toplamOut += t.tutar;
+        var isOdeme = t.yon === 'odeme';
+        if(isOdeme){ run -= t.tutar; toplamIn += t.tutar; } else { run += t.tutar; toplamOut += t.tutar; }
         var rid = 'kkr-' + t.id;
         var waitHtml = t.durum === 'bekliyor' ? '<span class="df-wait"><i class="fa-solid fa-hourglass-half"></i> onayda</span>' : '';
+        var taksitTxt = t.taksit === 'tek' ? '' : ' ('+t.taksit+' Taksit)';
         html += '<tr data-banka="'+key+'" data-durum="'+t.durum+'" data-id="'+rid+'">'
           + '<td class="df-no">'+(i + 1)+'</td><td class="df-date">'+t.tarih+'</td>'
           + '<td class="df-firm">'+K.banka+' <span class="kk-no">•'+K.no+'</span>'+waitHtml+'</td>'
-          + '<td class="df-desc">'+t.firma+'</td>'
-          + '<td class="df-desc">'+t.desc+' — KKR-2026-'+t.id+'</td>'
-          + '<td>'+taksitTag(t.taksit)+'</td>'
-          + '<td class="num df-out">'+fmtTL(t.tutar)+'</td>'
+          + '<td class="df-desc">'+t.firma+' — '+t.desc+taksitTxt+' — KKR-2026-'+t.id+'</td>'
+          + '<td class="num'+(isOdeme ? ' df-in' : '')+'">'+(isOdeme ? fmtTL(t.tutar) : '')+'</td>'
+          + '<td class="num'+(isOdeme ? '' : ' df-out')+'">'+(isOdeme ? '' : fmtTL(t.tutar))+'</td>'
           + '<td class="num df-bak">'+fmtTL(run)+'</td></tr>';
         ISLEM_BY_ID[rid] = {K:K, t:t, key:key};
       });
-      html += '<tr class="df-total" data-banka="'+key+'"><td></td><td colspan="5">TOPLAM HARCAMA</td><td class="num df-out">'+fmtTL(toplamOut)+'</td><td class="num df-bak">'+fmtTL(run)+'</td></tr>';
-      html += '<tr class="df-mevcut" data-banka="'+key+'"><td></td><td colspan="5">GÜNCEL DÖNEM BORCU</td><td class="num"></td><td class="num df-bak">'+fmtTL(run)+'</td></tr>';
+      html += '<tr class="df-total" data-banka="'+key+'"><td></td><td colspan="3">ÖDEME – HARCAMA</td><td class="num df-in">'+fmtTL(toplamIn)+'</td><td class="num df-out">'+fmtTL(toplamOut)+'</td><td class="num df-bak">'+fmtTL(run)+'</td></tr>';
+      html += '<tr class="df-mevcut" data-banka="'+key+'"><td></td><td colspan="3">GÜNCEL DÖNEM BORCU</td><td class="num"></td><td class="num"></td><td class="num df-bak">'+fmtTL(run)+'</td></tr>';
     });
     document.getElementById('kkBody').innerHTML = html;
   }
@@ -400,8 +404,9 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
       var bakEl = tr.querySelector('.df-bak');
       var bak = bakEl ? bakEl.textContent.trim() : '';
       if(tr.classList.contains('df-total')){
-        var cikanEl = tr.querySelector('.df-out');
+        var girenEl = tr.querySelector('.df-in'), cikanEl = tr.querySelector('.df-out');
         return '<div class="df-mrow-title">' + label + '</div>'
+          + '<div class="df-mrow-line"><span>Ödeme</span><b class="df-in">' + (girenEl ? girenEl.textContent.trim() : '₺0') + '</b></div>'
           + '<div class="df-mrow-line"><span>Harcama</span><b class="df-out">' + (cikanEl ? cikanEl.textContent.trim() : '₺0') + '</b></div>'
           + '<div class="df-mrow-line df-mrow-bal"><span>Dönem Borcu</span><b>' + bak + '</b></div>';
       }
@@ -411,14 +416,16 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
     var no = tr.children[0].textContent.trim();
     var tarih = tr.children[1].textContent.trim();
     var firm = tr.children[2].innerHTML;
-    var satici = tr.children[3].textContent.trim();
-    var desc = tr.children[4].textContent.trim();
+    var desc = tr.children[3].textContent.trim();
+    var gelenEl = tr.querySelector('.df-in'), cikanEl = tr.querySelector('.df-out');
     var bak = tr.querySelector('.df-bak').textContent.trim();
-    var tutar = tr.querySelector('.df-out').textContent.trim();
+    var amtLbl = gelenEl ? 'Ödeme' : (cikanEl ? 'Harcama' : '');
+    var amtCls = gelenEl ? 'df-in' : (cikanEl ? 'df-out' : '');
+    var amtVal = gelenEl ? gelenEl.textContent.trim() : (cikanEl ? cikanEl.textContent.trim() : '—');
     return '<div class="df-mrow-top"><span class="df-mrow-no">#' + no + '</span><span class="df-mrow-date">' + tarih + '</span><span class="df-mrow-bak num">' + bak + '</span></div>'
       + '<div class="df-mrow-firm">' + firm + '</div>'
-      + '<div class="df-mrow-desc">' + satici + (desc ? ' — ' + desc : '') + '</div>'
-      + '<div class="df-mrow-amt"><span>Tutar</span><b class="df-out">' + tutar + '</b></div>';
+      + '<div class="df-mrow-desc">' + desc + '</div>'
+      + '<div class="df-mrow-amt"><span>' + amtLbl + '</span><b class="' + amtCls + '">' + amtVal + '</b></div>';
   }
   function buildLedgerCards(){
     var tbody = document.getElementById('kkBody');
