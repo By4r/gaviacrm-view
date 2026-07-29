@@ -53,6 +53,10 @@
 .gf-hint-auto{display:flex;align-items:center;gap:6px;color:var(--acc-ink)}
 .gf-hint-auto i{font-size:11px}
 
+/* adres il/ilçe satırı — crm-santiye-form.html:30-31 desenin birebir sayfa-lokal kopyası */
+.addr-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.addr-row{grid-template-columns:1fr}}
+
 /* eş/aile alt-alanları — koşullu görünür, sol accent şerit ile gruplanmış hissi */
 .gf-sub{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 18px;padding:14px 16px 2px;margin-top:-2px;border-left:2px solid rgba(var(--acc-rgb),.35)}
 @media(max-width:640px){.gf-sub{grid-template-columns:minmax(0,1fr)}}
@@ -224,8 +228,15 @@
                 <input type="email" id="fEposta" placeholder="ad.soyad@yapitas.example">
               </div>
               <div class="gfield full">
-                <label for="fAdres">Adres</label>
-                <textarea id="fAdres" rows="2" placeholder="İkametgah adresi…"></textarea>
+                <label>Adres</label>
+                <div class="addr-row">
+                  <input type="text" id="fIl" placeholder="İl — örn. İstanbul">
+                  <input type="text" id="fIlce" placeholder="İlçe — örn. Çekmeköy">
+                </div>
+              </div>
+              <div class="gfield full">
+                <label for="fAcikAdres">Açık Adres <span class="gf-hint">(isteğe bağlı)</span></label>
+                <textarea id="fAcikAdres" rows="2" placeholder="Mahalle, cadde, sokak, no…"></textarea>
               </div>
             </div>
           </div>
