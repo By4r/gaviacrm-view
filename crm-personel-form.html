@@ -282,6 +282,7 @@
                   <option>Kaynakçı</option>
                   <option>Marangoz</option>
                   <option>Düz İşçi</option>
+                  <option>Yalıtım Ustası</option>
                   <option>Şantiye Şefi</option>
                   <option>Muhasebe</option>
                   <option>Satın Alma</option>
@@ -289,6 +290,19 @@
                   <option>Teknik Müdür</option>
                   <option>Genel Müdür</option>
                 </select>
+              </div>
+              <div class="gfield" id="fFirmaWrap">
+                <label for="fFirma">Firma / Taşeron</label>
+                <select id="fFirma">
+                  <option value="yapitas">Yapıtaş İnşaat A.Ş. (öz kadro)</option>
+                  <option value="demirbeton">Demir-Beton İnş. Ltd.</option>
+                  <option value="elektromek">ElektroMek Taahhüt</option>
+                  <option value="yalitimkardesler">Yalıtım Kardeşler</option>
+                </select>
+              </div>
+              <div class="gfield" id="fKalfaWrap" hidden>
+                <label for="fKalfa">Kalfa</label>
+                <select id="fKalfa"><option value="">— Seçiniz —</option></select>
               </div>
               <div class="gfield">
                 <label for="fSantiye">Şantiye / Birim</label>
@@ -406,11 +420,44 @@
     medeni.addEventListener('change', function(){ esWrap.hidden = medeni.value !== 'evli'; });
   }
 
+  /* ---- Firma/Taşeron + Kalfa — yalnız 10 saha pozisyonunda açılır (D19 madde 5 / S6) ---- */
+  var SAHA_POZ = ['Saha Personeli','Formen','Kalıpçı','Demir Ustası','Elektrik Ustası','Operatör','Kaynakçı','Marangoz','Düz İşçi','Yalıtım Ustası'];
+  var KALFA_MAP = {
+    demirbeton:      [{v:'huseyin', lbl:'Hüseyin Palabıyık'}, {v:'bekir', lbl:'Bekir Sarıoğlu'}],
+    elektromek:       [{v:'mustafa', lbl:'Mustafa Doğanay'}],
+    yalitimkardesler: [{v:'salih', lbl:'Salih Bingöl'}, {v:'ercan', lbl:'Ercan Kavaklı'}]
+  };
+  var fPozisyon = document.getElementById('fPozisyon');
+  var fFirmaWrap = document.getElementById('fFirmaWrap'), fFirma = document.getElementById('fFirma');
+  var fKalfaWrap = document.getElementById('fKalfaWrap'), fKalfa = document.getElementById('fKalfa');
+  function renderKalfaOpts(){
+    var list = KALFA_MAP[fFirma.value] || [];
+    fKalfa.innerHTML = '<option value="">— Seçiniz —</option>' + list.map(function(k){
+      return '<option value="' + k.v + '">' + k.lbl + '</option>';
+    }).join('');
+  }
+  function syncFirmaKalfa(){
+    var isSaha = SAHA_POZ.indexOf(fPozisyon.value) !== -1;
+    fFirmaWrap.hidden = !isSaha;
+    if(!isSaha){
+      fFirma.value = 'yapitas';
+      fKalfaWrap.hidden = true;
+      return;
+    }
+    renderKalfaOpts();
+    fKalfaWrap.hidden = (fFirma.value === 'yapitas');
+  }
+  if(fPozisyon){
+    fPozisyon.addEventListener('change', syncFirmaKalfa);
+    fFirma.addEventListener('change', syncFirmaKalfa);
+    syncFirmaKalfa();
+  }
+
   /* ---- Evrak — 12 kanonik kategori (özlük matrisi + detay ile birebir aynı set/sıra) ---- */
   var EVRAK_KATEGORI = [
-    {ad:'Kimlik fotokopisi',           ic:'fa-id-card'},
-    {ad:'İş sözleşmesi',               ic:'fa-file-signature'},
-    {ad:'SGK işe giriş bildirgesi',    ic:'fa-building-columns'},
+    {ad:'Kimlik fotokopisi',           ic:'fa-id-card',           zorunlu:true},
+    {ad:'İş sözleşmesi',               ic:'fa-file-signature',    zorunlu:true},
+    {ad:'SGK işe giriş bildirgesi',    ic:'fa-building-columns',  zorunlu:true},
     {ad:'İkametgâh',                   ic:'fa-house-chimney'},
     {ad:'Adli sicil kaydı',            ic:'fa-scale-balanced'},
     {ad:'Sağlık raporu',               ic:'fa-notes-medical'},
