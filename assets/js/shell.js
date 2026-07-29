@@ -184,6 +184,21 @@
        Liman 4: Aslan/Güneş/Çetin/Polat · Merkez 2: Yaman/Kurt) + 1 pasif (Sadık Öz — kayıp).
        Aylık toplu yükleme 1 Tem: 12 × ₺1.250 = ₺15.000 (PLX-2026-041 toplu kayıt).
        Toplam yüklü bakiye ₺11.240 · Tem yükleme ₺15.000 · Tem harcama ₺3.760.
+       KART BAKİYE MODELİ (D19 revizesi — kart bazlı defter geçişinde yeniden türetildi):
+       bakiye_i = ₺1.250 − o kartın Temmuz harcaması. Kartlar dönem başında SIFIRDAN
+       yüklenir → her kartta devir ₺0, defterde DEVİR SATIRI YOKTUR. Zorunluluk:
+       Σdevir = Σbakiye − Σyükleme + Σharcama = 11.240 − 15.000 + 3.760 = 0, yani
+       G1/G2/G3 kilitliyken devirlerin hepsi sıfır olmak zorunda (bkz. tasks/kordon.md G).
+       Eski serbest bakiye seti (₺580–₺1.180 aralığı) TERK EDİLDİ — 5 kartta negatif devir
+       üretiyordu. YENİ KANONİK BAKİYELER (12 kart, toplam ₺11.240 KORUNUR; aralık ₺830–₺1.250):
+         •4471 Ali Vural      ₺830   (harcama ₺420)   ·  •4482 İbrahim Sönmez ₺850  (₺400)
+         •4493 Ramazan Kılıç  ₺880   (₺370)           ·  •4504 Selim Doğan    ₺890  (₺360)
+         •4515 Musa Erdem     ₺1.250 (Tem harcaması YOK) · •4526 Veli Şimşek  ₺910  (₺340)
+         •5871 Şükrü Aslan    ₺840   (₺410)           ·  •5882 Halil Güneş    ₺1.250 (Tem harcaması YOK)
+         •5893 Metin Çetin    ₺870   (₺380)           ·  •5904 Osman Polat    ₺900  (₺350)
+         •6231 Recep Yaman    ₺860   (₺390)           ·  •6242 İlyas Kurt     ₺910  (₺340)
+       Halil Güneş'in ₺210 harcaması 30 HAZİRAN'dır (Temmuz penceresi dışında), bu yüzden
+       kartı Musa Erdem gibi tam ₺1.250'de kalır — KPI'daki "10 işlem / ₺3.760" bozulmaz.
      · KREDİ KARTI (Talep 4 — kasa mantığı + banka seçimi; KKR-2026-### serisi):
          Garanti BBVA  •4512 · Hasan Demirci · limit ₺150.000 · dönem borcu ₺117.400 (%78 — warn)
          Akbank        •7789 · Baran Yıldız  · limit ₺100.000 · dönem borcu ₺41.300
