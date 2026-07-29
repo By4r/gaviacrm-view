@@ -66,6 +66,9 @@
 .irs-info .irs-date{font-size:11.5px;color:var(--muted);font-weight:600;margin-left:8px}
 .irs-info p{font-size:12.5px;color:var(--ink-2);margin-top:4px;line-height:1.55}
 .irs-info .irs-stok{font-size:11.5px;color:var(--muted);margin-top:4px}
+.irs-info .irs-teslim{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ok);font-weight:700;margin-top:5px}
+.irs-info .irs-teslim i{font-size:10.5px}
+.rel-info .rel-small{display:block;font-size:11px;color:var(--muted);margin-top:2px;font-weight:500;line-height:1.5}
 
 /* bağlam satırları */
 .ctx-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;font-size:13px}
@@ -150,7 +153,7 @@
         <div class="gv-card" id="irsaliyeCard">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-truck-ramp-box"></i> İrsaliyeler</div></div>
           <!-- statik bake — DEFAULT irsaliye listesi (ITEMS['05'].irsaliyeler) — D18-B2 -->
-          <div class="gc-body" id="irsaliyeBody" style="padding-top:4px"><div class="irs-row"><div class="irs-ico"><i class="fa-solid fa-truck-ramp-box"></i></div><div class="irs-info"><b>IRS-2026-12</b><span class="irs-date">18 Haziran 2026</span><p>Ø12 20 t + Ø16 6,4 t + Ø20 14 t = 40,4 t</p><span class="irs-stok">Mal kabul: STK-2026-041 · D-VDI Vadi Şantiye Deposu</span></div></div><div class="irs-row"><div class="irs-ico mismatch"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="irs-info"><b>IRS-2026-14</b><span class="irs-date">26 Haziran 2026</span><p>Ø10 8 t + Ø12 18 t + Ø16 5,2 t + Ø20 16 t = 47,2 t</p><span class="irs-stok">Mal kabul: STK-2026-047 · D-VDI Vadi Şantiye Deposu</span></div></div></div>
+          <div class="gc-body" id="irsaliyeBody" style="padding-top:4px"><div class="irs-row"><div class="irs-ico"><i class="fa-solid fa-truck-ramp-box"></i></div><div class="irs-info"><b>IRS-2026-12</b><span class="irs-date">18 Haziran 2026</span><p>Ø12 20 t + Ø16 6,4 t + Ø20 14 t = 40,4 t</p><span class="irs-stok">Mal kabul: STK-2026-041 · D-VDI Vadi Şantiye Deposu</span><span class="irs-teslim"><i class="fa-solid fa-user-check"></i> Teslim alan: İbrahim Sönmez</span></div></div><div class="irs-row"><div class="irs-ico mismatch"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="irs-info"><b>IRS-2026-14</b><span class="irs-date">26 Haziran 2026</span><p>Ø10 8 t + Ø12 18 t + Ø16 5,2 t + Ø20 16 t = 47,2 t</p><span class="irs-stok">Mal kabul: STK-2026-047 · D-VDI Vadi Şantiye Deposu</span><span class="irs-teslim"><i class="fa-solid fa-user-check"></i> Teslim alan: İbrahim Sönmez</span></div></div></div>
         </div>
       </div>
 
@@ -180,7 +183,7 @@
           <div class="gd-block">
             <div class="gd-label">İlgili Bağlantılar</div>
             <!-- statik bake — DEFAULT bağlantı listesi, rol-agnostic — D18-B2 -->
-            <div id="baglantiBody"><div class="rel-form"><div class="rel-ico"><i class="fa-solid fa-building"></i></div><div class="rel-info"><a href="crm-satinalma-tedarikci-detay.html?tdr=TDR-03">Marmara Demir Çelik — Tedarikçi Kartı</a></div></div><div class="rel-form"><div class="rel-ico"><i class="fa-solid fa-file-invoice-dollar"></i></div><div class="rel-info"><a href="crm-satinalma-irsaliye-fatura.html">İrsaliye &amp; Fatura Takibi</a></div></div><div class="rel-form"><div class="rel-ico"><i class="fa-solid fa-warehouse"></i></div><div class="rel-info"><a href="crm-satinalma-stok.html">Stok &amp; Depo Hareketleri</a></div></div></div>
+            <div id="baglantiBody"><div class="rel-form"><div class="rel-ico"><i class="fa-solid fa-building"></i></div><div class="rel-info"><a href="crm-satinalma-tedarikci-detay.html?tdr=TDR-03">Marmara Demir Çelik — Tedarikçi Kartı</a></div></div><div class="rel-form"><div class="rel-ico"><i class="fa-solid fa-file-invoice-dollar"></i></div><div class="rel-info"><a href="crm-satinalma-irsaliye-fatura.html">İrsaliye &amp; Fatura Takibi</a></div></div><div class="rel-form"><div class="rel-ico"><i class="fa-solid fa-warehouse"></i></div><div class="rel-info"><a href="crm-satinalma-stok.html">Stok &amp; Depo Hareketleri</a></div></div><div class="rel-form"><div class="rel-ico"><i class="fa-solid fa-sitemap"></i></div><div class="rel-info"><a href="crm-finans-butce-detay.html?proje=vadi">Bütçe Kalemi: Betonarme (Kaba Yapı) — Vadi Konakları</a><span class="rel-small">Demir fiyat artışının bütçe aşımına etkisi bu kalemde görülüyor</span></div></div></div>
           </div>
         </div>
 
@@ -221,7 +224,8 @@
       kalemler:[{ad:'C30/37 hazır beton', miktar:'850 m³', tutar:1487500}],
       aciklama:'Vadi Konakları temel ve zemin kat betonarme imalatı için sipariş edilen 850 m³ hazır beton, Nisan–Mayıs döneminde 3 partide teslim alındı. Üç parti de ayrı fatura edildi (FTR-2026-01/02/03) ve tamamı ödendi; sipariş kapandı.',
       baglantilar:[{ic:'fa-building', lbl:'Ege Hazır Beton — Tedarikçi Kartı', href:'crm-satinalma-tedarikci-detay.html?tdr=TDR-01'},
-                    {ic:'fa-file-invoice-dollar', lbl:'İrsaliye & Fatura Takibi', href:'crm-satinalma-irsaliye-fatura.html'}],
+                    {ic:'fa-file-invoice-dollar', lbl:'İrsaliye & Fatura Takibi', href:'crm-satinalma-irsaliye-fatura.html'},
+                    {ic:'fa-sitemap', lbl:'Bütçe Kalemi: Betonarme (Kaba Yapı) — Vadi Konakları', href:'crm-finans-butce-detay.html?proje=vadi'}],
       chain:[
         {rol:'Sipariş Verildi', kisi:'Baran Yıldız', durum:'olusturdu', tarih:'14 Nisan 2026'},
         {rol:'Teslimat — 3 parti (Nisan–Mayıs)', kisi:'İbrahim Sönmez', durum:'onaylandi', tarih:'4 Mayıs 2026', not:'850 m³ hazır beton 3 partide teslim alındı; FTR-2026-01/02/03 ile faturalandı.'},
@@ -240,7 +244,8 @@
       aciklama:'Liman Lojistik Merkezi çelik konstrüksiyon imalatı için talep edilen kaynak teli ve sarf paketi tek partide teslim alındı; FTR-2026-04 ile faturalandı ve ödendi.',
       kaynak:{no:'MLZ-2026-033', desc:'Liman kaynak teli + gaz tüpü talebi → SAT-2026-010 (arşiv kaydı, talep listesinde görünmez)', archived:true},
       baglantilar:[{ic:'fa-building', lbl:'Anadolu Hırdavat — Tedarikçi Kartı', href:'crm-satinalma-tedarikci-detay.html?tdr=TDR-06'},
-                    {ic:'fa-file-invoice-dollar', lbl:'İrsaliye & Fatura Takibi', href:'crm-satinalma-irsaliye-fatura.html'}],
+                    {ic:'fa-file-invoice-dollar', lbl:'İrsaliye & Fatura Takibi', href:'crm-satinalma-irsaliye-fatura.html'},
+                    {ic:'fa-sitemap', lbl:'Bütçe Kalemi: Mekanik Tesisat — Liman Lojistik Merkezi', href:'crm-finans-butce-detay.html?proje=liman'}],
       chain:[
         {rol:'Sipariş Verildi', kisi:'Baran Yıldız', durum:'olusturdu', tarih:'5 Mayıs 2026'},
         {rol:'İrsaliye — IRS-2026-04', kisi:'Şükrü Aslan', durum:'onaylandi', tarih:'9 Mayıs 2026', not:'Kaynak teli + sarf paketi tam teslim alındı, Liman şantiye deposu.'},
@@ -259,7 +264,8 @@
       aciklama:'B ve C Blok daire pencere/kapı doğramaları tek partide teslim alındı (IRS-2026-09). Fatura (FTR-2026-06) 12 Haziran’da kesildi; 15 Temmuz 2026 vadesiyle nakit akışı ödeme takviminde planlı.',
       kaynak:{no:'MLZ-2026-032', desc:'Vadi PVC doğrama talebi → SAT-2026-009 (arşiv kaydı, talep listesinde görünmez)', archived:true},
       baglantilar:[{ic:'fa-building', lbl:'Boğaziçi Yapı Market — Tedarikçi Kartı', href:'crm-satinalma-tedarikci-detay.html?tdr=TDR-04'},
-                    {ic:'fa-file-invoice-dollar', lbl:'İrsaliye & Fatura Takibi', href:'crm-satinalma-irsaliye-fatura.html'}],
+                    {ic:'fa-file-invoice-dollar', lbl:'İrsaliye & Fatura Takibi', href:'crm-satinalma-irsaliye-fatura.html'},
+                    {ic:'fa-sitemap', lbl:'Bütçe Kalemi: Doğrama & Cephe — Vadi Konakları', href:'crm-finans-butce-detay.html?proje=vadi'}],
       chain:[
         {rol:'Sipariş Verildi', kisi:'Baran Yıldız', durum:'olusturdu', tarih:'12 Mayıs 2026'},
         {rol:'İrsaliye — IRS-2026-09', kisi:'İbrahim Sönmez', durum:'onaylandi', tarih:'9 Haziran 2026', not:'PVC doğrama tam teslim alındı, Vadi şantiye deposu.'},
@@ -278,7 +284,8 @@
       aciklama:'Liman Lojistik Merkezi elektrik tesisatı için sipariş edilen kablo ve pano malzemesi, planlanan 24 Haziran 2026 teslim tarihini geçti. Tedarikçiden (Delta Elektrik) güncel bir teslimat bilgisi alınamadı; bu durum tedarikçinin performans skoruna (%71) yansıdı.',
       gecikmeNotu:'Bu sipariş 8 gündür teslim tarihini geçmiş durumda — henüz irsaliye veya fatura oluşmadı. Tedarikçiyle iletişime geçilmesi gerekiyor.',
       baglantilar:[{ic:'fa-building', lbl:'Delta Elektrik — Tedarikçi Kartı', href:'crm-satinalma-tedarikci-detay.html?tdr=TDR-05'},
-                    {ic:'fa-truck-ramp-box', lbl:'Termin Takibi', href:'crm-satinalma-termin.html'}],
+                    {ic:'fa-truck-ramp-box', lbl:'Termin Takibi', href:'crm-satinalma-termin.html'},
+                    {ic:'fa-sitemap', lbl:'Bütçe Kalemi: Elektrik Tesisatı — Liman Lojistik Merkezi', href:'crm-finans-butce-detay.html?proje=liman'}],
       chain:[
         {rol:'Sipariş Verildi', kisi:'Baran Yıldız', durum:'olusturdu', tarih:'20 Mayıs 2026'},
         {rol:'Termin — 24 Haziran 2026', kisi:'Aylin Koç', durum:'revize', tarih:'24 Haziran 2026', not:'Termin tarihi geçti, tedarikçiden teslimat bilgisi alınamadı — 8 gündür bekleniyor.'},
@@ -299,13 +306,14 @@
       aciklama:'Vadi Konakları B ve C Blok betonarme imalatı için sipariş edilen 88 tonluk nervürlü inşaat demiri iki partide teslim alındı. Ø16 kaleminde 12 tonluk sipariş miktarına karşılık 11,6 ton teslim edildi; 0,4 tonluk eksik teslim tedarikçiyle görüşülüyor. Bu eksik, Vadi şantiye deposundaki (D-VDI) Ø16 stok seviyesinin minimumun altına düşmesiyle de bağlantılı.',
       uyari:'Miktar Uyuşmazlığı — Ø16 nervürlü demir: 12 t sipariş edildi, irsaliyelerde toplam 11,6 t teslim alındı (IRS-2026-12: 6,4 t + IRS-2026-14: 5,2 t). Eksik 0,4 t için tedarikçiyle görüşme sürüyor; bu nedenle FTR-2026-09 muhasebe kontrolünde ve cari hesaba işlenmedi.',
       irsaliyeler:[
-        {no:'IRS-2026-12', tarih:'18 Haziran 2026', icerik:'Ø12 20 t + Ø16 6,4 t + Ø20 14 t = 40,4 t', stok:'Mal kabul: STK-2026-041 · D-VDI Vadi Şantiye Deposu'},
-        {no:'IRS-2026-14', tarih:'26 Haziran 2026', icerik:'Ø10 8 t + Ø12 18 t + Ø16 5,2 t + Ø20 16 t = 47,2 t', stok:'Mal kabul: STK-2026-047 · D-VDI Vadi Şantiye Deposu', mismatch:true}
+        {no:'IRS-2026-12', tarih:'18 Haziran 2026', icerik:'Ø12 20 t + Ø16 6,4 t + Ø20 14 t = 40,4 t', stok:'Mal kabul: STK-2026-041 · D-VDI Vadi Şantiye Deposu', teslimAlan:'İbrahim Sönmez'},
+        {no:'IRS-2026-14', tarih:'26 Haziran 2026', icerik:'Ø10 8 t + Ø12 18 t + Ø16 5,2 t + Ø20 16 t = 47,2 t', stok:'Mal kabul: STK-2026-047 · D-VDI Vadi Şantiye Deposu', mismatch:true, teslimAlan:'İbrahim Sönmez'}
       ],
       kaynak:{no:'MLZ-2026-031', desc:'Vadi betonarme demir ihtiyacı — 26 Mayıs 2026 (arşiv kaydı, talep listesinde görünmez)', archived:true},
       baglantilar:[{ic:'fa-building', lbl:'Marmara Demir Çelik — Tedarikçi Kartı', href:'crm-satinalma-tedarikci-detay.html?tdr=TDR-03'},
                     {ic:'fa-file-invoice-dollar', lbl:'İrsaliye & Fatura Takibi', href:'crm-satinalma-irsaliye-fatura.html'},
-                    {ic:'fa-warehouse', lbl:'Stok & Depo Hareketleri', href:'crm-satinalma-stok.html'}],
+                    {ic:'fa-warehouse', lbl:'Stok & Depo Hareketleri', href:'crm-satinalma-stok.html'},
+                    {ic:'fa-sitemap', lbl:'Bütçe Kalemi: Betonarme (Kaba Yapı) — Vadi Konakları', href:'crm-finans-butce-detay.html?proje=vadi', small:'Demir fiyat artışının bütçe aşımına etkisi bu kalemde görülüyor'}],
       chain:[
         {rol:'Talep Oluşturuldu — MLZ-2026-031', kisi:'Hasan Demirci', durum:'olusturdu', tarih:'26 Mayıs 2026'},
         {rol:'Talep Onayı', kisi:'Baran Yıldız', durum:'onaylandi', tarih:'28 Mayıs 2026'},
@@ -324,7 +332,8 @@
       tarih:'10 Haziran 2026', termin:'14 Temmuz 2026 (planlı, sevkiyat programlı)', odeme:'Teslim sonrası belirlenecek',
       kalemler:[{ad:'C35/45 hazır beton', miktar:'420 m³', tutar:798000}],
       aciklama:'Liman Lojistik Merkezi zemin döşeme betonu için sipariş edilen 420 m³ C35/45 beton, Trakya Beton Santrali tarafından 14 Temmuz 2026 sevkiyatı için programlandı. Trakya’nın 12 Mayıs’taki ayrı bir eski sevkiyatında yaşanan 3 günlük gecikme tedarikçi performans skoruna yansımıştı; bu sipariş henüz teslim edilmedi.',
-      baglantilar:[{ic:'fa-building', lbl:'Trakya Beton Santrali — Tedarikçi Kartı', href:'crm-satinalma-tedarikci-detay.html?tdr=TDR-02'}],
+      baglantilar:[{ic:'fa-building', lbl:'Trakya Beton Santrali — Tedarikçi Kartı', href:'crm-satinalma-tedarikci-detay.html?tdr=TDR-02'},
+                    {ic:'fa-sitemap', lbl:'Bütçe Kalemi: Betonarme (Kaba Yapı) — Liman Lojistik Merkezi', href:'crm-finans-butce-detay.html?proje=liman'}],
       chain:[
         {rol:'Sipariş Verildi', kisi:'Baran Yıldız', durum:'olusturdu', tarih:'10 Haziran 2026'},
         {rol:'Tedarikçi Onayı', kisi:'Trakya Beton Santrali', durum:'onaylandi', tarih:'12 Haziran 2026', not:'Sevkiyat 14 Temmuz 2026 için programlandı.'},
@@ -338,7 +347,8 @@
       tarih:'25 Haziran 2026', termin:'9 Temmuz 2026 (planlı)', odeme:'45 gün vade (planlı)',
       kalemler:[{ad:'Şap betonu', miktar:'120 m³', tutar:186000}],
       aciklama:'Vadi Konakları A Blok zemin şap imalatı için sipariş onaylandı; Ege Hazır Beton 9 Temmuz 2026 termini teyit etti. Teslimat henüz gerçekleşmedi.',
-      baglantilar:[{ic:'fa-building', lbl:'Ege Hazır Beton — Tedarikçi Kartı', href:'crm-satinalma-tedarikci-detay.html?tdr=TDR-01'}],
+      baglantilar:[{ic:'fa-building', lbl:'Ege Hazır Beton — Tedarikçi Kartı', href:'crm-satinalma-tedarikci-detay.html?tdr=TDR-01'},
+                    {ic:'fa-sitemap', lbl:'Bütçe Kalemi: Zemin Kaplama & Seramik — Vadi Konakları', href:'crm-finans-butce-detay.html?proje=vadi'}],
       chain:[
         {rol:'Sipariş Verildi', kisi:'Baran Yıldız', durum:'olusturdu', tarih:'25 Haziran 2026'},
         {rol:'Tedarikçi Onayı', kisi:'Ege Hazır Beton', durum:'onaylandi', tarih:'27 Haziran 2026', not:'Termin 9 Temmuz 2026 olarak teyit edildi.'},
@@ -355,7 +365,8 @@
         {ad:'Montaj ve nakliye', miktar:'1 kalem', tutar:18000}
       ],
       aciklama:'Merkez Şantiye deposunun raf sistemi yenilemesi için hazırlanan sipariş taslağı henüz onaya gönderilmedi.',
-      baglantilar:[{ic:'fa-building', lbl:'Boğaziçi Yapı Market — Tedarikçi Kartı', href:'crm-satinalma-tedarikci-detay.html?tdr=TDR-04'}],
+      baglantilar:[{ic:'fa-building', lbl:'Boğaziçi Yapı Market — Tedarikçi Kartı', href:'crm-satinalma-tedarikci-detay.html?tdr=TDR-04'},
+                    {ic:'fa-sitemap', lbl:'Bütçe Kalemi: Şantiye Genel Giderleri — Merkez Şantiye', href:'crm-finans-butce-detay.html?proje=merkez'}],
       chain:[
         {rol:'Taslak Oluşturuldu', kisi:'Recep Yaman', durum:'olusturdu', tarih:'1 Temmuz 2026', not:'Depo raf sistemi talebi taslak halinde; henüz onaya gönderilmedi.'},
         {rol:'Onaya Gönderim', kisi:'—', durum:'sirada', tarih:null}
@@ -427,7 +438,9 @@
     item.irsaliyeler.forEach(function(i){
       h += '<div class="irs-row"><div class="irs-ico' + (i.mismatch ? ' mismatch' : '') + '"><i class="fa-solid ' + (i.mismatch ? 'fa-triangle-exclamation' : 'fa-truck-ramp-box') + '"></i></div>'
          + '<div class="irs-info"><b>' + i.no + '</b><span class="irs-date">' + i.tarih + '</span>'
-         + '<p>' + i.icerik + '</p><span class="irs-stok">' + i.stok + '</span></div></div>';
+         + '<p>' + i.icerik + '</p><span class="irs-stok">' + i.stok + '</span>'
+         + (i.teslimAlan ? '<span class="irs-teslim"><i class="fa-solid fa-user-check"></i> Teslim alan: ' + i.teslimAlan + '</span>' : '')
+         + '</div></div>';
     });
     document.getElementById('irsaliyeBody').innerHTML = h;
   }
@@ -472,6 +485,7 @@
       var hideLink = isTedarikci && (GV.role === 'sef' || GV.role === 'personel');
       h += '<div class="rel-form"><div class="rel-ico"><i class="fa-solid ' + b.ic + '"></i></div><div class="rel-info">'
          + (hideLink ? '<span class="rel-plain">' + b.lbl + '</span>' : '<a href="' + b.href + '">' + b.lbl + '</a>')
+         + (b.small ? '<span class="rel-small">' + b.small + '</span>' : '')
          + '</div></div>';
     });
     document.getElementById('baglantiBody').innerHTML = h;
