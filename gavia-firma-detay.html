@@ -209,6 +209,46 @@ body{font-family:var(--font);color:var(--on-dark)}
 .pc-main .gv-notfound .btn-acc:hover{background:var(--gv-mint-bright)}
 .pc-main .gv-notfound .btn-ghost{background:transparent;color:var(--on-dark);border:1px solid var(--gv-border-dark)}
 .pc-main .gv-notfound .btn-ghost:hover{border-color:var(--gv-mint);color:#fff}
+
+/* ---- §22 — Kullanım Analitiği: haftalık trend (gavia-panel.html .growth-chart deseninin
+   birebir devralımı — sayfa-lokal kopya, ortak dosyaya taşınmadı) ---- */
+.growth-chart{display:flex;align-items:flex-end;gap:12px;height:100px;padding:6px 2px 0}
+.growth-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px}
+.growth-bar-track{width:100%;max-width:34px;flex:none;display:flex;align-items:flex-end;justify-content:center}
+.growth-bar{width:100%;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,var(--gv-mint-bright),var(--gv-mint));transition:.3s var(--ease)}
+.growth-val{font-size:11px;font-weight:800;color:#fff}
+.growth-lbl{font-size:10.5px;color:var(--on-dark-faint);margin-top:1px}
+.pc-mini-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}
+.pc-mini-kpi{background:rgba(255,255,255,.02);border:1px solid var(--gv-border-dark);border-radius:var(--r-md);padding:14px 16px}
+.pc-mini-kpi b{display:block;font-size:19px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+.pc-mini-kpi span{font-size:11px;color:var(--on-dark-mut)}
+
+/* ---- §22 — Audit Özeti: crm-ayarlar-log.html'in log-row dilinin (aktör cümlesi + modül
+   pill + zaman) dark platform yüzeyine uyarlanmış hâli (o dosya OKUNDU, YAZILMADI) ---- */
+.pc-log-row{display:flex;align-items:flex-start;gap:13px;padding:13px 22px;border-bottom:1px solid var(--gv-border-dark)}
+.pc-log-row:last-child{border-bottom:none}
+.pc-log-ico{width:34px;height:34px;flex:none;border-radius:9px;display:grid;place-items:center;font-size:13px;margin-top:1px;background:rgba(255,255,255,.05);color:var(--on-dark-mut)}
+.pc-log-ico.ok{background:var(--gv-mint-glow);color:var(--gv-mint-bright)}
+.pc-log-ico.warn{background:rgba(169,121,8,.18);color:var(--warn)}
+.pc-log-ico.danger{background:rgba(211,71,71,.16);color:#e08282}
+.pc-log-ico.info{background:rgba(59,111,212,.18);color:var(--info)}
+.pc-log-body{flex:1;min-width:0;line-height:1.45}
+.pc-log-line{font-size:13px;color:var(--on-dark)}
+.pc-log-line b{color:#fff;font-weight:700}
+.pc-log-meta{margin-top:4px;font-size:11px;color:var(--on-dark-mut);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pc-log-meta .lm-mod{font-weight:700;color:var(--on-dark);background:rgba(255,255,255,.05);border:1px solid var(--gv-border-dark);padding:1px 8px;border-radius:99px;font-size:10px}
+.pc-log-time{flex:none;font-size:11px;color:var(--on-dark-faint);font-variant-numeric:tabular-nums;margin-top:2px}
+
+/* ---- §22 — Paket Değişikliği Geçmişi: basit dikey zaman çizelgesi ---- */
+.pc-tl{padding:20px 22px}
+.pc-tl-item{position:relative;padding-left:26px;padding-bottom:20px}
+.pc-tl-item:last-child{padding-bottom:0}
+.pc-tl-item::before{content:"";position:absolute;left:5px;top:16px;bottom:-4px;width:1px;background:var(--gv-border-dark)}
+.pc-tl-item:last-child::before{display:none}
+.pc-tl-dot{position:absolute;left:0;top:3px;width:11px;height:11px;border-radius:50%;background:var(--gv-mint);box-shadow:0 0 0 3px var(--gv-mint-glow)}
+.pc-tl-date{font-size:11px;color:var(--on-dark-mut);font-weight:700;margin-bottom:3px}
+.pc-tl-title{font-size:13.5px;font-weight:700;color:#fff;margin-bottom:3px}
+.pc-tl-detail{font-size:12px;color:var(--on-dark-mut);line-height:1.5}
 </style>
 </head>
 <body>
@@ -221,6 +261,8 @@ body{font-family:var(--font);color:var(--on-dark)}
       <a href="gavia-panel.html"><i class="fa-solid fa-gauge-high"></i> Genel Bakış</a>
       <a href="gavia-firmalar.html" class="is-on"><i class="fa-solid fa-building"></i> Firmalar</a>
       <a href="gavia-paketler.html"><i class="fa-solid fa-box-open"></i> Paketler</a>
+      <a href="gavia-mrr-raporu.html"><i class="fa-solid fa-chart-line"></i> MRR Raporu</a>
+      <a href="gavia-churn-riski.html"><i class="fa-solid fa-triangle-exclamation"></i> Churn Riski</a>
     </nav>
     <div class="pc-top-r">
       <div class="pc-persona">
@@ -257,6 +299,11 @@ body{font-family:var(--font);color:var(--on-dark)}
       <button class="pc-tab" data-tab="kullanim" role="tab" aria-selected="false"><i class="fa-solid fa-gauge-simple-high"></i> Kullanım &amp; Limitler</button>
       <button class="pc-tab" data-tab="fatura" role="tab" aria-selected="false"><i class="fa-solid fa-file-invoice"></i> Fatura Geçmişi</button>
       <button class="pc-tab" data-tab="moduller" role="tab" aria-selected="false"><i class="fa-solid fa-puzzle-piece"></i> Modüller</button>
+      <button class="pc-tab" data-tab="analitik" role="tab" aria-selected="false"><i class="fa-solid fa-chart-line"></i> Kullanım Analitiği</button>
+      <button class="pc-tab" data-tab="modulraporu" role="tab" aria-selected="false"><i class="fa-solid fa-square-poll-vertical"></i> Modül Kullanım Raporu</button>
+      <button class="pc-tab" data-tab="destek" role="tab" aria-selected="false"><i class="fa-solid fa-headset"></i> Destek Talepleri</button>
+      <button class="pc-tab" data-tab="audit" role="tab" aria-selected="false"><i class="fa-solid fa-shield-halved"></i> Audit Özeti</button>
+      <button class="pc-tab" data-tab="paketgecmisi" role="tab" aria-selected="false"><i class="fa-solid fa-clock-rotate-left"></i> Paket Değişikliği Geçmişi</button>
     </div>
 
     <!-- 6 panel: statik bake — DEFAULT firma (yapitas, FIRMS map verbatim); JS
@@ -385,6 +432,11 @@ body{font-family:var(--font);color:var(--on-dark)}
         <div class="pc-card-foot"><i class="fa-solid fa-circle-info"></i> 3 modül tanıtım eklentisi olarak ücretsiz açıktır; MRR'a eklenmez.</div>
       </div>
     </section>
+    <section class="pc-tab-panel" data-panel="analitik" hidden></section>
+    <section class="pc-tab-panel" data-panel="modulraporu" hidden></section>
+    <section class="pc-tab-panel" data-panel="destek" hidden></section>
+    <section class="pc-tab-panel" data-panel="audit" hidden></section>
+    <section class="pc-tab-panel" data-panel="paketgecmisi" hidden></section>
   </main>
 </div>
 <script src="assets/js/ui.js"></script>
@@ -433,7 +485,12 @@ var FIRMS = {
     fatura:{rows:[
       {d:'Temmuz 2026', t:'₺14.900'}, {d:'Haziran 2026', t:'₺14.900'}, {d:'Mayıs 2026', t:'₺13.400'}
     ], toplam:'₺208.600', not:'Toplam, dönemsel fiyat farkı ve tanıtım eklentilerini içerir; ayrıntılı kırılım gösterilmez. Mayıs faturası önceki paket dönemine aittir.'},
-    moduller:{entitled:7, promo:3}
+    moduller:{entitled:7, promo:3},
+    analitik:{trend:[14,15,16,15,17,18], modKullanim:[{ad:'Saha Kayıtları',pct:92},{ad:'Personel & İK',pct:78},{ad:'Satın Alma',pct:65}], ortGunlukAktif:14, oturum7g:96},
+    modulRapor:[{ad:'Saha Kayıtları',kayit:1240,son:'Bugün'},{ad:'Personel & İK',kayit:340,son:'Dün'},{ad:'Satın Alma',kayit:88,son:'2 gün önce'},{ad:'Hakediş & Sözleşme',kayit:12,son:'1 hafta önce'},{ad:'Cariler',kayit:56,son:'3 gün önce'}],
+    destek:[{no:'TCK-2026-041',konu:'Hakediş PDF çıktısında logo hatası',durum:{cls:'wait',lbl:'Beklemede'},oncelik:'Orta',tarih:'28 Haz 2026'},{no:'TCK-2026-033',konu:'Kullanıcı SMS bildirimleri gitmiyor',durum:{cls:'danger',lbl:'Açık · Yüksek'},oncelik:'Yüksek',tarih:'25 Haz 2026'},{no:'TCK-2026-019',konu:'Yeni şantiye ekleme talebi',durum:{cls:'ok',lbl:'Kapandı'},oncelik:'Düşük',tarih:'10 Haz 2026'}],
+    audit:[{ic:'fa-sack-dollar',cls:'ok',aktor:'Sistem',cumle:'Temmuz faturasını tahsil etti — ₺14.900',mod:'Faturalama',tarih:'1 Tem 2026',saat:'09:02'},{ic:'fa-user-plus',cls:'info',aktor:'Nesrin Aydın',cumle:'yeni kullanıcı davet etti — Baran Yıldız (Satın Alma)',mod:'Kullanıcılar',tarih:'28 Haz 2026',saat:'14:20'},{ic:'fa-sliders',cls:'warn',aktor:'Kemal Yapıcıoğlu',cumle:'onay akışı limitini ₺500.000\'e güncelledi',mod:'Onay Akışları',tarih:'22 Haz 2026',saat:'11:47'},{ic:'fa-right-to-bracket',cls:'info',aktor:'Murat Denizli',cumle:'platforma giriş yaptı',mod:'Oturum',tarih:'22 Haz 2026',saat:'08:15'}],
+    paketGecmisi:[{tarih:'18 May 2025',baslik:'Basic → Professional',detay:'Kemal Yapıcıoğlu onayıyla yükseltildi; Satın Alma ve Hakediş modülleri açıldı.'},{tarih:'2 Nis 2025',baslik:'Hesap açıldı — Basic',detay:'Deneme süreci olmadan doğrudan ücretli kayıt.'}]
   },
   miray:{
     name:'Miray Yapı Group', mark:'M', tier:{ic:'fa-crown', lbl:'Enterprise', paid:true},
@@ -458,7 +515,12 @@ var FIRMS = {
     fatura:{rows:[
       {d:'Temmuz 2026', t:'₺26.900'}, {d:'Haziran 2026', t:'₺26.900'}, {d:'Mayıs 2026', t:'₺26.900'}
     ], toplam:'₺699.400 (26 × ₺26.900)', not:'Alt şirketler için ayrı fatura kesilmez; tüm ödemeler bu sözleşmeye dahildir.'},
-    moduller:{entitled:10, promo:0}
+    moduller:{entitled:10, promo:0},
+    analitik:{trend:[36,38,37,39,40,41], modKullanim:[{ad:'Hakediş & Sözleşme',pct:88},{ad:'Saha Kayıtları',pct:85},{ad:'Cariler',pct:71}], ortGunlukAktif:35, oturum7g:210},
+    modulRapor:[{ad:'Hakediş & Sözleşme',kayit:2140,son:'Bugün'},{ad:'Saha Kayıtları',kayit:3860,son:'Bugün'},{ad:'Cariler',kayit:410,son:'Dün'},{ad:'Stok & ERP',kayit:960,son:'2 gün önce'},{ad:'Çoklu Firma Yönetimi',kayit:18,son:'1 hafta önce'}],
+    destek:[{no:'TCK-2026-038',konu:'Alt şirket kullanıcı limiti artırma',durum:{cls:'ok',lbl:'Kapandı'},oncelik:'Orta',tarih:'20 Haz 2026'},{no:'TCK-2026-027',konu:'Stok modülü entegrasyon sorusu',durum:{cls:'ok',lbl:'Kapandı'},oncelik:'Düşük',tarih:'5 Haz 2026'}],
+    audit:[{ic:'fa-sack-dollar',cls:'ok',aktor:'Sistem',cumle:'Haziran faturasını tahsil etti — ₺26.900',mod:'Faturalama',tarih:'1 Haz 2026',saat:'09:00'},{ic:'fa-diagram-project',cls:'info',aktor:'Cem Miray',cumle:'Miray Altyapı Ltd.\'yi alt şirket olarak ekledi',mod:'Firma Yönetimi',tarih:'18 Haz 2026',saat:'16:05'},{ic:'fa-user-plus',cls:'info',aktor:'Cem Miray',cumle:'3 yeni kullanıcı davet etti',mod:'Kullanıcılar',tarih:'12 Haz 2026',saat:'10:30'}],
+    paketGecmisi:[{tarih:'1 Oca 2024',baslik:'Enterprise ile başladı',detay:'Eski fiyat garantisi (₺26.900) bu tarihte sabitlendi; güncel liste fiyatı ₺34.900.'}]
   },
   ege:{
     name:'Ege Modern İnşaat', mark:'E', tier:{ic:'fa-handshake', lbl:'CRM + Sales', paid:true},
@@ -480,7 +542,12 @@ var FIRMS = {
     fatura:{rows:[
       {d:'Temmuz 2026', t:'₺19.900'}, {d:'Haziran 2026', t:'₺19.900'}, {d:'Mayıs 2026', t:'₺19.900'}
     ], toplam:'₺139.300 (7 × ₺19.900)', not:'Katılımdan bu yana paket değişikliği yapılmadı.'},
-    moduller:{entitled:8, promo:0}
+    moduller:{entitled:8, promo:0},
+    analitik:{trend:[8,9,9,10,9,10], modKullanim:[{ad:'Satış CRM',pct:95},{ad:'Cariler',pct:60},{ad:'Şantiye & Saha',pct:55}], ortGunlukAktif:8, oturum7g:54},
+    modulRapor:[{ad:'Satış CRM',kayit:640,son:'Bugün'},{ad:'Cariler',kayit:190,son:'Dün'},{ad:'Şantiye & Saha',kayit:76,son:'3 gün önce'}],
+    destek:[{no:'TCK-2026-044',konu:'Temmuz faturası mutabakat sorunu',durum:{cls:'danger',lbl:'Açık · 6 gündür'},oncelik:'Yüksek',tarih:'26 Haz 2026'},{no:'TCK-2026-030',konu:'Satış hunisi filtre isteği',durum:{cls:'ok',lbl:'Kapandı'},oncelik:'Düşük',tarih:'8 Haz 2026'}],
+    audit:[{ic:'fa-arrow-up-right-dots',cls:'info',aktor:'Sistem',cumle:'CRM + Sales paketine geçişi tamamladı',mod:'Abonelik',tarih:'14 Oca 2026',saat:'10:00'},{ic:'fa-right-to-bracket',cls:'info',aktor:'Serkan Ege',cumle:'platforma giriş yaptı',mod:'Oturum',tarih:'24 Haz 2026',saat:'09:40'},{ic:'fa-triangle-exclamation',cls:'warn',aktor:'Sistem',cumle:'Temmuz faturası vadesi geçti uyarısı gönderdi',mod:'Faturalama',tarih:'4 Tem 2026',saat:'07:00'}],
+    paketGecmisi:[{tarih:'14 Oca 2026',baslik:'Professional → CRM + Sales',detay:'Satış CRM ve Müşteri Portalı açıldı.'},{tarih:'3 Ara 2023',baslik:'Hesap açıldı — Professional',detay:'—'}]
   },
   kuzey:{
     name:'Kuzey Proje Ltd.', mark:'K', tier:{ic:'fa-layer-group', lbl:'Basic · Deneme', paid:false},
@@ -501,7 +568,12 @@ var FIRMS = {
       {l:'Dosya depolama', u:0.6, t:10, s:' GB'}, {l:'Aylık SMS bildirimi', u:40, t:1000}
     ],
     fatura:{empty:true, msg:'Deneme sürecinde — henüz fatura oluşmadı. Deneme 8 Temmuz 2026\'da sona eriyor.'},
-    moduller:{entitled:4, promo:0}
+    moduller:{entitled:4, promo:0},
+    analitik:{trend:[1,2,3,2,3,3], modKullanim:[{ad:'Şantiye & Saha',pct:40},{ad:'Görev Takibi',pct:25},{ad:'Personel & İK',pct:10}], ortGunlukAktif:2, oturum7g:9},
+    modulRapor:[{ad:'Şantiye & Saha',kayit:14,son:'Dün'},{ad:'Görev Takibi',kayit:6,son:'3 gün önce'},{ad:'Personel & İK',kayit:2,son:'1 hafta önce'}],
+    destek:[{no:'TCK-2026-047',konu:'Deneme süresi uzatma talebi',durum:{cls:'wait',lbl:'Beklemede'},oncelik:'Orta',tarih:'1 Tem 2026'}],
+    audit:[{ic:'fa-hourglass-start',cls:'warn',aktor:'Sistem',cumle:'14 günlük deneme sürecini başlattı — Basic paket',mod:'Abonelik',tarih:'24 Haz 2026',saat:'11:15'},{ic:'fa-right-to-bracket',cls:'info',aktor:'Tolga Kuzey',cumle:'platforma giriş yaptı',mod:'Oturum',tarih:'30 Haz 2026',saat:'15:22'}],
+    paketGecmisi:[{tarih:'24 Haz 2026',baslik:'Deneme başlatıldı — Basic',detay:'14 günlük ücretsiz deneme; bitiş 8 Temmuz 2026.'}]
   },
   cinar:{
     name:'Çınar İnşaat', mark:'Ç', tier:{ic:'fa-seedling', lbl:'Ücretsiz', paid:false},
@@ -521,7 +593,12 @@ var FIRMS = {
       {l:'Dosya depolama', u:0.4, t:1, s:' GB'}, {l:'Aylık SMS bildirimi', u:0, t:0, none:true}
     ],
     fatura:{empty:true, msg:'Ücretsiz pakette fatura oluşmaz.'},
-    moduller:{entitled:2, promo:0}
+    moduller:{entitled:2, promo:0},
+    analitik:{trend:[2,2,3,2,2,2], modKullanim:[{ad:'Şantiye & Saha',pct:50},{ad:'Görev Takibi',pct:20}], ortGunlukAktif:2, oturum7g:11},
+    modulRapor:[{ad:'Şantiye & Saha',kayit:9,son:'4 gün önce'},{ad:'Görev Takibi',kayit:3,son:'2 hafta önce'}],
+    destek:[],
+    audit:[{ic:'fa-user-plus',cls:'info',aktor:'Sistem',cumle:'ücretsiz pakete kaydoldu',mod:'Abonelik',tarih:'3 May 2026',saat:'13:10'},{ic:'fa-right-to-bracket',cls:'info',aktor:'Serdar Çınar',cumle:'platforma giriş yaptı',mod:'Oturum',tarih:'15 Haz 2026',saat:'08:55'}],
+    paketGecmisi:[{tarih:'3 May 2026',baslik:'Ücretsiz pakete kaydoldu',detay:'—'}]
   }
 };
 
@@ -722,6 +799,90 @@ document.getElementById('fMeta').innerHTML =
     '<div class="pc-card-body">' + rows + '</div>' +
     (m.promo ? '<div class="pc-card-foot"><i class="fa-solid fa-circle-info"></i> ' + m.promo + ' modül tanıtım eklentisi olarak ücretsiz açıktır; MRR\'a eklenmez.</div>' : '') +
     '</div>';
+})();
+
+/* ---- §22 — Kullanım Analitiği (yeni sekme): kullanım & limitler statik gauge'undan farklı
+   olarak haftalık AKTİF KULLANICI TRENDİ + en çok kullanılan modüller — zaman boyutlu ---- */
+(function(){
+  var a = F.analitik;
+  var maxV = Math.max.apply(null, a.trend);
+  var weeks = ['6 hf önce','5 hf önce','4 hf önce','3 hf önce','2 hf önce','Bu hafta'];
+  var chart = a.trend.map(function(v, i){
+    var h = Math.max(10, Math.round((v / maxV) * 100));
+    return '<div class="growth-col"><div class="growth-bar-track" style="height:' + h + '%"><div class="growth-bar" style="height:100%"></div></div><div class="growth-val">' + v + '</div><div class="growth-lbl">' + weeks[i] + '</div></div>';
+  }).join('');
+  var modRows = a.modKullanim.map(function(m){
+    return '<div class="pc-limit"><div class="pc-limit-top"><b>' + esc(m.ad) + '</b><span>%' + m.pct + ' aktif kullanıcı erişimi</span></div>' +
+      '<div class="pc-limit-track"><div class="pc-limit-fill" style="width:' + m.pct + '%"></div></div></div>';
+  }).join('');
+  document.querySelector('[data-panel="analitik"]').innerHTML =
+    '<div class="pc-grid-2">' +
+      '<div class="pc-card"><div class="pc-card-head"><div><div class="pc-card-title"><i class="fa-solid fa-chart-line"></i> Aktif Kullanıcı Trendi</div><div class="pc-card-sub">Haftalık, son 6 hafta</div></div></div>' +
+      '<div class="pc-card-body"><div class="growth-chart">' + chart + '</div>' +
+      '<div class="pc-mini-kpis"><div class="pc-mini-kpi"><b>' + a.ortGunlukAktif + '</b><span>Ortalama günlük aktif kullanıcı</span></div>' +
+      '<div class="pc-mini-kpi"><b>' + a.oturum7g + '</b><span>Son 7 günde oturum sayısı</span></div></div></div></div>' +
+      '<div class="pc-card"><div class="pc-card-head"><div class="pc-card-title"><i class="fa-solid fa-ranking-star"></i> En Çok Kullanılan Modüller</div></div>' +
+      '<div class="pc-card-body">' + modRows + '</div>' +
+      '<div class="pc-card-foot"><i class="fa-solid fa-circle-info"></i> Yüzde, firma kullanıcılarının son 30 günde ilgili modülü en az bir kez açma oranıdır.</div></div>' +
+    '</div>';
+})();
+
+/* ---- §22 — Modül Kullanım Raporu (yeni sekme): Modüller sekmesi yalnız açık/kapalı
+   gösterir — bu sekme AÇIK modüllerin FİİLİ kullanım hacmini (kayıt sayısı, son kullanım)
+   raporlar ---- */
+(function(){
+  var rows = F.modulRapor.map(function(r){
+    return '<tr><td class="t-strong">' + esc(r.ad) + '</td><td class="num">' + r.kayit.toLocaleString('tr-TR') + ' kayıt</td><td>' + esc(r.son) + '</td></tr>';
+  }).join('');
+  document.querySelector('[data-panel="modulraporu"]').innerHTML =
+    '<div class="pc-card"><div class="pc-card-head"><div><div class="pc-card-title"><i class="fa-solid fa-square-poll-vertical"></i> Modül Kullanım Raporu</div><div class="pc-card-sub">Açık modüllerin fiili kayıt hacmi ve son kullanım tarihi</div></div></div>' +
+    '<div class="pc-card-body flush"><table class="pc-table"><thead><tr><th>Modül</th><th style="text-align:right">Toplam Kayıt</th><th>Son Kullanım</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+    '<div class="pc-card-foot"><i class="fa-solid fa-circle-info"></i> Yalnız firmanın açık olduğu modüller listelenir; kullanılmayan açık modüller bu tabloda görünmeyebilir.</div></div>';
+})();
+
+/* ---- §22 — Destek Talepleri (yeni sekme) ---- */
+(function(){
+  var d = F.destek, html;
+  if(!d.length){
+    html = '<div class="pc-card"><div class="pc-card-body"><div class="pc-empty"><i class="fa-solid fa-headset"></i><p>Bu firmanın açık veya geçmiş bir destek talebi yok.</p></div></div></div>';
+  } else {
+    var rows = d.map(function(t){
+      return '<tr><td class="t-strong">' + esc(t.no) + '</td><td>' + esc(t.konu) + '</td><td>' + esc(t.oncelik) + '</td><td><span class="gstat ' + t.durum.cls + '">' + esc(t.durum.lbl) + '</span></td><td>' + esc(t.tarih) + '</td></tr>';
+    }).join('');
+    html = '<div class="pc-card"><div class="pc-card-head"><div class="pc-card-title"><i class="fa-solid fa-headset"></i> Destek Talepleri</div>' +
+      '<span style="margin-left:auto;font-size:12px;color:var(--on-dark-mut)">' + d.length + ' kayıt</span></div>' +
+      '<div class="pc-card-body flush"><table class="pc-table"><thead><tr><th>No</th><th>Konu</th><th>Öncelik</th><th>Durum</th><th>Tarih</th></tr></thead><tbody>' + rows + '</tbody></table></div></div>';
+  }
+  document.querySelector('[data-panel="destek"]').innerHTML = html;
+})();
+
+/* ---- §22 — Audit Özeti (yeni sekme): dil/desen crm-ayarlar-log.html'den DEVRALINDI
+   (o dosya okundu, değiştirilmedi) — aktör cümlesi + modül pill + zaman, dark yüzeye
+   uyarlanmış .pc-log-* sınıflarıyla ---- */
+(function(){
+  var rows = F.audit.map(function(e){
+    return '<div class="pc-log-row"><div class="pc-log-ico ' + e.cls + '"><i class="fa-solid ' + e.ic + '"></i></div>' +
+      '<div class="pc-log-body"><div class="pc-log-line"><b>' + esc(e.aktor) + '</b> ' + esc(e.cumle) + '</div>' +
+      '<div class="pc-log-meta"><span class="lm-mod">' + esc(e.mod) + '</span><span>' + esc(e.tarih) + '</span></div></div>' +
+      '<div class="pc-log-time">' + esc(e.saat) + '</div></div>';
+  }).join('');
+  document.querySelector('[data-panel="audit"]').innerHTML =
+    '<div class="pc-card"><div class="pc-card-head"><div><div class="pc-card-title"><i class="fa-solid fa-shield-halved"></i> Audit Özeti</div><div class="pc-card-sub">Firma yetkilileri ve platform sisteminin bu firma üzerindeki son işlemleri</div></div></div>' +
+    '<div class="pc-card-body flush">' + rows + '</div>' +
+    '<div class="pc-card-foot"><i class="fa-solid fa-circle-info"></i> Firma içi tam audit log için CRM &gt; Ayarlar &gt; İşlem Kayıtları; burası platform-seviyesi özet.</div></div>';
+})();
+
+/* ---- §22 — Paket Değişikliği Geçmişi (yeni sekme): Abonelik & Paket sekmesi yalnız
+   MEVCUT paketi + değiştirme seçicisini gösterir — bu sekme GEÇMİŞ değişiklikleri
+   kronolojik olarak listeler ---- */
+(function(){
+  var items = F.paketGecmisi.map(function(p){
+    return '<div class="pc-tl-item"><div class="pc-tl-dot"></div><div class="pc-tl-date">' + esc(p.tarih) + '</div>' +
+      '<div class="pc-tl-title">' + esc(p.baslik) + '</div><div class="pc-tl-detail">' + esc(p.detay) + '</div></div>';
+  }).join('');
+  document.querySelector('[data-panel="paketgecmisi"]').innerHTML =
+    '<div class="pc-card"><div class="pc-card-head"><div class="pc-card-title"><i class="fa-solid fa-clock-rotate-left"></i> Paket Değişikliği Geçmişi</div></div>' +
+    '<div class="pc-tl">' + items + '</div></div>';
 })();
 
 /* ---- sekme motoru ---- */
