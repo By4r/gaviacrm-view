@@ -166,12 +166,21 @@ th.is-today .dh-d{color:var(--acc-ink)}
 .tab-panel{animation:tabIn .22s var(--ease)}
 @keyframes tabIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-/* ============ Taşeron adam-gün grid'i ============ */
+/* ============ Taşeron puantajı — kişi bazlı grid (D19 revizesi — Bireysel sekmenin
+   grid desenine hizalı: .pt-mark hücre dili, aynı STATUS seti). ============ */
 #tblTaseron{min-width:900px;border-collapse:separate;border-spacing:0}
 #tblTaseron th,#tblTaseron td{border-bottom:1px solid var(--line)}
 #tblTaseron tbody tr:last-child td{border-bottom:none}
 #tblTaseron td:first-child,#tblTaseron th:first-child{position:sticky;left:0;background:var(--paper);z-index:2}
 #tblTaseron tbody tr:hover td:first-child{background:var(--bg)}
+
+/* ============ Firma bazlı haftalık özet — ALT BLOK (S7 kararı; hakediş TH-2026-###
+   bu adam-gün toplamlarına bağlı). Kişi grid'inden türetilir, ayrı hardcode veri değil. ---- */
+#tblTaseronOzet{min-width:760px;border-collapse:separate;border-spacing:0}
+#tblTaseronOzet th,#tblTaseronOzet td{border-bottom:1px solid var(--line)}
+#tblTaseronOzet tbody tr:last-child td{border-bottom:none}
+#tblTaseronOzet td:first-child,#tblTaseronOzet th:first-child{position:sticky;left:0;background:var(--paper);z-index:2}
+#tblTaseronOzet tbody tr:hover td:first-child{background:var(--bg)}
 .tg-ekip{font-size:12.5px;font-weight:700;color:var(--ink-2);white-space:nowrap}
 .tg-day{width:34px;height:34px;margin:0 auto;border-radius:var(--r-sm);display:grid;place-items:center;
   font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;background:var(--bg);color:var(--ink-2)}
@@ -310,19 +319,49 @@ th.is-today .dh-d{color:var(--acc-ink)}
 
     </section>
 
-    <!-- ============ TAŞERON — firma bazlı adam-gün grid'i (madde 16.2)
-         Kişi adı LİSTELENMEZ; hücre = o gün sahadaki kişi sayısı, ekip büyüklüğünü aşmaz.
+    <!-- ============ TAŞERON — kişi bazlı puantaj (D19 revizesi — Beyar onayıyla 5C'deki
+         "kişi adı listelenmez" kuralı geri alındı, bkz. shell.js DALGA 19). Grid Bireysel
+         sekmenin desenine hizalı: aynı STATUS seti + .pt-mark hücre dili. Kalfalar kendi
+         satırıyla, "Kalfa" rozetiyle (mevcut .gtag dilinden) görünür; kadroya DAHİLDİR,
+         üzerine eklenmez (24 kişi = 10 Demir-Beton + 6 ElektroMek + 8 Yalıtım Kardeşler).
          2 Temmuz (bugün) değerleri yemekhane taşeron öğle sayılarıyla birebir: Demir-Beton 10 ·
-         ElektroMek 6 · Yalıtım Kardeşler 8 (bkz. crm-operasyon-yemekhane.html + shell.js kanonik
-         yorum bloğu). Geçmiş günler ekip büyüklüğü sınırı içinde hafif varyasyonla üretildi. -->
+         ElektroMek 6 · Yalıtım Kardeşler 8. Firma bazlı adam-gün özeti ALT BLOK olarak
+         korunur (S7 kararı) — taşeron hakedişleri (TH-2026-###) buna bağlı; kişi grid'inden
+         türetilir, ayrı sabit veri değildir. -->
     <section class="tab-panel" data-tab-panel="taseron" role="tabpanel" aria-label="Taşeron" hidden>
-      <div class="gv-card">
+      <div class="gv-card" style="margin-bottom:20px">
         <div class="gc-head">
-          <div class="gc-title"><i class="fa-solid fa-people-group"></i> Taşeron Adam-Gün Puantajı</div>
+          <div class="gc-title"><i class="fa-solid fa-people-group"></i> Taşeron Puantajı</div>
           <span class="ph-sub" style="margin:0" id="tgSub">24 kişi bugün sahada · 3 firma · haftalık 90 adam-gün</span>
         </div>
         <div class="gc-body flush">
           <table class="gtable" id="tblTaseron">
+            <thead>
+              <tr>
+                <th class="col-per">Personel</th>
+                <th class="col-poz">Görev</th>
+                <th class="col-gun">Pzt <span style="display:block;font-weight:800;color:var(--ink)">29</span></th>
+                <th class="col-gun">Sal <span style="display:block;font-weight:800;color:var(--ink)">30</span></th>
+                <th class="col-gun">Çar <span style="display:block;font-weight:800;color:var(--ink)">1</span></th>
+                <th class="col-gun is-today">Per <span style="display:block;font-weight:800;color:var(--acc-ink)">2</span></th>
+                <th class="col-gun">Cum <span style="display:block;font-weight:800;color:var(--ink)">3</span></th>
+                <th class="col-gun">Cmt <span style="display:block;font-weight:800;color:var(--ink)">4</span></th>
+                <th class="col-gun">Paz <span style="display:block;font-weight:800;color:var(--ink)">5</span></th>
+                <th class="col-hafta num">Haftalık</th>
+              </tr>
+            </thead>
+            <tbody id="tgBody"><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">HP</div><div class="pp-info"><b>Hüseyin Palabıyık</b><span>Demir-Beton İnş. Ltd.</span></div></div></td><td>Kalıpçı <span class="gtag mint">Kalfa</span></td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">MS</div><div class="pp-info"><b>Mehmet Sarıkuş</b><span>Demir-Beton İnş. Ltd.</span></div></div></td><td>Kalıpçı</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">SA</div><div class="pp-info"><b>Süleyman Akbulut</b><span>Demir-Beton İnş. Ltd.</span></div></div></td><td>Kalıpçı</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">HD</div><div class="pp-info"><b>Hamza Dinçer</b><span>Demir-Beton İnş. Ltd.</span></div></div></td><td>Kalıpçı</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">ÜY</div><div class="pp-info"><b>Ünal Yavuzer</b><span>Demir-Beton İnş. Ltd.</span></div></div></td><td>Düz İşçi</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark yok" data-tip="Çar 1 · Devamsız — mazeretsiz" tabindex="0"><i class="fa-solid fa-xmark"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">3 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">BS</div><div class="pp-info"><b>Bekir Sarıoğlu</b><span>Demir-Beton İnş. Ltd.</span></div></div></td><td>Demir Ustası <span class="gtag mint">Kalfa</span></td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">YT</div><div class="pp-info"><b>Yakup Tosun</b><span>Demir-Beton İnş. Ltd.</span></div></div></td><td>Demir Ustası</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">EK</div><div class="pp-info"><b>Enver Kılıçarslan</b><span>Demir-Beton İnş. Ltd.</span></div></div></td><td>Demir Ustası</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">AB</div><div class="pp-info"><b>Ayhan Böke</b><span>Demir-Beton İnş. Ltd.</span></div></div></td><td>Demir Ustası</td><td class="col-gun"><div class="pt-mark yok" data-tip="Pzt 29 · Devamsız — mazeretsiz" tabindex="0"><i class="fa-solid fa-xmark"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">3 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">CŞ</div><div class="pp-info"><b>Cevdet Şahinkaya</b><span>Demir-Beton İnş. Ltd.</span></div></div></td><td>Düz İşçi</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark izin" data-tip="Çar 1 · İzinli" tabindex="0"><i class="fa-solid fa-umbrella-beach"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">3 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">MD</div><div class="pp-info"><b>Mustafa Doğanay</b><span>ElektroMek Taahhüt</span></div></div></td><td>Elektrik Ustası <span class="gtag mint">Kalfa</span></td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">SÜ</div><div class="pp-info"><b>Serkan Ünlüer</b><span>ElektroMek Taahhüt</span></div></div></td><td>Elektrik Ustası</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">BY</div><div class="pp-info"><b>Barış Yetkin</b><span>ElektroMek Taahhüt</span></div></div></td><td>Elektrik Ustası</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">TÖ</div><div class="pp-info"><b>Tuncay Özdemirci</b><span>ElektroMek Taahhüt</span></div></div></td><td>Elektrik Ustası</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">FS</div><div class="pp-info"><b>Ferhat Sarpkaya</b><span>ElektroMek Taahhüt</span></div></div></td><td>Kaynakçı</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">UB</div><div class="pp-info"><b>Uğur Beyazıt</b><span>ElektroMek Taahhüt</span></div></div></td><td>Düz İşçi</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark yok" data-tip="Sal 30 · Devamsız — mazeretsiz" tabindex="0"><i class="fa-solid fa-xmark"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">3 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">SB</div><div class="pp-info"><b>Salih Bingöl</b><span>Yalıtım Kardeşler</span></div></div></td><td>Yalıtım Ustası <span class="gtag mint">Kalfa</span></td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">ST</div><div class="pp-info"><b>Sinan Tuncel</b><span>Yalıtım Kardeşler</span></div></div></td><td>Yalıtım Ustası</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">ED</div><div class="pp-info"><b>Erkan Doğruel</b><span>Yalıtım Kardeşler</span></div></div></td><td>Yalıtım Ustası</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">KB</div><div class="pp-info"><b>Kâmil Bozkır</b><span>Yalıtım Kardeşler</span></div></div></td><td>Yalıtım Ustası</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">EK</div><div class="pp-info"><b>Ercan Kavaklı</b><span>Yalıtım Kardeşler</span></div></div></td><td>Yalıtım Ustası <span class="gtag mint">Kalfa</span></td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">LA</div><div class="pp-info"><b>Levent Akçay</b><span>Yalıtım Kardeşler</span></div></div></td><td>Yalıtım Ustası</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">4 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">GE</div><div class="pp-info"><b>Gökhan Efeoğlu</b><span>Yalıtım Kardeşler</span></div></div></td><td>Yalıtım Ustası</td><td class="col-gun"><div class="pt-mark tam" data-tip="Pzt 29 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark izin" data-tip="Çar 1 · İzinli" tabindex="0"><i class="fa-solid fa-umbrella-beach"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">3 gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">OS</div><div class="pp-info"><b>Okan Sarıgül</b><span>Yalıtım Kardeşler</span></div></div></td><td>Düz İşçi</td><td class="col-gun"><div class="pt-mark yok" data-tip="Pzt 29 · Devamsız — mazeretsiz" tabindex="0"><i class="fa-solid fa-xmark"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Sal 30 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark tam" data-tip="Çar 1 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun is-today"><div class="pt-mark tam" data-tip="Per 2 · Tam gün" tabindex="0"><i class="fa-solid fa-check"></i></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0"></div></td><td class="col-gun"><div class="pt-mark ht" data-tip="Paz 5 · Hafta tatili (HT)" tabindex="0"><i class="fa-solid fa-moon"></i></div></td><td class="num"><div class="pt-total">3 gün<span>4 gün işlendi</span></div></td></tr></tbody>
+          </table>
+        </div>
+        <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Taşeron puantajı kişi bazında tutulur; firma adam-gün özeti hakediş için ayrıca korunur (aşağıdaki tablo). Kalfalar ekibin üyesi olarak kendi satırıyla görünür.</span></div>
+      </div>
+
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-file-invoice-dollar"></i> Firma Bazlı Haftalık Özet</div>
+        </div>
+        <div class="gc-body flush">
+          <table class="gtable" id="tblTaseronOzet">
             <thead>
               <tr>
                 <th class="col-per">Firma</th>
@@ -337,10 +376,10 @@ th.is-today .dh-d{color:var(--acc-ink)}
                 <th class="col-hafta num">Haftalık Adam-Gün</th>
               </tr>
             </thead>
-            <tbody id="tgBody"><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)"><i class="fa-solid fa-people-group"></i></div><div class="pp-info"><b>Demir-Beton İnş. Ltd.</b><span>Vadi Konakları</span></div></div></td><td class="tg-ekip">10 kişilik ekip</td><td class="col-gun"><div class="tg-day" data-tip="Pzt 29 · 9 kişi sahada" tabindex="0">9</div></td><td class="col-gun"><div class="tg-day" data-tip="Sal 30 · 10 kişi sahada" tabindex="0">10</div></td><td class="col-gun"><div class="tg-day" data-tip="Çar 1 · 8 kişi sahada" tabindex="0">8</div></td><td class="col-gun is-today"><div class="tg-day today" data-tip="Per 2 · 10 kişi sahada" tabindex="0">10</div></td><td class="col-gun"><div class="tg-day gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0">–</div></td><td class="col-gun"><div class="tg-day gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0">–</div></td><td class="col-gun"><div class="tg-day ht" data-tip="Paz 5 · Hafta tatili" tabindex="0">–</div></td><td class="num"><div class="tg-total">37 adam-gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)"><i class="fa-solid fa-people-group"></i></div><div class="pp-info"><b>ElektroMek Taahhüt</b><span>Vadi Konakları</span></div></div></td><td class="tg-ekip">6 kişilik ekip</td><td class="col-gun"><div class="tg-day" data-tip="Pzt 29 · 6 kişi sahada" tabindex="0">6</div></td><td class="col-gun"><div class="tg-day" data-tip="Sal 30 · 5 kişi sahada" tabindex="0">5</div></td><td class="col-gun"><div class="tg-day" data-tip="Çar 1 · 6 kişi sahada" tabindex="0">6</div></td><td class="col-gun is-today"><div class="tg-day today" data-tip="Per 2 · 6 kişi sahada" tabindex="0">6</div></td><td class="col-gun"><div class="tg-day gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0">–</div></td><td class="col-gun"><div class="tg-day gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0">–</div></td><td class="col-gun"><div class="tg-day ht" data-tip="Paz 5 · Hafta tatili" tabindex="0">–</div></td><td class="num"><div class="tg-total">23 adam-gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)"><i class="fa-solid fa-people-group"></i></div><div class="pp-info"><b>Yalıtım Kardeşler</b><span>Liman Lojistik Merkezi</span></div></div></td><td class="tg-ekip">8 kişilik ekip</td><td class="col-gun"><div class="tg-day" data-tip="Pzt 29 · 7 kişi sahada" tabindex="0">7</div></td><td class="col-gun"><div class="tg-day" data-tip="Sal 30 · 8 kişi sahada" tabindex="0">8</div></td><td class="col-gun"><div class="tg-day" data-tip="Çar 1 · 7 kişi sahada" tabindex="0">7</div></td><td class="col-gun is-today"><div class="tg-day today" data-tip="Per 2 · 8 kişi sahada" tabindex="0">8</div></td><td class="col-gun"><div class="tg-day gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0">–</div></td><td class="col-gun"><div class="tg-day gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0">–</div></td><td class="col-gun"><div class="tg-day ht" data-tip="Paz 5 · Hafta tatili" tabindex="0">–</div></td><td class="num"><div class="tg-total">30 adam-gün<span>4 gün işlendi</span></div></td></tr></tbody>
+            <tbody id="tgOzetBody"><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)"><i class="fa-solid fa-people-group"></i></div><div class="pp-info"><b>Demir-Beton İnş. Ltd.</b><span>Vadi Konakları</span></div></div></td><td class="tg-ekip">10 kişilik ekip</td><td class="col-gun"><div class="tg-day" data-tip="Pzt 29 · 9 kişi sahada" tabindex="0">9</div></td><td class="col-gun"><div class="tg-day" data-tip="Sal 30 · 10 kişi sahada" tabindex="0">10</div></td><td class="col-gun"><div class="tg-day" data-tip="Çar 1 · 8 kişi sahada" tabindex="0">8</div></td><td class="col-gun is-today"><div class="tg-day today" data-tip="Per 2 · 10 kişi sahada" tabindex="0">10</div></td><td class="col-gun"><div class="tg-day gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0">–</div></td><td class="col-gun"><div class="tg-day gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0">–</div></td><td class="col-gun"><div class="tg-day ht" data-tip="Paz 5 · Hafta tatili" tabindex="0">–</div></td><td class="num"><div class="tg-total">37 adam-gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)"><i class="fa-solid fa-people-group"></i></div><div class="pp-info"><b>ElektroMek Taahhüt</b><span>Vadi Konakları</span></div></div></td><td class="tg-ekip">6 kişilik ekip</td><td class="col-gun"><div class="tg-day" data-tip="Pzt 29 · 6 kişi sahada" tabindex="0">6</div></td><td class="col-gun"><div class="tg-day" data-tip="Sal 30 · 5 kişi sahada" tabindex="0">5</div></td><td class="col-gun"><div class="tg-day" data-tip="Çar 1 · 6 kişi sahada" tabindex="0">6</div></td><td class="col-gun is-today"><div class="tg-day today" data-tip="Per 2 · 6 kişi sahada" tabindex="0">6</div></td><td class="col-gun"><div class="tg-day gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0">–</div></td><td class="col-gun"><div class="tg-day gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0">–</div></td><td class="col-gun"><div class="tg-day ht" data-tip="Paz 5 · Hafta tatili" tabindex="0">–</div></td><td class="num"><div class="tg-total">23 adam-gün<span>4 gün işlendi</span></div></td></tr><tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)"><i class="fa-solid fa-people-group"></i></div><div class="pp-info"><b>Yalıtım Kardeşler</b><span>Liman Lojistik Merkezi</span></div></div></td><td class="tg-ekip">8 kişilik ekip</td><td class="col-gun"><div class="tg-day" data-tip="Pzt 29 · 7 kişi sahada" tabindex="0">7</div></td><td class="col-gun"><div class="tg-day" data-tip="Sal 30 · 8 kişi sahada" tabindex="0">8</div></td><td class="col-gun"><div class="tg-day" data-tip="Çar 1 · 7 kişi sahada" tabindex="0">7</div></td><td class="col-gun is-today"><div class="tg-day today" data-tip="Per 2 · 8 kişi sahada" tabindex="0">8</div></td><td class="col-gun"><div class="tg-day gelecek" data-tip="Cum 3 · Henüz işlenmedi" tabindex="0">–</div></td><td class="col-gun"><div class="tg-day gelecek" data-tip="Cmt 4 · Henüz işlenmedi" tabindex="0">–</div></td><td class="col-gun"><div class="tg-day ht" data-tip="Paz 5 · Hafta tatili" tabindex="0">–</div></td><td class="num"><div class="tg-total">30 adam-gün<span>4 gün işlendi</span></div></td></tr></tbody>
           </table>
         </div>
-        <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Taşeron puantajı firma bazında tutulur; kişi adı listelenmez. Hücre değeri o gün sahadaki kişi sayısıdır, ekip büyüklüğünü aşamaz.</span></div>
+        <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Hücre değeri o gün sahadaki kişi sayısıdır (kişi satırlarından türetilir), ekip büyüklüğünü aşamaz. Taşeron hakedişleri (TH-2026-###) bu adam-gün toplamlarına bağlıdır.</span></div>
       </div>
     </section>
   </main>
@@ -766,7 +805,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
      ileri hafta yok. Günlük-giriş sim'i yalnız kanonik haftada erişilebilir. ---- */
   function updateHeads(){
     var days = curDays();
-    ['tblPuantaj','tblTaseron'].forEach(function(tid){
+    ['tblPuantaj','tblTaseron','tblTaseronOzet'].forEach(function(tid){
       var ths = document.querySelectorAll('#'+tid+' thead .col-gun');
       Array.prototype.forEach.call(ths, function(th, i){
         var today = WEEK === 0 && i === TODAY_IDX;
@@ -800,55 +839,158 @@ th.is-today .dh-d{color:var(--acc-ink)}
 
   render();
 
-  /* ============ Taşeron adam-gün grid'i (madde 16.2) — kişi adı YOK, firma bazlı sayım.
-     2 Temmuz (bugün, TODAY_IDX) değerleri yemekhane taşeron öğle sayılarıyla birebir:
-     Demir-Beton 10 · ElektroMek 6 · Yalıtım Kardeşler 8. Geçmiş günler ekip büyüklüğü
-     sınırını aşmayan hafif varyasyonla üretildi (bkz. crm-operasyon-yemekhane.html). ---- */
+  /* ============ Taşeron puantajı — kişi bazlı (D19 revizesi, madde 5+6). Kalfa-kordon:
+     5 kalfa 24 kişi sayısına DAHİLDİR, üzerine EKLENMEZ. Ekip içi sıra KANONİKTİR (Cum/Cmt
+     eksik-gün ataması çıktı sayfasında bu sırayı kullanır — bkz. shell.js DALGA 19).
+     İşlenen 4 gün (Pzt–Per) eksik-gün ataması D19'da deterministik yazılı, uydurma yok:
+     Demir-Beton Pzt −1 Ayhan Böke(yok) · Çar −2 Cevdet Şahinkaya(izin)+Ünal Yavuzer(yok);
+     ElektroMek Sal −1 Uğur Beyazıt(yok); Yalıtım K. Pzt −1 Okan Sarıgül(yok) · Çar −1
+     Gökhan Efeoğlu(izin). Günlük toplamlar B1-B3 kordonuyla birebir: 9·10·8·10 / 6·5·6·6 /
+     7·8·7·8 — bu toplamlar TASERON_FIRMA'da AYRICA tutulmaz, kişi satırlarından türetilir
+     (bkz. renderTaseron firma özet bloğu). ---- */
+  var TASERON_FIRMA = [
+    {ad:'Demir-Beton İnş. Ltd.', santiye:'vadi',  ekip:10, prevToplam:58},
+    {ad:'ElektroMek Taahhüt',    santiye:'vadi',  ekip:6,  prevToplam:34},
+    {ad:'Yalıtım Kardeşler',     santiye:'liman', ekip:8,  prevToplam:44}
+  ];
   var TASERON = [
-    {ad:'Demir-Beton İnş. Ltd.', santiye:'vadi',  ekip:10, gunler:[9,10,8,10], prevToplam:58},
-    {ad:'ElektroMek Taahhüt',    santiye:'vadi',  ekip:6,  gunler:[6,5,6,6],  prevToplam:34},
-    {ad:'Yalıtım Kardeşler',     santiye:'liman', ekip:8,  gunler:[7,8,7,8],  prevToplam:44}
+    /* Demir-Beton İnş. Ltd. — Vadi Konakları — kalıp ekibi (5) */
+    {ad:'Hüseyin Palabıyık', poz:'Kalıpçı',         firma:'Demir-Beton İnş. Ltd.', kalfa:true,  gunler:['tam','tam','tam','tam']},
+    {ad:'Mehmet Sarıkuş',    poz:'Kalıpçı',         firma:'Demir-Beton İnş. Ltd.', kalfa:false, gunler:['tam','tam','tam','tam']},
+    {ad:'Süleyman Akbulut',  poz:'Kalıpçı',         firma:'Demir-Beton İnş. Ltd.', kalfa:false, gunler:['tam','tam','tam','tam']},
+    {ad:'Hamza Dinçer',      poz:'Kalıpçı',         firma:'Demir-Beton İnş. Ltd.', kalfa:false, gunler:['tam','tam','tam','tam']},
+    {ad:'Ünal Yavuzer',      poz:'Düz İşçi',        firma:'Demir-Beton İnş. Ltd.', kalfa:false, gunler:['tam','tam','yok','tam']},
+    /* demir ekibi (5) */
+    {ad:'Bekir Sarıoğlu',    poz:'Demir Ustası',    firma:'Demir-Beton İnş. Ltd.', kalfa:true,  gunler:['tam','tam','tam','tam']},
+    {ad:'Yakup Tosun',       poz:'Demir Ustası',    firma:'Demir-Beton İnş. Ltd.', kalfa:false, gunler:['tam','tam','tam','tam']},
+    {ad:'Enver Kılıçarslan', poz:'Demir Ustası',    firma:'Demir-Beton İnş. Ltd.', kalfa:false, gunler:['tam','tam','tam','tam']},
+    {ad:'Ayhan Böke',        poz:'Demir Ustası',    firma:'Demir-Beton İnş. Ltd.', kalfa:false, gunler:['yok','tam','tam','tam']},
+    {ad:'Cevdet Şahinkaya',  poz:'Düz İşçi',        firma:'Demir-Beton İnş. Ltd.', kalfa:false, gunler:['tam','tam','izin','tam']},
+
+    /* ElektroMek Taahhüt — Vadi Konakları — 6 kişi */
+    {ad:'Mustafa Doğanay',   poz:'Elektrik Ustası', firma:'ElektroMek Taahhüt', kalfa:true,  gunler:['tam','tam','tam','tam']},
+    {ad:'Serkan Ünlüer',     poz:'Elektrik Ustası', firma:'ElektroMek Taahhüt', kalfa:false, gunler:['tam','tam','tam','tam']},
+    {ad:'Barış Yetkin',      poz:'Elektrik Ustası', firma:'ElektroMek Taahhüt', kalfa:false, gunler:['tam','tam','tam','tam']},
+    {ad:'Tuncay Özdemirci',  poz:'Elektrik Ustası', firma:'ElektroMek Taahhüt', kalfa:false, gunler:['tam','tam','tam','tam']},
+    {ad:'Ferhat Sarpkaya',   poz:'Kaynakçı',        firma:'ElektroMek Taahhüt', kalfa:false, gunler:['tam','tam','tam','tam']},
+    {ad:'Uğur Beyazıt',      poz:'Düz İşçi',        firma:'ElektroMek Taahhüt', kalfa:false, gunler:['tam','yok','tam','tam']},
+
+    /* Yalıtım Kardeşler — Liman Lojistik Merkezi — mantolama ekibi (4) */
+    {ad:'Salih Bingöl',      poz:'Yalıtım Ustası',  firma:'Yalıtım Kardeşler', kalfa:true,  gunler:['tam','tam','tam','tam']},
+    {ad:'Sinan Tuncel',      poz:'Yalıtım Ustası',  firma:'Yalıtım Kardeşler', kalfa:false, gunler:['tam','tam','tam','tam']},
+    {ad:'Erkan Doğruel',     poz:'Yalıtım Ustası',  firma:'Yalıtım Kardeşler', kalfa:false, gunler:['tam','tam','tam','tam']},
+    {ad:'Kâmil Bozkır',      poz:'Yalıtım Ustası',  firma:'Yalıtım Kardeşler', kalfa:false, gunler:['tam','tam','tam','tam']},
+    /* izolasyon ekibi (4) */
+    {ad:'Ercan Kavaklı',     poz:'Yalıtım Ustası',  firma:'Yalıtım Kardeşler', kalfa:true,  gunler:['tam','tam','tam','tam']},
+    {ad:'Levent Akçay',      poz:'Yalıtım Ustası',  firma:'Yalıtım Kardeşler', kalfa:false, gunler:['tam','tam','tam','tam']},
+    {ad:'Gökhan Efeoğlu',    poz:'Yalıtım Ustası',  firma:'Yalıtım Kardeşler', kalfa:false, gunler:['tam','tam','izin','tam']},
+    {ad:'Okan Sarıgül',      poz:'Düz İşçi',        firma:'Yalıtım Kardeşler', kalfa:false, gunler:['yok','tam','tam','tam']}
   ];
 
   var tgBody = document.getElementById('tgBody');
   var tgSub = document.getElementById('tgSub');
+  var tgOzetBody = document.getElementById('tgOzetBody');
+
+  function taseronFirmalar(){
+    return GV.role === 'sef' ? TASERON_FIRMA.filter(function(f){ return f.santiye === 'vadi'; }) : TASERON_FIRMA;
+  }
+  function taseronKisiler(firmalar){
+    var adlar = firmalar.map(function(f){ return f.ad; });
+    return TASERON.filter(function(p){ return adlar.indexOf(p.firma) !== -1; });
+  }
+  function taseronStatusOf(p, d){
+    if(d === 6) return 'ht';
+    if(d > RECORDED_UPTO) return 'gelecek';
+    return p.gunler[d] || 'gelecek';
+  }
+  function taseronWeekly(p){
+    var n = 0;
+    for(var i = 0; i <= RECORDED_UPTO; i++){ if(p.gunler[i] === 'tam') n++; }
+    return n;
+  }
 
   function renderTaseron(){
-    var rows = GV.role === 'sef' ? TASERON.filter(function(f){ return f.santiye === 'vadi'; }) : TASERON;
-    /* -1 haftada grid yerine arşiv özeti [MOCK-SİM] — firma toplamları ekip×6 gün tavanının
-       altında kurgulandı (Demir-Beton 58/60 · ElektroMek 34/36 · Yalıtım Kardeşler 44/48);
-       şef daraltması özet metnine de uygulanır (yalnız Vadi firmaları). */
+    var firmalar = taseronFirmalar();
+    var kisiler = taseronKisiler(firmalar);
+
+    /* -1 haftada kişi bazlı arşiv verisi tutulmuyor — firma toplamları (58/34/44) korunur,
+       yalnız üst tabloda özet metin, alt firma özet tablosunda kesikli hücreler gösterilir. */
     if(WEEK === -1){
-      var ozet = rows.map(function(f){ return f.ad + ' ' + f.prevToplam; }).join(' · ');
+      var ozet = firmalar.map(function(f){ return f.ad + ' ' + f.prevToplam; }).join(' · ');
       tgBody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--ink-2);padding:36px 20px">'
         + '<i class="fa-solid fa-box-archive" style="margin-right:8px;color:var(--muted)"></i>'
         + '22–28 Haziran taşeron puantajı arşivde — haftalık özet: ' + ozet + ' adam-gün.</td></tr>';
-      tgSub.textContent = 'Arşiv · 22 – 28 Haziran 2026 · ' + rows.length + ' firma';
+      tgSub.textContent = 'Arşiv · 22 – 28 Haziran 2026 · ' + firmalar.length + ' firma';
+      var arsivOzet = '';
+      firmalar.forEach(function(f){
+        arsivOzet += '<tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)"><i class="fa-solid fa-people-group"></i></div>'
+          + '<div class="pp-info"><b>'+f.ad+'</b><span>'+SANTIYE_ADI[f.santiye]+'</span></div></div></td>'
+          + '<td class="tg-ekip">'+f.ekip+' kişilik ekip</td>'
+          + [0,1,2,3,4,5,6].map(function(d){
+              return d === 6
+                ? '<td class="col-gun"><div class="tg-day ht" data-tip="Arşiv haftası" tabindex="0">–</div></td>'
+                : '<td class="col-gun"><div class="tg-day gelecek" data-tip="Arşiv haftası — kişi bazlı kayıt yok" tabindex="0">–</div></td>';
+            }).join('')
+          + '<td class="num"><div class="tg-total">'+f.prevToplam+' adam-gün<span>arşiv</span></div></td></tr>';
+      });
+      tgOzetBody.innerHTML = arsivOzet;
       return;
     }
+
+    /* ---- kişi grid'i — Bireysel sekmenin desenine birebir (.pt-mark, data-tip, pp-cell) ---- */
     var html = '';
-    var haftaToplam = 0, bugunToplam = 0;
-    rows.forEach(function(f){
-      var toplam = f.gunler.reduce(function(a, b){ return a + b; }, 0);
-      haftaToplam += toplam;
-      bugunToplam += f.gunler[TODAY_IDX];
+    kisiler.forEach(function(p){
       html += '<tr>';
-      html += '<td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)"><i class="fa-solid fa-people-group"></i></div>'
-            + '<div class="pp-info"><b>'+f.ad+'</b><span>'+SANTIYE_ADI[f.santiye]+'</span></div></div></td>';
-      html += '<td class="tg-ekip">'+f.ekip+' kişilik ekip</td>';
+      html += '<td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">'+initials(p.ad)+'</div>'
+            + '<div class="pp-info"><b>'+p.ad+'</b><span>'+p.firma+'</span></div></div></td>';
+      html += '<td>'+p.poz+(p.kalfa ? ' <span class="gtag mint">Kalfa</span>' : '')+'</td>';
+      for(var d = 0; d < 7; d++){
+        var st = taseronStatusOf(p, d);
+        var V = STATUS[st];
+        var todayCls = (WEEK === 0 && d === TODAY_IDX) ? ' is-today' : '';
+        var tip = curDays()[d] + ' · ' + V.lbl;
+        html += '<td class="col-gun'+todayCls+'"><div class="pt-mark '+st+'" data-tip="'+tip+'" tabindex="0">'
+              + (V.ic ? '<i class="fa-solid '+V.ic+'"></i>' : '') + '</div></td>';
+      }
+      var wk = taseronWeekly(p);
+      html += '<td class="num"><div class="pt-total">'+wk+' gün<span>'+(RECORDED_UPTO+1)+' gün işlendi</span></div></td>';
+      html += '</tr>';
+    });
+    tgBody.innerHTML = html || '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:32px">Bu görünümde kayıtlı taşeron personeli yok.</td></tr>';
+
+    var bugunToplam = 0, haftaToplamGenel = 0;
+    kisiler.forEach(function(p){
+      if(taseronStatusOf(p, TODAY_IDX) === 'tam') bugunToplam++;
+      haftaToplamGenel += taseronWeekly(p);
+    });
+    tgSub.textContent = bugunToplam + ' kişi bugün sahada · ' + firmalar.length + ' firma · haftalık ' + haftaToplamGenel + ' adam-gün';
+
+    /* ---- firma bazlı özet — ALT BLOK (S7), kişi satırlarından TÜRETİLİR, ayrı sabit veri
+       değildir. Bu döngü B1-B3 kordon vektörlerini (9·10·8·10 / 6·5·6·6 / 7·8·7·8) üretmek
+       ZORUNDADIR — üretmiyorsa kişi gunler verisi hatalıdır, sunum değil veri düzeltilir. ---- */
+    var oh = '';
+    firmalar.forEach(function(f){
+      var fKisiler = kisiler.filter(function(p){ return p.firma === f.ad; });
+      var haftaToplam = 0;
+      oh += '<tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)"><i class="fa-solid fa-people-group"></i></div>'
+          + '<div class="pp-info"><b>'+f.ad+'</b><span>'+SANTIYE_ADI[f.santiye]+'</span></div></div></td>';
+      oh += '<td class="tg-ekip">'+f.ekip+' kişilik ekip</td>';
       for(var d = 0; d < 7; d++){
         var todayCls = d === TODAY_IDX ? ' is-today' : '';
         var cell;
-        if(d === 6) cell = '<div class="tg-day ht" data-tip="'+DAYS[d]+' · Hafta tatili" tabindex="0">–</div>';
-        else if(d > RECORDED_UPTO) cell = '<div class="tg-day gelecek" data-tip="'+DAYS[d]+' · Henüz işlenmedi" tabindex="0">–</div>';
-        else cell = '<div class="tg-day'+(d===TODAY_IDX?' today':'')+'" data-tip="'+DAYS[d]+' · '+f.gunler[d]+' kişi sahada" tabindex="0">'+f.gunler[d]+'</div>';
-        html += '<td class="col-gun'+todayCls+'">'+cell+'</td>';
+        if(d === 6) cell = '<div class="tg-day ht" data-tip="'+curDays()[d]+' · Hafta tatili" tabindex="0">–</div>';
+        else if(d > RECORDED_UPTO) cell = '<div class="tg-day gelecek" data-tip="'+curDays()[d]+' · Henüz işlenmedi" tabindex="0">–</div>';
+        else {
+          var cnt = fKisiler.filter(function(p){ return p.gunler[d] === 'tam'; }).length;
+          haftaToplam += cnt;
+          cell = '<div class="tg-day'+(d===TODAY_IDX?' today':'')+'" data-tip="'+curDays()[d]+' · '+cnt+' kişi sahada" tabindex="0">'+cnt+'</div>';
+        }
+        oh += '<td class="col-gun'+todayCls+'">'+cell+'</td>';
       }
-      html += '<td class="num"><div class="tg-total">'+toplam+' adam-gün<span>'+(RECORDED_UPTO+1)+' gün işlendi</span></div></td>';
-      html += '</tr>';
+      oh += '<td class="num"><div class="tg-total">'+haftaToplam+' adam-gün<span>'+(RECORDED_UPTO+1)+' gün işlendi</span></div></td>';
+      oh += '</tr>';
     });
-    tgBody.innerHTML = html || '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:32px">Bu şantiyede kayıtlı taşeron ekibi yok.</td></tr>';
-    tgSub.textContent = bugunToplam + ' kişi bugün sahada · ' + rows.length + ' firma · haftalık ' + haftaToplam + ' adam-gün';
+    tgOzetBody.innerHTML = oh;
   }
   renderTaseron();
 
