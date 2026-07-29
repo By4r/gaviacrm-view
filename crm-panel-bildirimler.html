@@ -37,6 +37,7 @@
 .notif-ico.termin{background:var(--info-tint);color:var(--info)}
 .notif-ico.isg{background:var(--ok-tint);color:var(--ok)}
 .notif-ico.sistem{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.notif-ico.duyuru{background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)}
 
 .notif-body{flex:1;min-width:0}
 .notif-top{display:flex;align-items:baseline;gap:8px}
@@ -77,6 +78,7 @@
         <div class="ph-sub"><span id="unreadCount">3</span> okunmamış bildirim</div>
       </div>
       <div class="ph-actions">
+        <a class="btn btn-ghost btn-sm" href="crm-ayarlar-bildirim-tercih.html"><i class="fa-solid fa-sliders"></i> Tercihler</a>
         <button class="btn btn-ghost btn-sm" id="markAllBtn"><i class="fa-solid fa-check-double"></i> Tümünü Okundu İşaretle</button>
       </div>
     </div>
@@ -85,6 +87,14 @@
     <div class="notif-group">
       <div class="notif-glabel">Bugün — 2 Temmuz</div>
       <div class="notif-card">
+        <a class="notif-row is-unread" href="crm-panel-duyurular.html?duyuru=d06" data-read="0">
+          <div class="notif-ico duyuru"><i class="fa-solid fa-bullhorn"></i></div>
+          <div class="notif-body">
+            <div class="notif-top"><span class="notif-title">Yeni duyuru: Vinç bakımı nedeniyle sahaya giriş kısıtlaması</span><span class="notif-time">10:05</span></div>
+            <div class="notif-meta">Liman Lojistik Merkezi · Aylin Koç yayınladı</div>
+          </div>
+          <span class="notif-unread-dot"></span>
+        </a>
         <a class="notif-row is-unread" href="crm-operasyon-kasa-detay.html?ks=ksa-021" data-read="0">
           <div class="notif-ico onay"><i class="fa-solid fa-stamp"></i></div>
           <div class="notif-body">
@@ -143,6 +153,13 @@
             <div class="notif-meta">Çatı paneli montaj ekibini planla · termin 6 Temmuz</div>
           </div>
         </a>
+        <a class="notif-row" href="crm-sistem-onay-durum.html?islem=hakedis&amp;durum=onaylandi&amp;kayit=TH-2026-013" data-read="1">
+          <div class="notif-ico onay"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="notif-body">
+            <div class="notif-top"><span class="notif-title">TH-2026-013 hakediş onayı tamamlandı</span><span class="notif-time">10:20</span></div>
+            <div class="notif-meta">Demir-Beton İnş. Ltd. · ₺210.000 · ödeme sırada</div>
+          </div>
+        </a>
         <a class="notif-row" href="crm-ayarlar-firma.html" data-read="1">
           <div class="notif-ico sistem"><i class="fa-solid fa-gear"></i></div>
           <div class="notif-body">
@@ -156,6 +173,13 @@
     <div class="notif-group">
       <div class="notif-glabel">Bu Hafta</div>
       <div class="notif-card">
+        <a class="notif-row" href="crm-ayarlar-paket-degistir.html" data-read="1">
+          <div class="notif-ico sistem"><i class="fa-solid fa-box-open"></i></div>
+          <div class="notif-body">
+            <div class="notif-top"><span class="notif-title">Kullanıcı limitine yaklaşıyorsunuz</span><span class="notif-time">30 Haz</span></div>
+            <div class="notif-meta">18 / 25 kullanıcı — Profesyonel Paket kullanım oranı %72</div>
+          </div>
+        </a>
         <a class="notif-row" href="crm-finans-hakedis-detay.html?th=014" data-read="1">
           <div class="notif-ico onay"><i class="fa-solid fa-stamp"></i></div>
           <div class="notif-body">
