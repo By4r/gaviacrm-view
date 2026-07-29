@@ -127,7 +127,9 @@
        kanonik; öğle toplamı 93 = headcount BİREBİR. santiye.html 48/61/33 ile
        panel-ozet 48/52/48 kırılımları BAYAT → 5C'de bu sete hizalanır.
        Metrik ayrımı: bireysel puantaj = ÖZ kadro (69; 13 temsili ad idiyomu sürer) ·
-       taşeron = firma bazlı adam-gün, kişi adı listelenmez (madde 16.2 sekmesi) ·
+       taşeron puantajı KİŞİ BAZINDA tutulur; firma adam-gün özeti hakediş için korunur
+       (D19 revizesi — 5C'deki "kişi adı listelenmez" kuralı Beyar onayıyla geri alındı,
+       bkz. DALGA 19 KANONİK TANIMLAR; adam-gün toplamları DEĞİŞMEZ) ·
        bordro/idari kadro 22 kişi AYRI metrik (İK sayfaları) — headcount'a karışmaz.
        Hizalama hedefleri (5C üretim grep listesi): santiye.html personel kolonu
        48→51 · 61→30 · 33→12 + ph-sub "142 personel"→93; panel-ozet "142 kişi"/"142
@@ -247,8 +249,11 @@
        Kağıt işaret idiyomu: + tam · ½ yarım · İ izinli · R raporlu · boş gelmedi · HT hafta
        tatili (EM/FM kağıtta "+" basılır; saat detayı yalnız ekranda). TOP.GÜN = +(1) + ½(0,5).
        Satırlar: Yapıtaş VK öz kadro 35 ADLI satır (kanonik 6 ad + temsili adlar), gün işaretleri
-       "+" idiyomu, PERSONEL İMZA kolonu BOŞ hücre (ıslak imza); taşeron blokları FİRMA satırı
-       (kişi adı LİSTELENMEZ — 5C metrik ayrımı): Demir-Beton 10 · ElektroMek 6.
+       "+" idiyomu, PERSONEL İMZA kolonu BOŞ hücre (ıslak imza); taşeron blokları da ADLI satır
+       (D19 revizesi — taşeron puantajı kişi bazında tutulur; firma adam-gün özeti hakediş
+       için korunur): Demir-Beton 10 ADLI satır · ElektroMek 6 ADLI satır; taşeron satırlarında
+       PERSONEL İMZA kolonu kişi ıslak imzasıdır, "Firma yetkilisi" imzası FİRMA BAZLI HAFTALIK
+       ÖZET bloğunda kalır (D19/S8).
        Firma özeti: YAPITAŞ 35 · DEMİR-BETON 10 · ELEKTROMEK 6 → TOPLAM 51 (kanonik headcount BİREBİR).
        (Plan "23 kişilik liste" kanonik 35 ile çelişir → 35'e hizalandı.)
      · YEMEKHANE TAŞERON FİLTRESİ (Talep 6 — D12 taşeron kartı "yemekhane kişi sayısı" alanı
@@ -875,6 +880,107 @@
      · DİZİN/MODULLER SENKRONU: +2 YENİ ekran (bildirim-detay + kullanici-detay) →
        mast 136→138; santiye grubu +1, ayarlar grubu +1. Dizin satırları dalga sonunda
        T0 tarafından eklenir (6B kuralı).
+   ─ DALGA 19 KANONİK TANIMLAR (2026-07-29 — 29 Tem revize turu, Wave 0 kanonik hazırlık;
+       kaynak: 28.07.2026 toplantı notları 9 madde + Beyar karar seti S1-S12.
+       YENİ EKRAN AÇILMAZ — dizin 138'de sabit kalır. Wave 1/2 sayfaları BU tanımları kullanır):
+     · TAŞERON KALFA KADROSU (madde 5 / S4-S5 — YENİ kanonik varlık; "Traton Yapı" EKLENMEZ,
+       kanonik 3 taşeron kullanılır). Kalfa = KİŞİ ve EKİBİN ÜYESİDİR — sahada çalışır,
+       puantajda KENDİ satırıyla görünür, ayrıca "kalfa" rol etiketi taşır.
+       KORDON KURALI: kalfalar 24 taşeron sayısına DAHİLDİR, üzerine EKLENMEZ
+       (aksi hâlde 93 = 69 öz + 24 taşeron kordonu ve yemekhane taşeron payı ₺4.185 kayar).
+       5 kalfa, ekip içi dağılım:
+         Demir-Beton İnş. Ltd.  → Hüseyin Palabıyık (kalıp kalfası)  · Bekir Sarıoğlu (demir kalfası)
+         ElektroMek Taahhüt     → Mustafa Doğanay (elektrik kalfası)
+         Yalıtım Kardeşler      → Salih Bingöl (mantolama kalfası)   · Ercan Kavaklı (izolasyon kalfası)
+       Personel formunda Firma/Taşeron seçimi kalfa listesini bu eşlemeye göre daraltır.
+     · TAŞERON İŞÇİ KADROSU (madde 5+6 — YENİ kanonik ad listesi, 24 kişi = 5C headcount'un
+       taşeron ayağı; kişi bazlı puantajın ad kaynağı. Kalfalar DAHİL. Adlar öz kadroyla
+       ÇAKIŞMAZ. Ekip içi sıra KANONİKTİR — Cum/Cmt eksik-gün kuralı bu sırayı kullanır):
+       ▸ Demir-Beton İnş. Ltd. · Vadi Konakları · 10 kişi
+           kalıp ekibi (5): Hüseyin Palabıyık [KALFA] (Kalıpçı) · Mehmet Sarıkuş (Kalıpçı) ·
+             Süleyman Akbulut (Kalıpçı) · Hamza Dinçer (Kalıpçı) · Ünal Yavuzer (Düz İşçi)
+           demir ekibi (5): Bekir Sarıoğlu [KALFA] (Demir Ustası) · Yakup Tosun (Demir Ustası) ·
+             Enver Kılıçarslan (Demir Ustası) · Ayhan Böke (Demir Ustası) · Cevdet Şahinkaya (Düz İşçi)
+       ▸ ElektroMek Taahhüt · Vadi Konakları · 6 kişi
+           Mustafa Doğanay [KALFA] (Elektrik Ustası) · Serkan Ünlüer (Elektrik Ustası) ·
+           Barış Yetkin (Elektrik Ustası) · Tuncay Özdemirci (Elektrik Ustası) ·
+           Ferhat Sarpkaya (Kaynakçı) · Uğur Beyazıt (Düz İşçi)
+       ▸ Yalıtım Kardeşler · Liman Lojistik Merkezi · 8 kişi
+           mantolama ekibi (4): Salih Bingöl [KALFA] (Yalıtım Ustası) · Sinan Tuncel (Yalıtım Ustası) ·
+             Erkan Doğruel (Yalıtım Ustası) · Kâmil Bozkır (Yalıtım Ustası)
+           izolasyon ekibi (4): Ercan Kavaklı [KALFA] (Yalıtım Ustası) · Levent Akçay (Yalıtım Ustası) ·
+             Gökhan Efeoğlu (Yalıtım Ustası) · Okan Sarıgül (Düz İşçi)
+     · TAŞERON GÜNLÜK SAYIM KORDONU (madde 6 — kişi bazına geçişte BU vektörler DEĞİŞMEZ;
+       kişi satırlarının gün işaretleri toplandığında bu sayıları vermek ZORUNDA):
+         Demir-Beton      Pzt 9 · Sal 10 · Çar 8 · Per 10 · Cum 9 · Cmt 8  → haftalık 54 adam-gün
+         ElektroMek       Pzt 6 · Sal 5  · Çar 6 · Per 6  · Cum 6 · Cmt 5  → haftalık 34 adam-gün
+         Yalıtım Kardeş.  Pzt 7 · Sal 8  · Çar 7 · Per 8  · Cum 7 · Cmt 7  → haftalık 44 adam-gün
+       Arşiv haftası (22–28 Haz) firma toplamları: 58 · 34 · 44 (ekip×6 gün tavanının altında).
+       2 Tem (bugün) değerleri yemekhane taşeron öğle sayılarıyla BİREBİR: 10 · 6 · 8.
+       İŞLENEN 4 GÜNÜN eksik-gün ataması (deterministik — Wave 2 bunu birebir uygular;
+       kalfa-kordon düzeltmesiyle 24 kişilik nihai listeye göre yeniden doğrulandı):
+         Demir-Beton  Pzt −1 Ayhan Böke (yok) · Çar −2 Cevdet Şahinkaya (izin) + Ünal Yavuzer (yok)
+         ElektroMek   Sal −1 Uğur Beyazıt (yok)
+         Yalıtım K.   Pzt −1 Okan Sarıgül (yok) · Çar −1 Gökhan Efeoğlu (izin)
+       Cum/Cmt eksikleri (çıktı sayfası — ekranda işlenmemiş, yalnız haftalık çıktıda görünür):
+       ekip listesinin SONUNDAN sırayla düşürülür; nihai sıraya göre hesaplanmış hâli:
+         Demir-Beton  Cum −1 Cevdet Şahinkaya · Cmt −2 Cevdet Şahinkaya + Ayhan Böke
+         ElektroMek   Cum  0 · Cmt −1 Uğur Beyazıt
+         Yalıtım K.   Cum −1 Okan Sarıgül · Cmt −1 Okan Sarıgül   (Liman çıktısında)
+       Uydurma ad EKLENMEZ; kalfalar eksik-gün atamasına GİRMEZ (ekip başı sahada sabittir).
+     · POZİSYON KANONİĞİ — fPozisyon 15 → 16 (kalfa-kordon turu düzeltmesi; taşeron kadrosunda
+       kullanılan pozisyonlar kanonik listeye HİZALANDI, liste dışı unvan ÜRETİLMEZ):
+         "Demirci"                      → mevcut "Demir Ustası"a map edilir (yeni seçenek AÇILMAZ)
+         "Yalıtımcı" + "İzolasyon Ustası" → tek YENİ seçenek: "Yalıtım Ustası"  (15 → 16)
+         "Sıvacı"                       → mevcut "Düz İşçi"ye map edilir (pasif kayıt 025)
+       "Yalıtım Ustası" HTML seçeneği Wave 1 / Track B'de crm-personel-form.html içine işlenir —
+       bu turda YALNIZ kanonik kural olarak kayıtlıdır, fPozisyon markup'ına DOKUNULMAZ.
+       Ofis/yönetim 6 pozisyonu (Şantiye Şefi · Muhasebe · Satın Alma · İnsan Kaynakları ·
+       Teknik Müdür · Genel Müdür) DEĞİŞMEZ.
+     · FİRMA/TAŞERON ALAN KURALI (madde 5 / S6 — personel formu Görev & Departman sekmesi):
+       Firma/Taşeron + Kalfa bloğu YALNIZ şu 10 saha pozisyonunda açılır: Saha Personeli ·
+       Formen · Kalıpçı · Demir Ustası · Elektrik Ustası · Operatör · Kaynakçı · Marangoz ·
+       Düz İşçi · Yalıtım Ustası (10. sırada YENİ — pozisyon kanoniği maddesi).
+       Kalan 6 pozisyonda (Şantiye Şefi · Muhasebe · Satın Alma · İnsan Kaynakları ·
+       Teknik Müdür · Genel Müdür) blok GİZLİ ve firma otomatik "Yapıtaş İnşaat A.Ş.".
+       Öz kadro için firma değeri "Yapıtaş İnşaat A.Ş." — puantaj çıktısındaki mevcut
+       "Çalıştığı Firma / Taşeron" kolonu (35 satırda Yapıtaş) bu değerle zaten hizalı.
+     · PASİF PERSONEL KAYITLARI (madde 8 / S10 — 3 kayıt, mevcut 22 aktife EK; kanonik
+       headcount 69/93 ve 35-22-12 kırılımı DEĞİŞMEZ, ayrılanlar zaten kadro dışıdır):
+         023 Kudret Beşikçi · Düz İşçi   · Vadi Konakları          · ayrılış 12 Haz 2026 · istifa
+         024 Hikmet Uğurlu  · Operatör   · Liman Lojistik Merkezi  · ayrılış 28 Şub 2026 · iş akdi feshi
+         025 Nadir Çamlıca  · Düz İşçi   · Merkez Şantiye          · ayrılış 30 Nis 2026 · emeklilik
+       ?per= MAP 001-022 → 001-025'e genişler (023-025 pasif; DEFAULT 004 DEĞİŞMEZ).
+       Durum rozeti: aktif .gstat.ok "Aktif" · pasif .gstat.off "Ayrıldı" (yeni rozet İCAT EDİLMEZ).
+       Chip sayaçları: hepsi 25 · aktif 22 · pasif 3; kategori chip'leri (yonetim 3 · sef 3 ·
+       ofis 3 · saha 13) AKTİF sayılarını KORUR. İki eksenli filtre sayfa-lokal AND deseniyle
+       kurulur (kasa .filter-bar.stack + pluxee curTur/curSantiye emsali) — ui.js primitifine DOKUNULMAZ.
+     · ZORUNLU EVRAK SETİ (madde 9 / S11 — 12 kanonik kategorinin seti ve SIRASI DEĞİŞMEZ;
+       yalnız ilk 3'ü zorunlu bayrağı alır. Bayrak Wave 1'de EVRAK_KATEGORI kayıtlarına
+       zorunlu:true olarak işlenir — personel-form, personel-ozluk, personel-detay ÜÇÜNDE birden):
+         01 Kimlik fotokopisi         → ZORUNLU
+         02 İş sözleşmesi             → ZORUNLU
+         03 SGK işe giriş bildirgesi  → ZORUNLU
+         04-12 (İkametgâh · Adli sicil · Sağlık raporu · İSG sertifikası · Mesleki yeterlilik ·
+         Ehliyet/SRC · Diploma · Acil durum formu · KVKK) → opsiyonel
+       Zorunlusu eksik personel özlük matrisinde AYRI uyarı rozeti alır (mevcut .gstat dilinden).
+     · İL/İLÇE (madde 4 / S1-S3): kanonik il/ilçe listesi ÜRETİLMEZ. Adres alanı
+       crm-santiye-form.html:104-105 desenini birebir devralır — fIl + fIlce SERBEST METİN
+       (81 il select'i YOK). crm-personel.html liste chip'leri kanonik veride fiilen geçen
+       illerden türetilir (İstanbul · İzmir · Kocaeli · Sakarya). Filtre yeri: personel listesi.
+     · KASA FORMATI YAYILIMI (madde 1-2 / S12): pluxee + kredikarti hareket listeleri
+       crm-operasyon-kasa.html #tblDefter kolon düzenini devralır (Tarih · Açıklama · Tutar +
+       yürüyen bakiye), df-devir/df-total/df-mevcut satır dili ve .df-mobile-list (≤640px)
+       mobil kart DOM'u dahil. Pluxee'de yürüyen bakiye KART BAZLIDIR (kart karosu seçilince
+       defter o karta filtrelenir — kasa .ks-card→defter idiyomunun birebir karşılığı).
+       Kredi kartında banka seçimi hâlihazırda var (kredikarti-form #fKart) — korunur;
+       sef rol budaması (yalnız Garanti BBVA) kolon düzeni değişse de AYNEN yaşar.
+       Değişmeyen KPI kordonu: pluxee ₺11.240 / ₺15.000 / ₺3.760 · KK limit ₺525.000,
+       dönem borcu ₺234.650, kullanılabilir ₺290.350.
+     · AVANS PERSONEL SEÇİCİSİ (madde 7 / S9): aranabilir seçici SAYFA-LOKAL yazılır,
+       ortak ui.js'e YENİ primitif eklenmez (.fb-search görsel dili + pluxee applyFilter
+       deseni). Seçenek listesi 7'den 22 kanonik AKTİF personele tamamlanır (pasif 3 kayıt
+       avans seçicisinde LİSTELENMEZ). data-admin-only guard'ı korunur.
    ===================================================================== */
 (function(){
   'use strict';
