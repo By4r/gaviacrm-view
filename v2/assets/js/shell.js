@@ -171,14 +171,17 @@
        imza dörtlüsü: Hasan Demirci (Kasa Tutan/Şantiye Şefi) · Nesrin Aydın (Kontrol/Muhasebe) ·
        Elif Sarıkaya (Teknik Ofis/Teknik Müdür) · Murat Denizli (Onaylayan/Genel Müd.)
      · GÖREV HAVUZU (Talep 1 + Not A): atanmadan kaydedilen görev ortak havuza düşer;
-       "Üzerime Al" = localStorage(gv_gorev_claims) simülasyonu. KANONİK HAVUZ (6 görev,
-       tümünü Kemal Yapıcıoğlu bıraktı; panel "Bekleyen Görevler" blokları AYNI listeyi kullanır):
+       "Üzerime Al" = localStorage(gv_gorev_claims) simülasyonu. KANONİK HAVUZ (8 görev —
+       6'sı D8 kanonik, 2'si Dalga 20 / T-GOREV-02 eki; tümünü Kemal Yapıcıoğlu bıraktı;
+       panel "Bekleyen Görevler" blokları AYNI listeyi kullanır):
          1 Liman Lojistik çevre aydınlatma keşfi        · Liman   · orta   · termin 8 Tem · 2 gündür
          2 Kule Ofis kesin hesap dosyası kontrolü        · Kule    · yüksek · termin 6 Tem · 1 gündür
          3 Vadi Konakları numune daire fotoğraf çekimi   · Vadi    · düşük  · termin 10 Tem · bugün
          4 Merkez depo yıl ortası sayım planı            · Merkez  · orta   · termin 9 Tem · 1 gündür
          5 Göl Evleri 2. Etap ruhsat evrak listesi       · Göl E.  · yüksek · termin 1 Tem GEÇTİ (geciken) · 3 gündür
          6 Şantiye araç takip çizelgesi güncelleme       · Merkez  · düşük  · termin 12 Tem · bugün
+         7 Merkez Şantiye personel özlük evrak eksik kontrolü  · Merkez  · orta   · termin 11 Tem · 1 gündür [YENİ — İK havuzu]
+         8 Göl Evleri 2. Etap yatırım komitesi sunum hazırlığı · Göl E.  · yüksek · termin 7 Tem  · bugün    [YENİ — Yönetim havuzu]
        Saha personeli (Ali Vural) havuzda YALNIZ kendi şantiyesini (Vadi → #3) görür.
        D15: panel "Bekleyen Görevler" Üzerime Al butonları da AYNI claim mekanizmasına
        bağlı (slug'lar crm-gorev data-claim ile birebir); Havuz/Bana menü rozetleri
@@ -710,20 +713,27 @@
          018 Çatı paneli sevkiyatı teslim alma kaydı           · Merkez · ES→Ömer Taşkın   · 30 Haz · tamamlandı
          019 Haftalık İSG turu                                 · Merkez · MD→Ömer Taşkın   · 28 Haz · tamamlandı
          020 Kalıp kereste stok sayımı ön kontrolü             · Vadi   · HD→Ali Vural     · 29 Haz · tamamlandı
-       Havuz (021-026 — D8 kanonik havuz listesi BİREBİR; bırakan Kemal Yapıcıoğlu;
-       data-claim slug'ları AYNEN kalır, claim mekanizmasına DOKUNULMAZ):
+       Havuz (021-026 — D8 kanonik havuz listesi BİREBİR + 030-031 — Dalga 20 /
+       T-GOREV-02 eki, İK ve Yönetim havuzlarını doldurur (önceden boştu); bırakan
+       Kemal Yapıcıoğlu; data-claim slug'ları AYNEN kalır, claim mekanizmasına DOKUNULMAZ):
          021 Liman Lojistik çevre aydınlatma keşfi             (liman-cevre-aydinlatma-kesfi) · 8 Tem  · orta
          022 Kule Ofis kesin hesap dosyası kontrolü            (kule-kesin-hesap-kontrolu)    · 6 Tem  · yüksek
          023 Vadi Konakları numune daire fotoğraf çekimi       (vadi-numune-daire-fotograf)   · 10 Tem · düşük
          024 Merkez depo yıl ortası sayım planı                (merkez-yil-ortasi-sayim)      · 9 Tem  · orta
          025 Göl Evleri 2. Etap ruhsat evrak listesi           (gol-evleri-ruhsat-evrak)      · 1 Tem GEÇTİ · yüksek
          026 Şantiye araç takip çizelgesi güncelleme           (arac-takip-cizelgesi)         · 12 Tem · düşük
+         030 Merkez Şantiye personel özlük evrak eksik kontrolü (merkez-ozluk-evrak-kontrolu)        · 11 Tem · orta   · İK havuzu
+         031 Göl Evleri 2. Etap yatırım komitesi sunum hazırlığı (gol-evleri-yatirim-komitesi-sunumu) · 7 Tem  · yüksek · Yönetim havuzu
        Havuz görünümü kayıttan türer (durum=havuzda → pool şeridi + havuz atama kartı);
        ?pool=1 ESKİ paramı: gorev'siz gelirse ?gorev=021'e eşdeğer davranır (ölü link yasağı),
        tüm iç linkler ?gorev='e çevrilir. Not: 3× "Haftalık İSG turu" (005/016/019) ve
        benzer başlıklar kodla ayrışır — link hedefi HER ZAMAN koddan, başlık metninden değil.
-       Seri REZERVE: 001-026 dolu, sıradaki 027+ (gorev-form "yeni görev" numarası üretmez,
-       [MOCK] toast'ta GRV-2026-027 örneklenebilir ama kayıt AÇILMAZ).
+       Seri durumu (Dalga 20 güncellemesi — önceki "001-026 dolu, 027+ REZERVE" notu
+       kısmen ESKİDİ): 001-026 dolu (D8/D17) · 027-029 D-Dalga4'te 8-durum örneklemesi
+       için GERÇEK kayıt olarak açıldı (Onay Bekliyor/Revize İstendi/İptal Edildi —
+       "kayıt AÇILMAZ" notu bu 3 kayıt için GEÇERSİZ oldu) · 030-031 bu dalgada
+       (T-GOREV-02) İK/Yönetim havuzu için GERÇEK kayıt olarak açıldı. Sıradaki 032+
+       yine REZERVE — gorev-form "yeni görev" numarası üretmez, kayıt AÇILMAZ.
      · ?mlz= MAP EVRENİ (MLZ-2026-030..046 = 17 kayıt; talepler LİSTESİ 034-046'da SABİT
        kalır — evren numaraları DEĞİŞMEZ, rezerveler aynen):
          030 mekanik tesisat paketi (Vadi, Tedarik Sürecinde, SAT-018 icmal) = DEFAULT
@@ -1137,7 +1147,10 @@
     ]},
     gorev:{ ic:'fa-list-check', eyebrow:'İş Takibi', title:'Görevler', menu:[
       /* tek liste + görünüm: sayfa ?f= paramını shell.js'ten ÖNCE body[data-screen]'e yazar */
-      {ic:'fa-layer-group',    lbl:'Havuz',            href:'crm-gorev.html?f=havuz',    screen:'havuz', cnt:'6'},
+      /* [T-GOREV-01] cnt:'8' yalnız BEYAN edilen varsayılan (dizin/kod-okuma amaçlı) —
+         gerçek değer rol çözüldükten SONRA gorevPoolVisibleCount()−claim formülüyle
+         HER ZAMAN ezilir (bkz aşağıda rol bloğu), sabit sayı asla ekrana YANSIMAZ. */
+      {ic:'fa-layer-group',    lbl:'Havuz',            href:'crm-gorev.html?f=havuz',    screen:'havuz', cnt:'8'},
       {ic:'fa-inbox',          lbl:'Bana Verilenler',  href:'crm-gorev.html?f=bana',     screen:'bana', cnt:'7'},
       {ic:'fa-paper-plane',    lbl:'Verdiklerim',      href:'crm-gorev.html?f=verdigim', screen:'verdigim'},
       {ic:'fa-triangle-exclamation', lbl:'Gecikenler', href:'crm-gorev.html?f=geciken',  screen:'geciken', cnt:'3'},
@@ -1303,26 +1316,71 @@
   if(!ROLES[role]) role = 'superadmin';
   var R = ROLES[role];
 
-  /* D8: saha personeli havuzda yalnız kendi şantiyesini (Vadi → 1 görev) görür —
-     menü sayacı sayfadaki budanmış satır sayısıyla tutarlı kalır */
-  if(role === 'personel'){
-    var _hv = SECTIONS.gorev.menu.filter(function(m){ return m.screen === 'havuz'; })[0];
-    if(_hv) _hv.cnt = '1';
+  /* [Dalga 20 / T-GOREV-01] Havuz rozeti ARTIK rol-duyarlı ve TÜREV — hiçbir sayı
+     sabit yazılmaz, GOREV_HAVUZ meta-verisinden + claim sayısından hesaplanır (böylece
+     ileride görev eklenince kendiliğinden düzelir). Önceden yalnız 'personel' rolü
+     D8'de özel olarak '1'e sabitleniyordu; rail rozeti BAŞKA HİÇBİR rolde departman
+     filtresini yansıtmıyordu — sayfa içi sayaç doğruydu, rail rozeti YANLIŞTI. Bu,
+     müşterinin 6 Tem Faz 1 Eksikleri brief'inde işaret ettiği "KPI ≠ tablo" hata
+     sınıfıdır — kozmetik SAYILMAZ, bu yüzden düzeltildi. Şimdi TÜM roller aynı
+     formülü kullanır (personel'in tek-şantiye evreni de formülün İÇİNDE, özel dal).
+
+     KRİTİK: crm-gorev.html'in §11.2 departman-görünürlük kuralı (canSeeHavuzRow —
+     MGMT_ROLES/DEPT_ROLE_MAP/NOFILTER_DEPTS/SITE_SCOPED_ROLES) BURADA BİREBİR
+     MIRROR'LANIR — rail HER sayfada render edildiği için crm-gorev.html'in DOM'unu
+     okuyamaz, meta-veri iki dosyada AYRI AYRI tutulur. Biri değişirse diğeri elle
+     güncellenmeli (otomatik senkron YOK — iki dosya ayrı sahipte). */
+  var GOREV_HAVUZ = [
+    {slug:'liman-cevre-aydinlatma-kesfi',      dept:'satinalma', santiye:'liman'},
+    {slug:'kule-kesin-hesap-kontrolu',          dept:'muhasebe'},
+    {slug:'vadi-numune-daire-fotograf',         dept:'satis',     santiye:'vadi'},
+    {slug:'merkez-yil-ortasi-sayim',            dept:'depo',      santiye:'merkez'},
+    {slug:'gol-evleri-ruhsat-evrak',            dept:'teknik'},
+    {slug:'arac-takip-cizelgesi',               dept:'sef',       santiye:'merkez'},
+    /* [T-GOREV-02] 2 yeni kanonik havuz görevi — ik ve yonetim havuzlarını doldurur
+       (önceden boştu). GRV-2026-030/031, crm-gorev.html'de gerçek satır olarak var. */
+    {slug:'merkez-ozluk-evrak-kontrolu',        dept:'ik',        santiye:'merkez'},
+    {slug:'gol-evleri-yatirim-komitesi-sunumu', dept:'yonetim',   santiye:'gol'}
+  ];
+  var GOREV_POOL = GOREV_HAVUZ.map(function(t){ return t.slug; });
+  var MGMT_ROLES = ['superadmin','sahip','yonetim'];
+  var DEPT_ROLE_MAP = { muhasebe:['muhasebe'], ik:['ik'], satinalma:['satinalma'], teknik:['teknik'],
+    sef:['sef'], satis:['satistemsilci','satismudur'], yonetim:[] };
+  var NOFILTER_DEPTS = ['saha','isg','depo','taseron'];
+  var SITE_SCOPED_ROLES = { sef:'vadi' };
+  function canSeeHavuzTask(t, r){
+    if(MGMT_ROLES.indexOf(r) !== -1) return true;
+    if(NOFILTER_DEPTS.indexOf(t.dept) !== -1) return r === 'teknik' || r === 'sef';
+    var allowed = DEPT_ROLE_MAP[t.dept] || [];
+    if(allowed.indexOf(r) === -1) return false;
+    var scoped = SITE_SCOPED_ROLES[r];
+    if(t.santiye && scoped && scoped !== t.santiye) return false;
+    return true;
+  }
+  /* D8: personel havuzda YALNIZ kendi şantiyesindeki tek görevi görür (departman
+     kuralına GİRMEZ — crm-gorev.html'de de actor='personel' tekil satırla ayrı
+     ele alınıyor, bu fonksiyon o davranışın shell.js karşılığıdır) */
+  function gorevPoolVisibleCount(r){
+    if(r === 'personel') return 1;
+    return GOREV_HAVUZ.filter(function(t){ return canSeeHavuzTask(t, r); }).length;
   }
 
   /* D15: görev havuzu "Üzerime Al" claim'leri (localStorage gv_gorev_claims —
      crm-gorev + crm-panel yazar) menü rozetlerine yansır: Havuz düşer, Bana
-     Verilenler artar. Slug listesi kanonik 6 havuz göreviyle birebir; personel
+     Verilenler artar. Slug listesi kanonik 8 havuz göreviyle birebir; personel
      havuzda yalnız Vadi görevini gördüğünden onun evreni tek slug'dır. */
-  var GOREV_POOL = ['liman-cevre-aydinlatma-kesfi','kule-kesin-hesap-kontrolu',
-    'vadi-numune-daire-fotograf','merkez-yil-ortasi-sayim',
-    'gol-evleri-ruhsat-evrak','arac-takip-cizelgesi'];
   function gorevClaims(){
     var arr;
     try{ arr = JSON.parse(localStorage.getItem('gv_gorev_claims')) || []; }catch(e){ arr = []; }
     var uni = role === 'personel' ? ['vadi-numune-daire-fotograf'] : GOREV_POOL;
     return arr.filter(function(s){ return uni.indexOf(s) !== -1; });
   }
+  (function(){
+    var _hv = SECTIONS.gorev.menu.filter(function(m){ return m.screen === 'havuz'; })[0];
+    if(!_hv) return;
+    var visible = gorevPoolVisibleCount(role) - gorevClaims().length;
+    _hv.cnt = visible > 0 ? String(visible) : '';   /* 0 ise rozet HİÇ basılmaz */
+  })();
 
   /* D12: şef sipariş listesinde yalnız kendi şantiyesini (Vadi) görür — menü sayacı
      budanmış açık sipariş sayısıyla tutarlı (5 → 2: SIP-05 kısmi + SIP-07 onaylandı) */
@@ -1473,8 +1531,9 @@
       if(!sp){ sp = document.createElement('span'); sp.className = 'ml-cnt'; link.appendChild(sp); }
       sp.textContent = val;
     }
+    /* [T-GOREV-01] artık rol-duyarlı formülle AYNI kaynak — sabit '6'/'1' hardcode YOK */
     setCnt(menuEl.querySelector('.gv-mlink[href^="crm-gorev.html?f=havuz"]'),
-      (role === 'personel' ? 1 : 6) - n);
+      gorevPoolVisibleCount(role) - n);
     /* personel'in "Bana Verilenler" rozeti global 7 kanoniği — claim'le artmaz (kendi listesi ayrı) */
     if(role !== 'personel') setCnt(menuEl.querySelector('.gv-mlink[href^="crm-gorev.html?f=bana"]'), 7 + n);
   };
