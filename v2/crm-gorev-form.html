@@ -119,14 +119,26 @@
     <div class="gv-crumb">
       <a href="crm-gorev.html">Görevler</a>
       <i class="fa-solid fa-chevron-right"></i>
-      <span>Yeni Görev</span>
+      <span id="crumbLast">Yeni Görev</span>
     </div>
 
     <div class="gv-page-head">
       <div>
         <div class="ph-eyebrow">İş Takibi</div>
-        <h1>Görev Oluştur</h1>
-        <div class="ph-sub">Görev atanan kişiye bildirim olarak düşer; termin ve öncelik görev listesinde izlenir.</div>
+        <h1 id="formTitle">Görev Oluştur</h1>
+        <div class="ph-sub" id="formSub">Görev atanan kişiye bildirim olarak düşer; termin ve öncelik görev listesinde izlenir.</div>
+      </div>
+    </div>
+
+    <!-- §17 — Düzenle/Kopyala akışı: crm-gorev.html liste satırı veya crm-gorev-detay.html
+         aksiyon çubuğundan ?mod=duzenle&gorev=NNN veya ?kopya=1 + alan parametreleriyle açılır.
+         GOREV'in tam veri kümesi crm-gorev-detay.html'de kilitli kalır (D18-B2 kaynak — tekrar
+         edilmez); yalnız düzenlenebilir temel alanlar URL üzerinden taşınır. -->
+    <div class="src-banner" id="editBanner" hidden>
+      <div class="src-thumb"><i class="fa-solid fa-pen"></i></div>
+      <div class="src-body">
+        <div class="src-lbl" id="editBannerLbl">Düzenleme Modu</div>
+        <div class="src-txt" id="editBannerTxt">—</div>
       </div>
     </div>
 
@@ -340,6 +352,7 @@
         </div>
         <div class="form-foot">
           <a class="btn btn-ghost btn-sm" href="crm-gorev.html">Vazgeç</a>
+          <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="gorevSaveDraft"><i class="fa-regular fa-floppy-disk"></i> Taslak Olarak Kaydet</button>
           <button type="button" class="btn btn-acc btn-sm" data-no-confirm id="gorevSubmit"><i class="fa-solid fa-paper-plane"></i> Görevi Oluştur</button>
         </div>
       </div>
@@ -443,6 +456,77 @@
       document.getElementById('srcTitle').textContent = d.baslik;
     }
   })();
+
+  /* ==== §17 — Düzenle/Kopyala: crm-gorev.html liste satırı ("Düzenle" ikonu) ve
+     crm-gorev-detay.html aksiyon çubuğu ("Düzenle"/"Kopyala") bu formu ?mod=duzenle&gorev=NNN
+     veya ?kopya=1 + baslik/aciklama/santiye/pri/kategori/tip parametreleriyle açar. Kayıt
+     kalıcı silinmez ilkesinin karşılığı: her görev bu form üzerinden düzenlenebilir. ==== */
+  var GV_EDIT = {mode:null, code:null};
+  (function(){
+    var q = new URLSearchParams(location.search);
+    var isEdit = q.get('mod') === 'duzenle';
+    var isCopy = q.get('kopya') === '1';
+    if(!isEdit && !isCopy) return;
+
+    var baslik = q.get('baslik');
+    if(baslik){ var fB = document.getElementById('fBaslik'); if(fB) fB.value = baslik; }
+    var aciklama = q.get('aciklama');
+    if(aciklama){ var fA = document.getElementById('fAciklama'); if(fA) fA.value = aciklama; }
+    var santiyeName = q.get('santiye');
+    if(santiyeName){
+      var sSel = document.getElementById('fSantiye');
+      if(sSel){
+        Array.prototype.forEach.call(sSel.options, function(o){ if(o.value === santiyeName || o.textContent === santiyeName) sSel.value = o.value; });
+      }
+    }
+    var pri = q.get('pri');
+    if(pri){ var pSel = document.getElementById('fOncelik'); if(pSel) pSel.value = pri; }
+    var kategori = q.get('kategori');
+    if(kategori){ var kSel = document.getElementById('fKategori'); if(kSel) kSel.value = kategori; }
+    var tip = q.get('tip');
+    if(tip){ var tSel = document.getElementById('fTip'); if(tSel) tSel.value = tip; }
+
+    var banner = document.getElementById('editBanner');
+    if(isEdit){
+      GV_EDIT.mode = 'duzenle';
+      GV_EDIT.code = q.get('gorev');
+      document.getElementById('formTitle').textContent = 'Görevi Düzenle';
+      document.getElementById('crumbLast').textContent = 'Görevi Düzenle';
+      document.getElementById('formSub').textContent = 'Mevcut görev kaydı düzenleniyor — değişiklikler kaydedilince görev detayına dönersiniz.';
+      var subEl = document.getElementById('gorevSubmit');
+      if(subEl) subEl.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Değişiklikleri Kaydet';
+      if(banner){
+        banner.hidden = false;
+        document.getElementById('editBannerLbl').textContent = 'Düzenleme Modu';
+        document.getElementById('editBannerTxt').textContent = 'GRV-2026-' + (GV_EDIT.code || '') + ' kaydı düzenleniyor. Kaydettiğinizde bu değişiklik işlem kayıtlarına yazılır.';
+      }
+    } else if(isCopy){
+      GV_EDIT.mode = 'kopya';
+      document.getElementById('formTitle').textContent = 'Görevi Kopyala';
+      document.getElementById('crumbLast').textContent = 'Görevi Kopyala';
+      document.getElementById('formSub').textContent = 'Var olan bir görevden kopyalanan taslak — kaydetmeden önce alanları gözden geçirin.';
+      if(banner){
+        banner.hidden = false;
+        document.getElementById('editBannerLbl').textContent = 'Kopyalanan Görev';
+        document.getElementById('editBannerTxt').textContent = 'Bu görev başka bir kayıttan kopyalandı; "Görevi Oluştur" ile ayrı, yeni bir görev olarak kaydedilecek.';
+      }
+    }
+  })();
+
+  /* ---- Taslak Olarak Kaydet — §17: form her zaman taslak durumunda bırakılabilir,
+     zorunlu alan denetimi yapılmaz (yalnız başlık istenir), durum "Taslak" olarak
+     işaretlenip listeye dönülür. ---- */
+  var draftBtn = document.getElementById('gorevSaveDraft');
+  if(draftBtn){
+    draftBtn.addEventListener('click', function(){
+      var baslikVal = document.getElementById('fBaslik').value.trim();
+      if(!baslikVal){ gvToast('Taslak için de bir görev başlığı gerekir.', {type:'danger'}); document.getElementById('fBaslik').focus(); return; }
+      gvToast('Görev taslak olarak kaydedildi — "Taslak" durumunda listede yer alır.', {type:'info'});
+      setTimeout(function(){
+        location.href = GV_EDIT.mode === 'duzenle' ? ('crm-gorev-detay.html?gorev=' + GV_EDIT.code) : 'crm-gorev.html';
+      }, 900);
+    });
+  }
 
   /* ---- kaynak modül seçilince kaynak kayıt alanı açılır ---- */
   var fKaynakModul = document.getElementById('fKaynakModul');
@@ -582,11 +666,14 @@
         fHavuzDept.focus();
         return;
       }
-      if(atamaMode === 'havuz'){
+      if(GV_EDIT.mode === 'duzenle'){
+        gvToast('Değişiklikler kaydedildi — işlem kayıtlarına yazıldı.');
+        setTimeout(function(){ location.href = 'crm-gorev-detay.html?gorev=' + GV_EDIT.code; }, 900);
+      } else if(atamaMode === 'havuz'){
         gvToast('Görev ' + DEPT_LBL[fHavuzDept.value] + ' havuzuna bırakıldı.');
         setTimeout(function(){ location.href = 'crm-gorev.html?f=havuz'; }, 900);
       } else {
-        gvToast('Görev oluşturuldu ve atanan kişiye bildirim gönderildi.');
+        gvToast(GV_EDIT.mode === 'kopya' ? 'Kopyalanan görev yeni bir kayıt olarak oluşturuldu.' : 'Görev oluşturuldu ve atanan kişiye bildirim gönderildi.');
         setTimeout(function(){ location.href = 'crm-gorev.html'; }, 900);
       }
     });

@@ -52,7 +52,7 @@
 .col-due{width:120px}
 
 /* şantiye filtresi — durum chip'leriyle bileşik (AND); sakin ikinci sıra, chip'lerle yarışmaz */
-.gv-site-bar{display:flex;align-items:center;gap:10px;padding:10px 22px;border-bottom:1px solid var(--line);background:var(--bg)}
+.gv-site-bar{display:flex;align-items:center;gap:10px;padding:10px 22px;border-bottom:1px solid var(--line);background:var(--bg);flex-wrap:wrap}
 .gv-site-bar label{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--muted);flex:none}
 .gv-site-bar label i{font-size:11px}
 .gv-site-bar select{
@@ -66,6 +66,13 @@
   .gv-site-bar{padding:10px 16px}
   .gv-site-bar select{flex:1;min-width:0;max-width:none}
 }
+
+/* §17 — "Arşivlenenleri Göster" filtresi (spec-filtre-tarih.md ruhu; görev bu sayfada
+   kendi bileşik `_gvApply`/applyCompound motorunu kullandığından tam gvFilterPanel yerine
+   sade bir checkbox eklenir, aynı .gv-site-bar sırasına) */
+.gv-arsiv-toggle{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;margin-left:auto;flex:none}
+.gv-arsiv-toggle input{width:15px;height:15px;accent-color:var(--acc-ink);cursor:pointer}
+@media(max-width:640px){.gv-arsiv-toggle{margin-left:0}}
 
 /* ---- mobil görev kartları (640px altı — D18 Y17): #tblGorev ile aynı 'lines'
    (burada: aynı tr kümesi) kaynağından üretilir, data-idx ile eşleşir ---- */
@@ -154,6 +161,10 @@
           <option value="liman">Liman Lojistik Merkezi</option>
           <option value="merkez">Merkez Şantiye</option>
         </select>
+        <label class="gv-arsiv-toggle" for="fltArsivGoster">
+          <input type="checkbox" id="fltArsivGoster">
+          <i class="fa-solid fa-box-archive"></i> Arşivlenenleri Göster
+        </label>
       </div>
       <div class="gc-body flush">
         <table class="gtable" id="tblGorev">
@@ -330,7 +341,9 @@
               <td><span class="gstat warn">Revize İstendi</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-gorev-detay.html?gorev=028" data-no-confirm aria-label="Görev detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="verdigim" data-actor="all" data-santiye="vadi">
+            <!-- §17 — iptal edilen kayıt arşivlendi (kanonik iptal durumu ile arşiv ekseni
+                 birleşik gösterim: iptal edilmiş bir görev doğal arşiv adayıdır). -->
+            <tr data-f="verdigim" data-actor="all" data-santiye="vadi" data-recstat="arsiv">
               <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?gorev=029">Numune daire boya rengi için ayrı teklif toplama</a><span class="gcell-sub">GRV-2026-029</span></td>
               <td>Vadi Konakları</td>
               <td><div class="assign-chain"><span class="ac-from">Murat Denizli</span><i class="fa-solid fa-arrow-right-long"></i><span class="ac-to">Hasan Demirci</span></div></td>
@@ -528,10 +541,12 @@
      (rol daraltmasından SONRA ve şantiye filtresi değiştiğinde çağrılır) */
   function recomputeCounts(){
     var site = (document.getElementById('fltSantiye') || {}).value || 'hepsi';
+    var showArsiv = (document.getElementById('fltArsivGoster') || {}).checked;
     var counts = {bana:0, verdigim:0, geciken:0, tamam:0, havuz:0};
     document.querySelectorAll('#tblGorev tbody tr').forEach(function(tr){
       var f = tr.getAttribute('data-f');
       if(counts[f] === undefined) return;
+      if(!showArsiv && tr.getAttribute('data-recstat') === 'arsiv') return;
       if(site === 'hepsi' || tr.getAttribute('data-santiye') === site) counts[f]++;
     });
     document.querySelectorAll('.chips .chip[data-filter]').forEach(function(ch){
@@ -539,14 +554,16 @@
       if(c) c.textContent = counts[ch.getAttribute('data-filter')] || 0;
     });
   }
-  /* üç boyutlu bileşik filtre (durum + şantiye + arama) — ui.js'in applyFilters'ı
-     yalnız tek chip grubu + arama bilir; şantiye ikinci bağımsız boyut olduğundan
-     burada tam yeniden hesaplama yapılır (ui.js SADECE okunur, değiştirilmez) */
+  /* dört boyutlu bileşik filtre (durum + şantiye + arama + arşiv) — ui.js'in applyFilters'ı
+     yalnız tek chip grubu + arama bilir; şantiye/arşiv ayrı bağımsız boyutlar olduğundan
+     burada tam yeniden hesaplama yapılır (ui.js SADECE okunur, değiştirilmez). §17 — arşivli
+     kayıt "Arşivlenenleri Göster" işaretlenmedikçe hiçbir durum sekmesinde GÖRÜNMEZ. */
   function applyCompound(){
     var tbl = document.getElementById('tblGorev'); if(!tbl) return;
     var onChip = document.querySelector('.chips .chip.is-on[data-filter]');
     var f = onChip ? onChip.getAttribute('data-filter') : 'hepsi';
     var site = (document.getElementById('fltSantiye') || {}).value || 'hepsi';
+    var showArsiv = (document.getElementById('fltArsivGoster') || {}).checked;
     var searchInp = document.querySelector('input[data-table-search]');
     var term = searchInp ? searchInp.value.trim().toLocaleLowerCase('tr') : '';
     var shown = 0;
@@ -554,7 +571,8 @@
       var okF = (f === 'hepsi') || (tr.getAttribute('data-f') === f);
       var okSite = (site === 'hepsi') || (tr.getAttribute('data-santiye') === site);
       var okTerm = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
-      var show = okF && okSite && okTerm;
+      var okArsiv = showArsiv || tr.getAttribute('data-recstat') !== 'arsiv';
+      var show = okF && okSite && okTerm && okArsiv;
       tr.hidden = !show;
       if(show) shown++;
     });
@@ -721,6 +739,107 @@
     });
   }
 
+  /* ==== §17 — satır aksiyonları: Düzenle + Arşivle/Aktife Al toggle. Görev modülünde
+     "Pasife Al" ile "Arşivle" listede TEK bir toggle'a birleştirilir (görevin zaten
+     zengin bir yaşam-döngüsü durumu var — bkz kararlar.md); Kopyala/Revizyon Ekle/İşlem
+     Geçmişi/Çıktı Al gibi ikincil aksiyonlar detay sayfasında (crm-gorev-detay.html
+     rec-actbar) toplanır, liste satırı kalabalıklaşmaz (crm-ayarlar-roller.html emsali). ==== */
+  var ARSIV_KEY = 'gv_gorev_arsiv';
+  function loadArsivOverrides(){
+    try{ return JSON.parse(localStorage.getItem(ARSIV_KEY)) || {}; }catch(e){ return {}; }
+  }
+  function saveArsivOverrides(map){
+    localStorage.setItem(ARSIV_KEY, JSON.stringify(map));
+  }
+  function rowCode(tr){
+    var a = tr.querySelector('.task-link');
+    if(!a) return null;
+    var m = a.getAttribute('href').match(/gorev=(\d+)/);
+    return m ? m[1] : null;
+  }
+  function buildRowEditUrl(tr, code){
+    var titleEl = tr.querySelector('.task-link');
+    var siteTd = tr.children[1];
+    var priEl = tr.querySelector('.gpri');
+    var params = new URLSearchParams();
+    params.set('mod', 'duzenle'); params.set('gorev', code);
+    if(titleEl) params.set('baslik', titleEl.textContent.trim());
+    if(siteTd && siteTd.textContent.trim() !== '—') params.set('santiye', siteTd.textContent.trim());
+    if(priEl){
+      var priCls = ['high','med','low'].filter(function(c){ return priEl.classList.contains(c); })[0];
+      if(priCls) params.set('pri', priCls);
+    }
+    return 'crm-gorev-form.html?' + params.toString();
+  }
+  function updateArchiveBtn(btn, isArc){
+    btn.setAttribute('data-tip', isArc ? 'Arşivden Çıkar' : 'Arşivle');
+    btn.setAttribute('aria-label', isArc ? 'Arşivden çıkar' : 'Arşivle');
+    btn.innerHTML = '<i class="fa-solid ' + (isArc ? 'fa-rotate-left' : 'fa-box-archive') + '"></i>';
+  }
+  function injectRowActions(){
+    var overrides = loadArsivOverrides();
+    document.querySelectorAll('#tblGorev tbody tr').forEach(function(tr){
+      var acts = tr.querySelector('.row-acts'); if(!acts || acts.querySelector('[data-row-edit]')) return;
+      var code = rowCode(tr); if(!code) return;
+      /* override her zaman AÇIKÇA 'arsiv' veya 'aktif' saklar (GRV-029 gibi statik
+         HTML'de baked-in arşiv durumu olan satırlar 'aktif' override'ı olmadan geri
+         alınamaz — silme/delete yerine EXPLICIT karşıt değer yazılır) */
+      if(overrides[code] === 'arsiv') tr.setAttribute('data-recstat', 'arsiv');
+      else if(overrides[code] === 'aktif') tr.removeAttribute('data-recstat');
+
+      /* NOT: butonlar acts.firstChild'e DEĞİL sona eklenir — buildCards() mobil kart
+         üretiminde tr.querySelector('.ia-btn') İLK eşleşeni "Görev detayı" linki sayıyor;
+         edit/arşiv ikonları öne eklenirse o mantık kırılır (regresyon riski). */
+      var editBtn = document.createElement('a');
+      editBtn.className = 'ia-btn'; editBtn.setAttribute('data-no-confirm', '');
+      editBtn.setAttribute('data-row-edit', code);
+      editBtn.setAttribute('data-tip', 'Düzenle'); editBtn.setAttribute('aria-label', 'Düzenle');
+      editBtn.href = buildRowEditUrl(tr, code);
+      editBtn.innerHTML = '<i class="fa-solid fa-pen"></i>';
+      acts.appendChild(editBtn);
+
+      var arcBtn = document.createElement('button');
+      arcBtn.type = 'button'; arcBtn.className = 'ia-btn'; arcBtn.setAttribute('data-no-confirm', '');
+      arcBtn.setAttribute('data-row-arsiv', code);
+      updateArchiveBtn(arcBtn, tr.getAttribute('data-recstat') === 'arsiv');
+      acts.appendChild(arcBtn);
+    });
+  }
+  function bindRowArchiveButtons(){
+    document.querySelectorAll('#tblGorev tbody').forEach(function(tbody){
+      if(tbody._arsivBound) return;
+      tbody._arsivBound = true;
+      tbody.addEventListener('click', function(e){
+        var btn = e.target.closest('[data-row-arsiv]'); if(!btn) return;
+        var code = btn.getAttribute('data-row-arsiv');
+        var tr = btn.closest('tr');
+        var titleEl = tr.querySelector('.task-link');
+        var title = titleEl ? titleEl.textContent.trim() : 'Görev';
+        var isArc = tr.getAttribute('data-recstat') === 'arsiv';
+        gvConfirm({
+          danger: !isArc, icon:'fa-box-archive',
+          title: isArc ? 'Görev arşivden çıkarılsın mı?' : 'Görev arşivlensin mi?',
+          message: isArc
+            ? '"' + title + '" görevi yeniden Aktif duruma alınacak.'
+            : '"' + title + '" görevi arşivlenecek. Görev SİLİNMEZ; varsayılan listede görünmez, "Arşivlenenleri Göster" ile bulunabilir.',
+          ok: isArc ? 'Arşivden Çıkar' : 'Onayla ve Arşivle', cancel:'Vazgeç',
+          onConfirm:function(){
+            var overrides = loadArsivOverrides();
+            if(isArc){ tr.removeAttribute('data-recstat'); overrides[code] = 'aktif'; }
+            else { tr.setAttribute('data-recstat', 'arsiv'); overrides[code] = 'arsiv'; }
+            saveArsivOverrides(overrides);
+            updateArchiveBtn(btn, !isArc);
+            gvToast(isArc ? 'Görev arşivden çıkarıldı.' : 'Görev arşivlendi — varsayılan listede artık görünmeyecek.', {type: isArc ? 'ok' : 'danger'});
+            recomputeCounts();
+            updateSub(document.body.dataset.screen || 'bana');
+            applyCompound();
+            buildCards();
+          }
+        });
+      });
+    });
+  }
+
   function init(){
     if(!window.GV) return;
 
@@ -772,6 +891,10 @@
       });
     }
 
+    /* §17 — satır aksiyonları rol budamasından SONRA enjekte edilir (kalan satırlar için) */
+    injectRowActions();
+    bindRowArchiveButtons();
+
     buildCards();   /* rol budaması (tr.remove) SONRASI — kalan tr kümesinden kart üretilir */
     recomputeCounts();
 
@@ -779,6 +902,15 @@
     var siteSel = document.getElementById('fltSantiye');
     if(siteSel){
       siteSel.addEventListener('change', function(){
+        recomputeCounts();
+        updateSub(document.body.dataset.screen || 'bana');
+        applyCompound();
+      });
+    }
+    /* §17 — "Arşivlenenleri Göster" checkbox'ı — arşivli kayıtları geçici olarak listeye geri getirir */
+    var arsivToggle = document.getElementById('fltArsivGoster');
+    if(arsivToggle){
+      arsivToggle.addEventListener('change', function(){
         recomputeCounts();
         updateSub(document.body.dataset.screen || 'bana');
         applyCompound();
