@@ -301,11 +301,11 @@ th.is-today .dh-d{color:var(--acc-ink)}
       </div>
       <div class="gc-body flush">
         <table class="gtable" id="tblOnay">
-          <thead><tr><th>Şantiye</th><th>Personel</th><th>Durum</th><th></th></tr></thead>
+          <thead><tr><th class="col-per">Şantiye</th><th>Durum</th><th></th></tr></thead>
           <tbody>
-            <tr data-f="taslak" data-santiye="vadi"><td>Vadi Konakları</td><td>7 personel</td><td><span class="gstat off">Taslak</span></td><td><div class="row-acts"><button type="button" class="ia-btn onay-goster" data-santiye="vadi" data-no-confirm aria-label="Şantiyeyi görüntüle"><i class="fa-solid fa-arrow-up-right-from-square"></i></button></div></td></tr>
-            <tr data-f="taslak" data-santiye="liman"><td>Liman Lojistik Merkezi</td><td>5 personel</td><td><span class="gstat off">Taslak</span></td><td><div class="row-acts"><button type="button" class="ia-btn onay-goster" data-santiye="liman" data-no-confirm aria-label="Şantiyeyi görüntüle"><i class="fa-solid fa-arrow-up-right-from-square"></i></button></div></td></tr>
-            <tr data-f="taslak" data-santiye="merkez"><td>Merkez Şantiye</td><td>4 personel</td><td><span class="gstat off">Taslak</span></td><td><div class="row-acts"><button type="button" class="ia-btn onay-goster" data-santiye="merkez" data-no-confirm aria-label="Şantiyeyi görüntüle"><i class="fa-solid fa-arrow-up-right-from-square"></i></button></div></td></tr>
+            <tr data-f="taslak" data-santiye="vadi"><td><div class="pp-cell"><div class="pp-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)"><i class="fa-solid fa-building"></i></div><div class="pp-info"><b>Vadi Konakları</b><span>7 personel</span></div></div></td><td><span class="gstat off">Taslak</span></td><td><div class="row-acts"><button type="button" class="ia-btn onay-goster" data-santiye="vadi" data-no-confirm aria-label="Şantiyeyi görüntüle"><i class="fa-solid fa-arrow-up-right-from-square"></i></button></div></td></tr>
+            <tr data-f="taslak" data-santiye="liman"><td><div class="pp-cell"><div class="pp-mark" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-building"></i></div><div class="pp-info"><b>Liman Lojistik Merkezi</b><span>5 personel</span></div></div></td><td><span class="gstat off">Taslak</span></td><td><div class="row-acts"><button type="button" class="ia-btn onay-goster" data-santiye="liman" data-no-confirm aria-label="Şantiyeyi görüntüle"><i class="fa-solid fa-arrow-up-right-from-square"></i></button></div></td></tr>
+            <tr data-f="taslak" data-santiye="merkez"><td><div class="pp-cell"><div class="pp-mark" style="background:var(--warn-tint);color:var(--warn)"><i class="fa-solid fa-building"></i></div><div class="pp-info"><b>Merkez Şantiye</b><span>4 personel</span></div></div></td><td><span class="gstat off">Taslak</span></td><td><div class="row-acts"><button type="button" class="ia-btn onay-goster" data-santiye="merkez" data-no-confirm aria-label="Şantiyeyi görüntüle"><i class="fa-solid fa-arrow-up-right-from-square"></i></button></div></td></tr>
           </tbody>
         </table>
       </div>
@@ -897,8 +897,8 @@ th.is-today .dh-d{color:var(--acc-ink)}
       var durum = rec ? rec.status : 'taslak';
       var kisiSayisi = PERSONEL.filter(function(p){ return p.santiye === s; }).length;
       var icon = GUNLUK_ICON[durum] ? '<i class="fa-solid ' + GUNLUK_ICON[durum] + '"></i> ' : '';
-      return '<tr data-f="' + durum + '" data-santiye="' + s + '"><td>' + SANTIYE_ADI[s] + '</td>'
-        + '<td>' + kisiSayisi + ' personel</td>'
+      var tint = SANTIYE_TINT[s];
+      return '<tr data-f="' + durum + '" data-santiye="' + s + '"><td><div class="pp-cell"><div class="pp-mark" style="background:'+tint.bg+';color:'+tint.fg+'"><i class="fa-solid fa-building"></i></div><div class="pp-info"><b>' + SANTIYE_ADI[s] + '</b><span>' + kisiSayisi + ' personel</span></div></div></td>'
         + '<td><span class="gstat ' + GUNLUK_TIP[durum] + '">' + icon + GUNLUK_LBL[durum] + '</span></td>'
         + '<td><div class="row-acts"><button type="button" class="ia-btn onay-goster" data-santiye="' + s + '" data-no-confirm aria-label="Şantiyeyi görüntüle"><i class="fa-solid fa-arrow-up-right-from-square"></i></button></div></td></tr>';
     });
