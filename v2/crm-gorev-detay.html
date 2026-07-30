@@ -37,6 +37,19 @@
 .gd-grid{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
 @media(max-width:980px){.gd-grid{grid-template-columns:minmax(0,1fr)}}
 
+/* §11.3 — sekme bar (crm-santiye-detay.html .gv-tabs/.gv-tab deseni BİREBİR — B envanteri;
+   sayfa-lokal tekrar, ortak CSS'e taşınmadı çünkü o dosya kilitli/başka sahipte) */
+.gv-tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:0;overflow-x:auto;scrollbar-width:none}
+.gv-tabs::-webkit-scrollbar{display:none}
+.gv-tab{display:inline-flex;align-items:center;gap:8px;padding:13px 4px;margin-right:26px;flex:none;
+  font-family:inherit;font-size:13.5px;font-weight:700;color:var(--muted);background:none;border:none;
+  border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;transition:.18s var(--ease)}
+.gv-tab i{font-size:13px}
+.gv-tab:hover{color:var(--ink)}
+.gv-tab.is-active{color:var(--acc-ink);border-color:var(--acc-ink)}
+.gv-tab .tb-cnt{font-size:10.5px;font-weight:700;background:var(--bg);color:var(--ink-2);padding:1px 6px;border-radius:var(--r-pill)}
+.gv-tab.is-active .tb-cnt{background:rgba(var(--acc-rgb),.16);color:var(--acc-deep)}
+
 .gd-block{padding:22px}
 .gd-block + .gd-block{border-top:1px solid var(--line)}
 .gd-label{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
@@ -75,6 +88,11 @@
 .file-info{flex:1;min-width:0;line-height:1.35}
 .file-info b{display:block;font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .file-info span{font-size:11.5px;color:var(--muted)}
+
+/* §11.3 — ek ekleme çubuğu (görev ekleri sekmesi) */
+.ek-add-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding-top:12px;margin-top:4px;border-top:1px solid var(--line)}
+.ek-add-row select{flex:1;min-width:150px}
+.ek-add-row input[type="text"]{flex:1;min-width:150px}
 
 /* yorum akışı */
 .cmt-row{display:flex;gap:12px;padding:14px 0}
@@ -180,37 +198,66 @@
       <!-- ============ SOL: içerik ============ -->
       <div class="gv-side-stack">
         <div class="gv-card">
-          <div class="gd-block">
-            <div class="gd-label">Açıklama</div>
-            <p class="gd-desc" id="gdDesc">—</p>
+          <div class="gv-tabs" role="tablist" aria-label="Görev detay sekmeleri" style="padding:18px 22px 0">
+            <button class="gv-tab is-active" data-tab="ozet" role="tab" aria-selected="true"><i class="fa-solid fa-align-left"></i> Özet</button>
+            <button class="gv-tab" data-tab="yorum" role="tab" aria-selected="false"><i class="fa-solid fa-comments"></i> Yorumlar <span class="tb-cnt" id="tabCntYorum">0</span></button>
+            <!-- §11.3 — ekler yorumlardan AYRI sekme (D18 pattern B — .gv-tabs/.tab-panel) -->
+            <button class="gv-tab" data-tab="ekler" role="tab" aria-selected="false"><i class="fa-solid fa-paperclip"></i> Ekler <span class="tb-cnt" id="tabCntEkler">0</span></button>
           </div>
-          <div class="gd-block" id="gdFilesBlock" hidden>
-            <div class="gd-label">Dosya Ekleri</div>
-            <div class="file-row">
-              <div class="file-ico pdf"><i class="fa-solid fa-file-pdf"></i></div>
-              <div class="file-info"><b>kur-plani.pdf</b><span>428 KB · Murat Denizli tarafından eklendi</span></div>
-              <button class="ia-btn" data-demo="İndirme hazırlanıyor (demo)" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button>
+
+          <section class="tab-panel" data-tab-panel="ozet">
+            <div class="gd-block">
+              <div class="gd-label">Açıklama</div>
+              <p class="gd-desc" id="gdDesc">—</p>
             </div>
-            <div class="file-row">
-              <div class="file-ico"><i class="fa-solid fa-file-image"></i></div>
-              <div class="file-info"><b>kalip-sokum-30haziran.jpg</b><span>2,1 MB · Hasan Demirci tarafından eklendi</span></div>
-              <button class="ia-btn" data-demo="İndirme hazırlanıyor (demo)" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button>
-            </div>
-          </div>
-          <div class="gd-block">
-            <div class="gd-label">Yorumlar <span class="gf-hint" style="text-transform:none;letter-spacing:0;font-weight:600">— ekip içi tartışma; durum değişiklikleri ayrıca Durum Geçmişi'nde kayıtlıdır</span></div>
-            <div id="gdComments"><div class="cmt-row"><div class="cmt-ava">MD</div><div class="cmt-body"><div class="cmt-head"><b>Murat Denizli</b><span>28 Haziran, 09:12</span></div><div class="cmt-text">Perde betonu döküldükten sonra kür sürecini takip edip fotoğraflı rapor bekliyorum.</div></div></div><div class="cmt-row"><div class="cmt-ava">HD</div><div class="cmt-body"><div class="cmt-head"><b>Hasan Demirci</b><span>30 Haziran, 14:20</span></div><div class="cmt-text">Kalıp söküm bugün yapıldı, kür örtüsü seriliyor. Yarın ilk fotoğrafları paylaşacağım.</div><div class="cmt-attach"><div class="cmt-attach-photo photo-vadi"><i class="fa-solid fa-image"></i></div><span class="cmt-attach-name"><i class="fa-solid fa-paperclip"></i> kur-ortusu-30haziran.jpg · 1,8 MB</span></div></div></div><div class="cmt-row"><div class="cmt-ava">MD</div><div class="cmt-body"><div class="cmt-head"><b>Murat Denizli</b><span>2 Temmuz, 08:05</span></div><div class="cmt-text">Termin dün geçti, rapor henüz gelmedi. Lütfen bugün öğleden önce paylaşın.</div></div></div></div>
-            <div class="cmt-compose">
-              <div class="cmt-ava" id="cmtMeAva">·</div>
-              <div class="cmt-compose-field">
-                <input type="text" placeholder="Yorum yazın…" id="cmtInput">
-                <label class="ia-btn" for="cmtFile" data-tip="Fotoğraf/belge ekle" aria-label="Ek ekle"><i class="fa-regular fa-paperclip"></i></label>
-                <input type="file" id="cmtFile" accept="image/*,.pdf" hidden>
-                <button class="btn btn-acc btn-sm" data-no-confirm id="cmtSend"><i class="fa-solid fa-paper-plane"></i> Gönder</button>
+          </section>
+
+          <section class="tab-panel" data-tab-panel="yorum" hidden>
+            <div class="gd-block">
+              <div class="gd-label">Yorumlar <span class="gf-hint" style="text-transform:none;letter-spacing:0;font-weight:600">— ekip içi tartışma; durum değişiklikleri ayrıca Durum Geçmişi'nde kayıtlıdır</span></div>
+              <div id="gdComments"><div class="cmt-row"><div class="cmt-ava">MD</div><div class="cmt-body"><div class="cmt-head"><b>Murat Denizli</b><span>28 Haziran, 09:12</span></div><div class="cmt-text">Perde betonu döküldükten sonra kür sürecini takip edip fotoğraflı rapor bekliyorum.</div></div></div><div class="cmt-row"><div class="cmt-ava">HD</div><div class="cmt-body"><div class="cmt-head"><b>Hasan Demirci</b><span>30 Haziran, 14:20</span></div><div class="cmt-text">Kalıp söküm bugün yapıldı, kür örtüsü seriliyor. Yarın ilk fotoğrafları paylaşacağım.</div><div class="cmt-attach"><div class="cmt-attach-photo photo-vadi"><i class="fa-solid fa-image"></i></div><span class="cmt-attach-name"><i class="fa-solid fa-paperclip"></i> kur-ortusu-30haziran.jpg · 1,8 MB</span></div></div></div><div class="cmt-row"><div class="cmt-ava">MD</div><div class="cmt-body"><div class="cmt-head"><b>Murat Denizli</b><span>2 Temmuz, 08:05</span></div><div class="cmt-text">Termin dün geçti, rapor henüz gelmedi. Lütfen bugün öğleden önce paylaşın.</div></div></div></div>
+              <div class="cmt-compose">
+                <div class="cmt-ava" id="cmtMeAva">·</div>
+                <div class="cmt-compose-field">
+                  <input type="text" placeholder="Yorum yazın…" id="cmtInput">
+                  <label class="ia-btn" for="cmtFile" data-tip="Fotoğraf/belge ekle" aria-label="Ek ekle"><i class="fa-regular fa-paperclip"></i></label>
+                  <input type="file" id="cmtFile" accept="image/*,.pdf" hidden>
+                  <button class="btn btn-acc btn-sm" data-no-confirm id="cmtSend"><i class="fa-solid fa-paper-plane"></i> Gönder</button>
+                </div>
               </div>
+              <div class="cmt-file-pending" id="cmtFilePending" hidden><i class="fa-solid fa-paperclip"></i> <span id="cmtFileName"></span> <button type="button" class="cmt-file-remove" id="cmtFileRemove" aria-label="Eki kaldır"><i class="fa-solid fa-xmark"></i></button></div>
             </div>
-            <div class="cmt-file-pending" id="cmtFilePending" hidden><i class="fa-solid fa-paperclip"></i> <span id="cmtFileName"></span> <button type="button" class="cmt-file-remove" id="cmtFileRemove" aria-label="Eki kaldır"><i class="fa-solid fa-xmark"></i></button></div>
-          </div>
+          </section>
+
+          <!-- §11.3 — Görev Ekleri: 11 tür + çoklu dosya + kategori/açıklama/yükleyen/tarih;
+               eklerden yorum oluşturma + revize talebi açma; §14 koruma — mevcut 2 dosya
+               (kur-plani.pdf/kalip-sokum...) KORUNDU, üzerine eklenir. -->
+          <section class="tab-panel" data-tab-panel="ekler" hidden>
+            <div class="gd-block">
+              <div class="gd-label">Görev Ekleri <span class="gf-hint" style="text-transform:none;letter-spacing:0;font-weight:600">— dosyalardan doğrudan yorum veya revize talebi açılabilir</span></div>
+              <div id="gdFileList"></div>
+              <div class="ek-add-row">
+                <select id="ekKategori" aria-label="Ek kategorisi">
+                  <option value="gorsel">Görsel</option>
+                  <option value="pdf">PDF</option>
+                  <option value="word">Word Belgesi</option>
+                  <option value="excel">Excel Belgesi</option>
+                  <option value="teknik_cizim">Teknik Çizim</option>
+                  <option value="video">Video</option>
+                  <option value="saha_foto">Saha Fotoğrafı</option>
+                  <option value="sozlesme">Sözleşme Eki</option>
+                  <option value="satinalma">Satın Alma Belgesi</option>
+                  <option value="hakedis">Hakediş Eki</option>
+                  <option value="isg">İSG Belgesi</option>
+                </select>
+                <input type="text" id="ekAciklama" placeholder="Açıklama (isteğe bağlı)">
+                <label class="btn btn-ghost btn-sm" for="ekDosya"><i class="fa-regular fa-paperclip"></i> Dosya Seç</label>
+                <input type="file" id="ekDosya" multiple hidden>
+                <button type="button" class="btn btn-acc btn-sm" id="ekEkleBtn" data-no-confirm><i class="fa-solid fa-plus"></i> Ekle</button>
+              </div>
+              <div class="gf-hint">En fazla 10 dosya eklenebilir (demo kısıtı) — bu prototipte gerçekten yüklenmez.</div>
+            </div>
+          </section>
         </div>
 
         <div class="gv-card" id="icNotBlock" data-view="ic-not" hidden style="background:var(--warn-tint);border-color:color-mix(in srgb, var(--warn) 35%, var(--line))">
@@ -270,6 +317,18 @@
               <div class="who-mark" style="background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)" id="poolClaimedIni">—</div>
               <div class="who-info"><b id="poolClaimedName">—</b><span>Atanan · üzerine aldı</span></div>
             </div>
+            <!-- §11.4 — havuz bilgisi: havuz türü/departman/roller/şantiye bağlantısı/
+                 üzerine alma tarihi (9 alandan 6'sı burada, kalan 3'ü aşağıdaki geçmiş
+                 kartı + 2 aksiyon butonu) -->
+            <div class="ctx-row"><span class="ctx-lbl">Havuz Türü</span><span class="ctx-val">Departman Havuzu</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Departman Havuzu</span><span class="ctx-val" id="poolDeptVal">—</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Hangi Roller Görebilir</span><span class="ctx-val" id="poolVisText" style="font-weight:600;text-align:right;max-width:190px">—</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Şantiye Bağlantısı</span><span class="ctx-val" id="poolSiteVal">—</span></div>
+            <div class="ctx-row" id="poolClaimDateRow" hidden><span class="ctx-lbl">Üzerine Alma Tarihi</span><span class="ctx-val" id="poolClaimDate">—</span></div>
+            <div class="status-acts" style="margin-top:12px">
+              <button class="btn btn-ghost btn-sm" data-no-confirm id="poolReturnBtn" hidden><i class="fa-solid fa-rotate-left"></i> Yeniden Havuza Bırak</button>
+              <button class="btn btn-ghost btn-sm" id="poolChangeDeptBtn" hidden><i class="fa-solid fa-right-left"></i> Departman Değiştir</button>
+            </div>
           </div>
           <div class="gd-block" id="gdSiteBlock">
             <div class="gd-label">Şantiye Bağlamı</div>
@@ -300,6 +359,15 @@
         <div class="gv-card">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-timeline"></i> Durum Geçmişi</div></div>
           <div id="gdHistory"></div>
+        </div>
+
+        <!-- §11.4 madde 7 — havuz geçmişi (bırakıldı/üzerine alındı/yeniden bırakıldı/
+             departman değiştirildi); üzerine alma satırı audit-log kaydıyla tutarlı bir
+             referans taşır (crm-ayarlar-log.html .log-row deseni okunmuş, o dosyaya
+             YAZILMAMIŞTIR — yalnız burada tutarlı biçimde gösterilir). -->
+        <div class="gv-card" id="poolHistoryCard" hidden>
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-layer-group"></i> Havuz Geçmişi</div></div>
+          <div id="poolHistory"></div>
         </div>
 
         <div class="gv-card" data-view="onayci" hidden>
@@ -381,6 +449,27 @@
     tamam:'fa-check', havuz:'fa-layer-group', onaybekliyor:'fa-hourglass-half', revize:'fa-rotate-left', iptal:'fa-ban'};
   var HIST_ACT_ICO = {info:'info', ok:'ok', danger:'danger', warn:'warn', wait:'warn', off:''};
 
+  /* §11.4 — departman havuzu sözlüğü (crm-gorev-form.html'in 11 seçeneğiyle BİREBİR aynı
+     kaynak; K-22 hükmü: 7'si gerçek rol filtresi, 4'ü Faz 2 — bkz crm-gorev.html
+     DEPT_ROLE_MAP/NOFILTER_DEPTS, bu sayfada salt-okunur GÖSTERİM amaçlı tekrarlanır) */
+  var DEPT_LBL = {muhasebe:'Muhasebe', ik:'İK', satinalma:'Satın Alma', teknik:'Teknik Ofis',
+    sef:'Şantiye Ekibi', saha:'Saha Ekibi', yonetim:'Yönetim', satis:'Satış Ekibi',
+    isg:'İSG Ekibi', depo:'Depo / Lojistik', taseron:'Taşeron Havuzu'};
+  var DEPT_ROLE_TXT = {muhasebe:'Yönetim + Muhasebe rolü', ik:'Yönetim + İK Uzmanı rolü',
+    satinalma:'Yönetim + Satın Alma Sorumlusu rolü', teknik:'Yönetim + Teknik Müdür rolü',
+    sef:'Yönetim + Şantiye Şefi rolü (yalnız ilgili şantiye)', yonetim:'Yalnız yönetim rolleri',
+    satis:'Yönetim + Satış Temsilcisi/Satış Müdürü rolleri'};
+  var DEPT_NOFILTER = ['saha','isg','depo','taseron'];
+  var DEPT_NOFILTER_TXT = 'Yönetim + Teknik Müdür + Şef (Faz 2)';
+  var DEPT_CHANGE_ROLES = ['superadmin','sahip','yonetim','sef'];
+  var EK_KATEGORI = {gorsel:'Görsel', pdf:'PDF', word:'Word Belgesi', excel:'Excel Belgesi',
+    teknik_cizim:'Teknik Çizim', video:'Video', saha_foto:'Saha Fotoğrafı', sozlesme:'Sözleşme Eki',
+    satinalma:'Satın Alma Belgesi', hakedis:'Hakediş Eki', isg:'İSG Belgesi'};
+  var EK_ICON = {gorsel:'fa-file-image', pdf:'fa-file-pdf', word:'fa-file-word', excel:'fa-file-excel',
+    teknik_cizim:'fa-drafting-compass', video:'fa-file-video', saha_foto:'fa-camera',
+    sozlesme:'fa-file-contract', satinalma:'fa-cart-shopping', hakedis:'fa-file-invoice-dollar', isg:'fa-helmet-safety'};
+  var POOL_HIST_ICO = {birak:'fa-layer-group', al:'fa-hand', dondur:'fa-rotate-left', degistir:'fa-right-left'};
+
   function rec(o){ return o; }
 
   var GOREV = {
@@ -418,7 +507,11 @@
     '008': rec({title:'Perde betonu kür takibini raporla', santiye:'vadi', pri:'high', st:ST.gecikti,
       due:{val:'1 Temmuz 2026 · dün', late:true}, created:'28 Haziran 2026', from:'Murat Denizli', to:'Hasan Demirci',
       desc:'Vadi Konakları B Blok bodrum kat perde betonu 30 Haziran’da döküldü. Kalıp söküm sonrası kür sürecinin fotoğraflı olarak raporlanması ve 7 günlük kür süresi boyunca günlük sulama takibinin tutanağa geçirilmesi isteniyor. Rapor tamamlanmadan bir sonraki döküm programına geçilmeyecek.',
-      files:true, kategori:'uyum', tip:'teknik', kanitGerekli:true, onayGerekli:true,
+      files:[
+        {name:'kur-plani.pdf', kategori:'pdf', size:'428 KB', yukleyen:'Murat Denizli', tarih:'28 Haziran 2026'},
+        {name:'kalip-sokum-30haziran.jpg', kategori:'saha_foto', size:'2,1 MB', yukleyen:'Hasan Demirci', tarih:'30 Haziran 2026'}
+      ],
+      kategori:'uyum', tip:'teknik', kanitGerekli:true, onayGerekli:true,
       history:[{durum:'olusturdu', tarih:'28 Haziran 2026', kisi:'Murat Denizli'}, {durum:'devam', tarih:'30 Haziran 2026', kisi:'Hasan Demirci'}, {durum:'gecikti', tarih:'2 Temmuz 2026', kisi:'Sistem', not:'Termin geçti, rapor henüz gelmedi.'}],
       comments:[
         {who:'Murat Denizli', date:'28 Haziran, 09:12', text:'Perde betonu döküldükten sonra kür sürecini takip edip fotoğraflı rapor bekliyorum.'},
@@ -480,26 +573,38 @@
       desc:'Vadi Konakları kalıp kereste stok sayımının ön kontrolü tamamlandı.',
       comments:[{who:'Ali Vural', date:'29 Haziran, 10:05', text:'Ön kontrol tamamlandı, tam sayım için hazır.'}]}),
     '021': rec({title:'Liman Lojistik çevre aydınlatma keşfi', santiye:'liman', pri:'med', st:ST.havuz, pool:true, poolWait:'2 gündür bekliyor',
+      departman:'satinalma',
+      poolHistory:[{tip:'birak', kisi:'Kemal Yapıcıoğlu', tarih:'30 Haziran 2026', not:'Satın Alma havuzuna bırakıldı'}],
       due:{val:'8 Temmuz 2026', late:false}, created:'30 Haziran 2026',
       desc:'Liman Lojistik çevresindeki aydınlatma ihtiyacının yerinde keşfinin yapılması bekleniyor.',
       comments:[{who:'Kemal Yapıcıoğlu', date:'30 Haziran, 09:00', text:'Uygun olan arkadaşımız üstlenebilir, aciliyeti yok.'}]}),
     '022': rec({title:'Kule Ofis kesin hesap dosyası kontrolü', santiye:'kule', pri:'high', st:ST.havuz, pool:true, poolWait:'1 gündür bekliyor',
+      departman:'muhasebe',
+      poolHistory:[{tip:'birak', kisi:'Kemal Yapıcıoğlu', tarih:'1 Temmuz 2026', not:'Muhasebe havuzuna bırakıldı'}],
       due:{val:'6 Temmuz 2026', late:false}, created:'1 Temmuz 2026',
       desc:'Kule Ofis B Blok kesin hesap dosyasının kontrol edilip eksiklerin raporlanması isteniyor.',
       comments:[{who:'Kemal Yapıcıoğlu', date:'1 Temmuz, 10:30', text:'Kesin hesap termini yaklaşıyor, öncelikli olsun.'}]}),
     '023': rec({title:'Vadi Konakları numune daire fotoğraf çekimi', santiye:'vadi', pri:'low', st:ST.havuz, pool:true, poolWait:'bugün bırakıldı',
+      departman:'satis',
+      poolHistory:[{tip:'birak', kisi:'Kemal Yapıcıoğlu', tarih:'2 Temmuz 2026', not:'Satış Ekibi havuzuna bırakıldı'}],
       due:{val:'10 Temmuz 2026', late:false}, created:'2 Temmuz 2026',
       desc:'Vadi Konakları numune dairenin pazarlama için fotoğraflarının çekilmesi bekleniyor.',
       comments:[{who:'Kemal Yapıcıoğlu', date:'2 Temmuz, 08:50', text:'Gün ışığı iyiyken öğleden önce çekelim.'}]}),
     '024': rec({title:'Merkez depo yıl ortası sayım planı', santiye:'merkez', pri:'med', st:ST.havuz, pool:true, poolWait:'1 gündür bekliyor',
+      departman:'depo',
+      poolHistory:[{tip:'birak', kisi:'Kemal Yapıcıoğlu', tarih:'1 Temmuz 2026', not:'Depo / Lojistik havuzuna bırakıldı'}],
       due:{val:'9 Temmuz 2026', late:false}, created:'1 Temmuz 2026',
       desc:'Merkez Şantiye deposunda yıl ortası sayımın planlanması isteniyor.',
       comments:[{who:'Kemal Yapıcıoğlu', date:'1 Temmuz, 11:20', text:'Sayım planını depo sorumlusuyla birlikte hazırlayalım.'}]}),
     '025': rec({title:'Göl Evleri 2. Etap ruhsat evrak listesi', santiye:'gol', pri:'high', st:ST.gecikti, pool:true, poolWait:'3 gündür bekliyor, termin geçti', late:true,
+      departman:'teknik',
+      poolHistory:[{tip:'birak', kisi:'Kemal Yapıcıoğlu', tarih:'29 Haziran 2026', not:'Teknik Ofis havuzuna bırakıldı'}],
       due:{val:'1 Temmuz 2026 · dün', late:true}, created:'29 Haziran 2026',
       desc:'Göl Evleri 2. Etap için ruhsat evrak listesinin hazırlanıp eksik belgelerin tespit edilmesi gerekiyor.',
       comments:[{who:'Kemal Yapıcıoğlu', date:'1 Temmuz, 09:30', text:'Termin geçti, bu görevi öncelikli olarak birinin üstlenmesi lazım.'}]}),
     '026': rec({title:'Şantiye araç takip çizelgesi güncelleme', santiye:'merkez', pri:'low', st:ST.havuz, pool:true, poolWait:'bugün bırakıldı',
+      departman:'sef',
+      poolHistory:[{tip:'birak', kisi:'Kemal Yapıcıoğlu', tarih:'2 Temmuz 2026', not:'Şantiye Ekibi havuzuna bırakıldı'}],
       due:{val:'12 Temmuz 2026', late:false}, created:'2 Temmuz 2026',
       desc:'Şantiyelerdeki araç takip çizelgesinin güncellenmesi bekleniyor.',
       comments:[{who:'Kemal Yapıcıoğlu', date:'2 Temmuz, 09:10', text:'Çizelgeyi güncel araç listesine göre yenileyelim.'}]}),
@@ -569,7 +674,19 @@
     + '<span class="gpri ' + data.pri + '">' + PRI_LBL[data.pri] + ' öncelik</span>';
 
   document.getElementById('gdDesc').textContent = data.desc;
-  document.getElementById('gdFilesBlock').hidden = !data.files;
+
+  /* ==== sekme motoru (crm-santiye-detay.html .gv-tab/.tab-panel deseni BİREBİR — B) ==== */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.gv-tab'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
+  function activateTab(id){
+    tabs.forEach(function(t){
+      var on = t.getAttribute('data-tab') === id;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    panels.forEach(function(p){ p.hidden = p.getAttribute('data-tab-panel') !== id; });
+  }
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ activateTab(t.getAttribute('data-tab')); }); });
 
   var cmtWrap = document.getElementById('gdComments');
   cmtWrap.innerHTML = '';
@@ -585,7 +702,74 @@
       + '<div class="cmt-text">' + c.text + '</div>' + attachHtml + '</div>';
     wrap.appendChild(row);
   }
+  function syncTabCnt(){
+    var yEl = document.getElementById('tabCntYorum'); if(yEl) yEl.textContent = cmtWrap.children.length;
+    var eEl = document.getElementById('tabCntEkler'); if(eEl) eEl.textContent = (data.files || []).length;
+  }
   (data.comments || []).forEach(function(c){ renderComment(cmtWrap, c); });
+  syncTabCnt();
+
+  /* ==== §11.3 — görev ekleri: ayrı sekme, çoklu ekleme, eklerden yorum/revize ==== */
+  data.files = Array.isArray(data.files) ? data.files : [];
+  var gdFileList = document.getElementById('gdFileList');
+  function renderFiles(){
+    if(!data.files.length){
+      gdFileList.innerHTML = '<p class="no-action">Bu görevde henüz ek yok — aşağıdan ilk dosyayı ekleyin.</p>';
+    } else {
+      gdFileList.innerHTML = data.files.map(function(f, i){
+        return '<div class="file-row"><div class="file-ico' + (f.kategori === 'pdf' ? ' pdf' : '') + '"><i class="fa-solid ' + (EK_ICON[f.kategori] || 'fa-file') + '"></i></div>'
+          + '<div class="file-info"><b>' + f.name + '</b><span>' + (EK_KATEGORI[f.kategori] || 'Diğer') + ' · ' + f.size + ' · ' + f.yukleyen + ' tarafından, ' + f.tarih + (f.aciklama ? ' — ' + f.aciklama : '') + '</span></div>'
+          + '<div class="row-acts">'
+          +   '<button class="ia-btn" data-ek-comment="' + i + '" data-tip="Bu ekten yorum oluştur" aria-label="Yorumla"><i class="fa-regular fa-comment"></i></button>'
+          +   '<button class="ia-btn" data-ek-revize="' + i + '" data-tip="Revize talebi aç" aria-label="Revize talebi"><i class="fa-solid fa-rotate-left"></i></button>'
+          +   '<button class="ia-btn" data-demo="İndirme hazırlanıyor (demo)" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button>'
+          + '</div></div>';
+      }).join('');
+    }
+    syncTabCnt();
+  }
+  renderFiles();
+
+  var ekDosya = document.getElementById('ekDosya');
+  var ekEkleBtn = document.getElementById('ekEkleBtn');
+  if(ekEkleBtn){
+    ekEkleBtn.addEventListener('click', function(){
+      var files = ekDosya.files ? Array.prototype.slice.call(ekDosya.files) : [];
+      if(!files.length){ gvToast('Lütfen en az bir dosya seçin.', {type:'danger'}); return; }
+      if(data.files.length + files.length > 10){
+        gvToast('En fazla 10 dosya eklenebilir (demo kısıtı).', {type:'danger'});
+        return;
+      }
+      var kategori = document.getElementById('ekKategori').value;
+      var aciklama = document.getElementById('ekAciklama').value.trim();
+      var yukleyen = (GV.R && GV.R.name) ? GV.R.name : 'Siz';
+      files.forEach(function(f){
+        data.files.push({name:f.name, kategori:kategori, aciklama:aciklama,
+          size:(f.size/1024/1024).toFixed(1).replace('.0','.1') + ' MB', yukleyen:yukleyen, tarih:'bugün'});
+      });
+      renderFiles();
+      ekDosya.value = '';
+      document.getElementById('ekAciklama').value = '';
+      gvToast(files.length + ' ek eklendi (demo).');
+    });
+  }
+  if(gdFileList){
+    gdFileList.addEventListener('click', function(e){
+      var cBtn = e.target.closest('[data-ek-comment]');
+      if(cBtn){
+        var f1 = data.files[parseInt(cBtn.getAttribute('data-ek-comment'), 10)];
+        activateTab('yorum');
+        var cmtInp = document.getElementById('cmtInput');
+        if(cmtInp){ cmtInp.value = '[' + f1.name + ' ile ilgili] '; cmtInp.focus(); }
+        return;
+      }
+      var rBtn = e.target.closest('[data-ek-revize]');
+      if(rBtn){
+        var f2 = data.files[parseInt(rBtn.getAttribute('data-ek-revize'), 10)];
+        requestRevizeFromEk(f2.name);
+      }
+    });
+  }
 
   var deleteBtn = document.getElementById('gdDeleteBtn');
   deleteBtn.addEventListener('click', function(){
@@ -594,10 +778,77 @@
   });
 
   /* atama: kişiye/havuza */
+  var poolHistory = (data.poolHistory || []).slice();
+  function renderPoolHistory(){
+    var wrap = document.getElementById('poolHistory');
+    if(!wrap) return;
+    wrap.innerHTML = poolHistory.map(function(h){
+      var cls = h.tip === 'al' ? 'ok' : (h.tip === 'dondur' ? 'warn' : 'info');
+      return '<div class="act-row"><div class="act-ico ' + cls + '"><i class="fa-solid ' + (POOL_HIST_ICO[h.tip] || 'fa-circle') + '"></i></div>'
+        + '<div class="act-info"><b>' + h.not + '</b><span>' + h.kisi + ' · ' + h.tarih + '</span></div></div>';
+    }).join('');
+  }
+  function openDeptChangeModal(){
+    if(document.querySelector('.gv-modal-ov')) return;
+    var ov = document.createElement('div'); ov.className = 'gv-modal-ov';
+    var m = document.createElement('div'); m.className = 'gv-modal has-note';
+    var opts = Object.keys(DEPT_LBL).map(function(k){
+      return '<option value="' + k + '"' + (k === data.departman ? ' selected' : '') + '>' + DEPT_LBL[k] + '</option>';
+    }).join('');
+    m.innerHTML = '<div class="gv-modal-ico"><i class="fa-solid fa-right-left"></i></div>'
+      + '<h3>Departman havuzunu değiştir</h3>'
+      + '<p>Görev farklı bir departman havuzuna taşınacak; yeni departmanın kullanıcıları (ve yönetim) görmeye başlar.</p>'
+      + '<select id="deptChangeSelect" style="width:100%;font-family:inherit;font-size:13px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);padding:9px 11px;outline:none">' + opts + '</select>'
+      + '<div class="gv-modal-acts">'
+      +   '<button type="button" class="btn btn-ghost btn-sm gv-m-cancel">Vazgeç</button>'
+      +   '<button type="button" class="btn btn-sm btn-acc gv-m-ok"><i class="fa-solid fa-right-left"></i> Departmanı Değiştir</button>'
+      + '</div>';
+    ov.appendChild(m); document.body.appendChild(ov);
+    requestAnimationFrame(function(){ ov.classList.add('open'); });
+    function close(){ ov.classList.remove('open'); setTimeout(function(){ ov.remove(); }, 220); }
+    m.querySelector('.gv-m-cancel').addEventListener('click', close);
+    ov.addEventListener('click', function(e){ if(e.target === ov) close(); });
+    m.querySelector('.gv-m-ok').addEventListener('click', function(){
+      var newDept = document.getElementById('deptChangeSelect').value;
+      close();
+      var oldLbl = DEPT_LBL[data.departman], newLbl = DEPT_LBL[newDept];
+      data.departman = newDept;
+      document.getElementById('poolDeptVal').textContent = newLbl;
+      document.getElementById('poolVisText').textContent = DEPT_NOFILTER.indexOf(newDept) !== -1 ? DEPT_NOFILTER_TXT : (DEPT_ROLE_TXT[newDept] || '—');
+      poolHistory.push({tip:'degistir', kisi:(GV.R && GV.R.name) || 'Siz', tarih:'bugün', not:oldLbl + ' → ' + newLbl + ' departmanına taşındı'});
+      renderPoolHistory();
+      gvToast('Görev ' + newLbl + ' havuzuna taşındı.');
+    });
+  }
+
   if(data.pool){
     document.getElementById('atamaNormal').hidden = true;
     document.getElementById('atamaHavuz').hidden = false;
     document.getElementById('havuzWaitTxt').textContent = data.poolWait;
+
+    var deptKey = data.departman;
+    document.getElementById('poolDeptVal').textContent = DEPT_LBL[deptKey] || '—';
+    document.getElementById('poolVisText').textContent = DEPT_NOFILTER.indexOf(deptKey) !== -1 ? DEPT_NOFILTER_TXT : (DEPT_ROLE_TXT[deptKey] || '—');
+    var poolSiteVal = document.getElementById('poolSiteVal');
+    if(data.santiye && deptKey === 'sef'){
+      poolSiteVal.textContent = SITE[data.santiye].name + ' (yetkili şef)';
+      poolSiteVal.title = 'Yalnız bu şantiyeye yetkili şantiye şefi görür.';
+    } else if(data.santiye){
+      poolSiteVal.textContent = SITE[data.santiye].name + ' (bilgi amaçlı)';
+      poolSiteVal.title = 'Departman filtresini değiştirmez, yalnız bağlam bilgisidir.';
+    } else {
+      poolSiteVal.textContent = 'Yok';
+      poolSiteVal.title = '';
+    }
+
+    document.getElementById('poolHistoryCard').hidden = false;
+    renderPoolHistory();
+
+    var poolChangeDeptBtn = document.getElementById('poolChangeDeptBtn');
+    if(poolChangeDeptBtn){
+      poolChangeDeptBtn.hidden = DEPT_CHANGE_ROLES.indexOf(GV.role) === -1;
+      poolChangeDeptBtn.addEventListener('click', openDeptChangeModal);
+    }
   } else {
     var fp = PEOPLE[data.from], tp = PEOPLE[data.to];
     document.getElementById('fromIni').textContent = fp.ini;
@@ -688,6 +939,29 @@
       }
     });
   });
+  /* §11.3 — "eklerden revize talebi açılabilsin": durum değiştirme yetkisiyle AYNI
+     rol seti (aşağıdaki ONAYCI ile birebir — bu satır o tanımdan ÖNCE çalıştığı için
+     literal tekrarlanır, tek kaynak `ONAYCI` değişkenidir, burada yalnız erken referans
+     riskinden kaçınmak için aynı liste yazılmıştır). */
+  function requestRevizeFromEk(fileName){
+    var onayciRoles = ['superadmin','sahip','yonetim','teknik','sef'];
+    if(onayciRoles.indexOf(GV.role) === -1){
+      gvToast('Bu işlem için yetkiniz yok.', {type:'danger'});
+      return;
+    }
+    gvConfirm({
+      icon:'fa-rotate-left', title:'Bu ek için revize talebi açılsın mı?',
+      message:'"' + fileName + '" dosyası için revize isteniyor — görev "Revize İstendi" durumuna alınacak.',
+      ok:'Revize İste', cancel:'Vazgeç',
+      onConfirm:function(){
+        applyStatus('revize', null, '"' + fileName + '" dosyası yetersiz bulundu, revize istendi.');
+        var ben = (GV.R && GV.R.name) ? GV.R.name : 'Siz';
+        renderComment(cmtWrap, {who:ben, date:'şimdi', text:'[' + fileName + ' ile ilgili] Bu dosya için revize talep ediyorum.'});
+        syncTabCnt();
+        gvToast('Ek için revize talebi açıldı.', {type:'info'});
+      }
+    });
+  }
   /* tamamlanma notu — serbest metin (§12 "görev tamamlanma notu"). ui.js'in gvChainAction'ı
      bu kind'i tanımıyor (yalnız onayla/reddet/revize onay-zinciri kindleri var, DOKUNULMADI);
      aynı paylaşılan .gv-modal-ov/.gv-modal.has-note/.gv-m-note CSS'i (ui.css, kilitli) sayfa-
@@ -719,6 +993,13 @@
   }
   var actTamam = document.getElementById('actTamam');
   if(actTamam) actTamam.addEventListener('click', function(){
+    /* §11.3 — "tamamlanırken ek dosya zorunlu mu": fKanitGerekli/kanitGerekli alanı
+       artık gerçek Ekler listesine karşı denetlenir (yalnız açıklayıcı metin değil). */
+    if(data.kanitGerekli && !data.files.length){
+      gvToast('Kapatmadan önce en az bir dosya veya fotoğraf ekleyin.', {type:'danger'});
+      activateTab('ekler');
+      return;
+    }
     if(onayGerekli){
       applyStatus('onaybekliyor', null, 'Atanan kişi tamamladı, onay bekleniyor.');
       gvToast('Görev tamamlandı — onay bekliyor.', {type:'info'});
@@ -750,6 +1031,11 @@
       ? '<b>Gecikti</b> — ' + data.poolWait
       : '<b>Havuzda</b> — ' + data.poolWait;
     var claimBtn = document.getElementById('poolClaimBtn');
+    var poolReturnBtn = document.getElementById('poolReturnBtn');
+    /* audit log referansı — o kayıt gerçekten crm-ayarlar-log.html'e YAZILMAZ (kilitli/
+       başka sahipte), yalnız o dosyanın LOG-2026-#### numaralandırma deseniyle tutarlı
+       bir gösterim üretilir (§11.2 "audit log'a yazılır" hükmü, görev tarafında). */
+    var AUDIT_LOG_NO = 'LOG-2026-' + (851 + parseInt(code, 10) % 40);
     claimBtn.addEventListener('click', function(){
       gvConfirm({
         title:'Görevi üzerine al',
@@ -759,15 +1045,43 @@
           poolStrip.classList.remove('is-late');
           poolStrip.classList.add('is-claimed');
           document.getElementById('poolStripTxt').innerHTML = '<b>' + GV.R.name + '</b> üzerine aldı';
-          claimBtn.remove();
+          claimBtn.hidden = true;
           document.getElementById('poolArrow2').hidden = false;
           document.getElementById('poolClaimedRow').hidden = false;
           document.getElementById('poolClaimedIni').textContent = GV.R.ini;
           document.getElementById('poolClaimedName').textContent = GV.R.name;
+          document.getElementById('poolClaimDateRow').hidden = false;
+          document.getElementById('poolClaimDate').textContent = 'Bugün';
+          if(poolReturnBtn) poolReturnBtn.hidden = false;
+          poolHistory.push({tip:'al', kisi:GV.R.name, tarih:'bugün · audit log ' + AUDIT_LOG_NO, not:'Görevi üzerine aldı'});
+          renderPoolHistory();
           gvToast('Görev üzerinize alındı');
         }
       });
     });
+    if(poolReturnBtn){
+      var RETURN_ROLES = ['superadmin','sahip','yonetim','teknik','sef'];
+      poolReturnBtn.addEventListener('click', function(){
+        if(RETURN_ROLES.indexOf(GV.role) === -1){ gvToast('Bu işlem için yetkiniz yok.', {type:'danger'}); return; }
+        gvConfirm({
+          icon:'fa-rotate-left', title:'Görev yeniden havuza bırakılsın mı?',
+          message:'Görev "' + data.title + '" yeniden ' + (DEPT_LBL[data.departman] || 'ortak') + ' havuzuna dönecek.',
+          ok:'Yeniden Havuza Bırak', cancel:'Vazgeç',
+          onConfirm:function(){
+            poolStrip.classList.remove('is-claimed');
+            document.getElementById('poolStripTxt').innerHTML = '<b>Havuzda</b> — az önce yeniden bırakıldı';
+            claimBtn.hidden = false;
+            document.getElementById('poolArrow2').hidden = true;
+            document.getElementById('poolClaimedRow').hidden = true;
+            document.getElementById('poolClaimDateRow').hidden = true;
+            poolReturnBtn.hidden = true;
+            poolHistory.push({tip:'dondur', kisi:(GV.R && GV.R.name) || 'Siz', tarih:'bugün', not:'Görevi yeniden ortak havuza bıraktı'});
+            renderPoolHistory();
+            gvToast('Görev yeniden ortak havuza bırakıldı.', {type:'info'});
+          }
+        });
+      });
+    }
   }
 
   /* rol daraltması: durum değiştirme + silme yalnızca onaycı rollerde (superadmin/sahip/yonetim/teknik/sef) */
