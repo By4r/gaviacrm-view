@@ -14,6 +14,11 @@
        Merkez Şantiye        (depo+atölye, Gebze/Kocaeli, şef: Ömer Taşkın, %86)
        Kule Ofis B Blok      (ofis, Ataşehir/İstanbul — TAMAMLANDI 03/2026)
        Göl Evleri 2. Etap    (konut, Sapanca/Sakarya — PLANLAMA, başlangıç 09/2026)
+       ─ 4 KAPALI ŞANTİYE (Dalga 20 — kurgusal, 0 personel; alan seti DALGA 20 bloğunda):
+         Çınar Sokak Karma Proje (CSKP) — Pasif · Bahçelievler Toplu Konut (BTK) — Askıya
+         Alınan · Fatih Mahallesi Restorasyon (FMR) — Arşivlenen · Kartal Sahil Rezidans
+         (KSR) — İptal Edilen. Dördü de headcount/kasa/puantaj/yemekhane/hakediş toplamlarına
+         GİRMEZ — Vadi 51 · Liman 30 · Merkez 12 · TOPLAM 93 (69 öz + 24 taşeron) AYNEN kalır.
    ─ Kişiler: Deniz Aksoy (Gavia platform) · Kemal Yapıcıoğlu (sahip) ·
        Murat Denizli (GM) · Elif Sarıkaya (teknik md.) · Hasan Demirci, Aylin Koç,
        Ömer Taşkın (şefler) · Nesrin Aydın (muhasebe) · Baran Yıldız (satın alma) ·
@@ -996,6 +1001,97 @@
        ortak ui.js'e YENİ primitif eklenmez (.fb-search görsel dili + pluxee applyFilter
        deseni). Seçenek listesi 7'den 22 kanonik AKTİF personele tamamlanır (pasif 3 kayıt
        avans seçicisinde LİSTELENMEZ). data-admin-only guard'ı korunur.
+   ─ DALGA 20 KANONİK TANIMLAR (2026-07-30 — v2 revizyon turu; kaynak: tasks/v2-dokuman.txt
+       §4.1/§7.2/§8.2/§9.4/§10.1/§10.2/§11.1/§11.2 + tasks/kararlar.md K-22/K-23. Bu blok
+       yalnız SUNUM KATMANI sabitlerini belgeler — 93/69+24/54-34-44 kordonuna DOKUNMAZ,
+       alt track'lerin sayfa üretimi (T-SANTIYE/T-GOREV/T-OPERASYON vb.) BURADAN okur):
+     · 4 KAPALI ŞANTİYE (§4.1 H1 — tam alan seti; hepsi 0 personel, şef Atanmadı, hiçbir
+       kasa/puantaj/yemekhane/hakediş/headcount toplamına GİRMEZ, Vadi 51/Liman 30/Merkez 12/
+       TOPLAM 93 AYNEN kalır — üstteki kanonik Şantiyeler listesindeki brief'in açılımı):
+         Çınar Sokak Karma Proje (kod CSKP) · karma · Ümraniye/İstanbul · durum Pasif ·
+           başlangıç 10 Oca 2023 · kapanış — · neden "Yatırımcı ile yeniden değerlendirme
+           sürecinde — saha faaliyeti Mart 2026'dan beri durduruldu" · son durum "Faaliyet
+           durduruldu, ekip diğer şantiyelere kaydırıldı" · son işlem 3 Mar 2026
+         Bahçelievler Toplu Konut (kod BTK) · konut · Bahçelievler/İstanbul · durum Askıya
+           Alınan · başlangıç 5 Haz 2024 · kapanış — · neden "Belediye imar planı revizyonu
+           nedeniyle inşaat ruhsatı yeniden değerlendiriliyor" · son durum "Ruhsat sürecinde,
+           saha kapalı" · son işlem 18 May 2026
+         Fatih Mahallesi Restorasyon (kod FMR) · restorasyon · Fatih/İstanbul · durum
+           Arşivlenen · başlangıç 2 Mar 2018 · kapanış/teslim 14 Kas 2019 · neden "Proje
+           2019'da tamamlandı; 5 yıllık garanti süreci sona erdiği için arşive kaldırıldı" ·
+           son durum "Tamamlandı, arşivde" · son işlem 14 Kas 2024
+         Kartal Sahil Rezidans (kod KSR) · konut · Kartal/İstanbul · durum İptal Edilen ·
+           başlangıç 20 Eyl 2025 (ruhsat aşaması, saha faaliyeti hiç başlamadı) · kapanış — ·
+           neden "Yatırımcı finansman sağlayamadığı için proje ruhsat aşamasında iptal
+           edildi" · son durum "İptal edildi, saha faaliyeti hiç başlamadı" · son işlem
+           12 Ara 2025
+       Şantiye listesi 8 filtre chip'i (§4.1, H1 — hiçbiri ölü kalmaz): Tümü · Aktif ·
+       Planlama · Tamamlanan · Pasif · Askıya Alınan · Arşivlenen · İptal Edilen — üstte
+       "Pasif Şantiyeleri Göster" switch (varsayılan KAPALI); switch açılmadan yalnız
+       Aktif/Planlama/Tamamlanan görünür (5 kanonik şantiye), açılınca 4 kapalı şantiye eklenir.
+     · 11 DEPARTMAN HAVUZU (§11.1 + K-22 — görev formu "Havuza Bırak" seçeneği; 7'sinin
+       ROLES karşılığı VAR ve gerçek görünürlük filtresi uygular, 4'ü Faz 2'ye ERTELENDİ):
+         Muhasebe Departmanı  → ROLES.muhasebe   (gerçek filtre)
+         İK Departmanı        → ROLES.ik         (gerçek filtre)
+         Satın Alma Departmanı→ ROLES.satinalma  (gerçek filtre)
+         Teknik Ofis          → ROLES.teknik     (gerçek filtre)
+         Şantiye Ekibi        → ROLES.sef        (gerçek filtre — kendi şantiyesi)
+         Yönetim              → ROLES.yonetim (+ superadmin/sahip, tüm havuzları zaten görür)
+         Satış Ekibi          → ROLES.satistemsilci + ROLES.satismudur (gerçek filtre)
+         İSG Ekibi            → ROLES karşılığı YOK — Faz 1'de yonetim/teknik/sef görür (Faz 2'de rol)
+         Depo/Lojistik        → ROLES karşılığı YOK — Faz 1'de yonetim/teknik/sef görür (Faz 2'de rol)
+         Saha Ekibi (genel)   → ROLES karşılığı YOK — Faz 1'de yonetim/teknik/sef görür (Faz 2'de rol)
+         Taşeron Havuzu       → ROLES karşılığı YOK — Faz 1'de yonetim/teknik/sef görür (Faz 2'de rol)
+       Kural (§11.2): departman havuzundaki görevi yalnız o departmanın kullanıcısı görür;
+       şantiye bağlantısı varsa yalnız o şantiyeye yetkili departman kullanıcısı görür;
+       yönetim rolleri (superadmin/sahip/yonetim) TÜM havuzları görür. Üzerine alma → sorumlu
+       olur, havuzdan çıkar, audit log'a yazılır (crm-ayarlar-log.html LOG- serisi), yeniden
+       havuza bırakılabilir. shell.js'e YENİ rol EKLENMEDİ (K-21 emsali — kanıt yokken rol
+       matrisi genişletilmez); 4 ROLES-karşılıksız havuzun gerçek rol ayrımı Faz 2 kapsamı.
+     · 14 SAHA BİLDİRİM TÜRÜ (§9.4 — crm-santiye-bildirim-form.html tür seçimine EKLENİR;
+       mevcut SBL-2026-### kayıtlarındaki türlerle (Yapı İlerlemesi, Elektrik/Mekanik, İSG,
+       Atölye/Depo, Malzeme Teslimatı, Kalite Kontrol) ÇAKIŞMAZ, form seçim listesini genişletir):
+       Beton Dökümü · Malzeme Teslimatı · İSG Uygunsuzluğu · Kalite Kontrol · Makine Arızası ·
+       Taşeron Sahada · İş Tamamlandı · Revize Gerekiyor · Acil Durum · Hava Koşulu Etkisi ·
+       Denetim Notu · Hakediş Kanıt Fotoğrafı · Öncesi/Sonrası Kayıt · Şantiye İlerleme Kaydı
+     · 14 DOSYA KATEGORİSİ (§8.2 — crm-santiye-detay.html Dosyalar sekmesi "Dosya/Sözleşme/
+       Ek Protokol/Ruhsat/…/Teslim Tutanağı Ekle" butonlarının kategori seçimi):
+       Sözleşme · Ek Protokol · Ruhsat · Yapı Kullanım Belgesi · Teknik Çizim ·
+       DWG / Proje Dosyası · Hakediş Eki · İSG Belgesi · Fatura · Dekont · Fotoğraf ·
+       Video · Teslim Tutanağı · Diğer
+     · 8 TAŞERON PUANTAJ ONAY DURUMU (§7.2 — crm-operasyon-taseron-puantaj.html satır rozeti
+       + crm-finans-taseron-detay.html Taşeron Puantajı sekmesindeki gvChain AYNI seti okur,
+       H6 — çatallanmaz; 6 sabit .gstat sınıfına map edilir, yeni rozet İCAT EDİLMEZ):
+         Taslak (.gstat.off) · Onaya Gönderildi (.gstat.wait) · Şantiye Şefi Onayında (.gstat.info) ·
+         Teknik Ofis Onayında (.gstat.info) · Onaylandı (.gstat.ok) · Revize İstendi (.gstat.warn) ·
+         Reddedildi (.gstat.danger) · Hakedişe Aktarıldı (.gstat.ok, koyu türev — TH- belgesine bağlı)
+     · 14 ÖRNEK TAKVİM KATMANI + RENK PALETİ (§10.1/§10.2 — v2/crm-santiye-ajanda-katman.html
+       kanonik başlangıç seti, ortak localStorage['gv_katmanlar'] — H4). DİKKAT: bu katmanlar
+       DALGA 4A'daki kişisel ajanda "olay türü" setinden (toplanti/gorev/ziyaret/izin/odeme/
+       termin — o set AYNEN kalır) AYRI bir kavramdır — iş programı/şantiye takvimi katmanı.
+       Renkler YALNIZ tokens.css token'larından (renk-mix dahil) türetildi, HAM HEX YOK;
+       marka kuralı gereği turuncu/sarı İSG tonu hiçbirine verilmedi (İSG dahil tüm güvenlik/
+       kritik katmanlar --danger ailesinden, --warn amber tonu bilinçli KULLANILMADI):
+         Beton Dökümü          var(--acc-deep)                                        · varsayılan açık
+         Kalıp İşleri          var(--ink-2)                                           · varsayılan açık
+         Demir İşleri          var(--muted)                                           · varsayılan açık
+         Mekanik               var(--info)                                           · varsayılan açık
+         Elektrik              color-mix(in srgb, var(--info) 55%, var(--acc) 45%)    · varsayılan açık
+         İSG                   var(--danger)                                         · varsayılan açık
+         Denetim               color-mix(in srgb, var(--ink-2) 60%, var(--muted) 40%)· varsayılan kapalı
+         Malzeme Teslimatı     var(--ok)                                             · varsayılan açık
+         Hakediş               var(--acc-ink)                                        · varsayılan açık
+         Toplantı              color-mix(in srgb, var(--info) 70%, var(--ink) 30%)   · varsayılan açık
+         Müşteri Ziyareti      color-mix(in srgb, var(--acc) 60%, var(--ink-2) 40%)  · varsayılan kapalı
+         Taşeron Mobilizasyonu color-mix(in srgb, var(--muted) 70%, var(--danger) 30%)· varsayılan açık
+         Kritik İş             color-mix(in srgb, var(--danger) 70%, var(--ink) 30%) · varsayılan açık
+         Resmi İşlem           var(--ink)                                            · varsayılan kapalı
+       Katman alanları (§10.1 form): ad, tür, renk, ikon (Font Awesome seçici — CDN kilitli
+       set), şantiye bağlantısı, departman bağlantısı (üstteki 11 havuz listesiyle AYNI),
+       görünürlük durumu, varsayılan açık/kapalı, yetkili roller (H4 — santiye secs'i olan
+       5 rol: superadmin/sahip/yonetim/teknik/sef), açıklama. Katman filtreleri (§10.2 ek
+       özellikler): renk seç · ikon seç · gizle/göster · sadece kendi katmanlarım · şantiye
+       bazlı filtrele · departman bazlı filtrele · görev türüne göre filtrele.
    ===================================================================== */
 (function(){
   'use strict';
