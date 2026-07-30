@@ -109,9 +109,9 @@
 
     <div class="gd-head">
       <div>
-        <div class="gd-eyebrow" id="gdEyebrow">—</div>
-        <h1 id="gdTitle">—</h1>
         <!-- statik bake — DEFAULT (SST-2026-007, ?sst= yok); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+        <div class="gd-eyebrow" id="gdEyebrow">Selçuk Onaran · Satış Sonrası Talep #SST-2026-007</div>
+        <h1 id="gdTitle">Klima drenaj sızıntısı</h1>
         <div class="gd-badges" id="gdBadges"><span class="gtag tur-garanti">Garanti</span><span class="gstat warn">İşlemde</span><span class="gstat info kanal-portal"><i class="fa-solid fa-globe"></i> Portal</span></div>
       </div>
       <div class="ph-actions">
@@ -125,7 +125,8 @@
         <div class="gv-card">
           <div class="gd-block">
             <div class="gd-label">Açıklama</div>
-            <p class="gd-desc" id="aciklamaText">—</p>
+            <!-- statik bake — DEFAULT (SST-2026-007); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+            <p class="gd-desc" id="aciklamaText">Salon klimasının drenaj hortumunda sızıntı bildirildi; tavanda hafif nem lekesi oluşmaya başladı. Garanti kapsamında değerlendirilip saha ziyareti planlandı.</p>
           </div>
           <div class="gd-block">
             <div class="gd-label">Yorumlar</div>
@@ -167,9 +168,10 @@
         <div class="gv-card">
           <div class="gd-block">
             <div class="gd-label">SLA / Termin</div>
-            <div class="ctx-row"><span class="ctx-lbl">Öncelik</span><span class="ctx-val" id="slaOncelik">—</span></div>
-            <div class="ctx-row"><span class="ctx-lbl" id="slaTarihLbl">Hedef çözüm</span><span class="ctx-val" id="slaTarih">—</span></div>
-            <div class="ctx-row" id="slaEkRow" hidden><span class="ctx-lbl" id="slaEkLbl">—</span><span class="ctx-val" id="slaEkVal">—</span></div>
+            <!-- statik bake — DEFAULT (SST-2026-007); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
+            <div class="ctx-row"><span class="ctx-lbl">Öncelik</span><span class="ctx-val" id="slaOncelik"><span class="sla-pri med">Orta</span></span></div>
+            <div class="ctx-row"><span class="ctx-lbl" id="slaTarihLbl">Açılış tarihi</span><span class="ctx-val" id="slaTarih">30 Haziran 2026</span></div>
+            <div class="ctx-row" id="slaEkRow"><span class="ctx-lbl" id="slaEkLbl">Garanti bitiş</span><span class="ctx-val" id="slaEkVal">15 Mart 2028</span></div>
           </div>
         </div>
       </div>
@@ -472,6 +474,8 @@
       document.getElementById('slaEkRow').hidden = false;
       document.getElementById('slaEkLbl').textContent = 'Garanti bitiş';
       document.getElementById('slaEkVal').textContent = item.garantiBitis;
+    } else {
+      document.getElementById('slaEkRow').hidden = true;
     }
   }
 
