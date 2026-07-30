@@ -29,9 +29,10 @@
 #tblSantiye .gcell-info{max-width:180px}
 #tblSantiye td:nth-child(2),
 #tblSantiye td:nth-child(3),
+#tblSantiye td:nth-child(4),
 #tblSantiye td.num{white-space:nowrap}
 @media(max-width:640px){
-  #tblSantiye{min-width:760px}
+  #tblSantiye{min-width:860px}
 }
 
 /* Pasif Şantiyeleri Göster — switch (§4.1 H1); sayfa-lokal, ui.js'e yeni primitif eklenmez */
@@ -68,6 +69,18 @@
 .pc-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--line)}
 .pc-durum{font-size:11px;color:var(--muted);flex:1;min-width:160px}
 @media(max-width:640px){.pasif-grid{grid-template-columns:1fr;padding:16px}}
+
+/* §15 — Şantiye Türü hızlı filtresi (Yapsat/Kamu/Taahhüt); ikinci filtre satırı
+   crm-personel.html'deki .filter-bar.stack / .filter-row / .frow-lbl deseninin
+   BİREBİR aynısı (sayfa-lokal — ui.css'e yeni sınıf eklenmedi). */
+.filter-bar.stack{flex-direction:column;align-items:stretch;gap:12px}
+.filter-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.filter-row .frow-lbl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);flex:none;min-width:96px}
+.filter-row.top{justify-content:space-between}
+@media(max-width:640px){
+  .filter-row .frow-lbl{min-width:0;width:100%}
+  .filter-row.top .gv-toggle{order:3}
+}
 </style>
 </head>
 <body data-sec="santiye" data-screen="liste">
@@ -104,32 +117,60 @@
     </div>
 
     <div class="gv-card">
-      <div class="filter-bar">
-        <div class="fb-search">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" placeholder="Şantiye, şef veya lokasyon ara" data-table-search="#tblSantiye">
+      <div class="filter-bar stack">
+        <div class="filter-row top">
+          <div class="fb-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Şantiye, şef veya lokasyon ara" data-table-search="#tblSantiye">
+          </div>
+          <div class="chips" data-target="#tblSantiye">
+            <button class="chip is-on" data-filter="hepsi">Tümü <span class="ch-cnt">9</span></button>
+            <button class="chip" data-filter="aktif">Aktif <span class="ch-cnt">3</span></button>
+            <button class="chip" data-filter="planlama">Planlama <span class="ch-cnt">1</span></button>
+            <button class="chip" data-filter="tamam">Tamamlanan <span class="ch-cnt">1</span></button>
+            <button class="chip" data-filter="pasif">Pasif <span class="ch-cnt">1</span></button>
+            <button class="chip" data-filter="askida">Askıya Alınan <span class="ch-cnt">1</span></button>
+            <button class="chip" data-filter="arsiv">Arşivlenen <span class="ch-cnt">1</span></button>
+            <button class="chip" data-filter="iptal">İptal Edilen <span class="ch-cnt">1</span></button>
+          </div>
+          <button type="button" class="gv-toggle" id="swPasif" role="switch" aria-checked="false">
+            <span class="gv-toggle-track"><span class="gv-toggle-thumb"></span></span>
+            <span class="gv-toggle-lbl">Pasif Şantiyeleri Göster</span>
+          </button>
         </div>
-        <div class="chips" data-target="#tblSantiye">
-          <button class="chip is-on" data-filter="hepsi">Tümü <span class="ch-cnt">9</span></button>
-          <button class="chip" data-filter="aktif">Aktif <span class="ch-cnt">3</span></button>
-          <button class="chip" data-filter="planlama">Planlama <span class="ch-cnt">1</span></button>
-          <button class="chip" data-filter="tamam">Tamamlanan <span class="ch-cnt">1</span></button>
-          <button class="chip" data-filter="pasif">Pasif <span class="ch-cnt">1</span></button>
-          <button class="chip" data-filter="askida">Askıya Alınan <span class="ch-cnt">1</span></button>
-          <button class="chip" data-filter="arsiv">Arşivlenen <span class="ch-cnt">1</span></button>
-          <button class="chip" data-filter="iptal">İptal Edilen <span class="ch-cnt">1</span></button>
+        <div class="filter-row" id="turFilterRow">
+          <span class="frow-lbl">Şantiye Türü</span>
+          <div class="chips" id="turChips">
+            <button class="chip is-on" data-tur="hepsi">Tümü <span class="ch-cnt">9</span></button>
+            <button class="chip" data-tur="yapsat">Yapsat <span class="ch-cnt">4</span></button>
+            <button class="chip" data-tur="kamu">Kamu <span class="ch-cnt">2</span></button>
+            <button class="chip" data-tur="taahhut">Taahhüt <span class="ch-cnt">3</span></button>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpSantiye">
+            <i class="fa-solid fa-sliders"></i> Gelişmiş Filtre
+          </button>
         </div>
-        <button type="button" class="gv-toggle" id="swPasif" role="switch" aria-checked="false">
-          <span class="gv-toggle-track"><span class="gv-toggle-thumb"></span></span>
-          <span class="gv-toggle-lbl">Pasif Şantiyeleri Göster</span>
-        </button>
       </div>
+
+      <div class="gv-achips-row" id="achipsSantiye" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor.">
+            <i class="fa-solid fa-lock"></i> Filtreleri Kaydet
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all>
+            <i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle
+          </button>
+        </div>
+      </div>
+
       <div class="gc-body flush">
         <table class="gtable" id="tblSantiye">
           <thead>
             <tr>
               <th>Şantiye</th>
-              <th>Tür</th>
+              <th>Proje Niteliği</th>
+              <th>Şantiye Türü</th>
               <th>Şantiye Şefi</th>
               <th class="col-prog">İlerleme</th>
               <th class="num">Personel</th>
@@ -138,7 +179,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr data-f="aktif" data-site="vadi">
+            <tr data-f="aktif" data-site="vadi" data-tur="yapsat">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">VK</div>
@@ -149,6 +190,7 @@
                 </div>
               </td>
               <td><span class="gtag">Konut</span></td>
+              <td><span class="gtag mint">Yapsat</span></td>
               <td class="t-strong">Hasan Demirci</td>
               <td><div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:68%"></div></div><span class="gbar-val">%68</span></div></td>
               <td class="num t-strong">51</td>
@@ -160,7 +202,7 @@
                 </div>
               </td>
             </tr>
-            <tr data-f="aktif" data-site="liman">
+            <tr data-f="aktif" data-site="liman" data-tur="taahhut">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">LL</div>
@@ -171,6 +213,7 @@
                 </div>
               </td>
               <td><span class="gtag">Ticari</span></td>
+              <td><span class="gtag">Taahhüt</span></td>
               <td class="t-strong">Aylin Koç</td>
               <td><div class="gbar"><div class="gbar-track"><div class="gbar-fill warn" style="width:41%"></div></div><span class="gbar-val">%41</span></div></td>
               <td class="num t-strong">30</td>
@@ -182,7 +225,7 @@
                 </div>
               </td>
             </tr>
-            <tr data-f="aktif" data-site="merkez">
+            <tr data-f="aktif" data-site="merkez" data-tur="yapsat">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--warn-tint);color:var(--warn)">MŞ</div>
@@ -193,6 +236,7 @@
                 </div>
               </td>
               <td><span class="gtag">Depo + Atölye</span></td>
+              <td><span class="gtag mint">Yapsat</span></td>
               <td class="t-strong">Ömer Taşkın</td>
               <td><div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:86%"></div></div><span class="gbar-val">%86</span></div></td>
               <td class="num t-strong">12</td>
@@ -204,7 +248,7 @@
                 </div>
               </td>
             </tr>
-            <tr data-f="planlama" data-site="gol">
+            <tr data-f="planlama" data-site="gol" data-tur="yapsat">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--bg);color:var(--muted)">GE</div>
@@ -215,6 +259,7 @@
                 </div>
               </td>
               <td><span class="gtag">Konut</span></td>
+              <td><span class="gtag mint">Yapsat</span></td>
               <td class="muted">Atanmadı</td>
               <td><div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:0%"></div></div><span class="gbar-val">—</span></div></td>
               <td class="num muted">—</td>
@@ -225,7 +270,7 @@
                 </div>
               </td>
             </tr>
-            <tr data-f="tamam" data-site="kule">
+            <tr data-f="tamam" data-site="kule" data-tur="taahhut">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--ok-tint);color:var(--ok)">KO</div>
@@ -236,6 +281,7 @@
                 </div>
               </td>
               <td><span class="gtag">Ofis</span></td>
+              <td><span class="gtag">Taahhüt</span></td>
               <td class="t-strong">Ömer Taşkın</td>
               <td><div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:100%"></div></div><span class="gbar-val">%100</span></div></td>
               <td class="num muted">—</td>
@@ -262,7 +308,7 @@
     <div class="gv-card" id="pasifGridWrap" hidden>
       <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-box-archive"></i> Pasif Şantiyeler</div></div>
       <div class="pasif-grid" id="pasifGrid">
-        <div class="pasif-card" data-f="pasif" hidden>
+        <div class="pasif-card" data-f="pasif" data-tur="yapsat" hidden>
           <div class="pc-head">
             <div class="pc-mark" style="background:var(--bg);color:var(--muted)">ÇS</div>
             <div class="pc-id">
@@ -272,6 +318,7 @@
             <span class="gstat off">Pasif</span>
           </div>
           <dl class="pc-meta">
+            <div><dt>Şantiye Türü</dt><dd><span class="gtag mint" style="font-size:10px;padding:2px 7px">Yapsat</span></dd></div>
             <div><dt>Şantiye Şefi</dt><dd class="muted">Atanmadı</dd></div>
             <div><dt>Başlangıç</dt><dd>10 Ocak 2023</dd></div>
             <div><dt>Kapanış / Teslim</dt><dd class="muted">—</dd></div>
@@ -286,7 +333,7 @@
             <a class="btn btn-ghost btn-sm" href="crm-santiye-detay.html?santiye=cskp" data-no-confirm>Detaya Git <i class="fa-solid fa-arrow-right"></i></a>
           </div>
         </div>
-        <div class="pasif-card" data-f="askida" hidden>
+        <div class="pasif-card" data-f="askida" data-tur="kamu" hidden>
           <div class="pc-head">
             <div class="pc-mark" style="background:var(--warn-tint);color:var(--warn)">BT</div>
             <div class="pc-id">
@@ -296,6 +343,7 @@
             <span class="gstat wait">Askıya Alınan</span>
           </div>
           <dl class="pc-meta">
+            <div><dt>Şantiye Türü</dt><dd><span class="gtag" style="background:var(--info-tint);color:var(--info);font-size:10px;padding:2px 7px">Kamu</span></dd></div>
             <div><dt>Şantiye Şefi</dt><dd class="muted">Atanmadı</dd></div>
             <div><dt>Başlangıç</dt><dd>5 Haziran 2024</dd></div>
             <div><dt>Kapanış / Teslim</dt><dd class="muted">—</dd></div>
@@ -310,7 +358,7 @@
             <a class="btn btn-ghost btn-sm" href="crm-santiye-detay.html?santiye=btk" data-no-confirm>Detaya Git <i class="fa-solid fa-arrow-right"></i></a>
           </div>
         </div>
-        <div class="pasif-card" data-f="arsiv" hidden>
+        <div class="pasif-card" data-f="arsiv" data-tur="kamu" hidden>
           <div class="pc-head">
             <div class="pc-mark" style="background:var(--bg);color:var(--muted)">FM</div>
             <div class="pc-id">
@@ -320,6 +368,7 @@
             <span class="gstat off">Arşivlenen</span>
           </div>
           <dl class="pc-meta">
+            <div><dt>Şantiye Türü</dt><dd><span class="gtag" style="background:var(--info-tint);color:var(--info);font-size:10px;padding:2px 7px">Kamu</span></dd></div>
             <div><dt>Şantiye Şefi</dt><dd class="muted">—</dd></div>
             <div><dt>Başlangıç</dt><dd>2 Mart 2018</dd></div>
             <div><dt>Kapanış / Teslim</dt><dd>14 Kasım 2019</dd></div>
@@ -334,7 +383,7 @@
             <a class="btn btn-ghost btn-sm" href="crm-santiye-detay.html?santiye=fmr" data-no-confirm>Detaya Git <i class="fa-solid fa-arrow-right"></i></a>
           </div>
         </div>
-        <div class="pasif-card" data-f="iptal" hidden>
+        <div class="pasif-card" data-f="iptal" data-tur="taahhut" hidden>
           <div class="pc-head">
             <div class="pc-mark" style="background:var(--danger-tint);color:var(--danger)">KS</div>
             <div class="pc-id">
@@ -344,6 +393,7 @@
             <span class="gstat danger">İptal Edilen</span>
           </div>
           <dl class="pc-meta">
+            <div><dt>Şantiye Türü</dt><dd><span class="gtag" style="font-size:10px;padding:2px 7px">Taahhüt</span></dd></div>
             <div><dt>Şantiye Şefi</dt><dd class="muted">Atanmadı</dd></div>
             <div><dt>Başlangıç</dt><dd>20 Eylül 2025 <span style="font-weight:600;color:var(--muted)">(ruhsat aşaması)</span></dd></div>
             <div><dt>Kapanış / Teslim</dt><dd class="muted">—</dd></div>
@@ -361,6 +411,32 @@
       </div>
     </div>
   </main>
+</div>
+
+<!-- ============ §15 — sağ off-canvas gelişmiş filtre paneli (spec: tasks/spec-filtre-tarih.md) ============ -->
+<div class="gv-fpanel-ov" id="fpSantiyeOv">
+  <aside class="gv-fpanel" id="fpSantiye" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+    <div class="gv-fpanel-head">
+      <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+      <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="gv-fpanel-body">
+      <div class="gfield">
+        <label>Şantiye Türü</label>
+        <select id="fpTurSelect" data-fp-key="tur" data-fp-label="Şantiye Türü">
+          <option value="">Tümü</option>
+          <option value="yapsat">Yapsat</option>
+          <option value="kamu">Kamu</option>
+          <option value="taahhut">Taahhüt</option>
+        </select>
+        <span class="gf-hint">Ticari model sınıflandırması — Proje Niteliği (konut/ticari/depo…) kolonundan bağımsızdır.</span>
+      </div>
+    </div>
+    <div class="gv-fpanel-foot">
+      <button type="button" class="btn btn-ghost" data-fp-clear">Temizle</button>
+      <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+    </div>
+  </aside>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -388,6 +464,11 @@
     });
     var sub = document.querySelector('.ph-sub');
     if(sub) sub.innerHTML = 'Vadi Konakları · sorumlu olduğunuz şantiye';
+    /* şef tek şantiyesini görür — Şantiye Türü filtresinin bir anlamı kalmıyor,
+       gelişmiş filtre paneli ve tetikleyici tümüyle kaldırılır (§4.1 "Görebilenler" emsali). */
+    var turRow = document.getElementById('turFilterRow'); if(turRow) turRow.remove();
+    var fpOv = document.getElementById('fpSantiyeOv'); if(fpOv) fpOv.remove();
+    var achRow = document.getElementById('achipsSantiye'); if(achRow) achRow.remove();
   }
   if(GV.role !== 'superadmin' && GV.role !== 'sahip' && GV.role !== 'yonetim'){
     document.querySelectorAll('[data-admin-only]').forEach(function(el){ el.hidden = true; });
@@ -432,6 +513,44 @@
     });
   }
 
+  /* §15 — Şantiye Türü hızlı filtresi + Gelişmiş Filtre paneli (tasks/spec-filtre-tarih.md).
+     Tek durum değişkeni `curTur` iki girişten de (hızlı çip / panel select) beslenir;
+     panel `opts.table` ALMAZ (sayfanın kendi _gvApply motoru var — spec §3 "D18 _gvApply
+     delegasyonu" kuralı) — yalnız panel UI'ı, aktif çip satırı ve badge sayacı yönetilir. */
+  var curTur = 'hepsi';
+  var turChips = document.getElementById('turChips');
+  var fpTurSelect = document.getElementById('fpTurSelect');
+  var fp = null;
+
+  function setTur(tur, fromPanel){
+    curTur = tur || 'hepsi';
+    if(turChips){
+      turChips.querySelectorAll('.chip').forEach(function(c){
+        c.classList.toggle('is-on', c.getAttribute('data-tur') === curTur);
+      });
+    }
+    if(!fromPanel && fpTurSelect) fpTurSelect.value = curTur === 'hepsi' ? '' : curTur;
+    if(tblSantiye && tblSantiye._gvApply) tblSantiye._gvApply();
+  }
+
+  if(turChips){
+    turChips.querySelectorAll('.chip[data-tur]').forEach(function(ch){
+      ch.addEventListener('click', function(){ setTur(ch.getAttribute('data-tur'), false); });
+    });
+  }
+
+  if(window.gvFilterPanel && document.getElementById('fpSantiye')){
+    fp = window.gvFilterPanel.init('#fpSantiye', {
+      activeRow: '#achipsSantiye',
+      onApply: function(state){
+        setTur(state.tur ? state.tur.value : 'hepsi', true);
+      },
+      onClear: function(){
+        setTur('hepsi', true);
+      }
+    });
+  }
+
   if(tblSantiye){
     tblSantiye._gvApply = function(){
       var card = tblSantiye.closest('.gv-card');
@@ -444,8 +563,9 @@
       var shown = 0;
       tblSantiye.querySelectorAll('tbody tr').forEach(function(tr){
         var okF = f === 'hepsi' || tr.getAttribute('data-f') === f;
+        var okTur = curTur === 'hepsi' || tr.getAttribute('data-tur') === curTur;
         var okT = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
-        var show = okF && okT;
+        var show = okF && okTur && okT;
         tr.hidden = !show;
         if(show) shown++;
       });
@@ -456,8 +576,9 @@
         document.querySelectorAll('#pasifGrid .pasif-card').forEach(function(pc){
           var f2 = pc.getAttribute('data-f');
           var okF = showPasif && (f === 'hepsi' || f === f2);
+          var okTur = curTur === 'hepsi' || pc.getAttribute('data-tur') === curTur;
           var okT = !term || pc.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
-          var show = okF && okT;
+          var show = okF && okTur && okT;
           pc.hidden = !show;
           if(show) cardShown++;
         });
