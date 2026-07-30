@@ -70,6 +70,68 @@
 .rel-info span{display:block;font-size:12px;color:var(--muted)}
 
 #tblHakedis td.num,#tblHakedis th.num{text-align:right}
+
+/* ============ §6/§7/§8.4 revizyonu — 5→14 sekmeye dönüşüm (Dalga 20 / T-TASERON) ============
+   crm-santiye-detay.html'deki gv-tabs/tab-panel DOM iskeleti + sekme motoru BİREBİR
+   devralındı (o dosya READ-ONLY referans, kopyalanmadı — aynı sınıf adları). ============ */
+.gv-tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:22px;overflow-x:auto;scrollbar-width:none}
+.gv-tabs::-webkit-scrollbar{display:none}
+.gv-tab{display:inline-flex;align-items:center;gap:8px;padding:13px 4px;margin-right:24px;flex:none;
+  background:none;border:none;border-bottom:2px solid transparent;font-family:inherit;font-size:13.5px;font-weight:700;
+  color:var(--muted);cursor:pointer;transition:.2s var(--ease)}
+.gv-tab i{font-size:13px}
+.gv-tab:hover{color:var(--ink)}
+.gv-tab.is-active{color:var(--acc-ink);border-color:var(--acc-ink)}
+.gv-tab .tb-cnt{font-size:10.5px;font-weight:700;background:var(--bg);color:var(--ink-2);padding:1px 6px;border-radius:var(--r-pill)}
+.gv-tab.is-active .tb-cnt{background:rgba(var(--acc-rgb),.16);color:var(--acc-deep)}
+.tab-panel{animation:tabIn .22s var(--ease)}
+@keyframes tabIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.file-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.file-row:last-child{border-bottom:none}
+.file-ico{width:36px;height:36px;flex:none;border-radius:9px;display:grid;place-items:center;font-size:14px;background:var(--info-tint);color:var(--info)}
+.file-ico.pdf{background:var(--danger-tint);color:var(--danger)}
+.file-ico.xls{background:var(--ok-tint);color:var(--ok)}
+.file-info{flex:1;min-width:0;line-height:1.35}
+.file-info b{display:block;font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-info span{font-size:11.5px;color:var(--muted)}
+
+.pp-cell{display:flex;align-items:center;gap:11px;min-width:0}
+.pp-mark{width:34px;height:34px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:12px;font-weight:800}
+.pp-info{min-width:0;line-height:1.3}
+.pp-info b{display:block;font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pp-info span{display:block;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---- Ekip Listesi / Taşeron Personelleri (§6.2/§6.3) ---- */
+#tblEkip td.num,#tblEkip th.num{text-align:center}
+.ekip-tel{color:var(--ink-2);font-size:12.5px;white-space:nowrap}
+.ekip-kimlik{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12.5px;white-space:nowrap}
+.tas-pending-note{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;margin-bottom:16px;border-radius:var(--r-md);background:var(--info-tint);color:var(--ink-2);font-size:12.5px;line-height:1.6}
+.tas-pending-note i{color:var(--info);margin-top:2px}
+
+/* ---- Çalıştığı Şantiyeler / Dosyalar / Yemekhane / Makine / İşlem Geçmişi ---- */
+.santiye-work-row{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+.santiye-work-row:last-child{border-bottom:none}
+.sw-ico{width:42px;height:42px;flex:none;border-radius:var(--r-md);display:grid;place-items:center;font-size:15px;background:rgba(var(--acc-rgb),.1);color:var(--acc-ink)}
+.sw-info{flex:1;min-width:0;line-height:1.4}
+.sw-info a{font-size:13.5px;font-weight:700;color:var(--ink)}
+.sw-info a:hover{color:var(--acc-ink)}
+.sw-info span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+
+.islem-item{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.islem-item:last-child{border-bottom:none}
+.islem-item i{width:30px;height:30px;flex:none;border-radius:var(--r-circle);background:rgba(var(--acc-rgb),.1);color:var(--acc-ink);display:grid;place-items:center;font-size:12px}
+.islem-item .im-body{min-width:0;line-height:1.4}
+.islem-item .im-body b{display:block;font-size:13px;font-weight:700;color:var(--ink)}
+.islem-item .im-body span{font-size:11.5px;color:var(--muted)}
+.islem-item .im-body a{color:var(--acc-ink);font-weight:700}
+
+.dosya-head-acts{display:flex;align-items:center;gap:8px}
+.rev-empty{padding:26px 22px;text-align:center;color:var(--muted);font-size:13px}
+
+.gform-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
+@media(max-width:640px){.gform-2col{grid-template-columns:1fr}}
+.frm-acts{display:flex;gap:10px;flex-wrap:wrap;padding-top:4px}
 </style>
 </head>
 <body data-sec="finans" data-screen="taseronlar">
@@ -99,8 +161,8 @@
     <div id="tasMain">
     <div class="gd-head">
       <div>
-        <div class="gd-eyebrow" id="gdEyebrow">—</div>
-        <h1 id="gdTitle">—</h1>
+        <div class="gd-eyebrow" id="gdEyebrow">Finans · Taşeron Kartı #TAS-01</div>
+        <h1 id="gdTitle">Demir-Beton İnş. Ltd.</h1>
         <div class="gd-badges" id="gdBadges"><span class="gtag mint">Betonarme kalıp + demir işçiliği</span><span class="gtag"><i class="fa-solid fa-helmet-safety"></i> Vadi Konakları</span><span class="gstat warn">2 uyarı</span></div>
       </div>
       <div class="ph-actions">
@@ -108,86 +170,260 @@
       </div>
     </div>
 
+    <!-- ============ 14 SEKME (§6/§7/§8.4 revizyonu — Dalga 20) ============
+         crm-santiye-detay.html gv-tabs/tab-panel deseni BİREBİR devralındı. ============ -->
+    <div class="gv-tabs" role="tablist" aria-label="Taşeron kartı">
+      <button class="gv-tab is-active" data-tab="genel" role="tab" aria-selected="true"><i class="fa-solid fa-id-card"></i> Genel Bilgiler</button>
+      <button class="gv-tab" data-tab="kapsam" role="tab" aria-selected="false"><i class="fa-solid fa-list-check"></i> İş Kapsamı</button>
+      <button class="gv-tab" data-tab="santiyeler" role="tab" aria-selected="false"><i class="fa-solid fa-helmet-safety"></i> Çalıştığı Şantiyeler</button>
+      <button class="gv-tab" data-tab="ekip" role="tab" aria-selected="false"><i class="fa-solid fa-users"></i> Ekip Listesi</button>
+      <button class="gv-tab" data-tab="personeller" role="tab" aria-selected="false"><i class="fa-solid fa-user-plus"></i> Taşeron Personelleri</button>
+      <button class="gv-tab" data-tab="puantaj" role="tab" aria-selected="false"><i class="fa-solid fa-user-clock"></i> Taşeron Puantajı</button>
+      <button class="gv-tab" data-tab="hakedis" role="tab" aria-selected="false"><i class="fa-solid fa-file-invoice-dollar"></i> Hakedişler</button>
+      <button class="gv-tab" data-tab="sozlesme" role="tab" aria-selected="false"><i class="fa-solid fa-file-contract"></i> Sözleşmeler</button>
+      <button class="gv-tab" data-tab="dosyalar" role="tab" aria-selected="false"><i class="fa-solid fa-folder-open"></i> Dosyalar</button>
+      <button class="gv-tab" data-tab="yemekhane" role="tab" aria-selected="false"><i class="fa-solid fa-utensils"></i> Yemekhane Kayıtları</button>
+      <button class="gv-tab" data-tab="makine" role="tab" aria-selected="false"><i class="fa-solid fa-truck-pickup"></i> Makine/Ekipman</button>
+      <button class="gv-tab" data-tab="performans" role="tab" aria-selected="false"><i class="fa-solid fa-star"></i> Performans</button>
+      <button class="gv-tab" data-tab="uyarilar" role="tab" aria-selected="false"><i class="fa-solid fa-triangle-exclamation"></i> Uyarılar</button>
+      <button class="gv-tab" data-tab="gecmis" role="tab" aria-selected="false"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişi</button>
+    </div>
+
+    <section class="tab-panel" data-tab-panel="genel" role="tabpanel" aria-label="Genel Bilgiler">
     <div class="gd-grid">
-      <!-- ============ SOL: içerik ============ -->
       <div class="gv-side-stack">
         <div class="gv-card">
           <div class="gd-block">
-            <div class="gd-label">İş Kapsamı</div>
-            <p class="gd-desc" id="kapsamText">—</p>
-          </div>
-        </div>
-
-        <div class="gv-card">
-          <div class="gd-block">
-            <div class="gd-label">Performans Değerlendirmesi — 6 Kriter</div>
-            <div class="crit-grid" id="critGrid"><div class="crit-box "><i class="fa-solid fa-hourglass-half"></i><b>Süre</b><span>Uygun</span></div><div class="crit-box "><i class="fa-solid fa-star"></i><b>Kalite</b><span>Uygun</span></div><div class="crit-box is-warn"><i class="fa-solid fa-file-invoice-dollar"></i><b>Hakediş</b><span>Uyarı</span></div><div class="crit-box is-warn"><i class="fa-solid fa-shield-halved"></i><b>İSG</b><span>Uyarı</span></div><div class="crit-box "><i class="fa-solid fa-truck-ramp-box"></i><b>Gecikme</b><span>Uygun</span></div><div class="crit-box "><i class="fa-solid fa-circle-check"></i><b>Teslim</b><span>Uygun</span></div></div>
-          </div>
-        </div>
-
-        <div class="gv-card" id="warnCard">
-          <div class="gd-block">
-            <div class="gd-label">Uyarılar</div>
-            <div id="warnBody"><div class="tw-badge"><i class="fa-solid fa-shield-halved"></i><span><b>İSG uyarısı</b> — <a href="crm-santiye-isg-detay.html">ISG-2026-008</a> iskele korkuluk eksikliği, B Blok. Aksiyon bekliyor; korkuluk montajı tamamlanana kadar yükseklik çalışması sınırlandırıldı.</span></div><div class="tw-badge"><i class="fa-solid fa-file-invoice-dollar"></i><span><b>Hakediş ihtilafı</b> — <a href="crm-finans-hakedis-detay.html?th=014">TH-2026-014</a> ₺90.000 tutarında Haziran hakedişinde metraj itirazı (gönderildi 28 Haz, bekliyor); anlaşmazlık çözülene kadar ödeme bloke.</span></div></div>
-          </div>
-        </div>
-
-        <div class="gv-card">
-          <div class="gd-block">
-            <div class="gd-label">Hakediş Geçmişi</div>
-          </div>
-          <div class="gc-body flush">
-            <table class="gtable" id="tblHakedis">
-              <thead><tr><th>Hakediş</th><th>Dönem</th><th class="num">Net Tutar</th><th>Durum</th></tr></thead>
-              <tbody id="tblHakedisBody"><tr><td class="t-strong"><a href="crm-finans-hakedis-detay.html?th=014" style="color:inherit">TH-2026-014</a></td><td>Haziran 2026</td><td class="num">₺90.000</td><td><span class="gstat warn">Onay Bekliyor</span></td></tr><tr><td class="t-strong"><a href="crm-finans-hakedis-detay.html?th=013" style="color:inherit">TH-2026-013</a></td><td>Mayıs 2026</td><td class="num">₺210.000</td><td><span class="gstat info">Onaylandı</span></td></tr><tr><td class="t-strong"><a href="crm-finans-hakedis-detay.html?th=005" style="color:inherit">TH-2026-005</a></td><td>Nisan 2026</td><td class="num">₺185.000</td><td><span class="gstat ok">Ödendi</span></td></tr></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- ============ SAĞ: bağlam ============ -->
-      <div class="gv-side-stack">
-        <div class="gv-card">
-          <div class="gd-block">
-            <div class="gd-label">Künye</div>
             <div class="party-row">
-              <div class="party-mark" id="cardMark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">—</div>
-              <div class="party-info"><b id="cardAd">—</b><span id="cardKisi">—</span></div>
+              <div class="party-mark" id="cardMark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">DB</div>
+              <div class="party-info"><b id="cardAd">Demir-Beton İnş. Ltd.</b><span id="cardKisi">Yusuf Ergin · Taşeron Sorumlusu</span></div>
             </div>
           </div>
           <div class="gd-block">
-            <div class="ctx-row"><span class="ctx-lbl">Şantiye</span><span class="ctx-val" id="ctxSantiye">—</span></div>
-            <div class="ctx-row"><span class="ctx-lbl">Sözleşme</span><span class="ctx-val" id="ctxSzl">—</span></div>
-            <div class="ctx-row"><span class="ctx-lbl">Personel</span><span class="ctx-val" id="ctxPersonel">—</span></div>
-            <div class="ctx-row"><span class="ctx-lbl">Yemekhane Kaydı</span><span class="ctx-val" id="ctxYemekhane">—</span></div>
-            <div class="ctx-row"><span class="ctx-lbl">Ekipman</span><span class="ctx-val" id="ctxEkipman">—</span></div>
-            <div class="ctx-row"><span class="ctx-lbl">Telefon</span><span class="ctx-val" id="ctxTel">—</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Şantiye</span><span class="ctx-val" id="ctxSantiye">Vadi Konakları</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Sözleşme</span><span class="ctx-val" id="ctxSzl"><a href="crm-finans-sozlesme-detay.html?szl=t05">SZL-2025-T05</a></span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Personel</span><span class="ctx-val" id="ctxPersonel">10 kişi</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Yemekhane Kaydı</span><span class="ctx-val" id="ctxYemekhane">10 kişi</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Ekipman</span><span class="ctx-val" id="ctxEkipman">Kalıp-iskele sistemi + 2 kırıcı-delici</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Telefon</span><span class="ctx-val" id="ctxTel">0532 411 27 63</span></div>
           </div>
         </div>
-
+      </div>
+      <div class="gv-side-stack">
         <div class="gv-card">
           <div class="gd-block">
             <div class="gd-label">Sözleşme</div>
             <div class="rel-card">
               <div class="rel-ico"><i class="fa-solid fa-file-contract"></i></div>
-              <div class="rel-info"><a id="szlLink" href="#">—</a><span id="szlSub">—</span></div>
+              <div class="rel-info"><a id="szlLink" href="crm-finans-sozlesme-detay.html?szl=t05">SZL-2025-T05</a><span id="szlSub">Demir-Beton İnş. Ltd. taşeron sözleşmesi</span></div>
             </div>
           </div>
         </div>
-
         <div class="gv-card">
           <div class="gd-block">
             <div class="gd-label">Cari Hesap</div>
             <div class="rel-card">
               <div class="rel-ico" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-scale-balanced"></i></div>
-              <div class="rel-info"><a id="cariLink" href="#">—</a><span id="cariSub">—</span></div>
+              <div class="rel-info"><a id="cariLink" href="crm-cari-detay.html">Demir-Beton İnş. Ltd. — Cari Kartı</a><span id="cariSub">₺342.000 açık bakiye — bizim borcumuz</span></div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="kapsam" role="tabpanel" aria-label="İş Kapsamı" hidden>
+      <div class="gv-card"><div class="gd-block"><div class="gd-label">İş Kapsamı</div><p class="gd-desc" id="kapsamText">—</p></div></div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="santiyeler" role="tabpanel" aria-label="Çalıştığı Şantiyeler" hidden>
+      <div class="gv-card"><div class="gd-block"><div class="gd-label">Çalıştığı Şantiyeler</div><div id="santiyelerBody"></div></div></div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="ekip" role="tabpanel" aria-label="Ekip Listesi" hidden>
+      <div class="gv-card">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-users"></i> Ekip Listesi</div><span class="ph-sub" style="margin:0" id="ekipSub">—</span></div>
+        <div class="gc-body flush">
+          <div class="tbl-scroll">
+          <table class="gtable" id="tblEkip">
+            <thead><tr><th class="col-per">Personel</th><th>Görevi</th><th>Telefon</th><th>Kimlik No</th><th>Şantiye</th><th>Giriş Tarihi</th><th>Durum</th><th class="num">Bugünkü Puantaj</th><th class="num">Eksik Belge</th><th>İSG Belgesi</th><th></th></tr></thead>
+            <tbody id="tblEkipBody"></tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="personeller" role="tabpanel" aria-label="Taşeron Personelleri" hidden>
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-user-plus"></i> Taşeron Personelleri</div>
+          <button type="button" class="btn btn-acc btn-sm" id="btnPersonelEkle"><i class="fa-solid fa-plus"></i> Personel Ekle</button>
+        </div>
+        <div class="gc-body" id="personellerNote"></div>
+        <div class="gc-body flush">
+          <div class="tbl-scroll">
+          <table class="gtable" id="tblPersoneller">
+            <thead><tr><th class="col-per">Personel</th><th>Görevi</th><th>Evrak Durumu</th><th>İSG Belgesi</th><th class="num">Puantaja Dahil</th><th class="num">Yemekhaneye Dahil</th><th>Açıklama</th></tr></thead>
+            <tbody id="tblPersonellerBody"></tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="puantaj" role="tabpanel" aria-label="Taşeron Puantajı" hidden>
+      <div class="gv-card">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-user-clock"></i> Taşeron Puantajı — Bu Hafta</div></div>
+        <div class="gd-block" id="puantajOzet"></div>
+        <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Kompakt özet — kişi bazlı gün/hafta kırılımı ve onay zinciri ayrı ekranda yönetilir.</span><a class="btn btn-ghost btn-sm" id="puantajFullLink" href="crm-operasyon-taseron-puantaj.html"><i class="fa-solid fa-arrow-up-right-from-square"></i> Tam Ekran Aç</a></div>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="hakedis" role="tabpanel" aria-label="Hakedişler" hidden>
+      <div class="gv-card">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-invoice-dollar"></i> Hakediş Geçmişi</div></div>
+        <div class="gc-body flush">
+          <table class="gtable" id="tblHakedis">
+            <thead><tr><th>Hakediş</th><th>Dönem</th><th class="num">Net Tutar</th><th>Durum</th></tr></thead>
+            <tbody id="tblHakedisBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="sozlesme" role="tabpanel" aria-label="Sözleşmeler" hidden>
+      <div class="gv-card">
+        <div class="gd-block">
+          <div class="gd-label">Sözleşme</div>
+          <div class="rel-card">
+            <div class="rel-ico"><i class="fa-solid fa-file-contract"></i></div>
+            <div class="rel-info"><a id="szlLink2" href="#">—</a><span id="szlSub2">—</span></div>
+          </div>
+        </div>
+        <div class="gd-block">
+          <div class="term-list">
+            <div class="term-item"><i class="fa-solid fa-clock-rotate-left"></i> <a id="szlRevLink" href="#" style="color:var(--acc-ink);font-weight:700">Revizyon / Ek Protokol Geçmişi</a></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="dosyalar" role="tabpanel" aria-label="Dosyalar" hidden>
+      <div class="gv-card">
+        <div class="gc-head">
+          <div class="gc-title"><i class="fa-solid fa-folder-open"></i> Dosyalar</div>
+          <div class="dosya-head-acts">
+            <select id="dosyaKategoriSel" aria-label="Kategori"></select>
+            <button type="button" class="btn btn-acc btn-sm" id="btnDosyaEkle"><i class="fa-solid fa-paperclip"></i> Dosya Ekle</button>
+          </div>
+        </div>
+        <div class="gd-block" id="dosyaListe"></div>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="yemekhane" role="tabpanel" aria-label="Yemekhane Kayıtları" hidden>
+      <div class="gv-card">
+        <div class="gd-block">
+          <div class="gd-label">Yemekhane Kaydı</div>
+          <p class="gd-desc" id="yemekhaneText">—</p>
+        </div>
+      </div>
+      <div class="gv-card" style="margin-top:16px">
+        <div class="cross-link" style="border-top:none">
+          <i class="fa-solid fa-utensils lead"></i>
+          <span>Günlük öğün sayıları ve firma payı için:</span>
+          <a href="crm-operasyon-yemekhane.html">Yemekhaneyi Aç <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="makine" role="tabpanel" aria-label="Makine/Ekipman Kullanımı" hidden>
+      <div class="gv-card">
+        <div class="gd-block">
+          <div class="gd-label">Kullanılan Makine / Ekipman</div>
+          <p class="gd-desc" id="makineText">—</p>
+        </div>
+      </div>
+      <div class="gv-card" style="margin-top:16px">
+        <div class="cross-link" style="border-top:none">
+          <i class="fa-solid fa-truck-pickup lead"></i>
+          <span>Makine/ekipman puantajı ve kullanım kaydı için:</span>
+          <a href="crm-operasyon-makine.html">Makine Puantajını Aç <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="performans" role="tabpanel" aria-label="Performans" hidden>
+      <div class="gv-card">
+        <div class="gd-block">
+          <div class="gd-label">Performans Değerlendirmesi — 6 Kriter</div>
+          <div class="crit-grid" id="critGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="uyarilar" role="tabpanel" aria-label="Uyarılar" hidden>
+      <div class="gv-card" id="warnCard">
+        <div class="gd-block">
+          <div class="gd-label">Uyarılar</div>
+          <div id="warnBody"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="gecmis" role="tabpanel" aria-label="İşlem Geçmişi" hidden>
+      <div class="gv-card"><div class="gd-block"><div class="gd-label">İşlem Geçmişi</div><div id="gecmisBody"></div></div></div>
+    </section>
     </div>
   </main>
+
+  <!-- ============ Taşeron Personel Ekle modalı (§6.3) — panel-ajanda.html gerçek CRUD
+       modal deseni; KANONİK 24 kişilik listeye KALICI ekleme yapmaz, sayfa-lokal
+       "beklemede" satırı olarak Taşeron Personelleri sekmesine düşer. ============ -->
+  <div class="gv-modal-ov" id="personelModalOv">
+    <div class="gv-modal" role="dialog" aria-modal="true" aria-labelledby="personelModalTitle">
+      <h3 id="personelModalTitle">Taşeron Personeli Ekle</h3>
+      <p class="gd-desc" style="margin-bottom:14px"><i class="fa-solid fa-circle-info" style="color:var(--acc-ink);margin-right:6px"></i>Bu kayıt kanonik 24 kişilik taşeron kadrosuna kalıcı eklenmez — bu prototipte sayfa-lokal "beklemede" bir kayıt olarak listelenir.</p>
+      <form class="gform" id="personelForm" onsubmit="return false">
+        <div class="gform-2col">
+          <div class="gfield"><label for="fpFirma">Taşeron Firma</label><input id="fpFirma" type="text" disabled></div>
+          <div class="gfield"><label for="fpAd">Personel Adı</label><input id="fpAd" type="text" placeholder="Ad Soyad"></div>
+          <div class="gfield"><label for="fpTel">Telefon</label><input id="fpTel" type="text" placeholder="05XX XXX XX XX"></div>
+          <div class="gfield"><label for="fpGorev">Görevi</label><input id="fpGorev" type="text" placeholder="ör. Kalıpçı"></div>
+          <div class="gfield"><label for="fpSantiye">Bağlı Olduğu Şantiye</label><input id="fpSantiye" type="text" disabled></div>
+          <div class="gfield"><label for="fpGiris">Giriş Tarihi</label><input id="fpGiris" type="date"></div>
+          <div class="gfield"><label for="fpEvrak">Evrak Durumu</label><select id="fpEvrak"><option>Tam</option><option>Eksik</option><option>Beklemede</option></select></div>
+          <div class="gfield"><label for="fpIsg">İSG Belge Durumu</label><select id="fpIsg"><option>Geçerli</option><option>Süresi Yaklaşıyor</option><option>Yok</option></select></div>
+        </div>
+        <div class="gfield full" style="margin-top:14px">
+          <label style="display:flex;align-items:center;gap:8px;font-weight:600"><input id="fpPuantaj" type="checkbox" checked> Puantaja dahil edilsin mi?</label>
+          <label style="display:flex;align-items:center;gap:8px;font-weight:600;margin-top:8px"><input id="fpYemekhane" type="checkbox" checked> Yemekhane hesabına dahil edilsin mi?</label>
+        </div>
+        <div class="gfield full" style="margin-top:14px"><label for="fpAciklama">Açıklama</label><textarea id="fpAciklama" rows="2" placeholder="İsteğe bağlı not"></textarea></div>
+      </form>
+      <div class="gv-modal-acts">
+        <button type="button" class="btn btn-ghost btn-sm" id="personelModalClose">Vazgeç</button>
+        <button type="button" class="btn btn-acc btn-sm" id="personelModalSave">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Taşeron Dosya Ekle modalı (§12.2 — DALGA 20 14 dosya kategorisi) ==== -->
+  <div class="gv-modal-ov" id="dosyaModalOv">
+    <div class="gv-modal" role="dialog" aria-modal="true" aria-labelledby="dosyaModalTitle">
+      <h3 id="dosyaModalTitle">Taşeron Dosyası Ekle</h3>
+      <form class="gform" id="dosyaForm" onsubmit="return false">
+        <div class="gfield full"><label for="fdKategori">Kategori</label><select id="fdKategori"></select></div>
+        <div class="gfield full" style="margin-top:14px"><label for="fdAciklama">Açıklama</label><input id="fdAciklama" type="text" placeholder="ör. 2026 İSG eğitim sertifikası"></div>
+        <div class="gfield full" style="margin-top:14px"><label>Dosya</label><button type="button" class="btn btn-ghost btn-sm" data-demo="Dosya yükleme hazırlanıyor (demo)." data-no-confirm><i class="fa-solid fa-paperclip"></i> Bilgisayardan Seç</button></div>
+      </form>
+      <div class="gv-modal-acts">
+        <button type="button" class="btn btn-ghost btn-sm" id="dosyaModalClose">Vazgeç</button>
+        <button type="button" class="btn btn-acc btn-sm" id="dosyaModalSave">Kaydet</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -199,7 +435,7 @@
   var DATA = {
     'TAS-01':{
       ad:'Demir-Beton İnş. Ltd.', ini:'DB', kisi:'Yusuf Ergin · Taşeron Sorumlusu', tel:'0532 411 27 63',
-      santiye:'Vadi Konakları', tip:'Betonarme kalıp + demir işçiliği',
+      santiye:'Vadi Konakları', tip:'Betonarme kalıp + demir işçiliği', firma:'demir-beton', imza:'28 Mart 2026',
       kapsam:'Vadi Konakları A ve B Blok kaba inşaat imalatları kapsamında kalıp işçiliği, demir montajı ve C30 beton dökümü işleri Demir-Beton İnş. Ltd.\'ye taşeron olarak verilmiştir. İşin süresi 6 ay olup metraj bazlı aylık hakediş usulüyle faturalandırılır. Malzeme (demir, beton) Yapıtaş İnşaat A.Ş. tarafından temin edilir; taşeron yalnız işçilik ve uygulamadan sorumludur.',
       szl:'SZL-2025-T05', szlHref:'crm-finans-sozlesme-detay.html?szl=t05',
       personel:10, yemekhane:10, ekipman:'Kalıp-iskele sistemi + 2 kırıcı-delici',
@@ -224,7 +460,7 @@
     },
     'TAS-02':{
       ad:'ElektroMek Taahhüt', ini:'EM', kisi:'Tolga Şener · Taşeron Sorumlusu', tel:'0533 765 42 08',
-      santiye:'Vadi Konakları', tip:'Elektrik tesisat taahhüdü',
+      santiye:'Vadi Konakları', tip:'Elektrik tesisat taahhüdü', firma:'elektromek', imza:'20 Mayıs 2026',
       kapsam:'Vadi Konakları A ve B Blok elektrik tesisatı (şaft montajı, kablo çekimi, pano bağlantıları) ElektroMek Taahhüt\'e taşeron olarak verilmiştir. Metraj bazlı aylık hakediş usulüyle faturalandırılır; malzeme Yapıtaş İnşaat A.Ş. tarafından temin edilir.',
       szl:'SZL-2025-T07', szlHref:'crm-finans-sozlesme-detay.html?szl=t07',
       personel:6, yemekhane:6, ekipman:'Pano montaj + kablo çekim ekipmanı',
@@ -245,7 +481,7 @@
     },
     'TAS-03':{
       ad:'Yalıtım Kardeşler', ini:'YK', kisi:'Cemal Boz · Taşeron Sorumlusu', tel:'0505 322 90 14',
-      santiye:'Liman Lojistik Merkezi', tip:'Isı/su yalıtımı + çatı kaplama',
+      santiye:'Liman Lojistik Merkezi', tip:'Isı/su yalıtımı + çatı kaplama', firma:'yalitim', imza:'5 Mayıs 2026',
       kapsam:'Liman Lojistik Merkezi depo hangarları çatı ve cephe yalıtımı ile çatı kaplama imalatları Yalıtım Kardeşler\'e taşeron olarak verilmiştir. Kimi kalemlerde malzeme taşeron tarafından temin edilip hakedişten mahsup edilir.',
       /* D18 Y9 DK10: crm-finans-sozlesme-detay.html artık ?szl= map'i (k01-k03/t05-t07);
          T06/T07 kendi kayıtlarına kimlikli linklenir (eski tek-link kısıtı kalkar). */
@@ -269,6 +505,81 @@
 
   function tl(n){ return '₺' + n.toLocaleString('tr-TR'); }
 
+  /* ---- Kanonik 24 kişilik taşeron kadrosu (D19/Dalga19, crm-operasyon-puantaj.html
+     TASERON dizisiyle ad/görev/kalfa BİREBİR aynı) — §6.2 Ekip Listesi'nin 10 alanı için
+     idari alanlar (telefon/kimlik-maskeli/giriş-tarihi/evrak/İSG) BU turda ÜZERİNE
+     eklenir; kişi/gün/adam-gün sayıları TÜKETİLİR, değiştirilmez. Telefon/kimlik alanları
+     bilinçli sentetik-görünümlü mock değerlerdir (gerçek kimlik numarası değildir). ---- */
+  var ROSTER = [
+    {ad:'Hüseyin Palabıyık', poz:'Kalıpçı',         firma:'demir-beton', kalfa:true,  bugun:'tam', giris:'12 Şub 2024', evrak:'Tam',   isg:'Geçerli'},
+    {ad:'Mehmet Sarıkuş',    poz:'Kalıpçı',         firma:'demir-beton', kalfa:false, bugun:'tam', giris:'3 Nis 2024',  evrak:'Tam',   isg:'Geçerli'},
+    {ad:'Süleyman Akbulut',  poz:'Kalıpçı',         firma:'demir-beton', kalfa:false, bugun:'tam', giris:'18 Haz 2024', evrak:'Tam',   isg:'Geçerli'},
+    {ad:'Hamza Dinçer',      poz:'Kalıpçı',         firma:'demir-beton', kalfa:false, bugun:'tam', giris:'7 Eyl 2024',  evrak:'Tam',   isg:'Geçerli'},
+    {ad:'Ünal Yavuzer',      poz:'Düz İşçi',        firma:'demir-beton', kalfa:false, bugun:'tam', giris:'22 Kas 2024', evrak:'Tam',   isg:'Süresi Yaklaşıyor'},
+    {ad:'Bekir Sarıoğlu',    poz:'Demir Ustası',    firma:'demir-beton', kalfa:true,  bugun:'tam', giris:'15 Oca 2025', evrak:'Tam',   isg:'Geçerli'},
+    {ad:'Yakup Tosun',       poz:'Demir Ustası',    firma:'demir-beton', kalfa:false, bugun:'tam', giris:'9 Mar 2025',  evrak:'Tam',   isg:'Geçerli'},
+    {ad:'Enver Kılıçarslan', poz:'Demir Ustası',    firma:'demir-beton', kalfa:false, bugun:'tam', giris:'28 Nis 2025', evrak:'Tam',   isg:'Geçerli'},
+    {ad:'Ayhan Böke',        poz:'Demir Ustası',    firma:'demir-beton', kalfa:false, bugun:'tam', giris:'14 Haz 2025', evrak:'Tam',   isg:'Geçerli'},
+    {ad:'Cevdet Şahinkaya',  poz:'Düz İşçi',        firma:'demir-beton', kalfa:false, bugun:'tam', giris:'2 Ağu 2025',  evrak:'Eksik', isg:'Yok'},
+
+    {ad:'Mustafa Doğanay',   poz:'Elektrik Ustası', firma:'elektromek', kalfa:true,  bugun:'tam', giris:'6 Şub 2024',  evrak:'Tam', isg:'Geçerli'},
+    {ad:'Serkan Ünlüer',     poz:'Elektrik Ustası', firma:'elektromek', kalfa:false, bugun:'tam', giris:'19 Nis 2024', evrak:'Tam', isg:'Geçerli'},
+    {ad:'Barış Yetkin',      poz:'Elektrik Ustası', firma:'elektromek', kalfa:false, bugun:'tam', giris:'11 Tem 2024', evrak:'Tam', isg:'Geçerli'},
+    {ad:'Tuncay Özdemirci',  poz:'Elektrik Ustası', firma:'elektromek', kalfa:false, bugun:'tam', giris:'25 Eyl 2024', evrak:'Tam', isg:'Geçerli'},
+    {ad:'Ferhat Sarpkaya',   poz:'Kaynakçı',        firma:'elektromek', kalfa:false, bugun:'tam', giris:'8 Ara 2024',  evrak:'Tam', isg:'Geçerli'},
+    {ad:'Uğur Beyazıt',      poz:'Düz İşçi',        firma:'elektromek', kalfa:false, bugun:'tam', giris:'17 Şub 2025', evrak:'Tam', isg:'Geçerli'},
+
+    {ad:'Salih Bingöl',      poz:'Yalıtım Ustası',  firma:'yalitim', kalfa:true,  bugun:'tam', giris:'4 Oca 2024',  evrak:'Tam', isg:'Geçerli'},
+    {ad:'Sinan Tuncel',      poz:'Yalıtım Ustası',  firma:'yalitim', kalfa:false, bugun:'tam', giris:'21 Mar 2024', evrak:'Tam', isg:'Geçerli'},
+    {ad:'Erkan Doğruel',     poz:'Yalıtım Ustası',  firma:'yalitim', kalfa:false, bugun:'tam', giris:'30 May 2024', evrak:'Tam', isg:'Geçerli'},
+    {ad:'Kâmil Bozkır',      poz:'Yalıtım Ustası',  firma:'yalitim', kalfa:false, bugun:'tam', giris:'13 Ağu 2024', evrak:'Tam', isg:'Geçerli'},
+    {ad:'Ercan Kavaklı',     poz:'Yalıtım Ustası',  firma:'yalitim', kalfa:true,  bugun:'tam', giris:'2 Eki 2024',  evrak:'Tam', isg:'Geçerli'},
+    {ad:'Levent Akçay',      poz:'Yalıtım Ustası',  firma:'yalitim', kalfa:false, bugun:'tam', giris:'19 Ara 2024', evrak:'Tam', isg:'Geçerli'},
+    {ad:'Gökhan Efeoğlu',    poz:'Yalıtım Ustası',  firma:'yalitim', kalfa:false, bugun:'tam', giris:'6 Şub 2025',  evrak:'Tam', isg:'Geçerli'},
+    {ad:'Okan Sarıgül',      poz:'Düz İşçi',        firma:'yalitim', kalfa:false, bugun:'tam', giris:'24 Nis 2025', evrak:'Eksik', isg:'Geçerli'}
+  ];
+  function phoneOf(i){
+    var kod = ['0532','0533','0505','0542','0555'][i % 5];
+    var a = String(300 + i * 11).slice(-3), b = String(10 + (i * 7) % 89).padStart(2,'0'), c = String(20 + (i * 13) % 78).padStart(2,'0');
+    return kod + ' ' + a + ' ' + b + ' ' + c;
+  }
+  function kimlikOf(i){ return '••• ••• ••• ' + String(10 + i).padStart(2,'0'); }
+  ROSTER.forEach(function(p, i){ p.tel = phoneOf(i); p.kimlik = kimlikOf(i); p.santiye = (p.firma === 'yalitim') ? 'Liman Lojistik Merkezi' : 'Vadi Konakları'; });
+
+  /* ---- 14 dosya kategorisi (§8.2 / DALGA 20) — sözleşme dosya sekmesiyle AYNI liste ---- */
+  var DOSYA_KATEGORI = ['Sözleşme','Ek Protokol','Ruhsat','Yapı Kullanım Belgesi','Teknik Çizim','DWG / Proje Dosyası','Hakediş Eki','İSG Belgesi','Fatura','Dekont','Fotoğraf','Video','Teslim Tutanağı','Diğer'];
+
+  var DOSYALAR = {
+    'TAS-01':[
+      {ic:'pdf', kat:'Sözleşme', ad:'sozlesme-szl-2025-t05.pdf', meta:'1,1 MB · İmzalı nüsha', tarih:'28 Mar 2026'},
+      {ic:'pdf', kat:'İSG Belgesi', ad:'isg-egitim-sertifikasi-2026.pdf', meta:'640 KB · Nesrin Aydın tarafından eklendi', tarih:'10 Oca 2026'},
+      {ic:'xls', kat:'Hakediş Eki', ad:'metraj-cetveli-th014.xlsx', meta:'112 KB · Elif Sarıkaya tarafından eklendi', tarih:'28 Haz 2026'}
+    ],
+    'TAS-02':[
+      {ic:'pdf', kat:'Sözleşme', ad:'sozlesme-szl-2025-t07.pdf', meta:'870 KB · İmzalı nüsha', tarih:'20 May 2026'},
+      {ic:'pdf', kat:'Teknik Çizim', ad:'elektrik-sase-plani-vadi.pdf', meta:'2,3 MB · Tolga Şener tarafından eklendi', tarih:'2 Haz 2026'}
+    ],
+    'TAS-03':[
+      {ic:'pdf', kat:'Sözleşme', ad:'sozlesme-szl-2025-t06.pdf', meta:'980 KB · İmzalı nüsha', tarih:'5 May 2026'},
+      {ic:'pdf', kat:'Fatura', ad:'fatura-th008-haziran.pdf', meta:'220 KB · Cemal Boz tarafından eklendi', tarih:'26 Haz 2026'},
+      {ic:'pdf', kat:'İSG Belgesi', ad:'yuksekte-calisma-sertifikasi.pdf', meta:'510 KB · Nesrin Aydın tarafından eklendi', tarih:'14 Şub 2026'}
+    ]
+  };
+
+  var SANTIYELER = {
+    'TAS-01':[{ad:'Vadi Konakları', href:'crm-santiye-detay.html?santiye=vadi', kapsam:'Kaba inşaat — kalıp, demir, beton işleri', durum:'Aktif'}],
+    'TAS-02':[{ad:'Vadi Konakları', href:'crm-santiye-detay.html?santiye=vadi', kapsam:'Elektrik tesisatı — şaft montajı, kablo çekimi, pano bağlantıları', durum:'Aktif'}],
+    'TAS-03':[{ad:'Liman Lojistik Merkezi', href:'crm-santiye-detay.html?santiye=liman', kapsam:'Çatı ve cephe yalıtımı, çatı kaplama', durum:'Aktif'}]
+  };
+
+  /* ---- Taşeron Puantajı sekmesi — kompakt özet, ana veriyi crm-operasyon-taseron-
+     puantaj.html'den TÜKETİR (H6 — çatallanmaz, aynı durum) ---- */
+  var PUANTAJ_OZET = {
+    'demir-beton':{ durum:'Teknik Ofis Onayında', cls:'info', sahada:'9/10', hafta:'37 adam-gün (bu haftaya kadar)' },
+    'elektromek': { durum:'Şantiye Şefi Onayında', cls:'info', sahada:'6/6', hafta:'23 adam-gün (bu haftaya kadar)' },
+    'yalitim':    { durum:'Onaylandı', cls:'ok', sahada:'8/8', hafta:'29 adam-gün (bu haftaya kadar)' }
+  };
+
   var q = new URLSearchParams(location.search);
   var rawTas = q.get('tas');
   var tasKey = rawTas === null ? 'TAS-01' : rawTas;
@@ -287,6 +598,12 @@
     return;
   }
 
+  /* sef yalnız Vadi Konakları taşeronlarını (TAS-01/02) görebilir — Liman kartı (TAS-03) budanır */
+  if(GV.role === 'sef' && tasKey === 'TAS-03'){
+    location.replace('crm-finans-taseron-detay.html?tas=TAS-01');
+    return;
+  }
+
   GV.crumb(D.ad);
   document.title = D.ad + ' — Taşeron Kartı — Gavia CRM';
   document.getElementById('gdEyebrow').textContent = 'Finans · Taşeron Kartı #' + tasKey;
@@ -296,8 +613,7 @@
     + '<span class="gtag"><i class="fa-solid fa-helmet-safety"></i> ' + D.santiye + '</span>'
     + (D.uyarilar.length ? '<span class="gstat warn">' + D.uyarilar.length + ' uyarı</span>' : '<span class="gstat ok">Uyarı yok</span>');
 
-  document.getElementById('kapsamText').textContent = D.kapsam;
-
+  /* ---- Genel Bilgiler ---- */
   document.getElementById('cardMark').textContent = D.ini;
   document.getElementById('cardAd').textContent = D.ad;
   document.getElementById('cardKisi').textContent = D.kisi;
@@ -317,6 +633,82 @@
   document.getElementById('cariLink').textContent = D.cari.label;
   document.getElementById('cariSub').textContent = D.cari.sub;
 
+  /* ---- İş Kapsamı ---- */
+  document.getElementById('kapsamText').textContent = D.kapsam;
+
+  /* ---- Çalıştığı Şantiyeler ---- */
+  var santiyeler = SANTIYELER[tasKey];
+  document.getElementById('santiyelerBody').innerHTML = santiyeler.map(function(s){
+    return '<div class="santiye-work-row"><div class="sw-ico"><i class="fa-solid fa-helmet-safety"></i></div>'
+      + '<div class="sw-info"><a href="' + s.href + '">' + s.ad + '</a><span>' + s.kapsam + '</span></div>'
+      + '<span class="gstat ok">' + s.durum + '</span></div>';
+  }).join('');
+
+  /* ---- Ekip Listesi (§6.2 — 10 alan) ---- */
+  var ekip = ROSTER.filter(function(p){ return p.firma === D.firma; });
+  document.getElementById('ekipSub').textContent = ekip.length + ' kayıtlı personel · ' + D.santiye;
+  var EVRAK_CLS = {Tam:'ok', Eksik:'danger', Beklemede:'wait'};
+  var ISG_CLS = {'Geçerli':'ok', 'Süresi Yaklaşıyor':'warn', 'Yok':'danger'};
+  function initials(ad){ return ad.split(' ').map(function(p){ return p.charAt(0); }).join('').slice(0,2).toUpperCase(); }
+  var ekipHtml = ekip.map(function(p, i){
+    var tp = 'TP-' + String((D.firma === 'demir-beton' ? i : D.firma === 'elektromek' ? 10 + i : 16 + i) + 1).padStart(3, '0');
+    return '<tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">' + initials(p.ad) + '</div>'
+      + '<div class="pp-info"><b>' + p.ad + '</b><span>' + (p.kalfa ? 'Ekip Kalfası' : 'Ekip Üyesi') + '</span></div></div></td>'
+      + '<td>' + p.poz + (p.kalfa ? ' <span class="gtag mint">Kalfa</span>' : '') + '</td>'
+      + '<td class="ekip-tel">' + p.tel + '</td>'
+      + '<td class="ekip-kimlik">' + p.kimlik + '</td>'
+      + '<td>' + p.santiye + '</td>'
+      + '<td>' + p.giris + '</td>'
+      + '<td><span class="gstat ok">Aktif</span></td>'
+      + '<td class="num"><span class="gstat ok">Tam Gün</span></td>'
+      + '<td class="num"><span class="gstat ' + (p.evrak === 'Tam' ? 'ok' : EVRAK_CLS[p.evrak]) + '">' + p.evrak + '</span></td>'
+      + '<td><span class="gstat ' + ISG_CLS[p.isg] + '">' + p.isg + '</span></td>'
+      + '<td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-taseron-puantaj-detay.html?tp=' + tp + '" aria-label="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>'
+      + '</tr>';
+  }).join('');
+  document.getElementById('tblEkipBody').innerHTML = ekipHtml;
+
+  /* ---- Taşeron Personelleri (§6.3 — Personel Ekle) ---- */
+  var pendingRows = [];
+  function renderPersoneller(){
+    var pendingNote = pendingRows.length
+      ? '<div class="tas-pending-note"><i class="fa-solid fa-circle-info"></i><span>' + pendingRows.length + ' kayıt beklemede — bu prototipte kanonik ' + ekip.length + ' kişilik kadroya kalıcı eklenmez, yalnız bu sayfada görünür.</span></div>'
+      : '';
+    var noteEl = document.getElementById('personellerNote');
+    noteEl.innerHTML = pendingNote;
+    noteEl.hidden = !pendingRows.length;
+    var rows = ekip.map(function(p){
+      return '<tr><td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">' + initials(p.ad) + '</div>'
+        + '<div class="pp-info"><b>' + p.ad + '</b><span>' + p.santiye + '</span></div></div></td>'
+        + '<td>' + p.poz + '</td>'
+        + '<td><span class="gstat ' + (p.evrak === 'Tam' ? 'ok' : EVRAK_CLS[p.evrak]) + '">' + p.evrak + '</span></td>'
+        + '<td><span class="gstat ' + ISG_CLS[p.isg] + '">' + p.isg + '</span></td>'
+        + '<td class="num"><span class="tp-bool is-yes"><i class="fa-solid fa-circle-check"></i> Evet</span></td>'
+        + '<td class="num"><span class="tp-bool is-yes"><i class="fa-solid fa-circle-check"></i> Evet</span></td>'
+        + '<td class="muted">—</td></tr>';
+    }).join('') + pendingRows.map(function(p){
+      return '<tr style="background:var(--bg)"><td><div class="pp-cell"><div class="pp-mark" style="background:var(--warn-tint);color:var(--warn)">' + (p.ad ? initials(p.ad) : '?') + '</div>'
+        + '<div class="pp-info"><b>' + (p.ad || 'İsimsiz kayıt') + '</b><span>' + D.santiye + '</span></div></div></td>'
+        + '<td>' + (p.gorev || '—') + '</td>'
+        + '<td><span class="gstat wait">' + (p.evrak || 'Beklemede') + '</span></td>'
+        + '<td><span class="gstat wait">' + (p.isg || 'Beklemede') + '</span></td>'
+        + '<td class="num"><span class="tp-bool ' + (p.puantaj ? 'is-yes' : 'is-no') + '"><i class="fa-solid ' + (p.puantaj ? 'fa-circle-check' : 'fa-circle-minus') + '"></i> ' + (p.puantaj ? 'Evet' : 'Hayır') + '</span></td>'
+        + '<td class="num"><span class="tp-bool ' + (p.yemekhane ? 'is-yes' : 'is-no') + '"><i class="fa-solid ' + (p.yemekhane ? 'fa-circle-check' : 'fa-circle-minus') + '"></i> ' + (p.yemekhane ? 'Evet' : 'Hayır') + '</span></td>'
+        + '<td class="muted">' + (p.aciklama || 'Taslak — onay bekliyor') + '</td></tr>';
+    }).join('');
+    document.getElementById('tblPersonellerBody').innerHTML = rows;
+  }
+  renderPersoneller();
+
+  /* ---- Taşeron Puantajı (kompakt) ---- */
+  var pOzet = PUANTAJ_OZET[D.firma];
+  document.getElementById('puantajOzet').innerHTML =
+      '<div class="ctx-row"><span class="ctx-lbl">Bugün sahada</span><span class="ctx-val">' + pOzet.sahada + '</span></div>'
+    + '<div class="ctx-row"><span class="ctx-lbl">Bu hafta adam-gün</span><span class="ctx-val">' + pOzet.hafta + '</span></div>'
+    + '<div class="ctx-row"><span class="ctx-lbl">Onay Durumu</span><span class="ctx-val"><span class="gstat ' + pOzet.cls + '">' + pOzet.durum + '</span></span></div>';
+  document.getElementById('puantajFullLink').href = 'crm-operasyon-taseron-puantaj.html';
+
+  /* ---- Performans ---- */
   var critCls = {ok:'', warn:'is-warn', hi:'is-hi'};
   var critLbl = {ok:'Uygun', warn:'Uyarı', hi:'Yüksek'};
   var ch = '';
@@ -325,15 +717,16 @@
   });
   document.getElementById('critGrid').innerHTML = ch;
 
-  var warnCard = document.getElementById('warnCard');
+  /* ---- Uyarılar ---- */
   if(!D.uyarilar.length){
-    warnCard.hidden = true;
+    document.getElementById('warnBody').innerHTML = '<p class="gd-desc">Bu taşeron için açık uyarı yok.</p>';
   } else {
     var wh = '';
     D.uyarilar.forEach(function(w){ wh += '<div class="tw-badge"><i class="fa-solid '+w.ic+'"></i><span>'+w.html+'</span></div>'; });
     document.getElementById('warnBody').innerHTML = wh;
   }
 
+  /* ---- Hakedişler ---- */
   var STATUS_LBL = {bekliyor:'Onay Bekliyor', onaylandi:'Onaylandı', odendi:'Ödendi'};
   var STATUS_CLS = {bekliyor:'warn', onaylandi:'info', odendi:'ok'};
   var hh = '';
@@ -342,10 +735,108 @@
   });
   document.getElementById('tblHakedisBody').innerHTML = hh;
 
-  /* sef yalnız Vadi Konakları taşeronlarını (TAS-01/02) görebilir — Liman kartı (TAS-03) budanır */
-  if(GV.role === 'sef' && tasKey === 'TAS-03'){
-    location.replace('crm-finans-taseron-detay.html?tas=TAS-01');
+  /* ---- Sözleşmeler ---- */
+  var szlA2 = document.getElementById('szlLink2');
+  szlA2.href = D.szlHref; szlA2.textContent = D.szl;
+  document.getElementById('szlSub2').textContent = D.ad + ' taşeron sözleşmesi — ' + D.tip;
+  document.getElementById('szlRevLink').href = D.szlHref.replace('crm-finans-sozlesme-detay.html', 'crm-finans-sozlesme-revizyon.html');
+
+  /* ---- Dosyalar ---- */
+  var katSel = document.getElementById('dosyaKategoriSel');
+  katSel.innerHTML = DOSYA_KATEGORI.map(function(k){ return '<option>' + k + '</option>'; }).join('');
+  var dosyalar = DOSYALAR[tasKey].slice();
+  var FILE_ICON = {pdf:'fa-file-pdf', xls:'fa-file-excel'};
+  function renderDosyalar(){
+    document.getElementById('dosyaListe').innerHTML = dosyalar.length
+      ? dosyalar.map(function(f){
+          return '<div class="file-row"><div class="file-ico ' + f.ic + '"><i class="fa-solid ' + (FILE_ICON[f.ic] || 'fa-file') + '"></i></div>'
+            + '<div class="file-info"><b>' + f.ad + '</b><span>' + f.kat + ' · ' + f.meta + ' · ' + f.tarih + '</span></div>'
+            + '<button class="ia-btn" data-demo="Belge önizleme hazırlanıyor (demo)" data-no-confirm aria-label="Görüntüle"><i class="fa-solid fa-eye"></i></button>'
+            + '<button class="ia-btn" data-demo="İndirme hazırlanıyor (demo)" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button></div>';
+        }).join('')
+      : '<p class="rev-empty">Bu taşeronun henüz dosyası yok. — İlk dosyayı ekleyin.</p>';
   }
+  renderDosyalar();
+
+  /* ---- Yemekhane / Makine cross-link metinleri ---- */
+  document.getElementById('yemekhaneText').textContent = D.ad + ' ekibi Yapıtaş İnşaat A.Ş. yemekhanesinden ' + D.yemekhane + ' kişilik öğle yemeği hakkı ile faydalanır; kişi sayısı taşeron ekip listesiyle birebir aynıdır.';
+  document.getElementById('makineText').textContent = D.ad + ' sahada şu ekipmanı kullanır: ' + D.ekipman + '. Kullanım kaydı ve bakım geçmişi Makine Puantajı ekranında tutulur.';
+
+  /* ---- İşlem Geçmişi (salt-okunur, mevcut alanlardan derlenir) ---- */
+  var gecmis = [];
+  D.hakedis.forEach(function(h){
+    gecmis.push({ic:'fa-file-invoice-dollar', b:h.no + ' hakedişi oluşturuldu', s:h.donem + ' dönemi · ' + tl(h.tutar), href:h.href});
+  });
+  D.uyarilar.forEach(function(w){
+    var txt = w.html.replace(/<[^>]+>/g, '');
+    gecmis.push({ic:w.ic, b:'Uyarı kaydedildi', s:txt.length > 120 ? txt.slice(0, 120) + '…' : txt});
+  });
+  gecmis.push({ic:'fa-file-signature', b:'Sözleşme imzalandı', s:D.imza, href:D.szlHref});
+  document.getElementById('gecmisBody').innerHTML = gecmis.map(function(it){
+    var body = '<b>' + (it.href ? '<a href="' + it.href + '">' + it.b + '</a>' : it.b) + '</b><span>' + it.s + '</span>';
+    return '<div class="islem-item"><i class="fa-solid ' + it.ic + '"></i><div class="im-body">' + body + '</div></div>';
+  }).join('');
+
+  /* ============ Sekme motoru (crm-santiye-detay.html deseniyle BİREBİR) ============ */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.gv-tab'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
+  function activate(id){
+    tabs.forEach(function(t){
+      var on = t.getAttribute('data-tab') === id;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    panels.forEach(function(p){ p.hidden = p.getAttribute('data-tab-panel') !== id; });
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){
+      var id = t.getAttribute('data-tab');
+      activate(id);
+      history.replaceState(null, '', '#' + id);
+    });
+  });
+  var initialTab = (location.hash || '').replace('#', '');
+  var validTab = tabs.some(function(t){ return t.getAttribute('data-tab') === initialTab; });
+  activate(validTab ? initialTab : 'genel');
+
+  /* ---- Personel Ekle modalı (§6.3 — [MOCK-SİM], kanonik kadroya kalıcı eklemez) ---- */
+  var pModalOv = document.getElementById('personelModalOv');
+  document.getElementById('fpFirma').value = D.ad;
+  document.getElementById('fpSantiye').value = D.santiye;
+  document.getElementById('btnPersonelEkle').addEventListener('click', function(){ pModalOv.classList.add('open'); });
+  document.getElementById('personelModalClose').addEventListener('click', function(){ pModalOv.classList.remove('open'); });
+  pModalOv.addEventListener('click', function(e){ if(e.target === pModalOv) pModalOv.classList.remove('open'); });
+  document.getElementById('personelModalSave').addEventListener('click', function(){
+    var ad = document.getElementById('fpAd').value.trim();
+    if(!ad){ gvToast('Personel adı ve görev alanı zorunludur.', {type:'danger'}); return; }
+    var gorev = document.getElementById('fpGorev').value.trim();
+    if(!gorev){ gvToast('Personel adı ve görev alanı zorunludur.', {type:'danger'}); return; }
+    pendingRows.push({
+      ad:ad, gorev:gorev, evrak:document.getElementById('fpEvrak').value, isg:document.getElementById('fpIsg').value,
+      puantaj:document.getElementById('fpPuantaj').checked, yemekhane:document.getElementById('fpYemekhane').checked,
+      aciklama:document.getElementById('fpAciklama').value.trim()
+    });
+    renderPersoneller();
+    pModalOv.classList.remove('open');
+    document.getElementById('personelForm').reset();
+    document.getElementById('fpFirma').value = D.ad; document.getElementById('fpSantiye').value = D.santiye;
+    gvToast(ad + ' beklemede kaydedildi (demo).', {type:'info'});
+  });
+
+  /* ---- Dosya Ekle modalı (§12.2) ---- */
+  var dModalOv = document.getElementById('dosyaModalOv');
+  document.getElementById('btnDosyaEkle').addEventListener('click', function(){ dModalOv.classList.add('open'); });
+  document.getElementById('dosyaModalClose').addEventListener('click', function(){ dModalOv.classList.remove('open'); });
+  dModalOv.addEventListener('click', function(e){ if(e.target === dModalOv) dModalOv.classList.remove('open'); });
+  document.getElementById('dosyaModalSave').addEventListener('click', function(){
+    var kat = document.getElementById('fdKategori').value;
+    var aciklama = document.getElementById('fdAciklama').value.trim() || (kat + ' — ' + D.ad);
+    dosyalar.push({ic:'pdf', kat:kat, ad: kat.toLocaleLowerCase('tr').replace(/[^a-z0-9]+/g,'-') + '-' + (dosyalar.length + 1) + '.pdf', meta:'—  · şimdi eklendi', tarih:'bugün'});
+    renderDosyalar();
+    dModalOv.classList.remove('open');
+    document.getElementById('dosyaForm').reset();
+    gvToast('Dosya eklendi (demo).');
+  });
 })();
 </script>
 </body>
