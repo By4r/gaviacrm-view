@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>İşlem Kayıtları — Gavia CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+<link rel="stylesheet" href="assets/css/ui.css">
+<style>
+/* ============ SAYFAYA ÖZEL — işlem kayıtları (audit log) [D10 1.12] ============ */
+/* gün başlığı — timeline'ı dönemlere böler */
+.log-day{
+  display:flex;align-items:center;gap:12px;
+  padding:16px 22px 10px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+}
+.log-day::after{content:"";flex:1;height:1px;background:var(--line)}
+.log-day .ld-cnt{font-size:10.5px;font-weight:700;background:var(--bg);border:1px solid var(--line);color:var(--ink-2);padding:2px 8px;border-radius:var(--r-pill);letter-spacing:0;text-transform:none}
+
+/* kayıt satırı — .act-row genişletmesi: aktör cümlesi + meta + saat */
+.log-row{display:flex;align-items:flex-start;gap:13px;padding:13px 22px;border-bottom:1px solid var(--line);transition:background .15s}
+.log-row:hover{background:var(--bg)}
+.log-ico{width:36px;height:36px;flex:none;border-radius:10px;display:grid;place-items:center;font-size:14px;background:rgba(var(--acc-rgb),.1);color:var(--acc-ink);margin-top:2px}
+.log-ico.ok{background:var(--ok-tint);color:var(--ok)}
+.log-ico.warn{background:var(--warn-tint);color:var(--warn)}
+.log-ico.danger{background:var(--danger-tint);color:var(--danger)}
+.log-ico.info{background:var(--info-tint);color:var(--info)}
+.log-body{flex:1;min-width:0;line-height:1.45}
+.log-line{font-size:13.5px;color:var(--ink-2)}
+.log-line b{color:var(--ink);font-weight:700}
+.log-line a{color:var(--acc-ink);font-weight:700}
+.log-line a:hover{text-decoration:underline}
+.log-meta{margin-top:4px;font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.log-meta .lm-mod{font-weight:700;color:var(--ink-2);background:var(--bg);border:1px solid var(--line);padding:1px 8px;border-radius:var(--r-pill);font-size:10.5px}
+.log-meta .lm-sep{opacity:.6}
+.log-time{flex:none;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.log-row .gstat{flex:none;margin-top:3px}
+@media(max-width:640px){
+  .log-row{flex-wrap:wrap}
+  .log-time{order:-1;width:calc(100% - 49px);margin:0 0 -6px 49px}
+}
+
+/* ?log= satır hedefleme (D18-B1) — kalıcı vurgu + tek seferlik flaş, portal-odemeler
+   .tks-table tr.is-target/.is-flash emsalinin log-row (flex div) uyarlaması */
+.log-row.is-target{background:rgba(var(--acc-rgb),.1);box-shadow:inset 3px 0 0 var(--acc)}
+.log-row.is-flash{animation:hedefVurgu 2s ease-out 1}
+@keyframes hedefVurgu{0%,30%{background:rgba(var(--acc-rgb),.22)}}
+
+/* Detay butonu — satır sonunda, JS ile eklenir */
+.log-detay-btn{flex:none;align-self:center;margin-left:2px}
+
+/* Detay modalı içeriği — gvConfirm .gv-modal iskeletinin genişletilmiş uyarlaması
+   (aynı overlay/aç-kapa JS'i kullanılıyor, yalnız içerik şablonu ve genişlik sayfa-lokal) */
+.log-detay-modal{width:min(480px,100%)}
+.log-detay-modal h3{font-size:15.5px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.ldm-line{font-size:13px;color:var(--ink-2);line-height:1.55;padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid var(--line)}
+.ldm-line b{color:var(--ink)}
+.ldm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;margin-bottom:18px}
+.ldm-grid dt{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.ldm-grid dd{font-size:13px;font-weight:600;color:var(--ink)}
+.ldm-eski{color:var(--danger);text-decoration:line-through;text-decoration-color:var(--danger);text-decoration-thickness:1.5px}
+.ldm-yeni{color:var(--ok);font-weight:700}
+@media(max-width:480px){.ldm-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-sec="ayarlar" data-screen="log">
+<div class="gv-app">
+  <aside class="gv-rail" id="gvRail"></aside>
+  <nav class="gv-menu" id="gvMenu"></nav>
+  <div class="gv-divider" id="gvDivider" role="separator" aria-label="Menüyü daralt/genişlet"><span class="gv-grip"></span></div>
+  <div class="gv-overlay" id="gvOverlay"></div>
+
+  <header class="gv-top">
+    <button class="gv-burger" id="gvBurger" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+    <div class="gv-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Ara"></div>
+    <div class="gv-top-tools">
+      <button class="gv-iconbtn" data-tip="Bildirimler" aria-label="Bildirimler"><i class="fa-regular fa-bell"></i><span class="gb-dot"></span></button>
+      <div class="gv-me">
+        <div class="me-ava" id="gvAva">·</div>
+        <div class="me-id"><div class="me-name" id="gvName">—</div><div class="me-role" id="gvRole">—</div></div>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="gv-main">
+    <div class="gv-page-head">
+      <div>
+        <div class="ph-eyebrow">Yönetim</div>
+        <h1>İşlem Kayıtları</h1>
+        <div class="ph-sub">Sistemdeki onay, kayıt ve ayar değişikliklerinin denetim izi — son 3 gün</div>
+      </div>
+      <div class="ph-actions">
+        <a class="btn btn-ghost btn-sm" href="#" data-export="İşlem kayıtları"><i class="fa-solid fa-file-arrow-down"></i> Dışa Aktar</a>
+      </div>
+    </div>
+
+    <!-- KPI şeridi -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-ico"><i class="fa-solid fa-clock-rotate-left"></i></div>
+        <div><div class="kpi-num">20</div><div class="kpi-lbl">Bugünkü işlem</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-ico" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-stamp"></i></div>
+        <div><div class="kpi-num">5</div><div class="kpi-lbl">Onay işlemi · son 3 gün</div></div>
+      </div>
+      <div class="kpi-card warn">
+        <div class="kpi-ico"><i class="fa-solid fa-rotate-left"></i></div>
+        <div><div class="kpi-num">2</div><div class="kpi-lbl">Red / revize · son 3 gün</div></div>
+      </div>
+      <div class="kpi-card danger">
+        <div class="kpi-ico"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div><div class="kpi-num">6</div><div class="kpi-lbl">Kritik değişiklik · son 3 gün</div></div>
+      </div>
+    </div>
+
+    <div class="gv-card">
+      <div class="filter-bar">
+        <div class="fb-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="logSearch" placeholder="Kayıt, belge no veya kullanıcı ara"></div>
+        <div class="chips" id="logChips">
+          <button class="chip is-on" data-mod-f="hepsi">Tümü <span class="ch-cnt">38</span></button>
+          <button class="chip" data-mod-f="kasa">Kasa <span class="ch-cnt">7</span></button>
+          <button class="chip" data-mod-f="gorev">Görev <span class="ch-cnt">6</span></button>
+          <button class="chip" data-mod-f="satinalma">Satın Alma <span class="ch-cnt">6</span></button>
+          <button class="chip" data-mod-f="puantaj">Puantaj <span class="ch-cnt">5</span></button>
+          <button class="chip" data-mod-f="hakedis">Hakediş <span class="ch-cnt">5</span></button>
+          <button class="chip" data-mod-f="ayarlar">Ayarlar <span class="ch-cnt">9</span></button>
+        </div>
+        <select id="logUser" aria-label="Kullanıcı filtresi" style="font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 10px;outline:none">
+          <option value="hepsi" selected>Tüm kullanıcılar</option>
+          <option>Kemal Yapıcıoğlu</option>
+          <option>Murat Denizli</option>
+          <option>Elif Sarıkaya</option>
+          <option>Hasan Demirci</option>
+          <option>Aylin Koç</option>
+          <option>Ömer Taşkın</option>
+          <option>Nesrin Aydın</option>
+          <option>Baran Yıldız</option>
+          <option>Seda Karaca</option>
+          <option>Deniz Aksoy</option>
+          <option>Sistem</option>
+        </select>
+        <select id="logType" aria-label="İşlem türü filtresi" style="font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 10px;outline:none">
+          <option value="hepsi" selected>Tüm işlem türleri</option>
+          <option value="onay">Onay</option>
+          <option value="red">Red / Revize</option>
+          <option value="kayit">Kayıt / Güncelleme</option>
+          <option value="kritik">Kritik değişiklik</option>
+        </select>
+        <select id="logDay" aria-label="Tarih aralığı" style="font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 10px;outline:none">
+          <option value="hepsi" selected>Son 3 gün</option>
+          <option value="d0">Bugün — 2 Temmuz</option>
+          <option value="d1">Dün — 1 Temmuz</option>
+          <option value="d2">30 Haziran</option>
+        </select>
+      </div>
+      <div class="filter-row">
+        <span class="frow-lbl">Ek Filtre</span>
+        <select id="logSantiye" aria-label="Şantiye filtresi" style="font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 10px;outline:none">
+          <option value="hepsi" selected>Tüm şantiyeler</option>
+          <option value="vadi">Vadi Konakları</option>
+          <option value="liman">Liman Lojistik Merkezi</option>
+          <option value="merkez">Merkez Şantiye</option>
+          <option value="genel">Şantiye-dışı / genel merkez</option>
+        </select>
+        <select id="logProje" aria-label="Proje filtresi" style="font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 10px;outline:none">
+          <option value="hepsi" selected>Tüm projeler</option>
+          <option value="vadi">Vadi Konakları projesi</option>
+          <option value="liman">Liman Lojistik Merkezi projesi</option>
+          <option value="merkez">Merkez Şantiye projesi</option>
+        </select>
+        <input type="text" id="logKayitId" placeholder="Kayıt ID (ör. KSA-2026-021)" style="font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 10px;outline:none;min-width:190px">
+        <select id="logIp" aria-label="IP adresi filtresi" style="font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 10px;outline:none">
+          <option value="hepsi" selected>Tüm IP adresleri</option>
+          <option value="31.155">31.155.xx.xx — Hasan Demirci (mobil)</option>
+          <option value="88.243">88.243.xx.xx — merkez ofis</option>
+          <option value="185.94">185.94.xx.xx — Deniz Aksoy (platform)</option>
+          <option value="178.240">178.240.xx.xx — Aylin Koç (mobil)</option>
+          <option value="sunucu">otomatik kural · sunucu</option>
+        </select>
+      </div>
+
+      <div id="logList" data-paginate="25" data-paginate-rows=".log-row">
+        <!-- ============ BUGÜN — 2 TEMMUZ (20) ============ -->
+        <div class="log-day" data-day="d0">Bugün — 2 Temmuz <span class="ld-cnt" data-day-cnt>20 kayıt</span></div>
+
+        <!-- ============ Dalga 4-ek — §9'un 16 loglanabilir işlem türünün eksik 6'sı
+             (Kayıt silme · Dosya yükleme · Dosya indirme · Sözleşme yükleme · Paket
+             değişikliği · Abonelik güncelleme). Bu gecenin gerçek ekranlarına bağlı:
+             SIP-2026-08/SAT-2026-018 (satınalma) · SZL-2026-K03 (sözleşme-revizyon) ·
+             crm-ayarlar-paket-degistir.html / -abonelik-iptal.html (SaaS akışları). ============ -->
+        <div class="log-row" data-day="d0" data-mod="ayarlar" data-user="Kemal Yapıcıoğlu" data-type="kritik" data-santiye="genel" data-kayit="" data-ip="88.243">
+          <div class="log-ico danger"><i class="fa-solid fa-rotate"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Kemal Yapıcıoğlu</b> abonelik otomatik yenileme tercihini güncelledi — <b>Kapalı → Açık</b></div>
+            <div class="log-meta"><span class="lm-mod">Ayarlar</span><span>LOG-2026-0840</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="gstat danger">Kritik</span>
+          <span class="log-time">17:40</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="ayarlar" data-user="Kemal Yapıcıoğlu" data-type="kritik" data-santiye="genel" data-kayit="" data-ip="88.243">
+          <div class="log-ico danger"><i class="fa-solid fa-layer-group"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Kemal Yapıcıoğlu</b> <a href="crm-ayarlar-paket-degistir.html">paket değişikliği talebi</a> oluşturdu — <b>Professional → CRM + Sales</b></div>
+            <div class="log-meta"><span class="lm-mod">Ayarlar</span><span>LOG-2026-0839</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="gstat danger">Kritik</span>
+          <span class="log-time">17:35</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="hakedis" data-user="Murat Denizli" data-type="kayit" data-santiye="genel" data-kayit="SZL-2026-K03" data-ip="88.243">
+          <div class="log-ico info"><i class="fa-solid fa-file-arrow-up"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Murat Denizli</b> <a href="crm-finans-sozlesme-revizyon.html?szl=k03">SZL-2026-K03</a> sözleşme taslağını inceleme için yükledi (Sapanca Belediyesi, imza bekliyor)</div>
+            <div class="log-meta"><span class="lm-mod">Hakediş</span><span>LOG-2026-0838</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="log-time">17:30</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="ayarlar" data-user="Kemal Yapıcıoğlu" data-type="kritik" data-santiye="genel" data-kayit="" data-ip="88.243">
+          <div class="log-ico danger"><i class="fa-solid fa-trash"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Kemal Yapıcıoğlu</b> süresi dolmuş kullanıcı davetini sildi (mimar.ozturk@yapitas.example)</div>
+            <div class="log-meta"><span class="lm-mod">Ayarlar</span><span>LOG-2026-0837</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="log-time">17:25</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="satinalma" data-user="Nesrin Aydın" data-type="kayit" data-santiye="vadi" data-kayit="SAT-2026-018" data-ip="88.243">
+          <div class="log-ico"><i class="fa-solid fa-file-arrow-down"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Nesrin Aydın</b> <a href="crm-satinalma-icmal-cikti.html?form=SAT-2026-018">SAT-2026-018</a> icmal çıktısını PDF olarak indirdi</div>
+            <div class="log-meta"><span class="lm-mod">Satın Alma</span><span>LOG-2026-0836</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
+          </div>
+          <span class="log-time">17:20</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="satinalma" data-user="Baran Yıldız" data-type="kayit" data-santiye="merkez" data-kayit="SIP-2026-08" data-ip="88.243">
+          <div class="log-ico"><i class="fa-solid fa-file-arrow-up"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Baran Yıldız</b> <a href="crm-satinalma-siparis-detay.html?sip=SIP-2026-08">SIP-2026-08</a> siparişi için tedarikçi teklif dosyasını yükledi</div>
+            <div class="log-meta"><span class="lm-mod">Satın Alma</span><span>LOG-2026-0835</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
+          </div>
+          <span class="log-time">17:15</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="puantaj" data-user="Hasan Demirci" data-type="kayit" data-santiye="vadi" data-kayit="" data-ip="31.155">
+          <div class="log-ico info"><i class="fa-solid fa-user-clock"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Hasan Demirci</b> 2 Temmuz günlük puantaj girişini kaydetti — Vadi Konakları 49/51, durum <b>Taslak</b></div>
+            <div class="log-meta"><span class="lm-mod">Puantaj</span><span>LOG-2026-0834</span><span class="lm-sep">·</span><span>31.155.xx.xx · Chrome, Android</span></div>
+          </div>
+          <span class="log-time">17:10</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="ayarlar" data-user="Kemal Yapıcıoğlu" data-type="kritik" data-santiye="genel" data-kayit="" data-ip="88.243">
+          <div class="log-ico danger"><i class="fa-solid fa-sliders"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Kemal Yapıcıoğlu</b> kasa onay eşiğini <b>₺25.000 → ₺40.000</b> olarak değiştirdi</div>
+            <div class="log-meta"><span class="lm-mod">Ayarlar</span><span>LOG-2026-0833</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="gstat danger">Kritik</span>
+          <span class="log-time">16:30</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="satinalma" data-user="Baran Yıldız" data-type="kayit" data-santiye="vadi" data-kayit="SAT-2026-018" data-ip="88.243">
+          <div class="log-ico"><i class="fa-solid fa-file-invoice"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Baran Yıldız</b> <a href="crm-satinalma-form-detay.html?form=018">SAT-2026-018</a> icmalini GM onayına gönderdi (₺742.300)</div>
+            <div class="log-meta"><span class="lm-mod">Satın Alma</span><span>LOG-2026-0832</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
+          </div>
+          <span class="log-time">15:52</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="satinalma" data-user="Baran Yıldız" data-type="kayit" data-santiye="vadi" data-kayit="SAT-2026-018" data-ip="88.243">
+          <div class="log-ico"><i class="fa-solid fa-scale-balanced"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Baran Yıldız</b> <a href="crm-satinalma-form-detay.html?form=018">SAT-2026-018</a> icmalinde <b>Deta Demir Çelik</b> teklifini seçti — gerekçe: tek elden montaj + 60 gün vade</div>
+            <div class="log-meta"><span class="lm-mod">Satın Alma</span><span>LOG-2026-0831</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
+          </div>
+          <span class="log-time">15:45</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="hakedis" data-user="Elif Sarıkaya" data-type="kayit" data-santiye="vadi" data-kayit="HKD-2026-006" data-ip="88.243">
+          <div class="log-ico info"><i class="fa-solid fa-file-signature"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Elif Sarıkaya</b> <a href="crm-finans-hakedis-detay.html?hkd=006">HKD-2026-006</a> hakedişine işveren takip notu ekledi (Körfez GYO · 12 gündür onayda)</div>
+            <div class="log-meta"><span class="lm-mod">Hakediş</span><span>LOG-2026-0830</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="log-time">14:20</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="puantaj" data-user="Hasan Demirci" data-type="kayit" data-santiye="vadi" data-kayit="" data-ip="31.155">
+          <div class="log-ico warn"><i class="fa-solid fa-clock"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Hasan Demirci</b> İbrahim Sönmez'in çıkış saatini <b>18:00 → 21:00</b> revize etti (+3 fazla mesai — aynı gün kuralı)</div>
+            <div class="log-meta"><span class="lm-mod">Puantaj</span><span>LOG-2026-0829</span><span class="lm-sep">·</span><span>31.155.xx.xx · Chrome, Android</span></div>
+          </div>
+          <span class="log-time">13:05</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="gorev" data-user="Murat Denizli" data-type="kayit" data-santiye="vadi" data-kayit="" data-ip="88.243">
+          <div class="log-ico"><i class="fa-solid fa-list-check"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Murat Denizli</b> "<a href="crm-gorev-detay.html?gorev=002">A Blok elektrik şaft kontrolü</a>" görevini Hasan Demirci'ye atadı — termin 3 Temmuz</div>
+            <div class="log-meta"><span class="lm-mod">Görev</span><span>LOG-2026-0828</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="log-time">11:32</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="kasa" data-user="Hasan Demirci" data-type="kayit" data-santiye="vadi" data-kayit="KSA-2026-021" data-ip="31.155">
+          <div class="log-ico warn"><i class="fa-solid fa-cash-register"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Hasan Demirci</b> <a href="crm-operasyon-kasa-detay.html?ks=ksa-021">KSA-2026-021</a> kasa giderini onaya gönderdi (nakliye + işçilik avansı · ₺18.400)</div>
+            <div class="log-meta"><span class="lm-mod">Kasa</span><span>LOG-2026-0827</span><span class="lm-sep">·</span><span>31.155.xx.xx · Chrome, Android</span></div>
+          </div>
+          <span class="log-time">10:05</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="gorev" data-user="Kemal Yapıcıoğlu" data-type="kayit" data-santiye="vadi" data-kayit="" data-ip="88.243">
+          <div class="log-ico"><i class="fa-solid fa-layer-group"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Kemal Yapıcıoğlu</b> "<a href="crm-gorev-detay.html?gorev=023">Vadi Konakları numune daire fotoğraf çekimi</a>" görevini havuza bıraktı — termin 10 Temmuz</div>
+            <div class="log-meta"><span class="lm-mod">Görev</span><span>LOG-2026-0826</span><span class="lm-sep">·</span><span>88.243.xx.xx · Safari, iPhone</span></div>
+          </div>
+          <span class="log-time">09:55</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="kasa" data-user="Nesrin Aydın" data-type="kayit" data-santiye="vadi" data-kayit="KSG-2026-008" data-ip="88.243">
+          <div class="log-ico ok"><i class="fa-solid fa-sack-dollar"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Nesrin Aydın</b> <a href="crm-operasyon-kasa.html">KSG-2026-008</a> tahsilatını deftere işledi — Körfez GYO ek iş bedeli (₺66.400, Vadi Konakları)</div>
+            <div class="log-meta"><span class="lm-mod">Kasa</span><span>LOG-2026-0825</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
+          </div>
+          <span class="log-time">09:12</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="gorev" data-user="Kemal Yapıcıoğlu" data-type="kayit" data-santiye="merkez" data-kayit="" data-ip="88.243">
+          <div class="log-ico"><i class="fa-solid fa-layer-group"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Kemal Yapıcıoğlu</b> "<a href="crm-gorev-detay.html?gorev=026">Şantiye araç takip çizelgesi güncelleme</a>" görevini havuza bıraktı — termin 12 Temmuz</div>
+            <div class="log-meta"><span class="lm-mod">Görev</span><span>LOG-2026-0824</span><span class="lm-sep">·</span><span>88.243.xx.xx · Safari, iPhone</span></div>
+          </div>
+          <span class="log-time">08:50</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="kasa" data-user="Hasan Demirci" data-type="kayit" data-santiye="vadi" data-kayit="KSA-2026-023" data-ip="31.155">
+          <div class="log-ico"><i class="fa-solid fa-layer-group"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Hasan Demirci</b> 1 Temmuz gün sonu kasa hareketlerini toplu işledi — 10 kayıt (KSA-2026-023…032, Vadi Konakları)</div>
+            <div class="log-meta"><span class="lm-mod">Kasa</span><span>LOG-2026-0823</span><span class="lm-sep">·</span><span>31.155.xx.xx · Chrome, Android</span></div>
+          </div>
+          <span class="log-time">08:20</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="puantaj" data-user="Seda Karaca" data-type="onay" data-santiye="genel" data-kayit="" data-ip="88.243">
+          <div class="log-ico ok"><i class="fa-solid fa-check"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Seda Karaca</b> 1 Temmuz günlük puantajını onayladı (3 şantiye · 90/93 giriş)</div>
+            <div class="log-meta"><span class="lm-mod">Puantaj</span><span>LOG-2026-0822</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
+          </div>
+          <span class="log-time">08:05</span>
+        </div>
+        <div class="log-row" data-day="d0" data-mod="ayarlar" data-user="Deniz Aksoy" data-type="kayit" data-santiye="genel" data-kayit="" data-ip="185.94">
+          <div class="log-ico info"><i class="fa-solid fa-right-to-bracket"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Deniz Aksoy</b> platform yöneticisi oturumu açtı</div>
+            <div class="log-meta"><span class="lm-mod">Ayarlar</span><span>LOG-2026-0821</span><span class="lm-sep">·</span><span>185.94.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="log-time">07:58</span>
+        </div>
+
+        <!-- ============ DÜN — 1 TEMMUZ (10) ============ -->
+        <div class="log-day" data-day="d1">Dün — 1 Temmuz <span class="ld-cnt" data-day-cnt>10 kayıt</span></div>
+
+        <div class="log-row" data-day="d1" data-mod="kasa" data-user="Nesrin Aydın" data-type="kayit" data-santiye="vadi" data-kayit="KSG-2026-007" data-ip="88.243">
+          <div class="log-ico ok"><i class="fa-solid fa-sack-dollar"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Nesrin Aydın</b> <a href="crm-operasyon-kasa.html">KSG-2026-007</a> merkez kasa beslemesini işledi → Vadi Konakları (₺120.000)</div>
+            <div class="log-meta"><span class="lm-mod">Kasa</span><span>LOG-2026-0820</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
+          </div>
+          <span class="log-time">17:40</span>
+        </div>
+        <div class="log-row" data-day="d1" data-mod="hakedis" data-user="Nesrin Aydın" data-type="kayit" data-santiye="vadi" data-kayit="TH-2026-014" data-ip="88.243">
+          <div class="log-ico info"><i class="fa-solid fa-people-arrows"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Nesrin Aydın</b> <a href="crm-finans-taseron.html">TH-2026-014</a> taşeron hakedişini incelemeye aldı (Demir-Beton İnş. · ₺90.000)</div>
+            <div class="log-meta"><span class="lm-mod">Hakediş</span><span>LOG-2026-0819</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
+          </div>
+          <span class="log-time">16:55</span>
+        </div>
+        <div class="log-row" data-day="d1" data-mod="ayarlar" data-user="Kemal Yapıcıoğlu" data-type="kritik" data-santiye="genel" data-kayit="" data-ip="88.243">
+          <div class="log-ico danger"><i class="fa-solid fa-puzzle-piece"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Kemal Yapıcıoğlu</b> <b>Pluxee Kart</b> modülünü etkinleştirdi — Saha Kayıtları kapsamına eklendi</div>
+            <div class="log-meta"><span class="lm-mod">Ayarlar</span><span>LOG-2026-0818</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="gstat danger">Kritik</span>
+          <span class="log-time">16:10</span>
+        </div>
+        <div class="log-row" data-day="d1" data-mod="kasa" data-user="Elif Sarıkaya" data-type="onay" data-santiye="liman" data-kayit="KSA-2026-020" data-ip="88.243">
+          <div class="log-ico ok"><i class="fa-solid fa-check"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Elif Sarıkaya</b> <a href="crm-operasyon-kasa-detay.html?ks=ksa-020">KSA-2026-020</a> kasa giderini onayladı (Liman Lojistik · ₺9.750)</div>
+            <div class="log-meta"><span class="lm-mod">Kasa</span><span>LOG-2026-0817</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="log-time">15:20</span>
+        </div>
+        <div class="log-row" data-day="d1" data-mod="satinalma" data-user="Baran Yıldız" data-type="kayit" data-santiye="vadi" data-kayit="MLZ-2026-030" data-ip="88.243">
+          <div class="log-ico"><i class="fa-solid fa-boxes-stacked"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Baran Yıldız</b> <a href="crm-satinalma-talep-detay.html?mlz=030">MLZ-2026-030</a> mekanik tesisat talebi için icmal hazırlamaya başladı — 5 tedarikçiden teklif istendi</div>
+            <div class="log-meta"><span class="lm-mod">Satın Alma</span><span>LOG-2026-0816</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
+          </div>
+          <span class="log-time">14:45</span>
+        </div>
+        <div class="log-row" data-day="d1" data-mod="puantaj" data-user="Aylin Koç" data-type="kayit" data-santiye="liman" data-kayit="" data-ip="178.240">
+          <div class="log-ico info"><i class="fa-solid fa-user-clock"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Aylin Koç</b> 1 Temmuz günlük girişini kaydetti — Liman Lojistik 29/30</div>
+            <div class="log-meta"><span class="lm-mod">Puantaj</span><span>LOG-2026-0815</span><span class="lm-sep">·</span><span>178.240.xx.xx · Safari, iPhone</span></div>
+          </div>
+          <span class="log-time">13:30</span>
+        </div>
+        <div class="log-row" data-day="d1" data-mod="gorev" data-user="Nesrin Aydın" data-type="kayit" data-santiye="genel" data-kayit="" data-ip="88.243">
+          <div class="log-ico ok"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Nesrin Aydın</b> "<a href="crm-gorev-detay.html?gorev=017">Avans ödemelerini banka listesine aktar</a>" görevini tamamladı</div>
+            <div class="log-meta"><span class="lm-mod">Görev</span><span>LOG-2026-0814</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
+          </div>
+          <span class="log-time">11:15</span>
+        </div>
+        <div class="log-row" data-day="d1" data-mod="hakedis" data-user="Murat Denizli" data-type="onay" data-santiye="vadi" data-kayit="TH-2026-014" data-ip="88.243">
+          <div class="log-ico ok"><i class="fa-solid fa-check"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Murat Denizli</b> <a href="crm-finans-taseron.html">TH-2026-014</a> hakedişini GM adımında onayladı — muhasebe kontrolüne yönlendi</div>
+            <div class="log-meta"><span class="lm-mod">Hakediş</span><span>LOG-2026-0813</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="log-time">10:40</span>
+        </div>
+        <div class="log-row" data-day="d1" data-mod="gorev" data-user="Hasan Demirci" data-type="kayit" data-santiye="vadi" data-kayit="" data-ip="31.155">
+          <div class="log-ico ok"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Hasan Demirci</b> "<a href="crm-gorev-detay.html?gorev=016">Haftalık İSG turu</a>" görevini tamamladı (Vadi Konakları)</div>
+            <div class="log-meta"><span class="lm-mod">Görev</span><span>LOG-2026-0812</span><span class="lm-sep">·</span><span>31.155.xx.xx · Chrome, Android</span></div>
+          </div>
+          <span class="log-time">09:25</span>
+        </div>
+        <div class="log-row" data-day="d1" data-mod="ayarlar" data-user="Deniz Aksoy" data-type="kayit" data-santiye="genel" data-kayit="" data-ip="185.94">
+          <div class="log-ico info"><i class="fa-solid fa-database"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Deniz Aksoy</b> haftalık veri yedekleme raporunu doğruladı — tüm modüller güncel</div>
+            <div class="log-meta"><span class="lm-mod">Ayarlar</span><span>LOG-2026-0811</span><span class="lm-sep">·</span><span>185.94.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="log-time">08:15</span>
+        </div>
+
+        <!-- ============ 30 HAZİRAN (8) ============ -->
+        <div class="log-day" data-day="d2">30 Haziran, Salı <span class="ld-cnt" data-day-cnt>8 kayıt</span></div>
+
+        <div class="log-row" data-day="d2" data-mod="kasa" data-user="Murat Denizli" data-type="red" data-santiye="liman" data-kayit="KSA-2026-017" data-ip="88.243">
+          <div class="log-ico danger"><i class="fa-solid fa-xmark"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Murat Denizli</b> <a href="crm-operasyon-kasa-detay.html?ks=ksa-017">KSA-2026-017</a> kasa giderini reddetti — "vinç operatörü ödemesi taşeron kapsamında" (₺4.500)</div>
+            <div class="log-meta"><span class="lm-mod">Kasa</span><span>LOG-2026-0810</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="log-time">17:05</span>
+        </div>
+        <div class="log-row" data-day="d2" data-mod="kasa" data-user="Nesrin Aydın" data-type="red" data-santiye="vadi" data-kayit="KSA-2026-016" data-ip="88.243">
+          <div class="log-ico warn"><i class="fa-solid fa-rotate-left"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Nesrin Aydın</b> <a href="crm-operasyon-kasa-detay.html?ks=ksa-016">KSA-2026-016</a> için revize istedi — "yol/yemek fişleri eksik" (₺3.150)</div>
+            <div class="log-meta"><span class="lm-mod">Kasa</span><span>LOG-2026-0809</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
+          </div>
+          <span class="log-time">16:20</span>
+        </div>
+        <div class="log-row" data-day="d2" data-mod="ayarlar" data-user="Kemal Yapıcıoğlu" data-type="kritik" data-santiye="genel" data-kayit="" data-ip="88.243">
+          <div class="log-ico danger"><i class="fa-solid fa-user-shield"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Kemal Yapıcıoğlu</b> Seda Karaca'nın rol tanımını güncelledi — İK Uzmanı operasyon ekran kapsamı genişletildi (kasa okuma + Pluxee)</div>
+            <div class="log-meta"><span class="lm-mod">Ayarlar</span><span>LOG-2026-0808</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="gstat danger">Kritik</span>
+          <span class="log-time">15:10</span>
+        </div>
+        <div class="log-row" data-day="d2" data-mod="satinalma" data-user="Sistem" data-type="kayit" data-santiye="vadi" data-kayit="SAT-2026-011" data-ip="sunucu">
+          <div class="log-ico danger"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Sistem</b> <a href="crm-satinalma-termin.html">SAT-2026-011</a> için termin gecikmesi uyarısı oluşturdu — XPS yalıtım, Ege Hazır Beton (plan 30 Haziran)</div>
+            <div class="log-meta"><span class="lm-mod">Satın Alma</span><span>LOG-2026-0807</span><span class="lm-sep">·</span><span>otomatik kural · sunucu</span></div>
+          </div>
+          <span class="log-time">14:00</span>
+        </div>
+        <div class="log-row" data-day="d2" data-mod="gorev" data-user="Ömer Taşkın" data-type="kayit" data-santiye="merkez" data-kayit="" data-ip="31.155">
+          <div class="log-ico ok"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Ömer Taşkın</b> "<a href="crm-gorev-detay.html?gorev=018">Çatı paneli sevkiyatı teslim alma kaydı</a>" görevini tamamladı (Merkez Şantiye)</div>
+            <div class="log-meta"><span class="lm-mod">Görev</span><span>LOG-2026-0806</span><span class="lm-sep">·</span><span>31.155.xx.xx · Chrome, Android</span></div>
+          </div>
+          <span class="log-time">12:30</span>
+        </div>
+        <div class="log-row" data-day="d2" data-mod="hakedis" data-user="Elif Sarıkaya" data-type="onay" data-santiye="vadi" data-kayit="TH-2026-009" data-ip="88.243">
+          <div class="log-ico ok"><i class="fa-solid fa-check"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Elif Sarıkaya</b> <a href="crm-finans-taseron.html">TH-2026-009</a> hakedişini teknik kontrolden geçirdi (ElektroMek Taahhüt · ₺76.200)</div>
+            <div class="log-meta"><span class="lm-mod">Hakediş</span><span>LOG-2026-0805</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="log-time">11:20</span>
+        </div>
+        <div class="log-row" data-day="d2" data-mod="puantaj" data-user="Seda Karaca" data-type="onay" data-santiye="genel" data-kayit="" data-ip="88.243">
+          <div class="log-ico ok"><i class="fa-solid fa-check"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Seda Karaca</b> 30 Haziran günlük puantajını onayladı (3 şantiye)</div>
+            <div class="log-meta"><span class="lm-mod">Puantaj</span><span>LOG-2026-0804</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, Windows</span></div>
+          </div>
+          <span class="log-time">10:10</span>
+        </div>
+        <div class="log-row" data-day="d2" data-mod="ayarlar" data-user="Murat Denizli" data-type="kayit" data-santiye="genel" data-kayit="" data-ip="88.243">
+          <div class="log-ico info"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="log-body">
+            <div class="log-line"><b>Murat Denizli</b> oturum güvenliği tercihini güncelledi — otomatik oturum kapatma 30 dakika</div>
+            <div class="log-meta"><span class="lm-mod">Ayarlar</span><span>LOG-2026-0803</span><span class="lm-sep">·</span><span>88.243.xx.xx · Chrome, macOS</span></div>
+          </div>
+          <span class="log-time">09:00</span>
+        </div>
+      </div>
+
+      <!-- boş durum -->
+      <div class="gv-empty" id="logEmpty" hidden>
+        <div class="ge-ico"><i class="fa-solid fa-clock-rotate-left"></i></div>
+        <h4>Kayıt bulunamadı</h4>
+        <p>Seçtiğiniz filtre birleşimine uyan işlem kaydı yok. Filtreleri genişletmeyi deneyin.</p>
+      </div>
+
+      <div class="gc-foot">
+        <span style="display:flex;align-items:center;gap:8px"><i class="fa-solid fa-circle-info" style="color:var(--acc-ink)"></i> Kayıtlar salt-okunurdur ve silinemez; 24 ay saklanır. Bu ekranı yalnız Gavia Platform Yöneticisi ve Firma Sahibi görüntüler.</span>
+        <span><span data-log-count>38</span> kayıt</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/ui.js"></script>
+<script>
+/* işlem kaydı filtre motoru — modül chip + kullanıcı + tür + gün + arama (AND) */
+(function(){
+  var rows = Array.prototype.slice.call(document.querySelectorAll('.log-row'));
+  var days = Array.prototype.slice.call(document.querySelectorAll('.log-day'));
+  var chips = Array.prototype.slice.call(document.querySelectorAll('[data-mod-f]'));
+  var selUser = document.getElementById('logUser');
+  var selType = document.getElementById('logType');
+  var selDay = document.getElementById('logDay');
+  var selSantiye = document.getElementById('logSantiye');
+  var selProje = document.getElementById('logProje');
+  var inKayitId = document.getElementById('logKayitId');
+  var selIp = document.getElementById('logIp');
+  var search = document.getElementById('logSearch');
+  var empty = document.getElementById('logEmpty');
+  var total = document.querySelector('[data-log-count]');
+
+  function apply(){
+    var mod = (document.querySelector('[data-mod-f].is-on') || {}).getAttribute
+      ? document.querySelector('[data-mod-f].is-on').getAttribute('data-mod-f') : 'hepsi';
+    var usr = selUser.value, typ = selType.value, day = selDay.value;
+    var santiye = selSantiye.value, proje = selProje.value, ip = selIp.value;
+    var kayitTerm = inKayitId.value.trim().toLocaleUpperCase('tr');
+    var term = search.value.trim().toLocaleLowerCase('tr');
+    var shown = 0;
+    rows.forEach(function(r){
+      /* Proje filtresi Şantiye ile AYNI değer kümesini kullanır — bu prototipte her
+         şantiye kendi projesidir (çok-şantiyeli tek proje modeli henüz yok); iki ayrı
+         dropdown doküman §9'un istediği gibi durur ama aynı data-santiye alanını okur. */
+      var ok = (mod === 'hepsi' || r.getAttribute('data-mod') === mod)
+            && (usr === 'hepsi' || r.getAttribute('data-user') === usr)
+            && (typ === 'hepsi' || r.getAttribute('data-type') === typ)
+            && (day === 'hepsi' || r.getAttribute('data-day') === day)
+            && (santiye === 'hepsi' || r.getAttribute('data-santiye') === santiye)
+            && (proje === 'hepsi' || r.getAttribute('data-santiye') === proje)
+            && (ip === 'hepsi' || r.getAttribute('data-ip') === ip)
+            && (!kayitTerm || (r.getAttribute('data-kayit') || '').toLocaleUpperCase('tr').indexOf(kayitTerm) !== -1)
+            && (!term || r.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1);
+      r.hidden = !ok;
+      if(ok) shown++;
+    });
+    empty.hidden = shown !== 0;
+    if(total) total.textContent = shown;
+    /* D17 pager: filtre değişti → sayfa 1; pager refresh sonrası gvpage event'i
+       syncDays'i çağırır. Pager henüz kurulmadıysa (ilk apply) başlıklar doğrudan. */
+    var list = document.getElementById('logList');
+    if(list && list._gvPager) list._gvPager.refresh(true);
+    else syncDays();
+  }
+
+  /* gün başlığı senkronu — filtre (hidden) + sayfa (.gv-pg-hide) eksenlerini birlikte
+     okur: başlık, o günden EN AZ 1 satır bu sayfada görünüyorsa görünür; sayaç günün
+     filtre-toplamını gösterir (D17 gv-pager 'gvpage' idiyomu) */
+  function syncDays(){
+    days.forEach(function(h){
+      var d = h.getAttribute('data-day');
+      var dayRows = rows.filter(function(r){ return r.getAttribute('data-day') === d && !r.hidden; });
+      var onPage = dayRows.filter(function(r){ return !r.classList.contains('gv-pg-hide'); });
+      h.hidden = onPage.length === 0;
+      var c = h.querySelector('[data-day-cnt]');
+      if(c) c.textContent = dayRows.length + ' kayıt';
+    });
+  }
+  document.getElementById('logList').addEventListener('gvpage', syncDays);
+
+  chips.forEach(function(ch){
+    ch.addEventListener('click', function(){
+      chips.forEach(function(x){ x.classList.remove('is-on'); });
+      ch.classList.add('is-on');
+      apply();
+    });
+  });
+  [selUser, selType, selDay, selSantiye, selProje, selIp].forEach(function(s){ s.addEventListener('change', apply); });
+  search.addEventListener('input', apply);
+  inKayitId.addEventListener('input', apply);
+  apply();
+})();
+
+/* ============ Detay modalı — Dalga 4 (§9) ============
+   gvConfirm'in overlay/aç-kapa mekanizmasını (.gv-modal-ov / ESC / backdrop click)
+   AYNEN devralır, içerik şablonu sayfa-lokal .log-detay-modal ile genişletilir (gvConfirm
+   yeniden yazılmadı — yalnız DOM'u okunuyor). Alanlar satırın kendi DOM'undan türetilir:
+   kullanıcı/tarih/açıklama/modül/kayıt/IP-cihaz/ilgili kayıt linki + "X → Y" örüntüsünden
+   eski/yeni değer — ayrı bir veri seti TUTULMAZ, satırla senkronsuzluk riski yoktur. */
+(function(){
+  var list = document.getElementById('logList');
+  if(!list) return;
+
+  /* her satıra "Detay" butonu ekle — HTML'e tek tek yazılmadı, DOM'a bağlanır */
+  Array.prototype.forEach.call(list.querySelectorAll('.log-row'), function(row){
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'ia-btn log-detay-btn';
+    btn.setAttribute('data-no-confirm', '');
+    btn.setAttribute('aria-label', 'Detay');
+    btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+    row.appendChild(btn);
+    btn.addEventListener('click', function(e){ e.stopPropagation(); openDetay(row); });
+  });
+
+  function esc(t){ var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
+
+  function openDetay(row){
+    if(document.querySelector('.gv-modal-ov')) return;
+    var kullanici = (row.querySelector('.log-line b') || {}).textContent || '—';
+    var lineHtml = (row.querySelector('.log-line') || {}).innerHTML || '';
+    var metaSpans = row.querySelectorAll('.log-meta span');
+    var kayitNo = metaSpans[1] ? metaSpans[1].textContent : '—';
+    var ipCihaz = metaSpans[metaSpans.length - 1] ? metaSpans[metaSpans.length - 1].textContent : '—';
+    var dayHead = row.previousElementSibling;
+    while(dayHead && !dayHead.classList.contains('log-day')) dayHead = dayHead.previousElementSibling;
+    var gun = dayHead ? dayHead.childNodes[0].textContent.trim() : '';
+    var saat = (row.querySelector('.log-time') || {}).textContent || '';
+    var ilgiliA = row.querySelector('.log-line a');
+    var modul = (row.querySelector('.lm-mod') || {}).textContent || row.getAttribute('data-mod');
+
+    /* "X → Y" örüntüsü — kalın tek segment (ör. <b>₺25.000 → ₺40.000</b>) içinde geçer;
+       yalnız kayıt güncelleme satırlarında var, yoksa "—" gösterilir */
+    var degisimMatch = lineHtml.match(/<b>\s*([^<→]+?)\s*→\s*([^<]+?)\s*<\/b>/);
+    var eski = degisimMatch ? degisimMatch[1].trim() : null;
+    var yeni = degisimMatch ? degisimMatch[2].trim() : null;
+
+    var ov = document.createElement('div'); ov.className = 'gv-modal-ov';
+    var m = document.createElement('div'); m.className = 'gv-modal log-detay-modal';
+    m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
+    m.innerHTML = '<div class="gv-modal-ico"><i class="fa-solid fa-clock-rotate-left"></i></div>'
+      + '<h3>' + kayitNo + '</h3>'
+      + '<div class="ldm-line">' + lineHtml + '</div>'
+      + '<dl class="ldm-grid">'
+      +   '<div><dt>Kullanıcı</dt><dd>' + esc(kullanici) + '</dd></div>'
+      +   '<div><dt>Modül</dt><dd>' + esc(modul) + '</dd></div>'
+      +   '<div><dt>Tarih / Saat</dt><dd>' + esc(gun) + ' · ' + esc(saat) + '</dd></div>'
+      +   '<div><dt>IP / Cihaz</dt><dd>' + esc(ipCihaz) + '</dd></div>'
+      +   '<div><dt>Eski Değer</dt><dd>' + (eski ? '<span class="ldm-eski">' + esc(eski) + '</span>' : '<span class="muted">—</span>') + '</dd></div>'
+      +   '<div><dt>Yeni Değer</dt><dd>' + (yeni ? '<span class="ldm-yeni">' + esc(yeni) + '</span>' : '<span class="muted">—</span>') + '</dd></div>'
+      + '</dl>'
+      + (ilgiliA ? '<a class="btn btn-ghost btn-sm" href="' + ilgiliA.getAttribute('href') + '"><i class="fa-solid fa-arrow-up-right-from-square"></i> İlgili Kayda Git</a>' : '')
+      + '<div class="gv-modal-acts" style="margin-top:18px"><button type="button" class="btn btn-ghost btn-sm gv-m-cancel">Kapat</button></div>';
+    ov.appendChild(m); document.body.appendChild(ov);
+    requestAnimationFrame(function(){ ov.classList.add('open'); });
+    function close(){ ov.classList.remove('open'); setTimeout(function(){ ov.remove(); }, 220); document.removeEventListener('keydown', onKey); }
+    function onKey(e){ if(e.key === 'Escape') close(); }
+    document.addEventListener('keydown', onKey);
+    ov.addEventListener('click', function(e){ if(e.target === ov) close(); });
+    m.querySelector('.gv-m-cancel').addEventListener('click', close);
+  }
+})();
+
+/* ============ D18-B1: ?log= satır hedefleme ============
+   Emsal: portal-odemeler.html #tks-next hash-hedef deseni (satır ~264-330), hash yerine
+   query param'a uyarlandı. #logList için sayfanın kendi script'inde açık bir gvPager(...)
+   çağrısı YOK — kurulum ui.js'in wireTables'ı DOMContentLoaded'da otomatik yapıyor. Bu
+   yüzden hedefleme mantığı da KENDİ DOMContentLoaded listener'ında çalışır: script tag
+   sırası (shell.js → ui.js → bu inline script) DOMContentLoaded listener kayıt sırasını
+   belirler, dolayısıyla ui.js'in wireTables'ı HER ZAMAN bizden önce çalışır — gvPager
+   kurulumu bittiğinde biz devreye gireriz. ?log= sabit kaldığı için hashchange dinlemeye
+   gerek yok, sayfa yüklemesinde bir kere çalışması yeterli. */
+(function(){
+  var logNo = new URLSearchParams(location.search).get('log');
+  if(!logNo) return;
+
+  function hedefSatir(){
+    var hedefMeta = 'LOG-2026-' + logNo;
+    var metas = document.querySelectorAll('#logList .log-meta');
+    for(var i = 0; i < metas.length; i++){
+      var spans = metas[i].querySelectorAll('span');
+      for(var j = 0; j < spans.length; j++){
+        if(spans[j].textContent.trim() === hedefMeta) return metas[i].closest('.log-row');
+      }
+    }
+    return null;
+  }
+
+  /* hedef satır o an aktif pager sayfasında değilse (.gv-pg-hide taşıyorsa), gv-pager
+     nav'ındaki doğru sayfa butonuna programatik tıklama ile atla — portal-odemeler'deki
+     hedefSayfayaAtla() deseninin birebir uyarlaması. Sayfa atlaması flaş/scroll'dan ÖNCE
+     çalışmalı; aksi halde satır hâlâ gv-pg-hide iken kaydırma atlanır. */
+  function hedefSayfayaAtla(row){
+    if(!row.classList.contains('gv-pg-hide')) return;
+    var list = document.getElementById('logList');
+    var pgNav = document.querySelector('.gv-pager');
+    if(!list || !pgNav) return;
+    var size = parseInt(list.getAttribute('data-paginate'), 10) || 25;
+    var visRows = Array.prototype.filter.call(list.querySelectorAll('.log-row'), function(r){ return !r.hidden; });
+    var idx = visRows.indexOf(row);
+    if(idx === -1) return;
+    var hedefSayfa = Math.floor(idx / size) + 1;
+    var btn = pgNav.querySelector('[data-pg="' + hedefSayfa + '"]');
+    if(btn) btn.click();
+  }
+
+  function hedefeGit(){
+    var row = hedefSatir();
+    if(!row) return;
+    hedefSayfayaAtla(row);
+    row.classList.add('is-target');
+    void row.offsetWidth;
+    row.classList.add('is-flash');
+    row.scrollIntoView({ block: 'center' });
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hedefeGit);
+  else hedefeGit();
+})();
+</script>
+</body>
+</html>
