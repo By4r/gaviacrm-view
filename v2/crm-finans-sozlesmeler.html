@@ -44,6 +44,10 @@
      yalnız bu breakpoint'te daraltılır, ui.js/.css .kpi-num varsayılanı bozulmaz */
   .kpi-num.compact{font-size:17px}
 }
+
+/* ============ §17 — Gelişmiş Filtre paneli sade checkbox alanı ============ */
+.gv-fp-check{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);cursor:pointer;font-weight:600}
+.gv-fp-check input{width:15px;height:15px;accent-color:var(--acc-ink);cursor:pointer}
 </style>
 </head>
 <body data-sec="finans" data-screen="sozlesmeler">
@@ -114,6 +118,14 @@
           <button class="chip" data-filter="taseron">Taşeron <span class="ch-cnt">3</span></button>
           <button class="chip" data-filter="yaklasan"><i class="fa-solid fa-triangle-exclamation"></i> Süresi Yaklaşan <span class="ch-cnt">1</span></button>
         </div>
+        <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpSzl" style="margin-left:auto"><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</button>
+      </div>
+      <div class="gv-achips-row" id="achipsSzl" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor."><i class="fa-solid fa-lock"></i> Filtreleri Kaydet</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all><i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle</button>
+        </div>
       </div>
       <div class="gc-body flush">
         <table class="gtable" id="tblSozlesme">
@@ -128,7 +140,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr data-f="kurum" data-sozlesme="k01">
+            <tr data-f="kurum" data-sozlesme="k01" data-arsiv="aktif" data-tarih="2025-01-01">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">KG</div>
@@ -142,9 +154,9 @@
               <td class="num t-strong">₺24.500.000</td>
               <td><div class="sure-cell"><span class="sr-range">1 Oca 2025 – 31 Ara 2026</span></div></td>
               <td><span class="gstat ok">Yürürlükte</span></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-finans-sozlesme-detay.html?szl=k01" data-no-confirm aria-label="Sözleşme detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-finans-sozlesme-detay.html?szl=k01" data-no-confirm aria-label="Sözleşme detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-finans-sozlesme-form.html?mod=duzenle&amp;szl=k01" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-szl-toggle="k01" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-szl-arch="k01" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
-            <tr data-f="kurum" data-sozlesme="k02" data-yaklasan="1">
+            <tr data-f="kurum" data-sozlesme="k02" data-yaklasan="1" data-arsiv="aktif" data-tarih="2025-03-01">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">AL</div>
@@ -158,9 +170,9 @@
               <td class="num t-strong">₺9.800.000</td>
               <td><div class="sure-cell"><span class="sr-range">1 Mar 2025 – 31 Ağu 2026</span><span class="sr-warn"><i class="fa-solid fa-triangle-exclamation"></i> Süresi yaklaşıyor</span></div></td>
               <td><span class="gstat ok">Yürürlükte</span></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-finans-sozlesme-detay.html?szl=k02" data-no-confirm aria-label="Sözleşme detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-finans-sozlesme-detay.html?szl=k02" data-no-confirm aria-label="Sözleşme detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-finans-sozlesme-form.html?mod=duzenle&amp;szl=k02" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-szl-toggle="k02" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-szl-arch="k02" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
-            <tr data-f="kurum" data-sozlesme="k03">
+            <tr data-f="kurum" data-sozlesme="k03" data-arsiv="aktif" data-tarih="2026-09-01">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">SB</div>
@@ -174,9 +186,9 @@
               <td class="num t-strong">₺6.200.000</td>
               <td><div class="sure-cell"><span class="sr-range">1 Eyl 2026 – 31 Ağu 2027</span></div></td>
               <td><span class="gstat wait">İmza Bekliyor</span></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-finans-sozlesme-detay.html?szl=k03" data-no-confirm aria-label="Sözleşme detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-finans-sozlesme-detay.html?szl=k03" data-no-confirm aria-label="Sözleşme detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-finans-sozlesme-form.html?mod=duzenle&amp;szl=k03" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-szl-toggle="k03" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-szl-arch="k03" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
-            <tr data-f="taseron" data-sozlesme="t05">
+            <tr data-f="taseron" data-sozlesme="t05" data-arsiv="aktif" data-tarih="2026-04-01">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">DB</div>
@@ -190,9 +202,9 @@
               <td class="num t-strong">₺450.000</td>
               <td><div class="sure-cell"><span class="sr-range">1 Nis 2026 – 30 Eyl 2026</span></div></td>
               <td><span class="gstat ok">Yürürlükte</span></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-finans-sozlesme-detay.html?szl=t05" data-no-confirm aria-label="Sözleşme detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-finans-sozlesme-detay.html?szl=t05" data-no-confirm aria-label="Sözleşme detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-finans-sozlesme-form.html?mod=duzenle&amp;szl=t05" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-szl-toggle="t05" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-szl-arch="t05" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
-            <tr data-f="taseron" data-sozlesme="t06">
+            <tr data-f="taseron" data-sozlesme="t06" data-arsiv="aktif" data-tarih="2026-05-15">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">YK</div>
@@ -206,9 +218,9 @@
               <td class="num t-strong">₺310.000</td>
               <td><div class="sure-cell"><span class="sr-range">15 May 2026 – 15 Kas 2026</span></div></td>
               <td><span class="gstat ok">Yürürlükte</span></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-finans-sozlesme-detay.html?szl=t06" data-no-confirm aria-label="Sözleşme detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-finans-sozlesme-detay.html?szl=t06" data-no-confirm aria-label="Sözleşme detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-finans-sozlesme-form.html?mod=duzenle&amp;szl=t06" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-szl-toggle="t06" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-szl-arch="t06" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
-            <tr data-f="taseron" data-sozlesme="t07">
+            <tr data-f="taseron" data-sozlesme="t07" data-arsiv="aktif" data-tarih="2026-06-01">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">EM</div>
@@ -222,7 +234,7 @@
               <td class="num t-strong">₺185.000</td>
               <td><div class="sure-cell"><span class="sr-range">1 Haz 2026 – 31 Ağu 2026</span></div></td>
               <td><span class="gstat ok">Yürürlükte</span></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-finans-sozlesme-detay.html?szl=t07" data-no-confirm aria-label="Sözleşme detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-finans-sozlesme-detay.html?szl=t07" data-no-confirm aria-label="Sözleşme detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-finans-sozlesme-form.html?mod=duzenle&amp;szl=t07" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-szl-toggle="t07" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-szl-arch="t07" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
           </tbody>
         </table>
@@ -239,6 +251,40 @@
       </div>
     </div>
   </main>
+
+  <!-- ============ §17 — Gelişmiş Filtre paneli (spec-filtre-tarih.md) ============ -->
+  <div class="gv-fpanel-ov" id="fpSzlOv">
+    <aside class="gv-fpanel" id="fpSzl" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+      <div class="gv-fpanel-head">
+        <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+        <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="gv-fpanel-body">
+        <div class="gfield">
+          <label>Kayıt Durumu</label>
+          <select data-fp-key="kdurum" data-fp-label="Kayıt Durumu">
+            <option value="">Tümü</option>
+            <option value="aktif">Aktif</option>
+            <option value="pasif">Pasif</option>
+            <option value="arsivlendi">Arşivlendi</option>
+            <option value="iptal">İptal edildi</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>Başlangıç Tarihi Aralığı</label>
+          <div data-gvdaterange data-fp-key="tarih" data-fp-label="Tarih"></div>
+        </div>
+        <div class="gfield">
+          <label class="gv-fp-check"><input type="checkbox" data-fp-key="arsiv"> Arşivlenenleri Göster</label>
+          <span class="gf-hint">İşaretlenmezse arşivlenmiş ve iptal edilmiş sözleşmeler listede gizli kalır.</span>
+        </div>
+      </div>
+      <div class="gv-fpanel-foot">
+        <button type="button" class="btn btn-ghost" data-fp-clear>Temizle</button>
+        <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+      </div>
+    </aside>
+  </div>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -258,6 +304,40 @@
      data-yaklasan="1" yalnız k02 satırında (kordon: sözleşmeler KPI'sindeki "Süresi 90
      gün içinde dolan: 1" rakamıyla BİREBİR — ikinci bir kayıt eklenmez). */
   var tblSozlesme = document.getElementById('tblSozlesme');
+
+  /* ============ §17 — arşiv/durum ekseni, sözleşmenin kendi Yürürlükte/İmza Bekliyor
+     durumundan AYRI. crm-finans-sozlesme-detay.html ile localStorage'da SENKRON. ============ */
+  var SZL_ARSIV_KEY = 'gv_sozlesme_durum';
+  function szlArsivMap(){ try{ return JSON.parse(localStorage.getItem(SZL_ARSIV_KEY)) || {}; }catch(e){ return {}; } }
+  function szlArsivSet(k, durum){ var m = szlArsivMap(); m[k] = durum; try{ localStorage.setItem(SZL_ARSIV_KEY, JSON.stringify(m)); }catch(e){} }
+  (function syncArsivFromStorage(){
+    var m = szlArsivMap();
+    if(!tblSozlesme) return;
+    tblSozlesme.querySelectorAll('tbody tr[data-sozlesme]').forEach(function(tr){
+      var sid = tr.getAttribute('data-sozlesme');
+      if(m[sid]) tr.setAttribute('data-arsiv', m[sid]);
+    });
+  })();
+  var SZL_ROZET = {pasif:{cls:'off', lbl:'Pasif'}, arsivlendi:{cls:'off', lbl:'Arşivlendi'}, iptal:{cls:'danger', lbl:'İptal edildi'}};
+  function renderSzlBadges(){
+    if(!tblSozlesme) return;
+    tblSozlesme.querySelectorAll('tbody tr[data-arsiv]').forEach(function(tr){
+      var durum = tr.getAttribute('data-arsiv');
+      var cell = tr.children[4];
+      if(!cell) return;
+      var old = cell.querySelector('.arsiv-rozet'); if(old) old.remove();
+      if(durum === 'aktif' || !SZL_ROZET[durum]) return;
+      var r = SZL_ROZET[durum];
+      var span = document.createElement('span');
+      span.className = 'gstat ' + r.cls + ' arsiv-rozet';
+      span.style.marginLeft = '6px';
+      span.textContent = r.lbl;
+      cell.appendChild(span);
+    });
+  }
+  renderSzlBadges();
+
+  var szlFpState = {};
   if(tblSozlesme){
     tblSozlesme._gvApply = function(){
       var card = tblSozlesme.closest('.gv-card');
@@ -265,11 +345,23 @@
       var term = inp ? inp.value.trim().toLocaleLowerCase('tr') : '';
       var on = card.querySelector('.chip.is-on[data-filter]');
       var f = on ? on.getAttribute('data-filter') : 'hepsi';
+      var kd = szlFpState.kdurum ? szlFpState.kdurum.value : '';
+      var showArsiv = !!szlFpState.arsiv;
+      var dr = szlFpState.tarih ? szlFpState.tarih.raw : null;
       var shown = 0;
       tblSozlesme.querySelectorAll('tbody tr').forEach(function(tr){
         var okF = f === 'hepsi' ? true : f === 'yaklasan' ? tr.hasAttribute('data-yaklasan') : tr.getAttribute('data-f') === f;
         var okT = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
-        var show = okF && okT;
+        var arsivDurum = tr.getAttribute('data-arsiv') || 'aktif';
+        var isArsivli = (arsivDurum === 'arsivlendi' || arsivDurum === 'iptal');
+        var okArsivVisible = kd ? true : (isArsivli ? showArsiv : true);
+        var okKd = !kd || arsivDurum === kd;
+        var okDr = true;
+        if(dr && dr.from){
+          var iso = tr.getAttribute('data-tarih');
+          if(iso){ var d = new Date(iso + 'T00:00:00'); okDr = (d >= dr.from && d <= dr.to); }
+        }
+        var show = okF && okT && okArsivVisible && okKd && okDr;
         tr.hidden = !show;
         if(show) shown++;
       });
@@ -278,7 +370,56 @@
       var cnt = card.querySelector('[data-table-count]') || document.querySelector('[data-table-count]');
       if(cnt) cnt.textContent = shown;
     };
+    window.gvFilterPanel.init('#fpSzl', {
+      activeRow: '#achipsSzl',
+      onApply: function(state){ szlFpState = state; gvApplyFilters(tblSozlesme, true); },
+      onClear: function(){ szlFpState = {}; }
+    });
   }
+
+  /* ============ §17 — satır aksiyonları: Pasife Al/Aktif Et · Arşivle ============
+     Kritik sözleşme kaydı KALICI SİLİNMEZ. Onay ekranı gvConfirm() ile. ============ */
+  if(tblSozlesme) tblSozlesme.addEventListener('click', function(e){
+    var toggleBtn = e.target.closest('[data-szl-toggle]');
+    var archBtn = e.target.closest('[data-szl-arch]');
+    if(!toggleBtn && !archBtn) return;
+    var btn = toggleBtn || archBtn;
+    var sid = btn.getAttribute('data-szl-toggle') || btn.getAttribute('data-szl-arch');
+    var tr = btn.closest('tr');
+    var kodEl = tr.querySelector('.gcell-name');
+    var kod = kodEl ? kodEl.textContent.trim().split(' · ')[0] : sid.toUpperCase();
+    var cur = tr.getAttribute('data-arsiv') || 'aktif';
+
+    function commit(next, msg){
+      tr.setAttribute('data-arsiv', next);
+      szlArsivSet(sid, next);
+      renderSzlBadges();
+      gvApplyFilters(tblSozlesme, true);
+      gvToast(msg, {type: next === 'aktif' ? 'ok' : 'danger'});
+    }
+
+    if(toggleBtn){
+      var next = cur === 'pasif' ? 'aktif' : 'pasif';
+      gvConfirm({
+        icon: next === 'pasif' ? 'fa-power-off' : 'fa-rotate-left',
+        title: kod + (next === 'pasif' ? ' pasife alınsın mı?' : ' yeniden aktif edilsin mi?'),
+        message: next === 'pasif'
+          ? 'Sözleşme Pasif duruma alınacak; bedel ve bağlı hakediş kayıtlarını ETKİLEMEZ.'
+          : kod + ' yeniden Aktif duruma alınacak.',
+        ok: next === 'pasif' ? 'Pasife Al' : 'Aktif Et', cancel:'Vazgeç',
+        onConfirm:function(){ commit(next, kod + (next === 'pasif' ? ' pasife alındı.' : ' yeniden aktif.')); }
+      });
+      return;
+    }
+    if(archBtn){
+      gvConfirm({
+        danger:true, icon:'fa-box-archive', title: kod + ' arşivlensin mi?',
+        message:'Bu sözleşme resmi bir belgedir; kalıcı SİLİNMEZ. Arşivlendiğinde listede görünmez, "Arşivlenenleri Göster" filtresiyle geri getirilebilir.',
+        ok:'Onayla ve Arşivle', cancel:'Vazgeç',
+        onConfirm:function(){ commit('arsivlendi', kod + ' arşivlendi — listede artık görünmeyecek.'); }
+      });
+    }
+  });
 })();
 </script>
 </body>

@@ -85,8 +85,16 @@
     <div class="gv-page-head">
       <div>
         <div class="ph-eyebrow">Finans</div>
-        <h1>Yeni Sözleşme</h1>
-        <div class="ph-sub">Kurum veya taşeron sözleşmesi kaydı açın; hakedişler oluşturulduktan sonra bu sözleşmeye bağlanır.</div>
+        <h1 id="pageTitle">Yeni Sözleşme</h1>
+        <div class="ph-sub" id="pageSub">Kurum veya taşeron sözleşmesi kaydı açın; hakedişler oluşturulduktan sonra bu sözleşmeye bağlanır.</div>
+      </div>
+    </div>
+
+    <!-- ============ §17 — Düzenle/Kopyala banner (?mod=duzenle|kopya&szl=) ============ -->
+    <div class="gv-card" id="modBanner" hidden style="margin-bottom:18px;border-color:rgba(var(--acc-rgb),.35);background:rgba(var(--acc-rgb),.05)">
+      <div class="gc-body" style="display:flex;align-items:center;gap:12px;padding:16px 20px">
+        <i class="fa-solid fa-circle-info" style="color:var(--acc-ink);font-size:16px"></i>
+        <span id="modBannerTxt" style="font-size:12.5px;color:var(--ink-2);line-height:1.6"></span>
       </div>
     </div>
 
@@ -174,7 +182,7 @@
 
         <div class="form-foot" style="display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:18px 22px;border-top:1px solid var(--line)">
           <a class="btn btn-ghost btn-sm" href="crm-finans-sozlesmeler.html" data-no-confirm>Vazgeç</a>
-          <button type="button" class="btn btn-acc btn-sm" id="btnSend" data-no-confirm><i class="fa-solid fa-floppy-disk"></i> Sözleşmeyi Kaydet</button>
+          <button type="button" class="btn btn-acc btn-sm" id="btnSend" data-no-confirm><i class="fa-solid fa-floppy-disk"></i> <span id="btnSendLbl">Sözleşmeyi Kaydet</span></button>
         </div>
       </div>
 
@@ -256,12 +264,40 @@
   zone.addEventListener('click', attachMock);
   zone.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); attachMock(); } });
 
+  /* ============ §17 — Düzenle / Kopyala modları (?mod=duzenle|kopya&szl=) ============
+     Sözleşme detayındaki "Düzenle"/"Kopyala" aksiyonları buraya yönlendirir. Kaynak
+     kaydın tam alan seti burada yeniden İCAT EDİLMEZ (kaynak sayfada zaten var) —
+     banner + buton etiketi/davranışı DEĞİŞİR, temsili-derinlik kuralına uyulur. */
+  var SZL_ADLAR = {
+    k01:'SZL-2026-K01 — Körfez GYO', k02:'SZL-2026-K02 — Aliağa Liman İşletmeleri', k03:'SZL-2026-K03 — Sapanca Belediyesi',
+    t05:'SZL-2025-T05 — Demir-Beton İnş. Ltd.', t06:'SZL-2025-T06 — Yalıtım Kardeşler', t07:'SZL-2025-T07 — ElektroMek Taahhüt'
+  };
+  var modQ = new URLSearchParams(location.search);
+  var mod = modQ.get('mod'), szl = modQ.get('szl');
+  var modBanner = document.getElementById('modBanner');
+  var modBannerTxt = document.getElementById('modBannerTxt');
+  var btnSendLbl = document.getElementById('btnSendLbl');
+  if(mod === 'duzenle' || mod === 'kopya'){
+    modBanner.hidden = false;
+    var adi = szl && SZL_ADLAR[szl] ? SZL_ADLAR[szl] : (szl ? szl.toUpperCase() : 'Seçilen sözleşme');
+    if(mod === 'duzenle'){
+      document.getElementById('pageTitle').textContent = adi.split(' — ')[0] + ' Düzenle';
+      document.getElementById('pageSub').textContent = 'Bu sözleşmeyi düzenliyorsunuz. Kaydettiğinizde önceki hâli işlem kayıtlarında saklanır.';
+      modBannerTxt.innerHTML = '<b>Düzenleme modu</b> — ' + adi + ' üzerinde çalışıyorsunuz.';
+      btnSendLbl.textContent = 'Değişiklikleri Kaydet';
+    } else {
+      document.getElementById('pageTitle').textContent = 'Yeni Sözleşme (Kopya)';
+      document.getElementById('pageSub').textContent = 'Seçtiğiniz sözleşmeden kopyalanan bilgilerle yeni ve bağımsız bir kayıt oluşturuluyor.';
+      modBannerTxt.innerHTML = '<b>Kopyalama modu</b> — kaynak: ' + adi + '. Bu tamamen yeni ve bağımsız bir sözleşme olarak oluşturulacak, yeni bir numara alacaktır.';
+    }
+  }
+
   document.getElementById('btnSend').addEventListener('click', function(){
     var ad = document.getElementById('fAd').value.trim();
     if(!ad){ gvToast('Sözleşme adı girin.', {type:'danger'}); return; }
     var tutar = document.getElementById('fTutar').value.trim();
     if(!tutar){ gvToast('Sözleşme tutarını girin.', {type:'danger'}); return; }
-    gvToast(ad + ' sözleşmesi oluşturuldu.');
+    gvToast(mod === 'duzenle' ? (ad + ' sözleşmesinde değişiklikler kaydedildi.') : (ad + ' sözleşmesi oluşturuldu.'));
     setTimeout(function(){ location.href = 'crm-finans-sozlesmeler.html'; }, 900);
   });
 })();
