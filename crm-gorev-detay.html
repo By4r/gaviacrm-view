@@ -89,6 +89,18 @@
 .cmt-compose .cmt-ava{background:var(--bg);color:var(--muted)}
 .cmt-compose-field{flex:1;display:flex;gap:10px}
 .cmt-compose-field input{flex:1}
+.cmt-compose-field .ia-btn{cursor:pointer}
+
+/* yorum eki — GÖRSEL KURAL: <img> DEĞİL, div + background-image (cover/center);
+   crm-santiye-bildirimler.html'deki .photo-vadi/liman/merkez gradyanlarıyla AYNI dil
+   (sayfa-lokal tekrar, ortak CSS'e taşınmadı — o dosyalar kilitli) */
+.cmt-attach{display:flex;align-items:center;gap:9px;margin-top:9px;padding-top:9px;border-top:1px solid var(--line-2)}
+.cmt-attach-photo{width:44px;height:44px;flex:none;border-radius:8px;background-size:cover;background-position:center;display:grid;place-items:center;color:rgba(255,255,255,.9);font-size:14px}
+.photo-vadi{background-image:linear-gradient(135deg, color-mix(in srgb, var(--acc) 55%, var(--gv-deep)) 0%, color-mix(in srgb, var(--acc) 18%, var(--gv-deep)) 100%)}
+.cmt-attach-name{font-size:11.5px;color:var(--muted);font-weight:600}
+.cmt-file-pending{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-2);font-weight:600;margin-top:10px;padding:8px 12px;background:var(--bg);border-radius:var(--r-sm)}
+.cmt-file-remove{margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;padding:2px 4px}
+.cmt-file-remove:hover{color:var(--danger)}
 
 .gd-danger-card{border-color:var(--danger-tint)}
 .gd-danger-card .gd-block{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
@@ -186,13 +198,31 @@
             </div>
           </div>
           <div class="gd-block">
-            <div class="gd-label">Yorumlar</div>
-            <div id="gdComments"><div class="cmt-row"><div class="cmt-ava">MD</div><div class="cmt-body"><div class="cmt-head"><b>Murat Denizli</b><span>28 Haziran, 09:12</span></div><div class="cmt-text">Perde betonu döküldükten sonra kür sürecini takip edip fotoğraflı rapor bekliyorum.</div></div></div><div class="cmt-row"><div class="cmt-ava">HD</div><div class="cmt-body"><div class="cmt-head"><b>Hasan Demirci</b><span>30 Haziran, 14:20</span></div><div class="cmt-text">Kalıp söküm bugün yapıldı, kür örtüsü seriliyor. Yarın ilk fotoğrafları paylaşacağım.</div></div></div><div class="cmt-row"><div class="cmt-ava">MD</div><div class="cmt-body"><div class="cmt-head"><b>Murat Denizli</b><span>2 Temmuz, 08:05</span></div><div class="cmt-text">Termin dün geçti, rapor henüz gelmedi. Lütfen bugün öğleden önce paylaşın.</div></div></div></div>
+            <div class="gd-label">Yorumlar <span class="gf-hint" style="text-transform:none;letter-spacing:0;font-weight:600">— ekip içi tartışma; durum değişiklikleri ayrıca Durum Geçmişi'nde kayıtlıdır</span></div>
+            <div id="gdComments"><div class="cmt-row"><div class="cmt-ava">MD</div><div class="cmt-body"><div class="cmt-head"><b>Murat Denizli</b><span>28 Haziran, 09:12</span></div><div class="cmt-text">Perde betonu döküldükten sonra kür sürecini takip edip fotoğraflı rapor bekliyorum.</div></div></div><div class="cmt-row"><div class="cmt-ava">HD</div><div class="cmt-body"><div class="cmt-head"><b>Hasan Demirci</b><span>30 Haziran, 14:20</span></div><div class="cmt-text">Kalıp söküm bugün yapıldı, kür örtüsü seriliyor. Yarın ilk fotoğrafları paylaşacağım.</div><div class="cmt-attach"><div class="cmt-attach-photo photo-vadi"><i class="fa-solid fa-image"></i></div><span class="cmt-attach-name"><i class="fa-solid fa-paperclip"></i> kur-ortusu-30haziran.jpg · 1,8 MB</span></div></div></div><div class="cmt-row"><div class="cmt-ava">MD</div><div class="cmt-body"><div class="cmt-head"><b>Murat Denizli</b><span>2 Temmuz, 08:05</span></div><div class="cmt-text">Termin dün geçti, rapor henüz gelmedi. Lütfen bugün öğleden önce paylaşın.</div></div></div></div>
             <div class="cmt-compose">
               <div class="cmt-ava" id="cmtMeAva">·</div>
               <div class="cmt-compose-field">
                 <input type="text" placeholder="Yorum yazın…" id="cmtInput">
+                <label class="ia-btn" for="cmtFile" data-tip="Fotoğraf/belge ekle" aria-label="Ek ekle"><i class="fa-regular fa-paperclip"></i></label>
+                <input type="file" id="cmtFile" accept="image/*,.pdf" hidden>
                 <button class="btn btn-acc btn-sm" data-no-confirm id="cmtSend"><i class="fa-solid fa-paper-plane"></i> Gönder</button>
+              </div>
+            </div>
+            <div class="cmt-file-pending" id="cmtFilePending" hidden><i class="fa-solid fa-paperclip"></i> <span id="cmtFileName"></span> <button type="button" class="cmt-file-remove" id="cmtFileRemove" aria-label="Eki kaldır"><i class="fa-solid fa-xmark"></i></button></div>
+          </div>
+        </div>
+
+        <div class="gv-card" id="icNotBlock" data-view="ic-not" hidden style="background:var(--warn-tint);border-color:color-mix(in srgb, var(--warn) 35%, var(--line))">
+          <div class="gd-block">
+            <div class="gd-label" style="color:color-mix(in srgb, var(--warn) 70%, black)"><i class="fa-solid fa-lock"></i> İç Notlar <span class="gtag" style="background:var(--paper);margin-left:6px">Yalnız Yönetim Görür</span></div>
+            <p style="font-size:12px;color:var(--ink-2);margin-bottom:14px;line-height:1.6">Bu alan görev sahibine kapalıdır; yalnız yönetim/şantiye şefi rolleri görür ve not ekleyebilir. Yorumlarla karışmaz, dışa açık değildir.</p>
+            <div id="icNotList"><div class="cmt-row"><div class="cmt-ava" style="background:var(--paper)">MD</div><div class="cmt-body" style="background:var(--paper)"><div class="cmt-head"><b>Murat Denizli</b><span>2 Temmuz, 08:10</span></div><div class="cmt-text">Hasan üçüncü kez hatırlatmaya rağmen raporu göndermedi — gerekirse yarın telefonla arayıp takip edeceğim, bordro değerlendirmesine not düşülebilir.</div></div></div></div>
+            <div class="cmt-compose">
+              <div class="cmt-ava" id="icNotMeAva">·</div>
+              <div class="cmt-compose-field">
+                <input type="text" placeholder="İç not yazın — yalnız yönetim görür…" id="icNotInput">
+                <button class="btn btn-sm" data-no-confirm id="icNotSend" style="background:color-mix(in srgb, var(--warn) 85%, black);color:#fff"><i class="fa-solid fa-lock"></i> Not Ekle</button>
               </div>
             </div>
           </div>
@@ -392,7 +422,8 @@
       history:[{durum:'olusturdu', tarih:'28 Haziran 2026', kisi:'Murat Denizli'}, {durum:'devam', tarih:'30 Haziran 2026', kisi:'Hasan Demirci'}, {durum:'gecikti', tarih:'2 Temmuz 2026', kisi:'Sistem', not:'Termin geçti, rapor henüz gelmedi.'}],
       comments:[
         {who:'Murat Denizli', date:'28 Haziran, 09:12', text:'Perde betonu döküldükten sonra kür sürecini takip edip fotoğraflı rapor bekliyorum.'},
-        {who:'Hasan Demirci', date:'30 Haziran, 14:20', text:'Kalıp söküm bugün yapıldı, kür örtüsü seriliyor. Yarın ilk fotoğrafları paylaşacağım.'},
+        {who:'Hasan Demirci', date:'30 Haziran, 14:20', text:'Kalıp söküm bugün yapıldı, kür örtüsü seriliyor. Yarın ilk fotoğrafları paylaşacağım.',
+          attach:{name:'kur-ortusu-30haziran.jpg', size:'1,8 MB', ic:'fa-image'}},
         {who:'Murat Denizli', date:'2 Temmuz, 08:05', text:'Termin dün geçti, rapor henüz gelmedi. Lütfen bugün öğleden önce paylaşın.'}
       ]}),
     '009': rec({title:'Kalıp iskelesi söküm onayını al', santiye:'liman', pri:'high', st:ST.gecikti,
@@ -542,15 +573,19 @@
 
   var cmtWrap = document.getElementById('gdComments');
   cmtWrap.innerHTML = '';
-  (data.comments || []).forEach(function(c){
+  function renderComment(wrap, c){
     var p = PEOPLE[c.who] || {ini: c.who.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase()};
     var row = document.createElement('div');
     row.className = 'cmt-row';
+    var attachHtml = c.attach
+      ? '<div class="cmt-attach"><div class="cmt-attach-photo photo-' + (data.santiye||'vadi') + '"><i class="fa-solid ' + (c.attach.ic||'fa-image') + '"></i></div><span class="cmt-attach-name"><i class="fa-solid fa-paperclip"></i> ' + c.attach.name + ' · ' + c.attach.size + '</span></div>'
+      : '';
     row.innerHTML = '<div class="cmt-ava">' + p.ini + '</div>'
       + '<div class="cmt-body"><div class="cmt-head"><b>' + c.who + '</b><span>' + c.date + '</span></div>'
-      + '<div class="cmt-text">' + c.text + '</div></div>';
-    cmtWrap.appendChild(row);
-  });
+      + '<div class="cmt-text">' + c.text + '</div>' + attachHtml + '</div>';
+    wrap.appendChild(row);
+  }
+  (data.comments || []).forEach(function(c){ renderComment(cmtWrap, c); });
 
   var deleteBtn = document.getElementById('gdDeleteBtn');
   deleteBtn.addEventListener('click', function(){
@@ -653,14 +688,45 @@
       }
     });
   });
+  /* tamamlanma notu — serbest metin (§12 "görev tamamlanma notu"). ui.js'in gvChainAction'ı
+     bu kind'i tanımıyor (yalnız onayla/reddet/revize onay-zinciri kindleri var, DOKUNULMADI);
+     aynı paylaşılan .gv-modal-ov/.gv-modal.has-note/.gv-m-note CSS'i (ui.css, kilitli) sayfa-
+     lokal JS ile yeniden kullanılır — yeni CSS icat edilmedi. */
+  function promptCompletionNote(onDone){
+    if(document.querySelector('.gv-modal-ov')) return;
+    var ov = document.createElement('div'); ov.className = 'gv-modal-ov';
+    var m = document.createElement('div'); m.className = 'gv-modal has-note';
+    m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
+    m.innerHTML = '<div class="gv-modal-ico"><i class="fa-solid fa-circle-check"></i></div>'
+      + '<h3>Görev tamamlandı olarak işaretlensin mi?</h3>'
+      + '<p>İsterseniz ne yapıldığına dair kısa bir tamamlanma notu ekleyin — durum geçmişinde görünür.</p>'
+      + '<textarea class="gv-m-note" rows="3" placeholder="Tamamlanma notu (isteğe bağlı)"></textarea>'
+      + '<div class="gv-modal-acts">'
+      +   '<button type="button" class="btn btn-ghost btn-sm gv-m-cancel">Vazgeç</button>'
+      +   '<button type="button" class="btn btn-sm btn-acc gv-m-ok"><i class="fa-solid fa-circle-check"></i> Tamamlandı İşaretle</button>'
+      + '</div>';
+    ov.appendChild(m); document.body.appendChild(ov);
+    requestAnimationFrame(function(){ ov.classList.add('open'); });
+    var ta = m.querySelector('.gv-m-note'); ta.focus();
+    function close(){ ov.classList.remove('open'); setTimeout(function(){ ov.remove(); }, 220); }
+    m.querySelector('.gv-m-cancel').addEventListener('click', close);
+    ov.addEventListener('click', function(e){ if(e.target === ov) close(); });
+    m.querySelector('.gv-m-ok').addEventListener('click', function(){
+      var note = ta.value.trim();
+      close();
+      onDone(note);
+    });
+  }
   var actTamam = document.getElementById('actTamam');
   if(actTamam) actTamam.addEventListener('click', function(){
     if(onayGerekli){
       applyStatus('onaybekliyor', null, 'Atanan kişi tamamladı, onay bekleniyor.');
       gvToast('Görev tamamlandı — onay bekliyor.', {type:'info'});
     } else {
-      applyStatus('tamam', null, 'Görev tamamlandı olarak işaretlendi.');
-      gvToast('Durum “Tamamlandı” olarak güncellendi.');
+      promptCompletionNote(function(note){
+        applyStatus('tamam', null, note || 'Görev tamamlandı olarak işaretlendi.');
+        gvToast('Durum “Tamamlandı” olarak güncellendi.');
+      });
     }
   });
   var actIptal = document.getElementById('actIptal');
@@ -710,15 +776,77 @@
   document.querySelectorAll('[data-view="onayci"]').forEach(function(el){ el.hidden = !isOnayci; });
   document.querySelectorAll('[data-view="notonayci"]').forEach(function(el){ el.hidden = isOnayci; });
 
+  /* İç Notlar — Durumu Güncelle/Sil'den DAHA DAR bir set: şantiye şefi (sef) hariç,
+     çünkü bu görevde atanan kişi tam olarak şantiye şefi olabilir — kayıt sahibine kapalı
+     olma şartı sef'i de kapsar. §20 "iç notlar" kalemi. */
+  var IC_NOT_ROLES = ['superadmin','sahip','yonetim','teknik'];
+  var isIcNot = IC_NOT_ROLES.indexOf(GV.role) !== -1;
+  document.querySelectorAll('[data-view="ic-not"]').forEach(function(el){ el.hidden = !isIcNot; });
+
   var meAva = document.getElementById('cmtMeAva');
   if(meAva) meAva.textContent = GV.R.ini;
+
+  /* yorum eki — dosya SEÇİLİR (bu prototipte yüklenmez), gönderilene kadar bekleme
+     çipinde tutulur; GÖRSEL KURAL renderComment() içinde de aynı div+background-image
+     deseniyle uygulanır (img yok) */
+  var pendingAttach = null;
+  var cmtFile = document.getElementById('cmtFile');
+  var cmtFilePending = document.getElementById('cmtFilePending');
+  var cmtFileName = document.getElementById('cmtFileName');
+  if(cmtFile){
+    cmtFile.addEventListener('change', function(){
+      var f = cmtFile.files && cmtFile.files[0];
+      if(!f) return;
+      var isImg = /^image\//.test(f.type);
+      pendingAttach = {name:f.name, size:(f.size/1024/1024).toFixed(1).replace('.0','.1') + ' MB', ic: isImg ? 'fa-image' : 'fa-file-pdf'};
+      cmtFileName.textContent = f.name;
+      cmtFilePending.hidden = false;
+    });
+  }
+  var cmtFileRemove = document.getElementById('cmtFileRemove');
+  if(cmtFileRemove){
+    cmtFileRemove.addEventListener('click', function(){
+      pendingAttach = null;
+      if(cmtFile) cmtFile.value = '';
+      cmtFilePending.hidden = true;
+    });
+  }
 
   var send = document.getElementById('cmtSend'), inp = document.getElementById('cmtInput');
   if(send && inp){
     send.addEventListener('click', function(){
-      if(!inp.value.trim()){ return; }
-      gvToast('Yorumunuz eklendi.');
+      var text = inp.value.trim();
+      if(!text && !pendingAttach){ gvToast('Yorum boş olamaz.', {type:'danger'}); inp.focus(); return; }
+      var ben = (GV.R && GV.R.name) ? GV.R.name : 'Siz';
+      renderComment(cmtWrap, {who: ben, date:'şimdi', text: text || '(yalnız ek paylaşıldı)', attach: pendingAttach});
       inp.value = '';
+      pendingAttach = null;
+      if(cmtFile) cmtFile.value = '';
+      cmtFilePending.hidden = true;
+      gvToast('Yorumunuz eklendi.');
+    });
+  }
+
+  /* İç Notlar — kayıt bazlı, rol-kapalı (data-view="onayci" ile aynı budama). Halka açık
+     yorumla KARIŞTIRILMAZ: ayrı gv-card, ayrı liste, ayrı gönderim; §20 "iç notlar" kalemi. */
+  var icAva = document.getElementById('icNotMeAva');
+  if(icAva) icAva.textContent = GV.R.ini;
+  var icList = document.getElementById('icNotList');
+  var icSend = document.getElementById('icNotSend'), icInp = document.getElementById('icNotInput');
+  if(icSend && icInp && icList){
+    icSend.addEventListener('click', function(){
+      var text = icInp.value.trim();
+      if(!text){ gvToast('İç not boş olamaz.', {type:'danger'}); icInp.focus(); return; }
+      var ben = (GV.R && GV.R.name) ? GV.R.name : 'Siz';
+      var p = PEOPLE[ben] || {ini: GV.R.ini};
+      var row = document.createElement('div');
+      row.className = 'cmt-row';
+      row.innerHTML = '<div class="cmt-ava" style="background:var(--paper)">' + p.ini + '</div>'
+        + '<div class="cmt-body" style="background:var(--paper)"><div class="cmt-head"><b>' + ben + '</b><span>şimdi</span></div>'
+        + '<div class="cmt-text">' + text + '</div></div>';
+      icList.appendChild(row);
+      icInp.value = '';
+      gvToast('İç not eklendi — yalnız yönetim rolleri görür.', {type:'info'});
     });
   }
 })();
