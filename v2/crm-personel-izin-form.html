@@ -275,6 +275,50 @@
   }
   uygula();
 
+  /* ============ §17 — Düzenle/Kopyala destek: ?mod=duzenle|kopya & ?izn= ============
+     Kayıt kaynağı: crm-personel-izin.html / -detay.html IZIN{} map'lerinden BİREBİR
+     alınan minimal alt küme (personel/tür/tarih). Yeni veri UYDURULMAZ. */
+  var IZIN_FORM_DATA = {
+    '031':{ personelLbl:'Ali Vural — Saha Personeli', turKod:'yillik', basla:'2026-07-06', bitis:'2026-07-10' },
+    '030':{ personelLbl:'Aylin Koç — Şantiye Şefi', turKod:'yillik', basla:'2026-07-01', bitis:'2026-07-03' },
+    '029':{ personelLbl:'Ramazan Kılıç — Kalıpçı', turKod:'raporlu', basla:'2026-06-28', bitis:'2026-06-28' },
+    '028':{ personelLbl:'Nesrin Aydın — Muhasebe', turKod:'yillik', basla:'2026-06-15', bitis:'2026-06-18' },
+    '027':{ personelLbl:'Ömer Taşkın — Şantiye Şefi', turKod:'babalik', basla:'2026-06-20', bitis:'2026-06-24' }
+  };
+  var fq = new URLSearchParams(location.search);
+  var fMod = fq.get('mod'), fIzn = fq.get('izn');
+  var fRec = fIzn ? IZIN_FORM_DATA[fIzn] : null;
+  var fNo = fIzn ? 'İZN-2026-' + fIzn : null;
+
+  if(fMod && fRec){
+    var fPersonelSel = document.getElementById('fPersonel');
+    if(fPersonelSel){
+      var hasOpt = Array.prototype.some.call(fPersonelSel.options, function(o){ return o.textContent === fRec.personelLbl; });
+      if(!hasOpt){ var fOpt = document.createElement('option'); fOpt.textContent = fRec.personelLbl; fPersonelSel.appendChild(fOpt); }
+      fPersonelSel.value = fRec.personelLbl;
+    }
+    elTur.value = fRec.turKod;
+    uygula();
+    document.getElementById('fBasla').value = fRec.basla;
+    document.getElementById('fBitis').value = fRec.bitis;
+
+    var fCrumbSpan = document.querySelector('.gv-crumb span');
+    var fH1 = document.querySelector('.gv-page-head h1');
+    var fSub = document.querySelector('.gv-page-head .ph-sub');
+    var fBtn = document.getElementById('izinSubmit');
+    if(fMod === 'duzenle'){
+      document.title = fNo + ' Düzenle — Gavia CRM';
+      if(fCrumbSpan) fCrumbSpan.textContent = fNo + ' — Düzenle';
+      if(fH1) fH1.textContent = 'İzin Talebini Düzenle';
+      if(fSub) fSub.textContent = fNo + ' kaydı düzenleniyor; değişiklikler onay akışına yeniden düşebilir.';
+      if(fBtn) fBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Değişiklikleri Kaydet';
+    } else if(fMod === 'kopya'){
+      document.title = 'İzin Talebi Oluştur (Kopya) — Gavia CRM';
+      if(fCrumbSpan) fCrumbSpan.textContent = fNo + ' kopyasından yeni talep';
+      if(fSub) fSub.textContent = fNo + ' kaydından kopyalandı; tarihleri güncelleyip gönderebilirsiniz.';
+    }
+  }
+
   /* ---- Vekil / Devir → bilgilendirme e-postası kartı (R5, medeni→esWrap deseninin uyarlaması) ---- */
   var VEKIL_MAIL = {
     'Ömer Taşkın — Şantiye Şefi (Merkez Şantiye)': {ad:'Ömer Taşkın', mail:'omer.taskin@yapitas.com.tr'},
@@ -336,8 +380,13 @@
   var btn = document.getElementById('izinSubmit');
   if(btn){
     btn.addEventListener('click', function(){
-      gvToast('İzin talebiniz oluşturuldu ve onay akışına gönderildi.');
-      setTimeout(function(){ location.href = 'crm-personel-izin.html'; }, 900);
+      if(fMod === 'duzenle' && fRec){
+        gvToast(fNo + ' güncellendi.');
+        setTimeout(function(){ location.href = 'crm-personel-izin-detay.html?izn=' + fIzn; }, 900);
+      } else {
+        gvToast('İzin talebiniz oluşturuldu ve onay akışına gönderildi.');
+        setTimeout(function(){ location.href = 'crm-personel-izin.html'; }, 900);
+      }
     });
   }
 })();

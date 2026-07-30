@@ -33,6 +33,10 @@
 .izin-detail-note i{color:var(--acc-ink)}
 .gc-head-r{display:flex;align-items:center;gap:14px}
 a.gcell-sub:hover{color:var(--acc-ink)}
+
+/* ---- §17 arşiv görünürlüğü — kalıcı silme YERİNE varsayılan listede gizleme ---- */
+#tblIzin tbody tr[data-arsiv="1"]{display:none}
+#tblIzin.gv-show-arsiv tbody tr[data-arsiv="1"]{display:table-row}
 </style>
 </head>
 <body data-sec="personel" data-screen="izin">
@@ -103,7 +107,23 @@ a.gcell-sub:hover{color:var(--acc-ink)}
           <button class="chip" data-filter="reddedildi">Reddedildi <span class="ch-cnt">1</span></button>
           <button class="chip" data-filter="revize">Revize <span class="ch-cnt">1</span></button>
         </div>
+        <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpIzin">
+          <i class="fa-solid fa-sliders"></i> Gelişmiş Filtre
+        </button>
       </div>
+
+      <div class="gv-achips-row" id="achipsIzin" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor.">
+            <i class="fa-solid fa-lock"></i> Filtreleri Kaydet
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all>
+            <i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle
+          </button>
+        </div>
+      </div>
+
       <div class="gc-body flush">
         <table class="gtable" id="tblIzin">
           <thead>
@@ -117,7 +137,7 @@ a.gcell-sub:hover{color:var(--acc-ink)}
             </tr>
           </thead>
           <tbody>
-            <tr data-f="bekliyor" data-izin="izn-031" data-santiye="vadi-konaklari">
+            <tr data-f="bekliyor" data-izin="izn-031" data-santiye="vadi-konaklari" data-tur="yillik" data-tarih="2026-07-06">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">AV</div>
@@ -130,7 +150,7 @@ a.gcell-sub:hover{color:var(--acc-ink)}
               <td id="badge-izn-031"></td>
               <td><div class="row-acts"><button class="ia-btn" data-izin-select="izn-031" data-no-confirm aria-label="Onay akışını gör"><i class="fa-solid fa-stamp"></i></button></div></td>
             </tr>
-            <tr data-f="onaylandi" data-izin="izn-030" data-santiye="liman-lojistik">
+            <tr data-f="onaylandi" data-izin="izn-030" data-santiye="liman-lojistik" data-tur="yillik" data-tarih="2026-07-01">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">AK</div>
@@ -143,7 +163,7 @@ a.gcell-sub:hover{color:var(--acc-ink)}
               <td id="badge-izn-030"></td>
               <td><div class="row-acts"><button class="ia-btn" data-izin-select="izn-030" data-no-confirm aria-label="Onay akışını gör"><i class="fa-solid fa-stamp"></i></button></div></td>
             </tr>
-            <tr data-f="onaylandi" data-izin="izn-029" data-santiye="vadi-konaklari">
+            <tr data-f="onaylandi" data-izin="izn-029" data-santiye="vadi-konaklari" data-tur="raporlu" data-tarih="2026-06-28">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">RK</div>
@@ -156,7 +176,7 @@ a.gcell-sub:hover{color:var(--acc-ink)}
               <td id="badge-izn-029"></td>
               <td><div class="row-acts"><button class="ia-btn" data-izin-select="izn-029" data-no-confirm aria-label="Onay akışını gör"><i class="fa-solid fa-stamp"></i></button></div></td>
             </tr>
-            <tr data-f="reddedildi" data-izin="izn-028" data-santiye="merkez">
+            <tr data-f="reddedildi" data-izin="izn-028" data-santiye="merkez-ofis" data-tur="yillik" data-tarih="2026-06-15">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--warn-tint);color:var(--warn)">NA</div>
@@ -169,7 +189,7 @@ a.gcell-sub:hover{color:var(--acc-ink)}
               <td id="badge-izn-028"></td>
               <td><div class="row-acts"><button class="ia-btn" data-izin-select="izn-028" data-no-confirm aria-label="Onay akışını gör"><i class="fa-solid fa-stamp"></i></button></div></td>
             </tr>
-            <tr data-f="revize" data-izin="izn-027" data-santiye="merkez-santiye">
+            <tr data-f="revize" data-izin="izn-027" data-santiye="merkez-santiye" data-tur="babalik" data-tarih="2026-06-20">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">ÖT</div>
@@ -207,6 +227,71 @@ a.gcell-sub:hover{color:var(--acc-ink)}
       <div class="izin-detail-note" id="izinDetailNote" hidden><i class="fa-solid fa-circle-info"></i> <span>Bu kayıtta sıradaki onay adımı sizde değil.</span></div>
     </div>
   </main>
+
+  <!-- ============ §9/§13 — sağ off-canvas gelişmiş filtre paneli (onay durumu/izin türü/
+       şantiye/tarih aralığı — tasks/spec-filtre-tarih.md) ============ -->
+  <div class="gv-fpanel-ov" id="fpIzinOv">
+    <aside class="gv-fpanel" id="fpIzin" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+      <div class="gv-fpanel-head">
+        <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+        <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="gv-fpanel-body">
+        <div class="gfield">
+          <label>Onay Durumu</label>
+          <select data-fp-key="durum" data-fp-label="Onay Durumu">
+            <option value="">Tümü</option>
+            <option value="bekliyor">Bekliyor</option>
+            <option value="onaylandi">Onaylandı</option>
+            <option value="reddedildi">Reddedildi</option>
+            <option value="revize">Revize İstendi</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>İzin Türü</label>
+          <select data-fp-key="tur" data-fp-label="İzin Türü">
+            <option value="">Tümü</option>
+            <option value="yillik">Yıllık İzin</option>
+            <option value="yol">Yol İzni</option>
+            <option value="mazeret">Mazeret İzni</option>
+            <option value="evlilik">Evlilik İzni</option>
+            <option value="dogum">Doğum İzni</option>
+            <option value="babalik">Babalık İzni</option>
+            <option value="olum">Ölüm (Vefat) İzni</option>
+            <option value="raporlu">Raporlu</option>
+            <option value="ucretsiz">Ücretsiz İzin</option>
+            <option value="saatlik">Saatlik İzin</option>
+            <option value="tamgun">Tam Gün İzin</option>
+            <option value="yarim">Yarım Gün İzin</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>Şantiye</label>
+          <select data-fp-key="santiye" data-fp-label="Şantiye">
+            <option value="">Tümü</option>
+            <option value="vadi-konaklari">Vadi Konakları</option>
+            <option value="liman-lojistik">Liman Lojistik Merkezi</option>
+            <option value="merkez-santiye">Merkez Şantiye</option>
+            <option value="merkez-ofis">Merkez Ofis</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>İzin Başlangıç Tarihi Aralığı</label>
+          <div data-gvdaterange data-fp-key="tarih" data-fp-label="İzin Başlangıç Tarihi Aralığı"></div>
+        </div>
+        <div class="gfield">
+          <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:600">
+            <input type="checkbox" data-fp-key="arsivgoster" data-fp-label="Arşivlenenleri Göster">
+            Arşivlenenleri Göster
+          </label>
+        </div>
+      </div>
+      <div class="gv-fpanel-foot">
+        <button type="button" class="btn btn-ghost" data-fp-clear>Temizle</button>
+        <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+      </div>
+    </aside>
+  </div>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -314,6 +399,55 @@ a.gcell-sub:hover{color:var(--acc-ink)}
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
+
+  /* ============ §9/§13/§17 — Gelişmiş Filtre paneli + tarih aralığı + Arşivlenenleri
+     Göster. opts.table verildi (basit eşitlik + kanonik "tarih" aralık motoru yeterli —
+     spec-filtre-tarih.md §3, crm-satinalma-siparisler.html emsali). ============ */
+  document.querySelectorAll('#tblIzin tbody tr[data-f]').forEach(function(tr){
+    tr.setAttribute('data-durum', (tr.getAttribute('data-f') || '').split(' ')[0]);
+  });
+
+  if(window.gvFilterPanel){
+    window.gvFilterPanel.init('#fpIzin', {
+      table: '#tblIzin',
+      activeRow: '#achipsIzin',
+      onApply: function(state){
+        var tbl = document.getElementById('tblIzin');
+        if(tbl) tbl.classList.toggle('gv-show-arsiv', !!(state.arsivgoster));
+      }
+    });
+  }
+
+  /* ---- satır arşivleme aksiyonu — kalıcı silme YERİNE (§17); e.stopPropagation()
+     ŞART çünkü satırın kendisi de tıklanabilir (onay akışı önizlemesi açar). ---- */
+  function gvWireIzinArchive(){
+    document.querySelectorAll('#tblIzin tbody tr[data-izin]').forEach(function(row){
+      var acts = row.querySelector('.row-acts');
+      if(!acts || acts.querySelector('[data-arsiv-btn]')) return;
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'ia-btn'; btn.setAttribute('data-no-confirm', '');
+      btn.setAttribute('data-arsiv-btn', ''); btn.setAttribute('data-tip', 'Arşivle'); btn.setAttribute('aria-label', 'Arşivle');
+      btn.innerHTML = '<i class="fa-solid fa-box-archive"></i>';
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        if(row.getAttribute('data-arsiv') === '1'){ gvToast('Bu kayıt zaten arşivde.', {type:'info'}); return; }
+        var rid = row.getAttribute('data-izin');
+        var rec2 = IZIN[rid];
+        var label = rec2 ? (rec2.personel + ' — ' + rec2.name) : 'İzin talebi';
+        gvConfirm({
+          danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+          title: label + ' arşivlensin mi?',
+          message: 'Kayıt kalıcı olarak silinmez; arşive alınır ve varsayılan listede görünmez olur. "Arşivlenenleri Göster" filtresiyle tekrar görüntülenebilir. İşlem kaydına yazılır.',
+          onConfirm:function(){
+            row.setAttribute('data-arsiv', '1');
+            gvToast(label + ' arşivlendi — varsayılan listede artık görünmeyecek.', {type:'danger'});
+          }
+        });
+      });
+      acts.appendChild(btn);
+    });
+  }
+  gvWireIzinArchive();
 })();
 </script>
 </body>
