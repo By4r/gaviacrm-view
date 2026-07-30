@@ -106,12 +106,6 @@ a{color:inherit;text-decoration:none}
 .two-col{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
 @media (min-width:820px){ .two-col{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} }
 
-/* ---- bildirimlerim (§23 içerik alanı) — mini-row aile diliyle, okunmamış nokta ---- */
-.notif-dot{width:7px;height:7px;flex:none;border-radius:50%;background:var(--acc-ink)}
-.notif-dot.read{background:var(--line-2)}
-.mini-time{font-size:11px;color:var(--muted);flex:none;white-space:nowrap}
-.mini-time.unread{color:var(--acc-ink);font-weight:700}
-
 /* ---- kpi-card mobil: dar ekranda ikon+metin yan yana sığmıyor (₺ tutarları
    tek kelime, satır kıramaz) — ikonu üste alıp metne tam kart genişliği verir ---- */
 @media (max-width:480px){
@@ -241,49 +235,16 @@ a{color:inherit;text-decoration:none}
           <div class="mini-info"><div class="mini-name">SST-2026-007 · Klima drenaj sızıntısı</div><div class="mini-meta">Garanti · KO-B-304 · 30 Haziran 2026</div></div>
           <span class="gstat warn">İşlemde</span>
         </a>
-        <a class="mini-row" href="portal-talepler.html#sst-012">
-          <div class="mini-ico"><i class="fa-solid fa-hammer"></i></div>
-          <div class="mini-info"><div class="mini-name">SST-2026-012 · Mutfak dolap kapağı hizası</div><div class="mini-meta">Eksik İş · VK-C-18 · 20 Temmuz 2026</div></div>
-          <span class="gstat warn">İşlemde</span>
-        </a>
         <a class="mini-row" href="portal-talepler.html#sst-010">
           <div class="mini-ico"><i class="fa-solid fa-circle-info"></i></div>
           <div class="mini-info"><div class="mini-name">SST-2026-010 · Taksit planı bilgi talebi</div><div class="mini-meta">Bilgi · VK-C-18 · 2 Temmuz 2026</div></div>
           <span class="gstat ok">Tamamlandı</span>
         </a>
       </div>
-      <div class="gc-foot"><span>3 talep — 2 işlemde · 1 tamamlandı</span><a class="gc-link" href="portal-talepler.html">Tümünü gör <i class="fa-solid fa-arrow-right"></i></a></div>
+      <div class="gc-foot"><span>2 talep — 1 işlemde · 1 tamamlandı</span><a class="gc-link" href="portal-talepler.html">Tümünü gör <i class="fa-solid fa-arrow-right"></i></a></div>
       </div>
     </div>
   </div>
-
-  <div class="pf-section-lbl"><i class="fa-solid fa-bell"></i> Bildirimlerim</div>
-  <div class="gv-card"><div class="gc-body">
-    <a class="mini-row" href="portal-odemeler.html#tks-next">
-      <div class="notif-dot"></div>
-      <div class="mini-ico"><i class="fa-solid fa-calendar-day"></i></div>
-      <div class="mini-info"><div class="mini-name">15. taksitiniz yaklaşıyor</div><div class="mini-meta">VK-C-18 · 15 Temmuz 2026 · ₺115.000</div></div>
-      <span class="mini-time unread">2 saat önce</span>
-    </a>
-    <a class="mini-row" href="portal-talepler.html#sst-007">
-      <div class="notif-dot"></div>
-      <div class="mini-ico"><i class="fa-solid fa-comment-dots"></i></div>
-      <div class="mini-info"><div class="mini-name">SST-2026-007 talebinize yanıt geldi</div><div class="mini-meta">Elif Sarıkaya · servis randevusu planlandı</div></div>
-      <span class="mini-time unread">1 gün önce</span>
-    </a>
-    <a class="mini-row" href="portal-teslim-tutanagi-detay.html">
-      <div class="notif-dot read"></div>
-      <div class="mini-ico"><i class="fa-solid fa-clipboard-check"></i></div>
-      <div class="mini-info"><div class="mini-name">Teslim tutanağınız hazır</div><div class="mini-meta">TSL-2026-001 · KO-B-304</div></div>
-      <span class="mini-time">15 Mart 2026</span>
-    </a>
-    <div class="mini-row">
-      <div class="notif-dot read"></div>
-      <div class="mini-ico"><i class="fa-solid fa-bullhorn"></i></div>
-      <div class="mini-info"><div class="mini-name">Vadi Konakları ortak alan bakım çalışması</div><div class="mini-meta">Duyuru · 27 Haziran 2026 - 3 Temmuz 2026 arası</div></div>
-      <span class="mini-time">4 hafta önce</span>
-    </div>
-  </div></div>
 
 </main>
 

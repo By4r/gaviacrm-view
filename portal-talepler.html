@@ -128,7 +128,7 @@ a{color:inherit;text-decoration:none}
     </div>
   </div>
 
-  <div class="pf-section-lbl"><i class="fa-solid fa-list-check"></i> Taleplerim (3)</div>
+  <div class="pf-section-lbl"><i class="fa-solid fa-list-check"></i> Taleplerim (2)</div>
 
   <div class="gv-card req-card" id="sst-007">
     <div class="req-top">
@@ -201,38 +201,6 @@ a{color:inherit;text-decoration:none}
     </div>
   </div>
 
-  <div class="gv-card req-card" id="sst-012">
-    <div class="req-top">
-      <div class="req-titles">
-        <div class="req-no">SST-2026-012</div>
-        <div class="req-title">Mutfak dolap kapağı hizası</div>
-      </div>
-      <div class="req-badges"><span class="gtag">Eksik İş</span><span class="gstat warn">İşlemde</span></div>
-    </div>
-    <div class="req-meta-row">
-      <span><b>Birim:</b> VK-C-18</span>
-      <span><b>Açılış:</b> 20 Temmuz 2026</span>
-      <span><b>Garanti bitiş:</b> —</span>
-    </div>
-    <div class="req-desc">Mutfak alt dolap kapaklarından biri tam kapanmıyor, menteşe hizası kaymış görünüyor. Teslim öncesi son kontrol listesine eklenmesi istendi.</div>
-    <div class="req-thread">
-      <div class="cmt-row me">
-        <div class="cmt-ava me">SO</div>
-        <div class="cmt-body">
-          <div class="cmt-head"><b>Siz</b><span>20 Temmuz 2026, 14:05</span></div>
-          <div class="cmt-text">Mutfak dolap kapaklarından biri düzgün kapanmıyor, menteşe ayarı bozuk olabilir. Teslimden önce düzeltilmesini rica ederim.</div>
-        </div>
-      </div>
-      <div class="cmt-row">
-        <div class="cmt-ava">ES</div>
-        <div class="cmt-body">
-          <div class="cmt-head"><b>Elif Sarıkaya</b><span>Teknik Müdür · 21 Temmuz 2026, 10:15</span></div>
-          <div class="cmt-text">Notunuz alındı, eksik iş listesine eklendi — teslim öncesi son kontrolde marangoz ekibi hizayı düzeltecek.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="pf-section-lbl"><i class="fa-solid fa-circle-plus"></i> Yeni Talep</div>
   <div class="gv-card">
     <div class="gc-body">
@@ -298,22 +266,13 @@ a{color:inherit;text-decoration:none}
   window.addEventListener('hashchange', flashHedef);
   setTimeout(flashHedef, 60);
 
-  /* ---- yeni talep gönderimi — gerçek sonuç ekranına yönlendirir (§23 "Talep
-     tamamlandı"), yalnız toast'la yetinmez. Talep no'su mevcut listedeki en yükseğin
-     (SST-2026-012) bir sonrası — sabit demo sayacı, gerçek backend'de otomatik olur. ---- */
   var form = document.getElementById('newReqForm');
-  var SONRAKI_TALEP_NO = 'SST-2026-013';
-  var BUGUN = '22 Temmuz 2026';
   form.addEventListener('submit', function(e){
     e.preventDefault();
     var turSel = document.getElementById('reqTur');
-    var birimSel = document.getElementById('reqBirim');
-    if(!turSel.value || !birimSel.value){ gvToast('Talep türü ve ilgili birimi seçin.', {type:'danger'}); return; }
-    location.href = 'portal-talep-tamamlandi.html'
-      + '?no=' + encodeURIComponent(SONRAKI_TALEP_NO)
-      + '&tur=' + encodeURIComponent(turSel.value)
-      + '&birim=' + encodeURIComponent(birimSel.value)
-      + '&tarih=' + encodeURIComponent(BUGUN);
+    var turLbl = turSel.options[turSel.selectedIndex].text;
+    gvToast(turLbl + ' talebiniz alındı, ekibimiz en kısa sürede dönüş yapacak.', {type:'ok', icon:'fa-solid fa-paper-plane'});
+    form.reset();
   });
 })();
 </script>

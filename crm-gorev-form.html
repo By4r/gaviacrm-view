@@ -108,28 +108,6 @@
               <label for="fAciklama">Açıklama <span class="gf-hint">(isteğe bağlı)</span></label>
               <textarea id="fAciklama" rows="3" placeholder="Görevin kapsamını ve beklenen çıktıyı yazın…"></textarea>
             </div>
-            <div class="gfield">
-              <label for="fKategori">Görev Kategorisi</label>
-              <select id="fKategori">
-                <option value="rutin" selected>Rutin İşlem</option>
-                <option value="proje">Proje Görevi</option>
-                <option value="uyum">Uyumluluk / Denetim</option>
-                <option value="acil">Acil Müdahale</option>
-              </select>
-            </div>
-            <div class="gfield">
-              <label for="fTip">Görev Tipi</label>
-              <select id="fTip">
-                <option value="saha" selected>Saha görevi</option>
-                <option value="satinalma">Satın alma görevi</option>
-                <option value="ik">İK görevi</option>
-                <option value="finans">Finans görevi</option>
-                <option value="isg">İSG görevi</option>
-                <option value="teknik">Teknik görev</option>
-                <option value="yonetim">Yönetim görevi</option>
-                <option value="musteri">Müşteri talebi bağlantılı görev</option>
-              </select>
-            </div>
             <div class="gfield full">
               <label>Atama</label>
               <div class="tip-group" id="atamaGroup">
@@ -201,47 +179,6 @@
                 <option value="tgun">Termin günü</option>
               </select>
             </div>
-            <div class="gfield">
-              <label for="fKaynakModul">Kaynak Modül <span class="gf-hint">(isteğe bağlı)</span></label>
-              <select id="fKaynakModul">
-                <option value="" selected>İlişkili değil (manuel görev)</option>
-                <option value="malzeme">Malzeme Talebi</option>
-                <option value="satinalma">Satın Alma</option>
-                <option value="kasa">Kasa</option>
-                <option value="puantaj">Puantaj</option>
-                <option value="hakedis">Hakediş</option>
-                <option value="sozlesme">Sözleşme</option>
-                <option value="isg">İSG Tutanağı</option>
-                <option value="bildirim">Saha Bildirimi</option>
-              </select>
-            </div>
-            <div class="gfield" id="gfKaynakKayit" hidden>
-              <label for="fKaynakKayit">Kaynak Kayıt</label>
-              <input type="text" id="fKaynakKayit" placeholder="Örn. MLZ-2026-046">
-              <div class="gf-hint">Görev, seçilen modüldeki bu kayıttan doğdu.</div>
-            </div>
-            <div class="gfield full">
-              <label>Görev Kuralları</label>
-              <div class="tsum-row" style="padding:8px 0;border:none">
-                <label class="gv-toggle"><input type="checkbox" id="fTekrarli"><span class="tg-track"></span></label>
-                <div class="tsum-body"><div class="tsum-val">Tekrarlı görev</div><div class="tsum-lbl" style="text-transform:none;font-weight:600">İşaretlenirse aşağıdan tekrar sıklığı seçilir</div></div>
-              </div>
-              <div class="gfield" id="gfTekrarSiklik" hidden style="margin:4px 0 10px 52px;max-width:220px">
-                <select id="fTekrarSiklik">
-                  <option value="gunluk">Günlük</option>
-                  <option value="haftalik" selected>Haftalık</option>
-                  <option value="aylik">Aylık</option>
-                </select>
-              </div>
-              <div class="tsum-row" style="padding:8px 0;border:none">
-                <label class="gv-toggle"><input type="checkbox" id="fOnayGerekli" checked><span class="tg-track"></span></label>
-                <div class="tsum-body"><div class="tsum-val">Tamamlanma onayı gerekli</div><div class="tsum-lbl" style="text-transform:none;font-weight:600">Görev ancak atayan/şantiye şefi onaylarsa kapanır — aksi hâlde "Onay Bekliyor" durumuna düşer</div></div>
-              </div>
-              <div class="tsum-row" style="padding:8px 0;border:none">
-                <label class="gv-toggle"><input type="checkbox" id="fKanitGerekli"><span class="tg-track"></span></label>
-                <div class="tsum-body"><div class="tsum-val">Tamamlama kanıtı gerekli</div><div class="tsum-lbl" style="text-transform:none;font-weight:600">Kapatmadan önce fotoğraf veya belge eki zorunlu tutulur</div></div>
-              </div>
-            </div>
             <div class="gfield full">
               <label for="fDosya">Dosya Eki <span class="gf-hint">(isteğe bağlı)</span></label>
               <input type="file" id="fDosya">
@@ -291,24 +228,6 @@
 
   var olusturan = document.getElementById('fOlusturan');
   if(olusturan) olusturan.value = (GV.R && GV.R.name ? GV.R.name : 'Oturum açan kullanıcı') + (GV.R && GV.R.role ? ' — ' + GV.R.role : '');
-
-  /* ---- kaynak modül seçilince kaynak kayıt alanı açılır ---- */
-  var fKaynakModul = document.getElementById('fKaynakModul');
-  var gfKaynakKayit = document.getElementById('gfKaynakKayit');
-  if(fKaynakModul && gfKaynakKayit){
-    fKaynakModul.addEventListener('change', function(){
-      gfKaynakKayit.hidden = !fKaynakModul.value;
-    });
-  }
-
-  /* ---- tekrarlı görev işaretlenince sıklık seçici açılır ---- */
-  var fTekrarli = document.getElementById('fTekrarli');
-  var gfTekrarSiklik = document.getElementById('gfTekrarSiklik');
-  if(fTekrarli && gfTekrarSiklik){
-    fTekrarli.addEventListener('change', function(){
-      gfTekrarSiklik.hidden = !fTekrarli.checked;
-    });
-  }
 
   var PRI_LBL = {low:'Düşük', med:'Orta', high:'Yüksek', crit:'Kritik'};
   var MONTHS = {'01':'Oca','02':'Şub','03':'Mar','04':'Nis','05':'May','06':'Haz','07':'Tem','08':'Ağu','09':'Eyl','10':'Eki','11':'Kas','12':'Ara'};

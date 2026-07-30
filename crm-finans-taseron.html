@@ -33,23 +33,6 @@
 .net-cell b{font-size:13.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
 .net-cell span{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 
-/* şantiye filtresi — durum chip'leriyle bileşik (AND); crm-gorev.html .gv-site-bar
-   deseninin BİREBİR devralınması (§7 boş durum metni — proje bazlı boş liste için) */
-.gv-site-bar{display:flex;align-items:center;gap:10px;padding:10px 22px;border-bottom:1px solid var(--line);background:var(--bg)}
-.gv-site-bar label{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--muted);flex:none}
-.gv-site-bar label i{font-size:11px}
-.gv-site-bar select{
-  font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);
-  background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);
-  padding:7px 10px;outline:none;cursor:pointer;transition:.2s var(--ease);
-  min-width:210px;max-width:260px;
-}
-.gv-site-bar select:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(var(--acc-rgb),.12)}
-@media(max-width:640px){
-  .gv-site-bar{padding:10px 16px}
-  .gv-site-bar select{flex:1;min-width:0;max-width:none}
-}
-
 .cross-link{
   display:flex;align-items:center;gap:12px;padding:15px 22px;
   background:var(--bg);border-top:1px solid var(--line);
@@ -135,17 +118,6 @@
           <button class="chip" data-filter="odendi">Ödendi <span class="ch-cnt">2</span></button>
         </div>
       </div>
-      <div class="gv-site-bar">
-        <label for="fltSantiye"><i class="fa-solid fa-helmet-safety"></i> Şantiye</label>
-        <select id="fltSantiye" aria-label="Şantiyeye göre filtrele">
-          <option value="hepsi">Tüm Şantiyeler</option>
-          <option value="vadi">Vadi Konakları</option>
-          <option value="liman">Liman Lojistik Merkezi</option>
-          <option value="merkez">Merkez Şantiye</option>
-          <option value="gol-evleri">Göl Evleri 2. Etap</option>
-          <option value="kule-ofis">Kule Ofis B Blok</option>
-        </select>
-      </div>
       <div class="gc-body flush">
         <table class="gtable" id="tblTaseron">
           <thead>
@@ -161,7 +133,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr data-f="bekliyor" data-taseron="demir-beton" data-santiye="vadi">
+            <tr data-f="bekliyor" data-taseron="demir-beton">
               <td><div class="hk-cell"><div class="hk-mark"><i class="fa-solid fa-people-arrows"></i></div><div class="hk-info"><b>TH-2026-014</b><span>Gönderildi · 28 Haz 2026</span></div></div></td>
               <td class="t-strong">Demir-Beton İnş. Ltd.</td>
               <td>Vadi Konakları</td>
@@ -171,7 +143,7 @@
               <td data-badge="bekliyor"></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-finans-hakedis-detay.html?th=014" data-no-confirm aria-label="Hakediş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="bekliyor" data-taseron="elektromek" data-santiye="vadi">
+            <tr data-f="bekliyor" data-taseron="elektromek">
               <td><div class="hk-cell"><div class="hk-mark"><i class="fa-solid fa-people-arrows"></i></div><div class="hk-info"><b>TH-2026-009</b><span>Gönderildi · 1 Tem 2026</span></div></div></td>
               <td class="t-strong">ElektroMek Taahhüt</td>
               <td>Vadi Konakları</td>
@@ -181,7 +153,7 @@
               <td data-badge="bekliyor"></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-finans-hakedis-detay.html?th=009" data-no-confirm aria-label="Hakediş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="onaylandi" data-taseron="demir-beton" data-santiye="vadi">
+            <tr data-f="onaylandi" data-taseron="demir-beton">
               <td><div class="hk-cell"><div class="hk-mark"><i class="fa-solid fa-people-arrows"></i></div><div class="hk-info"><b>TH-2026-013</b><span>Ödeme sırada</span></div></div></td>
               <td class="t-strong">Demir-Beton İnş. Ltd.</td>
               <td>Vadi Konakları</td>
@@ -191,7 +163,7 @@
               <td data-badge="onaylandi"></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-finans-hakedis-detay.html?th=013" data-no-confirm aria-label="Hakediş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="onaylandi" data-taseron="yalitim-kardesler" data-santiye="liman">
+            <tr data-f="onaylandi" data-taseron="yalitim-kardesler">
               <td><div class="hk-cell"><div class="hk-mark"><i class="fa-solid fa-people-arrows"></i></div><div class="hk-info"><b>TH-2026-008</b><span>Malzeme mahsuplu</span></div></div></td>
               <td class="t-strong">Yalıtım Kardeşler</td>
               <td>Liman Lojistik Merkezi</td>
@@ -201,7 +173,7 @@
               <td data-badge="onaylandi"></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-finans-hakedis-detay.html?th=008" data-no-confirm aria-label="Hakediş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="odendi" data-taseron="demir-beton" data-santiye="vadi">
+            <tr data-f="odendi" data-taseron="demir-beton">
               <td><div class="hk-cell"><div class="hk-mark"><i class="fa-solid fa-people-arrows"></i></div><div class="hk-info"><b>TH-2026-005</b><span>Dönem: Nisan 2026</span></div></div></td>
               <td class="t-strong">Demir-Beton İnş. Ltd.</td>
               <td>Vadi Konakları</td>
@@ -211,7 +183,7 @@
               <td><span class="gstat ok">Ödendi</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-finans-hakedis-detay.html?th=005" data-no-confirm aria-label="Hakediş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="odendi" data-taseron="elektromek" data-santiye="vadi">
+            <tr data-f="odendi" data-taseron="elektromek">
               <td><div class="hk-cell"><div class="hk-mark"><i class="fa-solid fa-people-arrows"></i></div><div class="hk-info"><b>TH-2026-002</b><span>Dönem: Mart 2026</span></div></div></td>
               <td class="t-strong">ElektroMek Taahhüt</td>
               <td>Vadi Konakları</td>
@@ -253,52 +225,6 @@
   document.querySelectorAll('[data-view="olusturabilir"]').forEach(function(el){
     el.hidden = OLUSTURABILIR.indexOf(GV.role) === -1;
   });
-
-  /* §7 revizyon (D4/Finans) — crm-finans-kurum.html ile AYNI bileşik-motor deseni
-     (şantiye filtresi + durum chip'i + arama, D18 _gvApply delegasyonu). Boş sonuç
-     yalnız şantiye filtresi yüzündense doküman BİREBİR metni gösterilir: "Bu proje
-     için henüz hakediş kaydı oluşturulmamış. Kurum veya taşeron hakedişlerini buradan
-     ekleyebilirsiniz." (§7). Merkez Şantiye/Göl Evleri 2. Etap/Kule Ofis B Blok
-     seçiminde bu durum GERÇEKTEN oluşur (bu şantiyelerde henüz taşeron hakedişi yok —
-     kanonik veri, uydurma değil). */
-  var SANTIYE_LABEL = {vadi:'Vadi Konakları', liman:'Liman Lojistik Merkezi', merkez:'Merkez Şantiye', 'gol-evleri':'Göl Evleri 2. Etap', 'kule-ofis':'Kule Ofis B Blok'};
-  var tblTaseron = document.getElementById('tblTaseron');
-  if(tblTaseron){
-    tblTaseron._gvApply = function(){
-      var card = tblTaseron.closest('.gv-card');
-      var inp = card.querySelector('input[data-table-search]');
-      var term = inp ? inp.value.trim().toLocaleLowerCase('tr') : '';
-      var on = card.querySelector('.chip.is-on[data-filter]');
-      var f = on ? on.getAttribute('data-filter') : 'hepsi';
-      var siteSel = document.getElementById('fltSantiye');
-      var site = siteSel ? siteSel.value : 'hepsi';
-      var shown = 0;
-      tblTaseron.querySelectorAll('tbody tr').forEach(function(tr){
-        var okF = f === 'hepsi' || tr.getAttribute('data-f') === f;
-        var okSite = site === 'hepsi' || tr.getAttribute('data-santiye') === site;
-        var okT = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
-        var show = okF && okSite && okT;
-        tr.hidden = !show;
-        if(show) shown++;
-      });
-      var empty = card.querySelector('[data-table-empty]');
-      if(empty){
-        empty.hidden = shown !== 0;
-        var h4 = empty.querySelector('h4'), p = empty.querySelector('p');
-        if(shown === 0 && site !== 'hepsi' && f === 'hepsi' && !term){
-          h4.textContent = SANTIYE_LABEL[site] || 'Bu proje';
-          p.textContent = 'Bu proje için henüz hakediş kaydı oluşturulmamış. Kurum veya taşeron hakedişlerini buradan ekleyebilirsiniz.';
-        } else if(shown === 0){
-          h4.textContent = 'Eşleşen hakediş yok';
-          p.textContent = 'Aramayı temizleyin veya farklı bir durum/şantiye filtresi seçin.';
-        }
-      }
-      var cnt = card.querySelector('[data-table-count]') || document.querySelector('[data-table-count]');
-      if(cnt) cnt.textContent = shown;
-    };
-    var siteSel = document.getElementById('fltSantiye');
-    if(siteSel) siteSel.addEventListener('change', function(){ gvApplyFilters(tblTaseron, true); });
-  }
 })();
 </script>
 </body>

@@ -109,9 +109,9 @@
 
     <div class="gd-head">
       <div>
+        <div class="gd-eyebrow" id="gdEyebrow">—</div>
+        <h1 id="gdTitle">—</h1>
         <!-- statik bake — DEFAULT (SST-2026-007, ?sst= yok); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
-        <div class="gd-eyebrow" id="gdEyebrow">Selçuk Onaran · Satış Sonrası Talep #SST-2026-007</div>
-        <h1 id="gdTitle">Klima drenaj sızıntısı</h1>
         <div class="gd-badges" id="gdBadges"><span class="gtag tur-garanti">Garanti</span><span class="gstat warn">İşlemde</span><span class="gstat info kanal-portal"><i class="fa-solid fa-globe"></i> Portal</span></div>
       </div>
       <div class="ph-actions">
@@ -125,8 +125,7 @@
         <div class="gv-card">
           <div class="gd-block">
             <div class="gd-label">Açıklama</div>
-            <!-- statik bake — DEFAULT (SST-2026-007); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
-            <p class="gd-desc" id="aciklamaText">Salon klimasının drenaj hortumunda sızıntı bildirildi; tavanda hafif nem lekesi oluşmaya başladı. Garanti kapsamında değerlendirilip saha ziyareti planlandı.</p>
+            <p class="gd-desc" id="aciklamaText">—</p>
           </div>
           <div class="gd-block">
             <div class="gd-label">Yorumlar</div>
@@ -168,10 +167,9 @@
         <div class="gv-card">
           <div class="gd-block">
             <div class="gd-label">SLA / Termin</div>
-            <!-- statik bake — DEFAULT (SST-2026-007); JS yüklenince aynı mount innerHTML ile ezilir — D18-B2 -->
-            <div class="ctx-row"><span class="ctx-lbl">Öncelik</span><span class="ctx-val" id="slaOncelik"><span class="sla-pri med">Orta</span></span></div>
-            <div class="ctx-row"><span class="ctx-lbl" id="slaTarihLbl">Açılış tarihi</span><span class="ctx-val" id="slaTarih">30 Haziran 2026</span></div>
-            <div class="ctx-row" id="slaEkRow"><span class="ctx-lbl" id="slaEkLbl">Garanti bitiş</span><span class="ctx-val" id="slaEkVal">15 Mart 2028</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Öncelik</span><span class="ctx-val" id="slaOncelik">—</span></div>
+            <div class="ctx-row"><span class="ctx-lbl" id="slaTarihLbl">Hedef çözüm</span><span class="ctx-val" id="slaTarih">—</span></div>
+            <div class="ctx-row" id="slaEkRow" hidden><span class="ctx-lbl" id="slaEkLbl">—</span><span class="ctx-val" id="slaEkVal">—</span></div>
           </div>
         </div>
       </div>
@@ -372,22 +370,6 @@
         {rol:'Müşteri', kisi:'Meltem Işık', durum:'olusturdu', tarih:'2 Temmuz 2026 10:05'},
         {rol:'Teknik Müdür', kisi:'Elif Sarıkaya', durum:'sirada', tarih:'Yeni tarih planlanıyor'}
       ]
-    },
-    '012':{
-      no:'SST-2026-012', title:'Mutfak dolap kapağı hizası', tur:'eksik', durum:'islemde', portal:true,
-      musteri:{name:'Selçuk Onaran', href:'crm-satis-musteri-detay.html?mst=001', tur:'Kurumsal · Referans', ini:'SO'},
-      birim:{lbl:'VK-C-18', href:'crm-satis-birim-detay.html?birim=VK-C-18', not:'Vadi Konakları · C Blok, 5. kat'},
-      kaynak:{lbl:'Sözleşme', href:'crm-satis-sozlesme-detay.html?ssz=2026-003', sub:'SSZ-2026-003 · Taksitli, inşaat sürüyor'},
-      aciklama:'Mutfak alt dolap kapaklarından biri tam kapanmıyor, menteşe hizası kaymış görünüyor. Müşteri portalı üzerinden bildirildi, teslim öncesi son kontrol listesine eklenmesi istendi.',
-      acilis:'20 Temmuz 2026', kapanis:null, oncelik:'med',
-      comments:[
-        {ini:'SO', name:'Selçuk Onaran', tarih:'20 Temmuz 2026, 14:05', text:'Mutfak dolap kapaklarından biri düzgün kapanmıyor, menteşe ayarı bozuk olabilir. Teslimden önce düzeltilmesini rica ederim.', portal:true},
-        {ini:'ES', name:'Elif Sarıkaya', tarih:'21 Temmuz 2026, 10:15', text:'Notunuz alındı, eksik iş listesine eklendi — teslim öncesi son kontrolde marangoz ekibi hizayı düzeltecek.'}
-      ],
-      chain:[
-        {rol:'Müşteri (Portal)', kisi:'Selçuk Onaran', durum:'olusturdu', tarih:'20 Temmuz 2026 14:05'},
-        {rol:'Teknik Müdür', kisi:'Elif Sarıkaya', durum:'onaylandi', tarih:'21 Temmuz 2026 10:15', not:'Eksik iş listesine eklendi, teslim öncesi son kontrolde marangoz ekibi hizayı düzeltecek.'}
-      ]
     }
   };
 
@@ -474,8 +456,6 @@
       document.getElementById('slaEkRow').hidden = false;
       document.getElementById('slaEkLbl').textContent = 'Garanti bitiş';
       document.getElementById('slaEkVal').textContent = item.garantiBitis;
-    } else {
-      document.getElementById('slaEkRow').hidden = true;
     }
   }
 

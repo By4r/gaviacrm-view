@@ -88,17 +88,6 @@
 
 .frm-acts{display:flex;flex-direction:column;gap:10px}
 .frm-acts .btn{width:100%;justify-content:center}
-
-/* §18 revizyon (D4/Finans) — Kayıt Notları kartı (sozlesme-form.html side-tip diliyle
-   ortak idiyom) + Kümülatif Durum önizleme kartı */
-.side-tip{display:flex;gap:10px;padding:13px 0;border-bottom:1px solid var(--line)}
-.side-tip:last-child{border-bottom:none}
-.side-tip i{color:var(--acc-ink);font-size:13px;width:16px;text-align:center;flex:none;margin-top:1px}
-.side-tip span{font-size:12.5px;color:var(--muted);line-height:1.5}
-.kum-prev{background:var(--bg);border-radius:var(--r-md);padding:14px 16px}
-.kum-prev .kp-line{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted);padding:3px 0}
-.kum-prev .kp-line b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
-.kum-prev .kp-oran{display:flex;align-items:center;gap:10px;padding-top:8px;margin-top:6px;border-top:1px solid var(--line)}
 </style>
 </head>
 <body data-sec="finans" data-screen="taseron">
@@ -173,22 +162,6 @@
             <div class="gfield">
               <label for="fDonem">Dönem</label>
               <input type="month" id="fDonem" value="2026-07">
-            </div>
-            <div class="gfield">
-              <label for="fKdv">KDV Oranı</label>
-              <select id="fKdv">
-                <option value="20" selected>%20</option>
-                <option value="10">%10</option>
-                <option value="1">%1</option>
-              </select>
-            </div>
-            <div class="gfield">
-              <label for="fTevkifat">KDV Tevkifatı</label>
-              <select id="fTevkifat">
-                <option value="4-10" selected>4/10 (taşeron hakedişi)</option>
-                <option value="2-10">2/10</option>
-                <option value="yok">Uygulanmaz</option>
-              </select>
             </div>
           </form>
         </div>
@@ -272,30 +245,6 @@
             <a class="btn btn-ghost btn-sm" href="crm-finans-taseron.html" id="btnCancel" data-no-confirm>Vazgeç</a>
           </div>
         </div>
-
-        <!-- §18 revizyon (D4/Finans) — seçilen sözleşmenin önceki dönemden devreden/kümülatif
-             durumunu gösterir; hakedis-detay.html'deki kanonik `kum` rakamlarıyla BİREBİR. -->
-        <div class="gv-card">
-          <div class="gd-block">
-            <div class="gd-label">Kümülatif İmalat Durumu</div>
-            <div class="kum-prev" id="kumPrev">
-              <div class="kp-line"><span>Önceki dönemden devreden</span><b id="kpDevreden">₺210.000</b></div>
-              <div class="kp-line"><span>Bu hakediş (yukarıdaki toplam)</span><b id="kpBuDonem">₺48.403</b></div>
-              <div class="kp-line"><span>Toplam hakediş (kümülatif)</span><b id="kpToplam">₺258.403</b></div>
-              <div class="kp-oran"><div class="gbar"><div class="gbar-track"><div class="gbar-fill" id="kpBar" style="width:57.4%"></div></div><span class="gbar-val" id="kpOran">%57,4</span></div></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="gv-card">
-          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-circle-info"></i> Kayıt Notları</div></div>
-          <div class="gc-body">
-            <div class="side-tip"><i class="fa-solid fa-hashtag"></i><span>Hakediş numarası (ör. TH-2026-015) onay adımında otomatik atanır; bu formda girilmez.</span></div>
-            <div class="side-tip"><i class="fa-solid fa-file-invoice-dollar"></i><span>Fatura numarası ve tahsilat/ödeme durumu, hakediş onaylanıp ödendiğinde muhasebe tarafından işlenir.</span></div>
-            <div class="side-tip"><i class="fa-solid fa-clock-rotate-left"></i><span>Revizyon geçmişi ve onay zinciri, hakediş oluşturulduktan sonra kayıt üzerinde otomatik tutulmaya başlar.</span></div>
-            <div class="side-tip"><i class="fa-solid fa-calendar-check"></i><span>Ödeme planı (vade, son onay adımı) sözleşme ödeme koşuluna ve onay zincirine göre otomatik hesaplanır.</span></div>
-          </div>
-        </div>
       </div>
     </div>
   </main>
@@ -316,18 +265,15 @@
     document.getElementById('btnSend').disabled = true;
   }
 
-  /* §18 revizyon (D4/Finans) — her sözleşmeye `kum` (en son hakedişteki kümülatif toplam,
-     bkz. hakedis-detay.html TH/HKD `kum.toplam` alanları) ve `bedel` (sozlesme-detay.html
-     kanonik bedeliyle BİREBİR) eklendi; Kümülatif İmalat Durumu önizlemesi buradan besleniyor. */
   var SZL_KURUM = [
-    {key:'k01', ad:'SZL-2026-K01 — Körfez GYO · Vadi Konakları', kum:2790000, bedel:24500000},
-    {key:'k02', ad:'SZL-2026-K02 — Aliağa Liman İşletmeleri · Liman Lojistik Merkezi', kum:1655000, bedel:9800000},
-    {key:'k03', ad:'SZL-2026-K03 — Sapanca Belediyesi · Göl Evleri 2. Etap', kum:0, bedel:6200000}
+    'SZL-2026-K01 — Körfez GYO · Vadi Konakları',
+    'SZL-2026-K02 — Aliağa Liman İşletmeleri · Liman Lojistik Merkezi',
+    'SZL-2026-K03 — Sapanca Belediyesi · Göl Evleri 2. Etap'
   ];
   var SZL_TASERON = [
-    {key:'t05', ad:'SZL-2025-T05 — Demir-Beton İnş. Ltd. · Vadi Konakları', kum:300000, bedel:450000},
-    {key:'t06', ad:'SZL-2025-T06 — Yalıtım Kardeşler · Liman Lojistik Merkezi', kum:128500, bedel:310000},
-    {key:'t07', ad:'SZL-2025-T07 — ElektroMek Taahhüt · Vadi Konakları', kum:130200, bedel:185000}
+    'SZL-2025-T05 — Demir-Beton İnş. Ltd. · Vadi Konakları',
+    'SZL-2025-T06 — Yalıtım Kardeşler · Liman Lojistik Merkezi',
+    'SZL-2025-T07 — ElektroMek Taahhüt · Vadi Konakları'
   ];
 
   var sozlesmeSel = document.getElementById('fSozlesme');
@@ -338,7 +284,7 @@
 
   function fillSozlesme(tur){
     var list = tur === 'kurum' ? SZL_KURUM : SZL_TASERON;
-    sozlesmeSel.innerHTML = list.map(function(o){ return '<option value="' + o.key + '">' + o.ad + '</option>'; }).join('');
+    sozlesmeSel.innerHTML = list.map(function(o){ return '<option>' + o + '</option>'; }).join('');
   }
 
   function applyTur(tur){
@@ -350,7 +296,6 @@
     crumbBack.href = target;
     crumbBack.textContent = label;
     btnCancel.href = target;
-    document.getElementById('fTevkifat').value = tur === 'kurum' ? 'yok' : '4-10';
     recalc();
   }
 
@@ -392,22 +337,7 @@
     document.getElementById('sAvans').textContent = fmt(avans);
     document.getElementById('sTeminatLine').hidden = tur === 'kurum';
     document.getElementById('sAvansLine').hidden = tur === 'kurum';
-    var netVal = net < 0 ? 0 : net;
-    document.getElementById('sNet').textContent = fmt(netVal);
-
-    /* §18 revizyon — Kümülatif İmalat Durumu önizlemesi: seçili sözleşmenin en son
-       hakedişteki kanonik toplamı "devreden" olarak alınır, bu hakedişin net/brüt tutarı
-       eklenir. Kurum hakedişinde net=brüt (kesinti yok); rakamlar İCAT EDİLMEZ. */
-    var list = tur === 'kurum' ? SZL_KURUM : SZL_TASERON;
-    var sel = list.filter(function(s){ return s.key === sozlesmeSel.value; })[0] || list[0];
-    var buDonem = tur === 'kurum' ? brut : netVal;
-    var toplam = sel.kum + buDonem;
-    var oranNum = sel.bedel ? (toplam / sel.bedel * 100) : 0;
-    document.getElementById('kpDevreden').textContent = fmt(sel.kum);
-    document.getElementById('kpBuDonem').textContent = fmt(buDonem);
-    document.getElementById('kpToplam').textContent = fmt(toplam);
-    document.getElementById('kpOran').textContent = '%' + oranNum.toLocaleString('tr-TR', {minimumFractionDigits:1, maximumFractionDigits:1});
-    document.getElementById('kpBar').style.width = Math.min(oranNum, 100) + '%';
+    document.getElementById('sNet').textContent = fmt(net < 0 ? 0 : net);
   }
 
   wrap.addEventListener('input', function(e){
@@ -431,7 +361,6 @@
   });
   document.getElementById('fTeminat').addEventListener('input', recalc);
   document.getElementById('fAvans').addEventListener('input', recalc);
-  sozlesmeSel.addEventListener('change', recalc);
 
   /* ?tur=kurum|taseron ile ön seçim — finans-kurum/taseron listelerindeki
      "Yeni Hakediş" bağlantıları buradan gelir. */

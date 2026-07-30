@@ -123,8 +123,6 @@ body{font-family:var(--font);color:var(--on-dark)}
       <a href="gavia-panel.html"><i class="fa-solid fa-gauge-high"></i> Genel Bakış</a>
       <a href="gavia-firmalar.html" class="is-on"><i class="fa-solid fa-building"></i> Firmalar</a>
       <a href="gavia-paketler.html"><i class="fa-solid fa-box-open"></i> Paketler</a>
-      <a href="gavia-mrr-raporu.html"><i class="fa-solid fa-chart-line"></i> MRR Raporu</a>
-      <a href="gavia-churn-riski.html"><i class="fa-solid fa-triangle-exclamation"></i> Churn Riski</a>
     </nav>
     <div class="pc-top-r">
       <div class="pc-persona">
@@ -250,22 +248,8 @@ body{font-family:var(--font);color:var(--on-dark)}
     e.preventDefault();
     var unvan = document.getElementById('nUnvan').value.trim() || 'Yeni firma';
     var isSub = parent && PARENTS[parent];
-    var isTrial = document.getElementById('nDeneme').checked;
     gvToast((isSub ? unvan + ' alt şirket olarak eklendi (simülasyon).' : unvan + ' platforma kaydedildi (simülasyon).'), {type:'ok'});
-    setTimeout(function(){
-      if(isSub){ location.href = 'gavia-firma-detay.html?firma=' + parent + '#alt'; return; }
-      /* §22 — "Deneme hesabı oluşturma sonucu": yalnız YENİ (alt şirket değil) + deneme
-         seçiliyse sonuç ekranına yönlendirilir; ücretli doğrudan kayıtta değişiklik yok. */
-      if(isTrial){
-        var paket = document.getElementById('nPaket').value;
-        var yetkili = document.getElementById('nYetkili').value.trim() || '—';
-        var eposta = document.getElementById('nMail').value.trim() || '—';
-        var qs = new URLSearchParams({unvan:unvan, paket:paket, yetkili:yetkili, eposta:eposta});
-        location.href = 'gavia-firma-form-sonuc.html?' + qs.toString();
-        return;
-      }
-      location.href = 'gavia-firmalar.html';
-    }, 900);
+    setTimeout(function(){ location.href = isSub ? 'gavia-firma-detay.html?firma=' + parent + '#alt' : 'gavia-firmalar.html'; }, 900);
   });
 })();
 </script>

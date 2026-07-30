@@ -71,31 +71,6 @@
 .gd-danger-txt span{font-size:12px;color:var(--muted)}
 
 .gv-side-stack{display:flex;flex-direction:column;gap:16px}
-
-/* ============ §15 eklentileri ============ */
-.file-view-btn{width:32px;height:32px;flex:none;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--paper);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:.18s var(--ease)}
-.file-view-btn:hover{border-color:var(--acc-ink);color:var(--acc-ink)}
-.file-acts{display:flex;gap:6px;flex:none}
-
-/* şantiye kasa limiti — mini bar, gbar-track/gbar-fill (crm-ayarlar-firma.html "Kullanım
-   & Limitler" ile aynı primitif, yeniden icat edilmedi) */
-.limit-row{padding:9px 0}
-.limit-top{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:7px}
-.limit-top b{color:var(--ink);font-weight:700}
-.limit-top span{color:var(--muted)}
-.limit-top strong{color:var(--ink);font-variant-numeric:tabular-nums}
-
-/* belge görüntüleme modalı — .gv-modal idiyomu (ui.js'e dokunulmadı), desen
-   crm-satinalma-irsaliye-fatura.html'den birebir devralındı */
-.belge-doc{background:var(--bg);border:1px solid var(--line);border-radius:var(--r-md);padding:26px 20px;text-align:center;margin-bottom:16px}
-.belge-doc i{font-size:34px;color:var(--muted);margin-bottom:10px}
-.belge-doc .bd-name{font-size:12.5px;font-weight:700;color:var(--ink-2)}
-.belge-doc .bd-tag{display:inline-block;margin-top:8px;font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--paper);border:1px solid var(--line-2);border-radius:var(--r-pill);padding:2px 9px}
-.belge-meta{display:flex;flex-direction:column;gap:9px;margin-bottom:6px}
-.belge-meta .bm-row{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px solid var(--line)}
-.belge-meta .bm-row:last-child{border-bottom:none}
-.belge-meta .bm-lbl{color:var(--muted)}
-.belge-meta .bm-val{color:var(--ink);font-weight:700;text-align:right}
 </style>
 </head>
 <body data-sec="operasyon" data-screen="kasa">
@@ -167,18 +142,12 @@
             <div class="file-row">
               <div class="file-ico pdf"><i class="fa-solid fa-file-pdf"></i></div>
               <div class="file-info"><b>hafriyat-irsaliye.pdf</b><span>312 KB · Hasan Demirci tarafından eklendi</span></div>
-              <div class="file-acts">
-                <button class="file-view-btn" data-belge="hafriyat-irsaliye.pdf" data-tip="Görüntüle" aria-label="Görüntüle"><i class="fa-solid fa-eye"></i></button>
-                <button class="ia-btn" data-demo="İndirme hazırlanıyor (demo)" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button>
-              </div>
+              <button class="ia-btn" data-demo="İndirme hazırlanıyor (demo)" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button>
             </div>
             <div class="file-row">
               <div class="file-ico"><i class="fa-solid fa-file-image"></i></div>
               <div class="file-info"><b>yakit-fisi-29haziran.jpg</b><span>1,4 MB · Hasan Demirci tarafından eklendi</span></div>
-              <div class="file-acts">
-                <button class="file-view-btn" data-belge="yakit-fisi-29haziran.jpg" data-tip="Görüntüle" aria-label="Görüntüle"><i class="fa-solid fa-eye"></i></button>
-                <button class="ia-btn" data-demo="İndirme hazırlanıyor (demo)" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button>
-              </div>
+              <button class="ia-btn" data-demo="İndirme hazırlanıyor (demo)" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button>
             </div>
           </div>
         </div>
@@ -213,27 +182,12 @@
             <div class="ctx-row"><span class="ctx-lbl">Ödeme yöntemi</span><span class="ctx-val">Nakit</span></div>
             <div class="ctx-row"><span class="ctx-lbl">Kasa dönemi</span><span class="ctx-val">16 – 30 Haziran 2026</span></div>
           </div>
-          <!-- §15 — ödeme yapılan kişi/firma · cari bağlantısı · KDV ayrımı · belge durumu -->
-          <div class="gd-block">
-            <div class="gd-label">Muhasebesel Kontroller</div>
-            <div class="ctx-row"><span class="ctx-lbl">Ödeme yapılan</span><span class="ctx-val">Öz-Kaya Hafriyat Nakliyat</span></div>
-            <div class="ctx-row"><span class="ctx-lbl">Cari bağlantısı</span><span class="ctx-val">Yok — doğrudan nakit ödeme</span></div>
-            <div class="ctx-row"><span class="ctx-lbl">KDV durumu</span><span class="ctx-val">Dahil · içindeki KDV ≈ ₺4.150</span></div>
-            <div class="ctx-row"><span class="ctx-lbl">Belge durumu</span><span class="ctx-val" style="color:var(--ok)">Belgeli (2 belge)</span></div>
-            <div class="ctx-row"><span class="ctx-lbl">Muhasebe kontrolü</span><span class="ctx-val">Sırada — Genel Müdür onayından sonra</span></div>
-          </div>
           <!-- D8 (1.2): işlendiği kasa + defter etkisi — rapor onaylanınca defterde çıkış satırına döner -->
           <div class="gd-block">
             <div class="gd-label">Kasa Defteri</div>
             <div class="ctx-row"><span class="ctx-lbl">İşlendiği kasa</span><span class="ctx-val">Vadi Konakları kasası</span></div>
             <div class="ctx-row"><span class="ctx-lbl">Defter etkisi</span><span class="ctx-val" style="color:var(--danger)">−₺24.900</span></div>
             <div class="ctx-row"><span class="ctx-lbl">Defter durumu</span><span class="ctx-val">Onay sonrası işlenir</span></div>
-            <!-- §15 — şantiye bazlı kasa limiti (bilgilendirme; kanonik "mevcut kasa" değeri
-                 crm-operasyon-kasa.html'den SALT-OKUNUR alınmıştır, o dosyaya dokunulmadı) -->
-            <div class="limit-row">
-              <div class="limit-top"><b>Şantiye kasa limiti</b><span><strong>₺81.920</strong> / ₺120.000</span></div>
-              <div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:68%"></div></div></div>
-            </div>
             <a class="btn btn-ghost btn-sm" style="margin-top:10px" href="crm-operasyon-kasa.html?santiye=vadi"><i class="fa-solid fa-book"></i> Kasa defterinde gör</a>
           </div>
         </div>
@@ -241,7 +195,6 @@
         <div class="gv-card">
           <div class="gc-head">
             <div class="gc-title"><i class="fa-solid fa-stamp"></i> Onay Zinciri</div>
-            <a class="gc-link" href="crm-operasyon-kasa-onay-gecmisi.html?ks=ksa-018">Onay Geçmişi <i class="fa-solid fa-arrow-right"></i></a>
           </div>
           <!-- statik bake (D18-B2): JS load'da aynı mount'u kanonik veriden yeniden basar -->
           <div class="gc-body"><div id="chainEl"><ol class="gv-chain"><li class="chain-step info"><span class="cs-node"><i class="fa-solid fa-paper-plane"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Hasan Demirci</b><span>Şantiye Şefi</span></div><div class="cs-when"><span class="cs-act">Oluşturdu</span><span class="cs-date">29 Haziran 2026 08:40</span></div></div></div></li><li class="chain-step ok"><span class="cs-node"><i class="fa-solid fa-check"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Elif Sarıkaya</b><span>Teknik Müdür</span></div><div class="cs-when"><span class="cs-act">Onayladı</span><span class="cs-date">29 Haziran 2026 15:10</span></div></div><div class="cs-note">Kalemler bütçe dahilinde, onaylandı.</div></div></li><li class="chain-step wait is-now"><span class="cs-node"><i class="fa-solid fa-hourglass-half"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Murat Denizli</b><span>Genel Müdür</span></div><div class="cs-when"><span class="cs-act">Onay bekliyor</span></div></div></div></li><li class="chain-step idle"><span class="cs-node"><i class="fa-solid fa-minus"></i></span><div class="cs-body"><div class="cs-top"><div class="cs-who"><b>Nesrin Aydın</b><span>Muhasebe</span></div><div class="cs-when"><span class="cs-act">Sırada</span></div></div></div></li></ol></div></div>
@@ -255,24 +208,6 @@
       </div>
     </div>
   </main>
-
-  <!-- ============ BELGE GÖRÜNTÜLEME modalı (§15) — .gv-modal idiyomu, ui.js'e
-       DOKUNULMADI, desen crm-satinalma-irsaliye-fatura.html'den birebir devralındı. ============ -->
-  <div class="gv-modal-ov" id="belgeModalOv">
-    <div class="gv-modal" style="width:min(440px,100%)" role="dialog" aria-modal="true" aria-labelledby="belgeModalTitle">
-      <h3 id="belgeModalTitle">Belge Görüntüle</h3>
-      <div class="belge-doc">
-        <i class="fa-regular fa-file-lines" id="belgeDocIco"></i>
-        <div class="bd-name" id="belgeDocName">—</div>
-        <span class="bd-tag" id="belgeDocTag">Taranmış Belge</span>
-      </div>
-      <div class="belge-meta" id="belgeMeta"></div>
-      <div class="gv-modal-acts" style="margin-top:18px">
-        <button type="button" class="btn btn-ghost btn-sm" id="belgeModalClose">Kapat</button>
-        <button type="button" class="btn btn-acc btn-sm" data-demo="Belge indirme bu prototipte simülasyondur (demo)."><i class="fa-solid fa-download"></i> İndir</button>
-      </div>
-    </div>
-  </div>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -295,28 +230,6 @@
     liman:  {name:'Liman Lojistik Merkezi',sub:'Ticari · Aliağa, İzmir',      ini:'LL', style:'background:var(--info-tint);color:var(--info)'},
     merkez: {name:'Merkez Şantiye',        sub:'Depo + Atölye · Gebze, Kocaeli', ini:'MŞ', style:'background:var(--warn-tint);color:var(--warn)'}
   };
-  /* §15 — şantiye bazlı kasa limiti [MOCK-SİM]. "mevcut" değerleri
-     crm-operasyon-kasa.html'deki kanonik MEVCUT KASA rakamlarıdır (81.920/18.520/64.690,
-     salt-okunur alınmıştır); "limit" bu prototip için makul bir üst sınır olarak
-     belirlenmiştir. */
-  var SANTIYE_LIMIT = {
-    vadi:   {mevcut:81920, limit:120000},
-    liman:  {mevcut:18520, limit:40000},
-    merkez: {mevcut:64690, limit:90000}
-  };
-  function limitRowHTML(santiyeKey){
-    var L = SANTIYE_LIMIT[santiyeKey]; if(!L) return '';
-    var pct = Math.round((L.mevcut / L.limit) * 100);
-    var cls = pct >= 90 ? 'danger' : (pct >= 75 ? 'warn' : '');
-    return '<div class="limit-row"><div class="limit-top"><b>Şantiye kasa limiti</b><span><strong>' + tl(L.mevcut) + '</strong> / ' + tl(L.limit) + '</span></div>'
-      + '<div class="gbar"><div class="gbar-track"><div class="gbar-fill ' + cls + '" style="width:' + pct + '%"></div></div></div></div>';
-  }
-  /* §15 — KDV bilgi satırı (kasa-form.html'deki aynı %20 dahil-hesap mantığı;
-     yalnız bilgi amaçlı, tutarı DEĞİŞTİRMEZ) */
-  function kdvInfoStr(tutar){
-    var ic = Math.round(tutar - (tutar / 1.2));
-    return 'Dahil · içindeki KDV ≈ ' + tl(ic);
-  }
   var TUR_TAG = {
     odeme:'<span class="gtag">Ödeme</span>',
     avans:'<span class="gtag" style="background:var(--warn-tint);color:var(--warn);border-color:transparent">Avans Ödemesi</span>',
@@ -347,11 +260,11 @@
   /* KSG (giriş/tahsilat) — 6 kayıt; kaynakHref cari kaydı, hakedis çapraz link (KSG-004/002) */
   var KSG = {
     'ksg-006': {code:'KSG-2026-006', tarih:'1 Temmuz 2026',   santiye:'merkez', tur:'giris',    kaynak:'Genel Merkez',        desc:'Genel merkez kasa beslemesi',   tutar:60000,  olusturan:'Nesrin Aydın'},
-    'ksg-005': {code:'KSG-2026-005', tarih:'29 Haziran 2026', santiye:'merkez', tur:'tahsilat', kaynak:'Marmara Demir Çelik', kaynakHref:'crm-cari-detay.html?cari=marmara', desc:'Hurda karkas demir satışı', tutar:46500, olusturan:'Nesrin Aydın'},
-    'ksg-004': {code:'KSG-2026-004', tarih:'24 Haziran 2026', santiye:'vadi',   tur:'tahsilat', kaynak:'Körfez GYO',          kaynakHref:'crm-cari-detay.html?cari=korfez', desc:'HKD-2026-005 hakediş ödemesi', tutar:620000, olusturan:'Nesrin Aydın',
+    'ksg-005': {code:'KSG-2026-005', tarih:'29 Haziran 2026', santiye:'merkez', tur:'tahsilat', kaynak:'Marmara Demir Çelik', kaynakHref:'crm-cari-detay.html', desc:'Hurda karkas demir satışı', tutar:46500, olusturan:'Nesrin Aydın'},
+    'ksg-004': {code:'KSG-2026-004', tarih:'24 Haziran 2026', santiye:'vadi',   tur:'tahsilat', kaynak:'Körfez GYO',          kaynakHref:'crm-cari-detay.html', desc:'HKD-2026-005 hakediş ödemesi', tutar:620000, olusturan:'Nesrin Aydın',
                  hakedis:{href:'crm-finans-hakedis-detay.html?hkd=005', lbl:'HKD-2026-005 · Körfez GYO · ₺620.000'}},
     'ksg-003': {code:'KSG-2026-003', tarih:'20 Haziran 2026', santiye:'liman',  tur:'giris',    kaynak:'Genel Merkez',        desc:'Genel merkez kasa beslemesi',   tutar:85000,  olusturan:'Nesrin Aydın'},
-    'ksg-002': {code:'KSG-2026-002', tarih:'15 Haziran 2026', santiye:'vadi',   tur:'tahsilat', kaynak:'Körfez GYO',          kaynakHref:'crm-cari-detay.html?cari=korfez', desc:'HKD-2026-004 hakediş ödemesi', tutar:540000, olusturan:'Nesrin Aydın',
+    'ksg-002': {code:'KSG-2026-002', tarih:'15 Haziran 2026', santiye:'vadi',   tur:'tahsilat', kaynak:'Körfez GYO',          kaynakHref:'crm-cari-detay.html', desc:'HKD-2026-004 hakediş ödemesi', tutar:540000, olusturan:'Nesrin Aydın',
                  hakedis:{href:'crm-finans-hakedis-detay.html?hkd=004', lbl:'HKD-2026-004 · Körfez GYO · ₺540.000'}},
     'ksg-001': {code:'KSG-2026-001', tarih:'9 Haziran 2026',  santiye:'vadi',   tur:'giris',    kaynak:'Genel Merkez',        desc:'Genel merkez kasa beslemesi',   tutar:100000, olusturan:'Nesrin Aydın'}
   };
@@ -390,10 +303,6 @@
     var defterDurum = rec.durum === 'onaylandi' ? 'Deftere işlendi'
       : rec.durum === 'reddedildi' ? 'İşlenmedi — rapor reddedildi'
       : 'Onay sonrası işlenir';
-    var muhasebeDurum = rec.durum === 'onaylandi' ? 'Tamamlandı — deftere işlendi'
-      : rec.durum === 'reddedildi' ? 'Devreye girmedi — rapor reddedildi'
-      : rec.durum === 'revize' ? 'Beklemede — şef revize edip yeniden gönderecek'
-      : 'Sırada — üst onaylardan sonra';
 
     document.getElementById('gdLeft').innerHTML =
       '<div class="gv-card">' +
@@ -425,23 +334,15 @@
           '<div class="ctx-row"><span class="ctx-lbl">Kasa dönemi</span><span class="ctx-val">' + donemAralik(rec.tarih) + '</span></div>' +
         '</div>' +
         '<div class="gd-block">' +
-          '<div class="gd-label">Muhasebesel Kontroller</div>' +
-          '<div class="ctx-row"><span class="ctx-lbl">KDV durumu</span><span class="ctx-val">' + kdvInfoStr(rec.tutar) + '</span></div>' +
-          '<div class="ctx-row"><span class="ctx-lbl">Belge durumu</span><span class="ctx-val" style="font-style:italic">Belgesiz — bu prototipte yalnız KSA-2026-018\'e belge eklendi</span></div>' +
-          '<div class="ctx-row"><span class="ctx-lbl">Muhasebe kontrolü</span><span class="ctx-val">' + muhasebeDurum + '</span></div>' +
-        '</div>' +
-        '<div class="gd-block">' +
           '<div class="gd-label">Kasa Defteri</div>' +
           '<div class="ctx-row"><span class="ctx-lbl">İşlendiği kasa</span><span class="ctx-val">' + s.name + ' kasası</span></div>' +
           '<div class="ctx-row"><span class="ctx-lbl">Defter etkisi</span><span class="ctx-val" style="color:var(--danger)">−' + tl(rec.tutar) + '</span></div>' +
           '<div class="ctx-row"><span class="ctx-lbl">Defter durumu</span><span class="ctx-val">' + defterDurum + '</span></div>' +
-          limitRowHTML(rec.santiye) +
           '<a class="btn btn-ghost btn-sm" style="margin-top:10px" href="crm-operasyon-kasa.html?santiye=' + rec.santiye + '"><i class="fa-solid fa-book"></i> Kasa defterinde gör</a>' +
         '</div>' +
       '</div>' +
       '<div class="gv-card">' +
-        '<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-stamp"></i> Onay Zinciri</div>' +
-          '<a class="gc-link" href="crm-operasyon-kasa-onay-gecmisi.html?ks=' + rec.code.toLowerCase().replace('ksa-2026-','ksa-') + '">Onay Geçmişi <i class="fa-solid fa-arrow-right"></i></a></div>' +
+        '<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-stamp"></i> Onay Zinciri</div></div>' +
         '<div class="gc-body"><div id="chainEl"></div></div>' +
       '</div>';
 
@@ -487,16 +388,10 @@
           '<div class="ctx-row"><span class="ctx-lbl">Kasa dönemi</span><span class="ctx-val">' + donemAralik(rec.tarih) + '</span></div>' +
         '</div>' +
         '<div class="gd-block">' +
-          '<div class="gd-label">Muhasebesel Kontroller</div>' +
-          '<div class="ctx-row"><span class="ctx-lbl">Cari bağlantısı</span><span class="ctx-val">' + kaynakHTML + '</span></div>' +
-          '<div class="ctx-row"><span class="ctx-lbl">Muhasebe kontrolü</span><span class="ctx-val">Tamamlandı — Nesrin Aydın tarafından doğrudan işlendi</span></div>' +
-        '</div>' +
-        '<div class="gd-block">' +
           '<div class="gd-label">Kasa Defteri</div>' +
           '<div class="ctx-row"><span class="ctx-lbl">İşlendiği kasa</span><span class="ctx-val">' + s.name + ' kasası</span></div>' +
           '<div class="ctx-row"><span class="ctx-lbl">Defter etkisi</span><span class="ctx-val" style="color:var(--ok)">+' + tl(rec.tutar) + '</span></div>' +
           '<div class="ctx-row"><span class="ctx-lbl">Defter durumu</span><span class="ctx-val">Deftere işlendi</span></div>' +
-          limitRowHTML(rec.santiye) +
           '<a class="btn btn-ghost btn-sm" style="margin-top:10px" href="crm-operasyon-kasa.html?santiye=' + rec.santiye + '"><i class="fa-solid fa-book"></i> Kasa defterinde gör</a>' +
         '</div>' +
       '</div>' +
@@ -510,31 +405,6 @@
 
     GV.crumb(rec.code);
   }
-
-  /* ============ §15 — belge görüntüleme modalı [MOCK-SİM] ============
-     Yalnız KSA-2026-018'in statik 2 belgesi için anlamlıdır (diğer 14 kayıtta belge
-     eklenmemiştir, UYDURULMAZ — bkz. yukarıdaki dosya notu). Event delegation kullanıldı,
-     çünkü gdLeft dinamik kayıtlarda innerHTML ile değişiyor. */
-  var BELGE_META = {
-    'hafriyat-irsaliye.pdf': {tag:'PDF · Taranmış Belge', ico:'fa-regular fa-file-lines', rows:[['Tarih','29 Haziran 2026'],['Ekleyen','Hasan Demirci'],['Boyut','312 KB'],['İlgili rapor','KSA-2026-018']]},
-    'yakit-fisi-29haziran.jpg': {tag:'JPG · Fotoğraf', ico:'fa-regular fa-image', rows:[['Tarih','29 Haziran 2026'],['Ekleyen','Hasan Demirci'],['Boyut','1,4 MB'],['İlgili rapor','KSA-2026-018']]}
-  };
-  var belgeOv = document.getElementById('belgeModalOv');
-  document.addEventListener('click', function(e){
-    var btn = e.target.closest('[data-belge]'); if(!btn) return;
-    var name = btn.getAttribute('data-belge');
-    var meta = BELGE_META[name]; if(!meta) return;
-    document.getElementById('belgeModalTitle').textContent = 'Belge Görüntüle — ' + name;
-    document.getElementById('belgeDocName').textContent = name;
-    document.getElementById('belgeDocTag').textContent = meta.tag;
-    document.getElementById('belgeDocIco').className = meta.ico;
-    document.getElementById('belgeMeta').innerHTML = meta.rows.map(function(r){
-      return '<div class="bm-row"><span class="bm-lbl">' + r[0] + '</span><span class="bm-val">' + r[1] + '</span></div>';
-    }).join('');
-    belgeOv.classList.add('open');
-  });
-  document.getElementById('belgeModalClose').addEventListener('click', function(){ belgeOv.classList.remove('open'); });
-  belgeOv.addEventListener('click', function(e){ if(e.target === belgeOv) belgeOv.classList.remove('open'); });
 
   /* DEFAULT (KSA-2026-018) — statik DOM AYNEN kalır; yalnız badge + onay zinciri
      + rol budaması çalışır (D8/D17 dönemindeki orijinal davranış, değişmedi). */
