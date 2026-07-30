@@ -76,6 +76,44 @@
   #tblPersonel{display:none}
   .pr-mobile-list{display:block}
 }
+
+/* ---- Madde 5 — çoklu seçim (row-chk) + Şantiyeye Ata bulk bar + modal (D19/D18
+   .lyr/.lyr-box checkbox deseninin bu sayfaya uyarlanmış hâli — yeni ui.js primitifi
+   İCAT EDİLMEZ, sayfa-lokal kalır; kasa/pluxee sayfa-lokal filtre motoru emsali) ---- */
+.row-chk{position:relative;display:inline-flex;width:18px;height:18px;flex:none;cursor:pointer;margin-right:10px}
+.row-chk input{position:absolute;opacity:0;pointer-events:none;width:100%;height:100%;margin:0}
+.row-chk .chk-box{width:18px;height:18px;border-radius:5px;border:2px solid var(--line-2);display:flex;align-items:center;justify-content:center;color:transparent;font-size:10px;transition:.15s var(--ease);background:var(--paper);flex:none}
+.row-chk input:checked + .chk-box{background:var(--acc-ink);border-color:var(--acc-ink);color:#fff}
+.row-chk input:focus-visible + .chk-box{outline:2px solid var(--acc);outline-offset:2px}
+#tblPersonel tbody tr.is-selected,.pr-mrow.is-selected{background:rgba(var(--acc-rgb),.05)}
+.pr-mrow-top .row-chk{margin-right:0}
+
+.bulk-bar{display:flex;align-items:center;gap:14px;padding:12px 22px;background:rgba(var(--acc-rgb),.06);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.bulk-bar[hidden]{display:none}
+.bulk-bar .bb-count{font-size:13px;font-weight:700;color:var(--ink)}
+.bulk-bar .bb-acts{display:flex;gap:10px;margin-left:auto}
+@media(max-width:640px){
+  .bulk-bar{padding:12px 16px}
+  .bulk-bar .bb-acts{margin-left:0;width:100%}
+  .bulk-bar .bb-acts .btn{flex:1}
+}
+
+/* ---- Şantiyeye Ata modalı — panel-ajanda Etkinlik Ekle gv-field deseninin birebir
+   uyarlanmışı (bkz tasks/v2-revizyon-plani.md Bölüm B); ortak ui.css'e YENİ bir şey
+   eklenmedi, her modal sahibi sayfa kendi <style>'ında taşır. ---- */
+.gv-field{margin-bottom:14px}
+.gv-field label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.gv-field label .gf-hint{text-transform:none;font-weight:600;letter-spacing:0;color:var(--muted)}
+.gv-field input[type="text"],.gv-field input[type="date"],.gv-field select,.gv-field textarea{
+  width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:var(--r-sm);
+  font-family:inherit;font-size:13px;color:var(--ink);background:var(--bg);transition:.15s var(--ease);
+}
+.gv-field textarea{resize:vertical;min-height:56px}
+.gv-field input:focus,.gv-field select:focus,.gv-field textarea:focus{border-color:var(--acc);background:var(--paper);box-shadow:0 0 0 3px rgba(var(--acc-rgb),.12)}
+.gv-field-row{display:flex;gap:12px}
+.gv-field-row .gv-field{flex:1;min-width:0}
+.ata-toggle-row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-2);margin-bottom:10px}
+.ata-toggle-row:last-child{margin-bottom:0}
 </style>
 </head>
 <body data-sec="personel" data-screen="liste">
@@ -167,11 +205,18 @@
           </div>
         </div>
       </div>
+      <div class="bulk-bar" id="bulkBar" hidden data-admin-only>
+        <span class="bb-count" id="bbCount">0 personel seçildi</span>
+        <div class="bb-acts">
+          <button type="button" class="btn btn-ghost btn-sm" id="bbClear"><i class="fa-solid fa-xmark"></i> Seçimi Temizle</button>
+          <button type="button" class="btn btn-acc btn-sm" id="bbAta"><i class="fa-solid fa-helmet-safety"></i> Şantiyeye Ata</button>
+        </div>
+      </div>
       <div class="gc-body flush">
         <table class="gtable" id="tblPersonel" data-paginate="25">
           <thead>
             <tr>
-              <th>Personel</th>
+              <th><label class="row-chk" id="chkAllWrap" data-admin-only hidden><input type="checkbox" id="chkAllPersonel" aria-label="Görünen tüm personeli seç"><span class="chk-box"><i class="fa-solid fa-check"></i></span></label>Personel</th>
               <th class="col-santiye">Şantiye / Birim</th>
               <th class="col-tel">Telefon</th>
               <th class="col-baslama">İşe Başlama</th>
@@ -539,6 +584,75 @@
   </main>
 </div>
 
+<!-- ============ Madde 5.2 — Şantiyeye Personel Ata Modalı (10 alan) ============ -->
+<div class="gv-modal-ov" id="ataModalOv">
+  <div class="gv-modal" style="width:min(520px,100%)" role="dialog" aria-modal="true" aria-labelledby="ataModalTitle">
+    <div id="ataFormView">
+      <h3 id="ataModalTitle">Şantiyeye Ata</h3>
+      <p style="margin:-4px 0 16px;font-size:12.5px;color:var(--muted)">
+        <b id="ataSeciliSayi">0 personel</b> seçildi — <span id="ataSeciliOzet">—</span>
+      </p>
+      <div class="gv-field">
+        <label for="ataSantiye">Şantiye</label>
+        <select id="ataSantiye">
+          <option value="">Şantiye seçin…</option>
+          <option value="vadi">Vadi Konakları</option>
+          <option value="liman">Liman Lojistik Merkezi</option>
+          <option value="merkez">Merkez Şantiye</option>
+        </select>
+      </div>
+      <div class="gv-field-row">
+        <div class="gv-field">
+          <label for="ataGorev">Şantiyedeki Görev / Rol</label>
+          <input type="text" id="ataGorev" placeholder="örn. Kalıpçı, Formen, Elektrik Ustası">
+        </div>
+        <div class="gv-field">
+          <label for="ataDepartman">Departman</label>
+          <select id="ataDepartman">
+            <option value="santiye-ekibi">Şantiye Ekibi</option>
+            <option value="saha-ekibi">Saha Ekibi</option>
+            <option value="teknik-ofis">Teknik Ofis</option>
+            <option value="isg-ekibi">İSG Ekibi</option>
+            <option value="yonetim">Yönetim</option>
+          </select>
+        </div>
+      </div>
+      <div class="gv-field-row">
+        <div class="gv-field">
+          <label for="ataBaslangic">Başlangıç Tarihi</label>
+          <input type="date" id="ataBaslangic">
+        </div>
+        <div class="gv-field">
+          <label for="ataBitis">Bitiş Tarihi <span class="gf-hint">(opsiyonel)</span></label>
+          <input type="date" id="ataBitis">
+        </div>
+      </div>
+      <div class="gv-field">
+        <label for="ataAciklama">Açıklama <span class="gf-hint">(opsiyonel)</span></label>
+        <textarea id="ataAciklama" rows="2" placeholder="Atamayla ilgili not…"></textarea>
+      </div>
+      <div class="gv-field" style="margin-top:4px">
+        <div class="ata-toggle-row"><label class="gv-toggle"><input type="checkbox" id="ataPuantaj" checked><span class="tg-track"></span></label><span>Puantaja dahil edilsin mi?</span></div>
+        <div class="ata-toggle-row"><label class="gv-toggle"><input type="checkbox" id="ataEkip" checked><span class="tg-track"></span></label><span>Şantiye ekip listesinde görünsün mü?</span></div>
+        <div class="ata-toggle-row"><label class="gv-toggle"><input type="checkbox" id="ataBildirim"><span class="tg-track"></span></label><span>Bildirim gönderilsin mi?</span></div>
+      </div>
+      <div class="gv-modal-acts" style="margin-top:18px">
+        <button type="button" class="btn btn-ghost btn-sm" id="ataCancel">Vazgeç</button>
+        <button type="button" class="btn btn-acc btn-sm" id="ataSave"><i class="fa-solid fa-check"></i> Kaydet</button>
+      </div>
+    </div>
+    <div id="ataSuccessView" hidden style="text-align:center;padding:8px 4px">
+      <div class="gv-modal-ico" style="background:var(--ok-tint);color:var(--ok);margin:0 auto 14px"><i class="fa-solid fa-check"></i></div>
+      <h3 id="ataSuccessTitle">Atama kaydedildi</h3>
+      <p id="ataSuccessText">—</p>
+      <div class="gv-modal-acts" style="justify-content:center;margin-top:18px">
+        <button type="button" class="btn btn-ghost btn-sm" id="ataSuccessClose">Kapat</button>
+        <a class="btn btn-acc btn-sm" id="ataSuccessLink" href="#"><i class="fa-solid fa-arrow-right"></i> Şantiye Ekibine Git</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="assets/js/shell.js"></script>
 <script src="assets/js/ui.js"></script>
 <script>
@@ -734,6 +848,217 @@
 
   buildCards();
   applyPersonelCombinedFilter();
+})();
+</script>
+
+<script>
+/* =====================================================================
+   Madde 5 — Personel → Şantiye Atama (§5.1/§5.2). Yalnız superadmin/sahip/
+   yonetim/ik görür (mevcut data-admin-only role gate'iyle AYNI 4 rol,
+   crm-personel.html:548 — yeni bir yetki seviyesi İCAT EDİLMEZ).
+   Checkbox'lar mevcut ilk kolonun (.gcell / .pr-mrow-top) İÇİNE JS ile
+   eklenir — tabloya yeni <th>/<td> kolonu EKLENMEZ (kolon sayısı JS
+   kapalıyken de tutarlı kalır, hizalama bozulmaz). data-per kimliği
+   satırın kendi ia-btn href'inden (?per=NNN) türetilir, yeni bir HTML
+   alanı eklenmez. Kanonik veri (25/22/3, öz kadro 69) BU MODÜLDE
+   OKUNMAZ/DEĞİŞTİRİLMEZ — atama yalnızca sayfa-lokal state'te yaşar.
+   ===================================================================== */
+(function(){
+  if(!window.GV) return;
+  if(['superadmin','sahip','yonetim','ik'].indexOf(GV.role) === -1) return;
+
+  var tbl = document.getElementById('tblPersonel');
+  if(!tbl) return;
+
+  var chkAllWrap = document.getElementById('chkAllWrap');
+  if(chkAllWrap) chkAllWrap.hidden = false;
+
+  var selected = {}; /* per -> ad (Set yerine düz obje — geniş tarayıcı desteği) */
+  function selCount(){ return Object.keys(selected).length; }
+
+  function perOf(scope){
+    var a = scope.querySelector('.ia-btn[href*="per="]');
+    var m = a && a.getAttribute('href').match(/per=(\d+)/);
+    return m ? m[1] : null;
+  }
+  function nameOf(scope){
+    var n = scope.querySelector('.gcell-name');
+    return n ? n.textContent.trim() : '—';
+  }
+
+  function makeChk(per){
+    var lbl = document.createElement('label');
+    lbl.className = 'row-chk';
+    lbl.setAttribute('data-per', per);
+    lbl.innerHTML = '<input type="checkbox" class="pr-chk" aria-label="Seç"><span class="chk-box"><i class="fa-solid fa-check"></i></span>';
+    return lbl;
+  }
+
+  /* ---- masaüstü: her satırın .gcell'ine checkbox ekle ---- */
+  tbl.querySelectorAll('tbody tr').forEach(function(tr){
+    var per = perOf(tr);
+    if(!per) return;
+    tr.setAttribute('data-per', per);
+    var gcell = tr.querySelector('.gcell');
+    if(gcell) gcell.insertBefore(makeChk(per), gcell.firstChild);
+  });
+
+  /* ---- mobil kartlar: buildCards() bu script ÇALIŞMADAN ÖNCE (önceki
+     <script> bloğunda) DOM'u üretmiş olur — script tag'leri sırayla
+     çalışır, MutationObserver'a gerek yok ---- */
+  function injectMobileChecks(){
+    document.querySelectorAll('#prMobileList .pr-mrow').forEach(function(card){
+      if(card.querySelector('.row-chk')) return;
+      var per = card.getAttribute('data-per') || perOf(card);
+      if(!per) return;
+      var top = card.querySelector('.pr-mrow-top');
+      if(top) top.insertBefore(makeChk(per), top.firstChild);
+    });
+  }
+  injectMobileChecks();
+
+  function updateRowHighlight(per, on){
+    document.querySelectorAll('.row-chk[data-per="' + per + '"]').forEach(function(chkLbl){
+      var row = chkLbl.closest('tr') || chkLbl.closest('.pr-mrow');
+      if(row) row.classList.toggle('is-selected', on);
+    });
+  }
+
+  var bulkBar = document.getElementById('bulkBar');
+  var bbCount = document.getElementById('bbCount');
+  function syncBulkBar(){
+    var n = selCount();
+    if(bulkBar) bulkBar.hidden = n === 0;
+    if(bbCount) bbCount.textContent = n + ' personel seçildi';
+  }
+
+  var chkAll = document.getElementById('chkAllPersonel');
+  function syncSelectAllState(){
+    if(!chkAll) return;
+    var visible = 0, visibleSelected = 0;
+    tbl.querySelectorAll('tbody tr').forEach(function(tr){
+      if(tr.hidden) return;
+      visible++;
+      var per = tr.getAttribute('data-per');
+      if(per && selected[per]) visibleSelected++;
+    });
+    if(!visible){ chkAll.checked = false; chkAll.indeterminate = false; return; }
+    chkAll.checked = visibleSelected === visible;
+    chkAll.indeterminate = visibleSelected > 0 && visibleSelected < visible;
+  }
+  /* filtre motoru tbl._gvApply'ı ui.js/applyFilters çağırır (D18 delegasyon deseni,
+     bkz kasa/musteriler emsali) — orijinal fonksiyonu SARMALIYORUZ, DEĞİŞTİRMİYORUZ */
+  if(typeof tbl._gvApply === 'function'){
+    var _origApply = tbl._gvApply;
+    tbl._gvApply = function(){ _origApply(); syncSelectAllState(); };
+  }
+
+  document.addEventListener('change', function(e){
+    var input = e.target.closest('.row-chk input');
+    if(input){
+      var per = input.closest('.row-chk').getAttribute('data-per');
+      var row = tbl.querySelector('tr[data-per="' + per + '"]');
+      if(input.checked) selected[per] = row ? nameOf(row) : per; else delete selected[per];
+      updateRowHighlight(per, input.checked);
+      /* aynı kişinin masaüstü/mobil checkbox'ı senkron kalsın */
+      document.querySelectorAll('.row-chk[data-per="' + per + '"] input').forEach(function(other){
+        if(other !== input) other.checked = input.checked;
+      });
+      syncBulkBar();
+      syncSelectAllState();
+      return;
+    }
+    if(e.target === chkAll){
+      tbl.querySelectorAll('tbody tr').forEach(function(tr){
+        if(tr.hidden) return;
+        var per = tr.getAttribute('data-per');
+        if(!per) return;
+        document.querySelectorAll('.row-chk[data-per="' + per + '"] input').forEach(function(i){ i.checked = chkAll.checked; });
+        if(chkAll.checked) selected[per] = nameOf(tr); else delete selected[per];
+        updateRowHighlight(per, chkAll.checked);
+      });
+      syncBulkBar();
+    }
+  });
+
+  var bbClear = document.getElementById('bbClear');
+  if(bbClear) bbClear.addEventListener('click', function(){
+    Object.keys(selected).forEach(function(per){ updateRowHighlight(per, false); });
+    selected = {};
+    document.querySelectorAll('.row-chk input').forEach(function(i){ i.checked = false; });
+    syncBulkBar();
+    syncSelectAllState();
+  });
+
+  /* ---- Şantiyeye Ata modalı ---- */
+  /* crm-santiye-detay.html SITE_KEYS ile BİREBİR (o dosyada ölçüldü — vadi/liman/merkez/gol/kule).
+     Kule (teslim edilmiş) ve Göl Evleri (planlama, ekip yok) aktif ekip almadığından listelenmez. */
+  var SANTIYE_AD = {vadi:'Vadi Konakları', liman:'Liman Lojistik Merkezi', merkez:'Merkez Şantiye'};
+  /* -e hali (dative) doğru ünlü uyumuyla — tek bir sabit ek büyük/küçük ünlü uyumunu bozar */
+  var SANTIYE_E_HALI = {vadi:"Vadi Konakları'na", liman:"Liman Lojistik Merkezi'ne", merkez:"Merkez Şantiye'ye"};
+
+  var ataOv = document.getElementById('ataModalOv');
+  var ataFormView = document.getElementById('ataFormView');
+  var ataSuccessView = document.getElementById('ataSuccessView');
+  var bbAta = document.getElementById('bbAta');
+
+  function openAtaModal(){
+    if(!selCount()) return;
+    ataFormView.hidden = false;
+    ataSuccessView.hidden = true;
+    var names = Object.keys(selected).map(function(per){ return selected[per]; });
+    document.getElementById('ataSeciliSayi').textContent = names.length + ' personel';
+    document.getElementById('ataSeciliOzet').textContent = names.join(', ');
+    document.getElementById('ataSantiye').value = '';
+    document.getElementById('ataGorev').value = '';
+    document.getElementById('ataDepartman').value = 'santiye-ekibi';
+    document.getElementById('ataBaslangic').value = '';
+    document.getElementById('ataBitis').value = '';
+    document.getElementById('ataAciklama').value = '';
+    document.getElementById('ataPuantaj').checked = true;
+    document.getElementById('ataEkip').checked = true;
+    document.getElementById('ataBildirim').checked = false;
+    ataOv.classList.add('open');
+  }
+  function closeAtaModal(){ ataOv.classList.remove('open'); }
+
+  if(bbAta) bbAta.addEventListener('click', openAtaModal);
+  document.getElementById('ataCancel').addEventListener('click', closeAtaModal);
+  ataOv.addEventListener('click', function(e){ if(e.target === ataOv) closeAtaModal(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && ataOv.classList.contains('open')) closeAtaModal(); });
+
+  document.getElementById('ataSave').addEventListener('click', function(){
+    var santiye = document.getElementById('ataSantiye').value;
+    var baslangic = document.getElementById('ataBaslangic').value;
+    if(!santiye){ gvToast('Şantiye seçilmeden atama kaydedilemez.', {type:'danger'}); return; }
+    if(!baslangic){ gvToast('Başlangıç tarihi zorunludur.', {type:'danger'}); return; }
+
+    var names = Object.keys(selected).map(function(per){ return selected[per]; });
+    var santiyeAd = SANTIYE_AD[santiye];
+    var puantaj = document.getElementById('ataPuantaj').checked;
+    var ekip = document.getElementById('ataEkip').checked;
+    var bildirim = document.getElementById('ataBildirim').checked;
+
+    /* [MOCK-SİM] Faz 1'de kalıcı kayıt YOK — kanonik 25/22/3 · öz kadro 69 sayıları
+       bu aksiyonla DEĞİŞMEZ (kordon). Atama yalnız bu oturumun toast/özet metninde yaşar. */
+    ataFormView.hidden = true;
+    ataSuccessView.hidden = false;
+    document.getElementById('ataSuccessText').textContent =
+      names.join(', ') + ' — ' + santiyeAd + (puantaj ? ' (puantaja dahil)' : '') + (ekip ? ', ekip listesinde görünecek' : '') + (bildirim ? ', bildirim gönderildi' : '') + ' (demo).';
+    document.getElementById('ataSuccessLink').href = 'crm-santiye-detay.html?santiye=' + santiye + '#ekip';
+    gvToast(names.length + ' personel ' + SANTIYE_E_HALI[santiye] + ' atandı (demo).');
+
+    /* seçim temizlenir — atama "tamamlandı" sayılır */
+    Object.keys(selected).forEach(function(per){ updateRowHighlight(per, false); });
+    selected = {};
+    document.querySelectorAll('.row-chk input').forEach(function(i){ i.checked = false; });
+    syncBulkBar();
+    syncSelectAllState();
+  });
+
+  document.getElementById('ataSuccessClose').addEventListener('click', closeAtaModal);
+
+  syncSelectAllState();
 })();
 </script>
 </body>
