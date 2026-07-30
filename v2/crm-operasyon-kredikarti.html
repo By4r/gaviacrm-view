@@ -226,6 +226,11 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" id="kkSearch" placeholder="Kayıt no, banka veya satıcı ara">
           </div>
+          <!-- [§9/T-G1] sağ off-canvas gelişmiş filtre — mevcut banka/durum/tarih hızlı
+               filtreleriyle AND mantığıyla birlikte çalışır (tasks/spec-filtre-tarih.md §3) -->
+          <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpKK">
+            <i class="fa-solid fa-sliders"></i> Gelişmiş Filtre
+          </button>
         </div>
         <div class="filter-row">
           <span class="frow-lbl">Banka</span>
@@ -251,6 +256,18 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
         <div class="filter-row">
           <span class="frow-lbl">Tarih Aralığı</span>
           <div id="kkDateRange"></div>
+        </div>
+      </div>
+      <!-- [§9/T-G1] aktif filtre çipleri — gvFilterPanel tarafından doldurulur, filtre yokken hidden -->
+      <div class="gv-achips-row" id="achipsKK" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor.">
+            <i class="fa-solid fa-lock"></i> Filtreleri Kaydet
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all>
+            <i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle
+          </button>
         </div>
       </div>
       <div class="kk-bulk-bar" id="kkBulkBar" hidden>
@@ -343,6 +360,100 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
   </main>
 </div>
 
+<!-- ============ §9/T-G1 — sağ off-canvas gelişmiş filtre paneli (tasks/spec-filtre-tarih.md).
+     Sayfanın kendi çok eksenli filtre motoru (banka/durum/tarih/arama) zaten curBanka/curDurum/
+     curTarih ile çalışıyor — bu yüzden opts.table VERİLMEZ; panel alanları BAĞIMSIZ ek eksenler
+     olarak applyFilter() içinde AND mantığıyla eklenir (crm-personel.html/crm-santiye.html'deki
+     "sayfanın kendi motoru varsa onApply kullan" deseninin devralımı). "Kart" ve "Personel"
+     alanları mevcut banka şeridi/chip'leriyle AYNI değişkeni PAYLAŞMAZ — bağımsız ek daraltma
+     eksenleridir (çelişen bir kombinasyon seçilirse doğal sonuç 0 kayıttır, §3'ün AND ilkesiyle
+     tutarlı). Şantiye/harcama kategorisi/belge durumu değerleri, T-G'nin Dalga 2B'de
+     crm-operasyon-kredikarti-cikti.html için TÜRETTİĞİ kararlar.md madde 29 eşlemesinin BİREBİR
+     devralımıdır (liste ve çıktı sayfası aynı sınıflandırmayı paylaşır). -->
+<div class="gv-fpanel-ov" id="fpKKOv">
+  <aside class="gv-fpanel" id="fpKK" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+    <div class="gv-fpanel-head">
+      <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+      <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="gv-fpanel-body">
+      <div class="gfield">
+        <label>Kart</label>
+        <select data-fp-key="kart" data-fp-label="Kart">
+          <option value="">Tümü</option>
+          <option value="garanti">Garanti BBVA •4512</option>
+          <option value="akbank">Akbank •7789</option>
+          <option value="is">İş Bankası •2301</option>
+          <option value="ykb">Yapı Kredi •9944</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label>Kart Durumu</label>
+        <select data-fp-key="kdurum" data-fp-label="Kart Durumu">
+          <option value="">Tümü</option>
+          <option value="aktif">Aktif</option>
+          <option value="pasif">Pasif</option>
+          <option value="arsiv">Arşivde</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label>Şantiye</label>
+        <select data-fp-key="santiye" data-fp-label="Şantiye">
+          <option value="">Tümü</option>
+          <option value="Vadi Konakları">Vadi Konakları</option>
+          <option value="Liman Lojistik Merkezi">Liman Lojistik Merkezi</option>
+          <option value="Merkez Şantiye">Merkez Şantiye</option>
+          <option value="Genel Merkez">Genel Merkez</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label>Personel (Kart Sahibi)</label>
+        <select data-fp-key="personel" data-fp-label="Personel">
+          <option value="">Tümü</option>
+          <option value="Hasan Demirci">Hasan Demirci</option>
+          <option value="Baran Yıldız">Baran Yıldız</option>
+          <option value="Nesrin Aydın">Nesrin Aydın</option>
+          <option value="Elif Sarıkaya">Elif Sarıkaya</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label>Harcama Kategorisi</label>
+        <select data-fp-key="kategori" data-fp-label="Kategori">
+          <option value="">Tümü</option>
+          <option value="Akaryakıt">Akaryakıt</option>
+          <option value="Hırdavat / Sarf Malzeme">Hırdavat / Sarf Malzeme</option>
+          <option value="Araç Bakım">Araç Bakım</option>
+          <option value="Ofis Sarf Malzemesi">Ofis Sarf Malzemesi</option>
+          <option value="Ofis / E-ticaret">Ofis / E-ticaret</option>
+          <option value="Konaklama">Konaklama</option>
+          <option value="Kart Ödemesi">Kart Ödemesi</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label>Belge Durumu</label>
+        <select data-fp-key="belge" data-fp-label="Belge Durumu">
+          <option value="">Tümü</option>
+          <option value="Belge Tam">Belge Tam</option>
+          <option value="Belge Yükleniyor">Belge Yükleniyor</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label>Onay Durumu</label>
+        <select data-fp-key="onay" data-fp-label="Onay Durumu">
+          <option value="">Tümü</option>
+          <option value="ok">Kayıtlı</option>
+          <option value="onaylandi">Onaylandı</option>
+          <option value="bekliyor">Onay Bekliyor</option>
+        </select>
+      </div>
+    </div>
+    <div class="gv-fpanel-foot">
+      <button type="button" class="btn btn-ghost" data-fp-clear>Temizle</button>
+      <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+    </div>
+  </aside>
+</div>
+
 <script src="assets/js/shell.js"></script>
 <script src="assets/js/ui.js"></script>
 <script>
@@ -399,6 +510,30 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
     var p = s.split(' ');   /* ['18','Haziran','2026'] */
     return p[2] + '-' + AY_ISO[p[1]] + '-' + (p[0].length < 2 ? '0' + p[0] : p[0]);
   }
+
+  /* [§9/T-G1] Şantiye + Harcama Kategorisi — kararlar.md madde 29'da
+     crm-operasyon-kredikarti-cikti.html için türetilen eşlemenin BİREBİR devralımı
+     (id → {santiye,kategori}); liste ve çıktı sayfası aynı sınıflandırmayı paylaşır.
+     Belge Durumu ayrı bir tablo GEREKTİRMEZ — onay durumundan türetilir (aynı kararın
+     "belge durumu: onay durumundan türetildi" kuralı, bkz buildLedgerRows). */
+  var KKR_META = {
+    '001':{santiye:'Vadi Konakları', kategori:'Hırdavat / Sarf Malzeme'},
+    '015':{santiye:'Genel Merkez', kategori:'Kart Ödemesi'},
+    '004':{santiye:'Vadi Konakları', kategori:'Akaryakıt'},
+    '007':{santiye:'Vadi Konakları', kategori:'Akaryakıt'},
+    '009':{santiye:'Vadi Konakları', kategori:'Araç Bakım'},
+    '012':{santiye:'Vadi Konakları', kategori:'Hırdavat / Sarf Malzeme'},
+    '014':{santiye:'Liman Lojistik Merkezi', kategori:'Konaklama'},
+    '016':{santiye:'Genel Merkez', kategori:'Kart Ödemesi'},
+    '003':{santiye:'Genel Merkez', kategori:'Araç Bakım'},
+    '008':{santiye:'Genel Merkez', kategori:'Ofis / E-ticaret'},
+    '013':{santiye:'Genel Merkez', kategori:'Akaryakıt'},
+    '002':{santiye:'Genel Merkez', kategori:'Akaryakıt'},
+    '006':{santiye:'Genel Merkez', kategori:'Hırdavat / Sarf Malzeme'},
+    '011':{santiye:'Genel Merkez', kategori:'Ofis Sarf Malzemesi'},
+    '005':{santiye:'Genel Merkez', kategori:'Ofis Sarf Malzemesi'},
+    '010':{santiye:'Genel Merkez', kategori:'Akaryakıt'}
+  };
 
   /* ---- kart şeridi render — D19/S12: kasa .ks-card gibi SEÇİCİ ----
      [§17] arşivlenen kart (kartDurum:'arsiv') showArsivKart açık olmadıkça hiç basılmaz;
@@ -458,7 +593,11 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
         var rid = 'kkr-' + t.id;
         var waitHtml = t.durum === 'bekliyor' ? '<span class="df-wait"><i class="fa-solid fa-hourglass-half"></i> onayda</span>' : '';
         var taksitTxt = t.taksit === 'tek' ? '' : ' ('+t.taksit+' Taksit)';
-        html += '<tr data-banka="'+key+'" data-durum="'+t.durum+'" data-id="'+rid+'" data-tarih="'+isoFromUzun(t.tarihUzun)+'">'
+        /* [§9/T-G1] gelişmiş filtre panelinin şantiye/kategori/belge eksenleri için — kararlar.md
+           madde 29 eşlemesi; kanonik tutar/tarih/durum hiçbiri değişmedi. */
+        var meta = KKR_META[t.id] || {santiye:'', kategori:''};
+        var belgeDurum = t.durum === 'bekliyor' ? 'Belge Yükleniyor' : 'Belge Tam';
+        html += '<tr data-banka="'+key+'" data-durum="'+t.durum+'" data-id="'+rid+'" data-tarih="'+isoFromUzun(t.tarihUzun)+'" data-santiye="'+meta.santiye+'" data-kategori="'+meta.kategori+'" data-belge="'+belgeDurum+'">'
           + '<td class="df-no">'+(i + 1)+'</td><td class="df-date">'+t.tarih+'</td>'
           + '<td class="df-firm">'+K.banka+' <span class="kk-no">•'+K.no+'</span>'+waitHtml+'</td>'
           + '<td class="df-desc">'+t.firma+' — '+t.desc+taksitTxt+' — KKR-2026-'+t.id+'</td>'
@@ -629,6 +768,9 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
      4 bankanın defteri art arda görünür. devir/toplam/mevcut çerçeve satırları yalnız
      banka eşleşmesine bakar, Durum/arama filtresinden etkilenmez. ---- */
   var curBanka = 'hepsi', curDurum = 'hepsi', curTarih = null;   /* curTarih: {key,from:Date,to:Date,label} | null */
+  /* [§9/T-G1] gelişmiş filtre panelinin BAĞIMSIZ ek eksenleri — mevcut curBanka/curDurum
+     ile AYNI değişkeni PAYLAŞMAZ, applyFilter() içinde AND ile eklenir (bkz panel yorumu). */
+  var fpKart = '', fpKartDurum = '', fpSantiye = '', fpPersonel = '', fpKategori = '', fpBelge = '', fpOnay = '';
   var dfBanka = document.getElementById('dfBanka');
   function syncBankaUI(){
     strip.querySelectorAll('.kk-card').forEach(function(el){
@@ -731,7 +873,16 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
         var d = new Date(tr.getAttribute('data-tarih') + 'T00:00:00');
         okTarih = d >= curTarih.from && d <= curTarih.to;
       }
-      var show = okDurum && okTerm && okTarih;
+      /* [§9/T-G1] gelişmiş filtre panelinin bağımsız ekleri — boşsa (Tümü) her zaman geçer */
+      var rowK = KARTLAR[tr.getAttribute('data-banka')];
+      var okFpKart = !fpKart || tr.getAttribute('data-banka') === fpKart;
+      var okFpKartDurum = !fpKartDurum || (rowK && rowK.kartDurum === fpKartDurum);
+      var okFpSantiye = !fpSantiye || tr.getAttribute('data-santiye') === fpSantiye;
+      var okFpPersonel = !fpPersonel || (rowK && rowK.sahip === fpPersonel);
+      var okFpKategori = !fpKategori || tr.getAttribute('data-kategori') === fpKategori;
+      var okFpBelge = !fpBelge || tr.getAttribute('data-belge') === fpBelge;
+      var okFpOnay = !fpOnay || tr.getAttribute('data-durum') === fpOnay;
+      var show = okDurum && okTerm && okTarih && okFpKart && okFpKartDurum && okFpSantiye && okFpPersonel && okFpKategori && okFpBelge && okFpOnay;
       tr.hidden = !show;
       if(show) shown++;
     });
@@ -767,6 +918,26 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
     emptyLabel:'Tüm zamanlar',
     onChange:function(val){ curTarih = val; applyFilter(); }
   });
+
+  /* [§9/T-G1] gelişmiş filtre paneli — sayfanın kendi çok eksenli motoru (applyFilter)
+     olduğu için opts.table VERİLMEZ; panel yalnız UI/aktif-çip/badge yönetir, gerçek
+     satır eşleşmesi burada okunan state ile yukarıdaki applyFilter() içinde yapılır
+     (tasks/spec-filtre-tarih.md §3 — crm-personel.html deseninin devralımı). */
+  if(window.gvFilterPanel){
+    window.gvFilterPanel.init('#fpKK', {
+      activeRow: '#achipsKK',
+      onApply: function(state){
+        fpKart = state.kart ? state.kart.value : '';
+        fpKartDurum = state.kdurum ? state.kdurum.value : '';
+        fpSantiye = state.santiye ? state.santiye.value : '';
+        fpPersonel = state.personel ? state.personel.value : '';
+        fpKategori = state.kategori ? state.kategori.value : '';
+        fpBelge = state.belge ? state.belge.value : '';
+        fpOnay = state.onay ? state.onay.value : '';
+        applyFilter();
+      }
+    });
+  }
 
   /* ============ §14/T-G — çoklu seçim (row-chk) + "Çıktı Al" seçim çubuğu.
      crm-personel.html Madde 5 çoklu-seçim deseninin bu sayfaya uyarlanması: yeni bir

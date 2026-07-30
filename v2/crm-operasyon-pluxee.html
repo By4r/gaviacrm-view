@@ -243,6 +243,11 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" id="plxSearch" placeholder="Kart no, personel veya açıklama ara">
           </div>
+          <!-- [§9/T-G1] sağ off-canvas gelişmiş filtre — mevcut kart/tür/şantiye/tarih hızlı
+               filtreleriyle AND mantığıyla birlikte çalışır (tasks/spec-filtre-tarih.md §3) -->
+          <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpPlx">
+            <i class="fa-solid fa-sliders"></i> Gelişmiş Filtre
+          </button>
         </div>
         <div class="filter-row">
           <span class="frow-lbl">Tür</span>
@@ -266,6 +271,18 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
         <div class="filter-row">
           <span class="frow-lbl">Tarih Aralığı</span>
           <div id="plxDateRange"></div>
+        </div>
+      </div>
+      <!-- [§9/T-G1] aktif filtre çipleri — gvFilterPanel tarafından doldurulur, filtre yokken hidden -->
+      <div class="gv-achips-row" id="achipsPlx" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor.">
+            <i class="fa-solid fa-lock"></i> Filtreleri Kaydet
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all>
+            <i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle
+          </button>
         </div>
       </div>
       <div class="plx-bulk-bar" id="plxBulkBar" hidden>
@@ -320,6 +337,79 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
       <div class="gc-body" id="plxDetailBody"><div class="gv-detail-grid"><div class="gdg-item"><span class="gdg-lbl">Tarih</span><span class="gdg-val">1 Temmuz 2026</span></div><div class="gdg-item"><span class="gdg-lbl">Kart / Personel</span><span class="gdg-val">Ali Vural •4471</span></div><div class="gdg-item"><span class="gdg-lbl">Şantiye</span><span class="gdg-val">Vadi Konakları</span></div><div class="gdg-item"><span class="gdg-lbl">Tür</span><span class="gdg-val"><span class="gtag">Harcama</span></span></div><div class="gdg-item span2"><span class="gdg-lbl">Açıklama</span><span class="gdg-val">Haftalık market alışverişi</span></div><div class="gdg-item"><span class="gdg-lbl">Tutar</span><span class="gdg-val">₺420</span></div></div></div>
     </div>
   </main>
+</div>
+
+<!-- ============ §9/T-G1 — sağ off-canvas gelişmiş filtre paneli (tasks/spec-filtre-tarih.md).
+     Kart Defteri TEK karta scope'lu (D19/S12 idiyomu) olduğu için "Kart Sahibi" alanı diğer
+     eksenler gibi bağımsız bir AND filtresi DEĞİL, sayfanın kendi setCard() navigasyon
+     fonksiyonunu çağırır (opts.table VERİLMEZ — crm-personel.html'deki "sayfanın kendi motoru
+     varsa onApply kullan" deseninin devralımı). Kart Tipi/Onay Durumu/Dönem — bağımsız AND
+     eksenleri; kart tipi/onay durumu değerleri kararlar.md madde 30'da
+     crm-operasyon-pluxee-cikti.html için türetilen eşlemenin BİREBİR devralımıdır. -->
+<div class="gv-fpanel-ov" id="fpPlxOv">
+  <aside class="gv-fpanel" id="fpPlx" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+    <div class="gv-fpanel-head">
+      <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+      <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="gv-fpanel-body">
+      <div class="gfield">
+        <label>Kart Sahibi</label>
+        <select data-fp-key="sahip" data-fp-label="Kart Sahibi">
+          <option value="">Seçili kart korunur</option>
+          <option value="4471">Ali Vural •4471</option>
+          <option value="4482">İbrahim Sönmez •4482</option>
+          <option value="4493">Ramazan Kılıç •4493</option>
+          <option value="4504">Selim Doğan •4504</option>
+          <option value="4515">Musa Erdem •4515</option>
+          <option value="4526">Veli Şimşek •4526</option>
+          <option value="5871">Şükrü Aslan •5871</option>
+          <option value="5882">Halil Güneş •5882</option>
+          <option value="5893">Metin Çetin •5893</option>
+          <option value="5904">Osman Polat •5904</option>
+          <option value="6231">Recep Yaman •6231</option>
+          <option value="6242">İlyas Kurt •6242</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label>Kart Tipi</label>
+        <select data-fp-key="tip" data-fp-label="Kart Tipi">
+          <option value="">Tümü</option>
+          <option value="yemek">Yemek Kartı (Pluxee)</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label>Şantiye / Departman</label>
+        <select data-fp-key="fpsantiye" data-fp-label="Şantiye">
+          <option value="">Tümü</option>
+          <option value="vadi">Vadi Konakları</option>
+          <option value="liman">Liman Lojistik Merkezi</option>
+          <option value="merkez">Merkez Şantiye</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label>Onay Durumu</label>
+        <select data-fp-key="onay" data-fp-label="Onay Durumu">
+          <option value="">Tümü</option>
+          <option value="Onaylandı">Onaylandı</option>
+          <option value="Otomatik Onaylı">Otomatik Onaylı</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label>Dönem</label>
+        <select data-fp-key="donem" data-fp-label="Dönem">
+          <option value="">Tümü</option>
+          <option value="gunluk">Günlük (bugün)</option>
+          <option value="haftalik">Haftalık (son 7 gün)</option>
+          <option value="aylik">Aylık</option>
+        </select>
+      </div>
+    </div>
+    <div class="gv-fpanel-foot">
+      <button type="button" class="btn btn-ghost" data-fp-clear>Temizle</button>
+      <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+    </div>
+  </aside>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -412,6 +502,11 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
     return p[2] + '-' + AY_ISO[p[1]] + '-' + (p[0].length < 2 ? '0' + p[0] : p[0]);
   }
 
+  /* [§9/T-G1] Onay Durumu — kararlar.md madde 30'da crm-operasyon-pluxee-cikti.html için
+     türetilen eşlemenin BİREBİR devralımı (yükleme→Onaylandı, harcama→Otomatik Onaylı);
+     kart tipi tek tip olduğundan ("Yemek Kartı (Pluxee)") ayrı bir eşleme tablosu gerekmez. */
+  var ONAY_LBL = {yukleme:'Onaylandı', harcama:'Otomatik Onaylı'};
+
   /* ---- kart ızgarası render — D19/S12: kasa .ks-card gibi SEÇİCİ ----
      [§17] arşivlenen kart (kartDurum:'arsiv') showArsivKart açık olmadıkça hiç basılmaz;
      pasif kart soluk render (.is-off) + rozetle basılır (silinmez, yalnız görünürlük). */
@@ -459,7 +554,7 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
         run += (inAmt || 0) - (outAmt || 0);
         toplamIn += inAmt || 0; toplamOut += outAmt || 0;
         var rid = 'plx-' + t.id;
-        html += '<tr data-plx="'+k.no+'" data-id="'+rid+'" data-tur="'+t.tur+'" data-santiye="'+k.santiye+'" data-tarih="'+isoFromUzun(t.tarihUzun)+'">'
+        html += '<tr data-plx="'+k.no+'" data-id="'+rid+'" data-tur="'+t.tur+'" data-santiye="'+k.santiye+'" data-tarih="'+isoFromUzun(t.tarihUzun)+'" data-onay="'+ONAY_LBL[t.tur]+'" data-tip="yemek">'
           + '<td class="df-no">'+(i + 1)+'</td><td class="df-date">'+t.tarih+'</td>'
           + '<td class="df-firm">'+k.ad+' <span class="plx-no">•'+k.no+'</span></td>'
           + '<td class="df-desc">'+t.desc+' — '+t.no+'</td>'
@@ -590,6 +685,11 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
      yalnız seçili kartın işlem satırlarını daraltır — devir/toplam/mevcut çerçeve satırları
      kart seçimiyle görünür kalır, alt-filtreden etkilenmez. ============ */
   var curPlx = '4471', curTur = 'hepsi', curSantiye = 'hepsi', curTarih = null;   /* curTarih: {key,from:Date,to:Date,label} | null */
+  /* [§9/T-G1] gelişmiş filtre panelinin BAĞIMSIZ ek eksenleri (Kart Sahibi hariç — o
+     setCard() navigasyonunu tetikler, bkz gvFilterPanel.init) — applyFilter() içinde AND
+     ile eklenir; mevcut curTur/curSantiye/curTarih ile AYNI değişkeni PAYLAŞMAZLAR. */
+  var fpTip = '', fpSantiyeAdv = '', fpOnay = '', fpDonemAdv = '';
+  var BUGUN_ISO = '2026-07-02';   /* kanonik "bugün" — dönem toggle GÜNLÜK yorumuyla aynı referans */
   var dfKart = document.getElementById('dfKart');
   function recalcChips(){
     var rows = document.querySelectorAll('#tblPluxee tbody tr[data-plx="'+curPlx+'"][data-tur]');
@@ -619,7 +719,12 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
         var d = new Date(tr.getAttribute('data-tarih') + 'T00:00:00');
         okTarih = d >= curTarih.from && d <= curTarih.to;
       }
-      var show = okTur && okSantiye && okTerm && okTarih;
+      /* [§9/T-G1] gelişmiş filtre panelinin bağımsız ekleri — boşsa (Tümü) her zaman geçer */
+      var okFpTip = !fpTip || tr.getAttribute('data-tip') === fpTip;
+      var okFpSantiye = !fpSantiyeAdv || tr.getAttribute('data-santiye') === fpSantiyeAdv;
+      var okFpOnay = !fpOnay || tr.getAttribute('data-onay') === fpOnay;
+      var okFpDonem = !fpDonemAdv || fpDonemAdv !== 'gunluk' || tr.getAttribute('data-tarih') === BUGUN_ISO;
+      var show = okTur && okSantiye && okTerm && okTarih && okFpTip && okFpSantiye && okFpOnay && okFpDonem;
       tr.hidden = !show;
       if(show) shown++;
     });
@@ -742,6 +847,30 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
     emptyLabel:'Tüm zamanlar',
     onChange:function(val){ curTarih = val; applyFilter(); }
   });
+
+  /* [§9/T-G1] gelişmiş filtre paneli — Kart Defteri TEK karta scope'lu olduğundan (D19/S12)
+     opts.table VERİLMEZ; "Kart Sahibi" alanı setCard() navigasyonunu tetikler (seçili kart
+     zaten setCard() içinde applyFilter()'ı da çağırır), diğer alanlar applyFilter()'ın
+     okuduğu bağımsız değişkenlere yazılır (tasks/spec-filtre-tarih.md §3). */
+  if(window.gvFilterPanel){
+    window.gvFilterPanel.init('#fpPlx', {
+      activeRow: '#achipsPlx',
+      onApply: function(state){
+        fpTip = state.tip ? state.tip.value : '';
+        fpSantiyeAdv = state.fpsantiye ? state.fpsantiye.value : '';
+        fpOnay = state.onay ? state.onay.value : '';
+        fpDonemAdv = state.donem ? state.donem.value : '';
+        if(state.sahip && state.sahip.value && state.sahip.value !== curPlx){
+          setCard(state.sahip.value);
+          gvUrlState.set({kart: curPlx});
+          var k = KARTLAR_BY_NO[curPlx], lastTx = k.tx[k.tx.length - 1];
+          renderPlxDetail('plx-' + lastTx.id);
+        } else {
+          applyFilter();
+        }
+      }
+    });
+  }
 
   /* ============ §14/T-G — çoklu seçim (row-chk) + "Çıktı Al" seçim çubuğu.
      crm-personel.html Madde 5 çoklu-seçim deseninin bu sayfaya uyarlanması: yeni bir
