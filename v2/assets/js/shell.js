@@ -1293,8 +1293,13 @@
                  scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','duyurular','operasyon-kiosk'] } },
     ik:        { name:'Seda Karaca',      role:'İK Uzmanı',                 ini:'SK',
                  secs:['panel','personel','gorev','operasyon'], land:'crm-panel.html',
+                 /* [Dalga 5] araç/puantaj alt-akışları (form/arşiv/bakım/evrak/kullanım)
+                    'arac'/'puantaj' temel ekranlarının aksine KENDİ benzersiz data-screen
+                    kimliğini kullanıyor (demirbaş-form/detay gibi ana ekranı MİRASLAMIYOR) —
+                    bu yüzden ik'nin zaten sahip olduğu arac/puantaj görünürlüğü BURADA
+                    açıkça tekrarlanmazsa scrOk bu alt-ekranları 403'e düşürür. */
                  scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar','duyurular','operasyon-kiosk'],
-                       operasyon:['kasa','pluxee','puantaj','demirbas','arac'] } },
+                       operasyon:['kasa','pluxee','puantaj','puantaj-form','demirbas','arac','arac-form','arac-arsiv','arac-bakim','arac-evrak','arac-kullanim'] } },
     personel:  { name:'Ali Vural',        role:'Saha Personeli',            ini:'AV',
                  secs:['panel','gorev'], land:'crm-panel.html',
                  scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','duyurular','operasyon-kiosk'] } },
