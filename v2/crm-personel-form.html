@@ -95,6 +95,23 @@
 .zmt-attach i{color:var(--acc-ink)}
 .zmt-attach b{color:var(--ink);font-weight:700;margin-right:auto}
 
+/* §10.1 — eğitim bilgileri, çoklu satır (Okul adı · Eğitim seviyesi · Mezuniyet yılı ÜÇÜ
+   YAN YANA; 390px'te alt alta). zmt-list/row-remove ile aynı çoğaltma deseni (kaynak-transfer). */
+.egt-list{display:flex;flex-direction:column;gap:12px;margin-bottom:12px}
+.egt-row{display:grid;grid-template-columns:1.5fr 1.1fr .8fr 34px;gap:10px 12px;align-items:start}
+.egt-row label{display:block;font-size:11px;font-weight:700;color:var(--ink-2);margin-bottom:5px;letter-spacing:.02em}
+.egt-row input,.egt-row select{width:100%;font-family:inherit;font-size:13px;font-weight:500;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:var(--r-sm);padding:9px 11px;outline:none;transition:.18s var(--ease)}
+.egt-row input:focus,.egt-row select:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(var(--acc-rgb),.14)}
+.egt-row input.err{border-color:var(--danger)}
+.egt-yil-wrap{position:relative}
+.egt-err{display:none;margin-top:5px;font-size:11px;font-weight:700;color:var(--danger)}
+.egt-err.show{display:block}
+.egt-row .row-remove{margin-top:22px}
+@media(max-width:640px){
+  .egt-row{grid-template-columns:1fr}
+  .egt-row .row-remove{margin-top:0;align-self:flex-end}
+}
+
 .fg-note{grid-column:1/-1;display:flex;align-items:center;gap:7px;margin-top:2px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
 .fg-note i{font-size:12px}
 
@@ -215,17 +232,17 @@
                   </select>
                 </div>
               </div>
-              <div class="gfield">
-                <label for="fOkul">Eğitim — Okul</label>
-                <input type="text" id="fOkul" placeholder="Örn. Yıldız Teknik Üniversitesi">
+              <div class="gfield full">
+                <label style="margin-bottom:0">Eğitim Bilgileri <span class="gf-hint">(birden fazla eğitim kaydı eklenebilir — okul, seviye, mezuniyet yılı üçü yan yana)</span></label>
               </div>
-              <div class="gfield">
-                <label for="fBolum">Eğitim — Bölüm</label>
-                <input type="text" id="fBolum" placeholder="Örn. İnşaat Teknikerliği">
-              </div>
-              <div class="gfield">
-                <label for="fMezuniyet">Mezuniyet Yılı</label>
-                <input type="number" id="fMezuniyet" min="1970" max="2026" placeholder="2018">
+              <!-- §10.1 — çoğaltılabilir eğitim satırı (zmt-list ile aynı createElement+innerHTML
+                   deseni). Yeni personel formu boş başlar; en az 1 satır ile açılır. -->
+              <div class="gfield full">
+                <div class="egt-list" id="egtList"></div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <button type="button" class="btn btn-ghost btn-sm" id="btnEgitimEkle" data-no-confirm><i class="fa-solid fa-plus"></i> Eğitim Ekle</button>
+                  <button type="button" class="btn btn-ghost btn-sm" id="btnYeniSatirEkle" data-no-confirm><i class="fa-solid fa-plus"></i> Yeni Satır Ekle</button>
+                </div>
               </div>
             </div>
           </div>
@@ -606,9 +623,81 @@
     });
   }
 
+  /* ---- §10.1 Eğitim Bilgileri — çoğaltılabilir satır (zmt-list ile aynı desen).
+     Okul adı · Eğitim seviyesi · Mezuniyet yılı ÜÇÜ YAN YANA; mezuniyet yılı 1950–2026
+     aralığında doğrulanır (hatalıda inline uyarı — engellemez, kayıt anında da kontrol edilir). ---- */
+  var EGITIM_SEVIYE = [
+    {v:'ilkogretim', lbl:'İlköğretim'},
+    {v:'lise', lbl:'Lise'},
+    {v:'onlisans', lbl:'Ön Lisans'},
+    {v:'lisans', lbl:'Lisans'},
+    {v:'yukseklisans', lbl:'Yüksek Lisans'},
+    {v:'doktora', lbl:'Doktora'},
+    {v:'sertifika', lbl:'Sertifika Programı'},
+    {v:'mesleki', lbl:'Mesleki Eğitim'},
+    {v:'diger', lbl:'Diğer'}
+  ];
+  var egtSeviyeOpts = '<option value="">— Seçiniz —</option>' + EGITIM_SEVIYE.map(function(s){
+    return '<option value="' + s.v + '">' + s.lbl + '</option>';
+  }).join('');
+
+  function egtRowHtml(n){
+    return '<div class="egt-row">'
+      + '<div><label>Okul Adı</label><input type="text" class="egt-okul" placeholder="Örn. Yıldız Teknik Üniversitesi"></div>'
+      + '<div><label>Eğitim Seviyesi</label><select class="egt-seviye">' + egtSeviyeOpts + '</select></div>'
+      + '<div class="egt-yil-wrap"><label>Mezuniyet Yılı</label><input type="text" class="egt-yil" inputmode="numeric" maxlength="4" placeholder="Örn. 2018"><span class="egt-err">Yıl 1950–2026 arasında olmalı.</span></div>'
+      + '<button type="button" class="row-remove egt-sil" data-no-confirm aria-label="Eğitim kaydını kaldır (' + n + ')"><i class="fa-solid fa-trash"></i></button>'
+      + '</div>';
+  }
+
+  var egtList = document.getElementById('egtList');
+  function egtAddRow(){
+    var wrap = document.createElement('div');
+    wrap.innerHTML = egtRowHtml(egtList.children.length + 1);
+    var row = wrap.firstChild;
+    egtList.appendChild(row);
+    var okul = row.querySelector('.egt-okul');
+    if(okul) okul.focus();
+  }
+  function egtValidateYil(input){
+    var row = input.closest('.egt-row');
+    var errEl = row.querySelector('.egt-err');
+    var v = input.value.trim();
+    if(!v){ input.classList.remove('err'); errEl.classList.remove('show'); return true; }
+    var ok = /^\d{4}$/.test(v) && parseInt(v, 10) >= 1950 && parseInt(v, 10) <= 2026;
+    input.classList.toggle('err', !ok);
+    errEl.classList.toggle('show', !ok);
+    return ok;
+  }
+  if(egtList){
+    egtAddRow();
+    document.getElementById('btnEgitimEkle').addEventListener('click', egtAddRow);
+    document.getElementById('btnYeniSatirEkle').addEventListener('click', egtAddRow);
+    egtList.addEventListener('click', function(e){
+      var rm = e.target.closest('.egt-sil');
+      if(rm) rm.closest('.egt-row').remove();
+    });
+    egtList.addEventListener('blur', function(e){
+      var yil = e.target.closest('.egt-yil');
+      if(yil) egtValidateYil(yil);
+    }, true);
+  }
+
   var btn = document.getElementById('personelSubmit');
   if(btn){
     btn.addEventListener('click', function(){
+      /* ---- §10.1 mezuniyet yılı doğrulaması — kayıt anında da kontrol edilir, hatalı
+         satır varsa kayıt DURDURULUR (inline uyarı zaten blur'da gösterilmişti). ---- */
+      if(egtList){
+        var egtHatali = 0;
+        Array.prototype.slice.call(egtList.querySelectorAll('.egt-yil')).forEach(function(inp){
+          if(!egtValidateYil(inp)) egtHatali++;
+        });
+        if(egtHatali > 0){
+          gvToast(egtHatali + ' eğitim kaydında mezuniyet yılı hatalı (1950–2026 aralığında olmalı).', {type:'danger'});
+          return;
+        }
+      }
       /* ---- kayıt anında zorunlu evrak uyarısı (madde 9 kapatma) — engellemez, bilgilendirir.
          Sayı EVRAK_KATEGORI zorunlu:true kayıtlarının o anki DOM durumundan türetilir. ---- */
       var eksikZorunlu = 0;
