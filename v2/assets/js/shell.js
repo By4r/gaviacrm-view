@@ -1169,7 +1169,10 @@
                           sef'i kendi şantiyesinin TH kaydına bile sokmuyordu (bkz. karar dosyası) */
                        finans:['taseron','taseronlar'] } },
     muhasebe:  { name:'Nesrin Aydın',     role:'Muhasebe',                  ini:'NA',
-                 secs:['panel','operasyon','satinalma','cari','finans','personel'], land:'crm-panel.html',
+                 /* [Dalga 20 / H2a] 'gorev' EKLENDİ — §11.1 Muhasebe Departmanı görev havuzu
+                    + §11.2 "yalnız o departman görür" hükmü, muhasebe gorev bölümünü hiç
+                    göremeden uygulanamazdı. scr.gorev TANIMLANMADI (kısıt yok, tüm liste görünür). */
+                 secs:['panel','gorev','operasyon','satinalma','cari','finans','personel'], land:'crm-panel.html',
                  scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar','duyurular','operasyon-kiosk'],
                        satinalma:['siparisler','irsaliye','stok','tedarikciler'] } },
     satinalma: { name:'Baran Yıldız',     role:'Satın Alma Sorumlusu',      ini:'BY',
