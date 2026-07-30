@@ -49,6 +49,21 @@
 .side-tip:last-child{border-bottom:none}
 .side-tip i{color:var(--acc-ink);font-size:13px;width:16px;text-align:center;flex:none;margin-top:1px}
 .side-tip span{font-size:12.5px;color:var(--muted);line-height:1.5}
+
+/* gerçek dosya ekleme — crm-operasyon-arac-arsiv.html doc-drop deseni BİREBİR (§17) */
+.doc-drop{border:1.5px dashed var(--line-2);border-radius:var(--r-md);padding:16px;text-align:center;transition:.18s var(--ease);margin-top:12px}
+.doc-drop.is-drag{border-color:var(--acc-ink);background:rgba(var(--acc-rgb),.06)}
+.doc-drop-btn{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:700;color:var(--acc-ink);cursor:pointer}
+.doc-drop-btn i{font-size:16px}
+.doc-hint{display:block;margin-top:7px;font-size:11.5px;color:var(--muted);font-weight:500}
+.doc-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.doc-item{display:flex;gap:12px;padding:12px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--bg)}
+.doc-thumb{width:38px;height:38px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:14px;color:#fff;background:var(--gv-night)}
+.doc-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;justify-content:center}
+.doc-info b{font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-meta{font-size:11.5px;color:var(--muted)}
+.doc-status{font-size:11px;font-weight:700;color:var(--ok);display:flex;align-items:center;gap:5px}
+.doc-acts{display:flex;align-items:center;justify-content:center;flex:none}
 </style>
 </head>
 <body data-sec="santiye" data-screen="isg">
@@ -75,14 +90,14 @@
     <div class="gv-crumb">
       <a href="crm-santiye-isg.html">İSG Tutanakları</a>
       <i class="fa-solid fa-chevron-right"></i>
-      <span>Yeni Tutanak</span>
+      <span id="crumbNow">Yeni Tutanak</span>
     </div>
 
     <div class="gv-page-head">
       <div>
         <div class="ph-eyebrow">Saha</div>
-        <h1>Yeni Tutanak</h1>
-        <div class="ph-sub">Şantiye sahasında gözlemlenen eğitim, denetim veya olay için İSG tutanağı oluşturun.</div>
+        <h1 id="pageTitle">Yeni Tutanak</h1>
+        <div class="ph-sub" id="pageSub">Şantiye sahasında gözlemlenen eğitim, denetim veya olay için İSG tutanağı oluşturun.</div>
       </div>
     </div>
 
@@ -152,14 +167,16 @@
         </div>
         <div class="gd-block">
           <div class="gd-label">Fotoğraf / Doküman</div>
-          <div class="attach-zone" id="attachZone" tabindex="0" role="button" aria-label="Dosya ekle">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
-            <b>Dosya ekle</b>
-            <span>PDF, JPG, PNG — sürükle bırak veya tıkla (demo)</span>
+          <div class="doc-drop" id="docDrop">
+            <input type="file" id="fBelgeDosya" accept=".pdf,.jpg,.jpeg,.png" multiple hidden>
+            <label for="fBelgeDosya" class="doc-drop-btn"><i class="fa-solid fa-cloud-arrow-up"></i> Fotoğraf veya belge ekleyin</label>
+            <span class="doc-hint">PDF/JPG/PNG ≤10 MB (demo sınırı) — sürükle bırak veya tıkla</span>
           </div>
+          <div class="doc-list" id="docList"></div>
         </div>
         <div class="form-foot">
           <a class="btn btn-ghost btn-sm" href="crm-santiye-isg.html">Vazgeç</a>
+          <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="isgDraft"><i class="fa-solid fa-file-pen"></i> Taslak Kaydet</button>
           <button type="button" class="btn btn-acc btn-sm" data-no-confirm id="isgSubmit"><i class="fa-solid fa-floppy-disk"></i> Tutanağı Kaydet</button>
         </div>
       </div>
@@ -207,19 +224,77 @@
   var santiyeSel = document.getElementById('fSantiye');
   if(GV.role === 'sef'){ santiyeSel.value = 'Vadi Konakları'; santiyeSel.disabled = true; }
 
-  /* fotoğraf/doküman ekleme — gerçek yükleme yok, yalnız bilgilendirme toast'ı */
-  var zone = document.getElementById('attachZone');
-  function attachMock(){
-    gvToast('Dosya yükleme prototip kapsamında simüledir', {type:'info'});
+  /* ============ §17 — Düzenle modu (?mod=duzenle&isg=NNN). Kaynak veri
+     crm-santiye-isg.html KAYITLAR ile BİREBİR (kanonik 11 tutanak). ============ */
+  var q = new URLSearchParams(location.search);
+  var mod = q.get('mod');
+  var isgNo = q.get('isg');
+  var SANTIYE_ADI = {vadi:'Vadi Konakları', liman:'Liman Lojistik Merkezi', merkez:'Merkez Şantiye'};
+  var ISG_DATA = {
+    '011':{santiye:'vadi',tur:'toolbox',tarih:'2026-07-02',sorumlu:'Hasan Demirci',konu:'Yüksekte çalışma ve düşme önleme'},
+    '010':{santiye:'liman',tur:'ramakkala',tarih:'2026-07-01',sorumlu:'Şükrü Aslan',konu:'Vinç yükü altından geçiş'},
+    '009':{santiye:'merkez',tur:'denetim',tarih:'2026-06-30',sorumlu:'Ömer Taşkın',konu:'Aylık İSG iç denetimi'},
+    '008':{santiye:'vadi',tur:'uygunsuzluk',tarih:'2026-06-29',sorumlu:'İbrahim Sönmez',konu:'Rutin denetim sırasında B Blok 3. kat iskelesinin doğu cephesinde korkuluk elemanlarının bir bölümünün sökülüp yerine takılmadığı tespit edildi. Bölge derhal şerit ile çevrilip çalışma durduruldu.'},
+    '007':{santiye:'liman',tur:'kaza',tarih:'2026-06-27',sorumlu:'Aylin Koç',konu:'Forklift çarpması — hafif yaralanma'},
+    '006':{santiye:'vadi',tur:'toolbox',tarih:'2026-06-25',sorumlu:'Veli Şimşek',konu:'Elektrik güvenliği ve KKD kullanımı'},
+    '005':{santiye:'merkez',tur:'ramakkala',tarih:'2026-06-22',sorumlu:'Recep Yaman',konu:'Forklift-yaya güzergah kesişimi'},
+    '004':{santiye:'liman',tur:'denetim',tarih:'2026-06-18',sorumlu:'Aylin Koç',konu:'Aliağa Liman İşletmeleri saha denetimi'},
+    '003':{santiye:'vadi',tur:'uygunsuzluk',tarih:'2026-06-15',sorumlu:'Hasan Demirci',konu:'Kişisel koruyucu donanım eksik kullanımı'},
+    '002':{santiye:'merkez',tur:'toolbox',tarih:'2026-06-10',sorumlu:'Ömer Taşkın',konu:'Yangın güvenliği ve tahliye tatbikatı'},
+    '001':{santiye:'vadi',tur:'kaza',tarih:'2026-06-03',sorumlu:'Hasan Demirci',konu:'Malzeme düşmesi — yaralanma yok'}
+  };
+  var isEdit = mod === 'duzenle' && isgNo && ISG_DATA[isgNo];
+  if(isEdit){
+    var rec = ISG_DATA[isgNo];
+    document.getElementById('crumbNow').textContent = 'ISG-2026-' + isgNo + ' — Düzenle';
+    document.getElementById('pageTitle').textContent = 'Tutanağı Düzenle — ISG-2026-' + isgNo;
+    document.getElementById('pageSub').textContent = 'Mevcut İSG tutanağı üzerinde değişiklik yapın; değişiklikler işlem kayıtlarına yazılır.';
+    turSel.value = rec.tur; syncTurIco();
+    document.getElementById('fTarih').value = rec.tarih;
+    if(!santiyeSel.disabled) santiyeSel.value = SANTIYE_ADI[rec.santiye];
+    var perSel = document.getElementById('fPersonel');
+    Array.prototype.forEach.call(perSel.options, function(o){ if(o.textContent.indexOf(rec.sorumlu) === 0) perSel.value = o.value; });
+    document.getElementById('fAciklama').value = rec.konu;
+    document.getElementById('isgSubmit').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Değişiklikleri Kaydet';
   }
-  zone.addEventListener('click', attachMock);
-  zone.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); attachMock(); } });
+
+  /* ============ gerçek dosya ekleme — File API + drag&drop (§17, arac-arsiv.html deseni) ============ */
+  var docList = document.getElementById('docList');
+  var fBelgeDosya = document.getElementById('fBelgeDosya');
+  var docDrop = document.getElementById('docDrop');
+  function humanSize(bytes){ if(bytes > 1024*1024) return (bytes/1024/1024).toFixed(1) + ' MB'; return Math.max(1, Math.round(bytes/1024)) + ' KB'; }
+  function docIcon(name){ if(/\.pdf$/i.test(name)) return 'fa-file-pdf'; if(/\.(jpg|jpeg|png)$/i.test(name)) return 'fa-file-image'; return 'fa-file-lines'; }
+  function addFile(file){
+    if(!/\.(pdf|jpe?g|png)$/i.test(file.name)){ gvToast(file.name + ' — desteklenmeyen dosya türü.', {type:'danger'}); return; }
+    if(file.size > 10*1024*1024){ gvToast(file.name + ' — 10 MB sınırını aşıyor (demo kısıtı).', {type:'danger'}); return; }
+    var el = document.createElement('div'); el.className = 'doc-item';
+    el.innerHTML = '<div class="doc-thumb"><i class="fa-solid ' + docIcon(file.name) + '"></i></div>'
+      + '<div class="doc-info"><b>' + file.name + '</b><span class="doc-meta">' + humanSize(file.size) + '</span><span class="doc-status"><i class="fa-solid fa-circle-check"></i> Yüklendi</span></div>'
+      + '<div class="doc-acts"><button type="button" class="ia-btn danger" data-no-confirm data-tip="Kaldır" aria-label="Kaldır"><i class="fa-solid fa-trash"></i></button></div>';
+    docList.appendChild(el);
+    el.querySelector('[data-tip="Kaldır"]').addEventListener('click', function(){ el.remove(); });
+    gvToast(file.name + ' yüklendi.');
+  }
+  fBelgeDosya.addEventListener('change', function(){ Array.prototype.slice.call(fBelgeDosya.files).forEach(addFile); fBelgeDosya.value = ''; });
+  ['dragenter','dragover'].forEach(function(evt){ docDrop.addEventListener(evt, function(e){ e.preventDefault(); docDrop.classList.add('is-drag'); }); });
+  ['dragleave','drop'].forEach(function(evt){ docDrop.addEventListener(evt, function(e){ e.preventDefault(); docDrop.classList.remove('is-drag'); }); });
+  docDrop.addEventListener('drop', function(e){ var files = e.dataTransfer && e.dataTransfer.files; if(files && files.length) Array.prototype.forEach.call(files, addFile); });
+
+  document.getElementById('isgDraft').addEventListener('click', function(){
+    gvToast('Tutanak taslak olarak kaydedildi — İSG Tutanakları listesinde "Taslak" olarak görünür.', {type:'info'});
+    setTimeout(function(){ location.href = 'crm-santiye-isg.html'; }, 900);
+  });
 
   document.getElementById('isgSubmit').addEventListener('click', function(){
     var aciklama = document.getElementById('fAciklama').value.trim();
     if(!aciklama){
       gvToast('Açıklama alanını doldurun.', {type:'danger'});
       document.getElementById('fAciklama').focus();
+      return;
+    }
+    if(isEdit){
+      gvToast('ISG-2026-' + isgNo + ' güncellendi — işlem kaydına eklendi.');
+      setTimeout(function(){ location.href = 'crm-santiye-isg-detay.html?isg=' + isgNo; }, 900);
       return;
     }
     gvToast('İSG tutanağı oluşturuldu.');
