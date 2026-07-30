@@ -31,13 +31,19 @@
   :focus-visible{outline:2px solid var(--gv-mint);outline-offset:2px}
 
   .wrap{width:100%;max-width:480px;text-align:center}
-  .mark-lg{
-    width:76px;height:76px;margin:0 auto 22px;border-radius:50%;
+  /* GÖRSEL DENETİM #1 düzeltmesi (yüksek öncelik): K-11 marka kilidi tek kare "G" — bu
+     sayfa ailenin diğer 4 üyesiyle (403/500/bakım/bağlantı-yok) AYNI .mark'ı kullanır.
+     Durum ikonu (✓) mark'ın YERİNE değil, başlığın İÇİNDE ikincil semantik işaret olarak
+     kalır (bkz. h1 içindeki inline ikon) — 404.html'in .mark'ıyla birebir aynı CSS. */
+  .mark{
+    width:56px;height:56px;margin:0 auto 26px;border-radius:15px;
     background:var(--gv-mint-glow);border:1px solid rgba(63,213,173,.3);
-    display:grid;place-items:center;color:var(--gv-mint);font-size:32px;
+    display:grid;place-items:center;
+    color:var(--gv-mint);font-weight:800;font-size:23px;letter-spacing:-.03em;
   }
   .eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gv-mint);margin-bottom:14px}
   h1{font-size:22px;font-weight:800;letter-spacing:-.02em;color:#fff;margin-bottom:10px}
+  h1 .h1-ico{color:var(--gv-mint);font-size:.82em;margin-right:8px;vertical-align:-1px}
   .sub{font-size:14px;line-height:1.65;color:var(--on-dark-mut);max-width:410px;margin:0 auto 30px}
 
   .acts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
@@ -59,9 +65,9 @@
 </head>
 <body>
   <main class="wrap">
-    <div class="mark-lg"><i class="fa-solid fa-circle-check"></i></div>
+    <div class="mark">G</div>
     <div class="eyebrow">İşlem Tamamlandı</div>
-    <h1 id="baslikTxt">İşleminiz kaydedildi</h1>
+    <h1 id="baslikTxt"><i class="fa-solid fa-circle-check h1-ico" aria-hidden="true"></i>İşleminiz kaydedildi</h1>
     <p class="sub" id="mesajTxt">Talebiniz başarıyla alındı ve ilgili sürece iletildi.</p>
 
     <div class="acts">
@@ -81,7 +87,13 @@
   var mesaj = q.get('mesaj');
   var donus = q.get('donus');
   var donusEtiket = q.get('donusEtiket');
-  if(baslik) document.getElementById('baslikTxt').textContent = baslik;
+  /* textContent DEĞİL — h1 içindeki .h1-ico ikonunu (görsel denetim #1 düzeltmesi) korumak
+     için yalnız metin düğümünü güncelliyoruz, ikon elementine dokunmuyoruz */
+  if(baslik){
+    var h1 = document.getElementById('baslikTxt');
+    var textNode = Array.prototype.slice.call(h1.childNodes).filter(function(n){ return n.nodeType === 3; })[0];
+    if(textNode) textNode.textContent = baslik; else h1.appendChild(document.createTextNode(baslik));
+  }
   if(mesaj) document.getElementById('mesajTxt').textContent = mesaj;
   var devamBtn = document.getElementById('devamBtn');
   if(donus){ devamBtn.href = donus; }
