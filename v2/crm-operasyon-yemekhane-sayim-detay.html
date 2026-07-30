@@ -114,8 +114,9 @@
             <div class="gd-label">Öğün Kırılımı</div>
             <!-- statik bake — DEFAULT ?ymk=004 kaydı (rol-agnostik); JS yüklenince aynı
                  mount innerHTML ile ezilir (kaynak: bu dosyanın DATA['004'] kaydı) — D18-B2 -->
-            <div id="ogunRows"><div class="ctx-row"><span class="ctx-lbl">Kahvaltı</span><span class="ctx-val">84 kişi</span></div><div class="ctx-row"><span class="ctx-lbl">Öğle</span><span class="ctx-val">93 kişi</span></div><div class="ctx-row"><span class="ctx-lbl">Akşam</span><span class="ctx-val">46 kişi</span></div><div class="ctx-row"><span class="ctx-lbl">Misafir</span><span class="ctx-val">0 kişi</span></div><div class="ctx-row"><span class="ctx-lbl">Genel Toplam</span><span class="ctx-val" style="color:var(--acc-ink)">223 kişi</span></div></div>
+            <div id="ogunRows"><div class="ctx-row"><span class="ctx-lbl">Kahvaltı</span><span class="ctx-val">84 kişi</span></div><div class="ctx-row"><span class="ctx-lbl">Öğle</span><span class="ctx-val">93 kişi</span></div><div class="ctx-row"><span class="ctx-lbl">Akşam</span><span class="ctx-val">46 kişi</span></div><div class="ctx-row"><span class="ctx-lbl">Misafir</span><span class="ctx-val">0 kişi</span></div><div class="ctx-row"><span class="ctx-lbl">Genel Toplam</span><span class="ctx-val" style="color:var(--acc-ink)">223 kişi</span></div><div class="ctx-row"><span class="ctx-lbl">Öğle — Öz Kadro / Taşeron</span><span class="ctx-val">69 öz + 24 taşeron</span></div><div class="ctx-row"><span class="ctx-lbl">Taşeron Dağılımı</span><span class="ctx-val" style="font-weight:600;font-size:12px">Demir-Beton 10 · ElektroMek 6 · Yalıtım Kardeşler 8</span></div></div>
           </div>
+          <div class="gc-foot"><span><i class="fa-solid fa-circle-info"></i> Taşeron kişi bazlı puantaj durumu için taşeron puantajına bakın.</span><a class="gc-link" href="crm-operasyon-taseron-puantaj.html"><i class="fa-solid fa-people-arrows"></i> Taşeron Puantajı <i class="fa-solid fa-arrow-right"></i></a></div>
         </div>
 
         <div class="gv-card">
@@ -220,6 +221,9 @@
       kod:'YMK-2026-004', tarihUzun:'2 Temmuz 2026 Perşembe', tarihKisa:'2 Tem 2026', gunAdi:'Perşembe',
       toplam:223,
       ogun:{kahvalti:84, ogle:93, aksam:46, misafir:0},
+      /* §7.3/§13.2 — öğle kırılımının öz kadro/taşeron ayrımı; crm-operasyon-yemekhane.html
+         YERLER dizisiyle BİREBİR (69 öz + 24 taşeron = 93, firma 10/6/8) — TÜKETİR, değiştirmez */
+      ozTas:{oz:69, tas:24, firma:'Demir-Beton 10 · ElektroMek 6 · Yalıtım Kardeşler 8'},
       aciklama:'2 Temmuz 2026 Perşembe günü üç şantiyede (Vadi Konakları, Liman Lojistik Merkezi, Merkez Şantiye) yapılan günlük yemekhane sayımıdır. Kahvaltı, öğle ve akşam öğünleri ayrı ayrı sayılmış; öz kadro ve taşeron ekipleri birlikte izlenmiştir. Bu günde misafir girişi kaydedilmemiştir. Sayım İK tarafından günün sonunda gözden geçirilip kapatılmıştır.',
       gecmis:[
         {b:'Sabah sayımı girildi', s:'2 Temmuz 2026 · 08:20 — kahvaltı kırılımı'},
@@ -265,7 +269,11 @@
       + '<div class="ctx-row"><span class="ctx-lbl">Öğle</span><span class="ctx-val">'+D.ogun.ogle+' kişi</span></div>'
       + '<div class="ctx-row"><span class="ctx-lbl">Akşam</span><span class="ctx-val">'+D.ogun.aksam+' kişi</span></div>'
       + '<div class="ctx-row"><span class="ctx-lbl">Misafir</span><span class="ctx-val">'+D.ogun.misafir+' kişi</span></div>'
-      + '<div class="ctx-row"><span class="ctx-lbl">Genel Toplam</span><span class="ctx-val" style="color:var(--acc-ink)">'+D.toplam+' kişi</span></div>';
+      + '<div class="ctx-row"><span class="ctx-lbl">Genel Toplam</span><span class="ctx-val" style="color:var(--acc-ink)">'+D.toplam+' kişi</span></div>'
+      + (D.ozTas
+          ? '<div class="ctx-row"><span class="ctx-lbl">Öğle — Öz Kadro / Taşeron</span><span class="ctx-val">'+D.ozTas.oz+' öz + '+D.ozTas.tas+' taşeron</span></div>'
+            + '<div class="ctx-row"><span class="ctx-lbl">Taşeron Dağılımı</span><span class="ctx-val" style="font-weight:600;font-size:12px">'+D.ozTas.firma+'</span></div>'
+          : '');
   } else {
     document.getElementById('ctxOgun').textContent = 'Kırılım detaylandırılmadı';
     document.getElementById('ogunRows').innerHTML =
