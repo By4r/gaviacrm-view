@@ -114,6 +114,27 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
   .filter-row .frow-lbl{min-width:0;width:100%}
   .gv-detail-grid{grid-template-columns:1fr;padding:16px}
 }
+
+/* ============ §14/T-G — çoklu seçim (row-chk) + Çıktı Al seçim çubuğu; crm-personel.html
+   .row-chk/.bulk-bar deseninin bu sayfaya birebir uyarlanması — yeni ui.js primitifi
+   İCAT EDİLMEZ, sayfa-lokal kalır (kasa/personel sayfa-lokal desen emsali). ============ */
+.row-chk{position:relative;display:inline-flex;width:16px;height:16px;flex:none;cursor:pointer;margin-right:8px;vertical-align:middle}
+.row-chk input{position:absolute;opacity:0;pointer-events:none;width:100%;height:100%;margin:0}
+.row-chk .chk-box{width:16px;height:16px;border-radius:4px;border:2px solid var(--line-2);display:flex;align-items:center;justify-content:center;color:transparent;font-size:9px;transition:.15s var(--ease);background:var(--paper);flex:none}
+.row-chk input:checked + .chk-box{background:var(--acc-ink);border-color:var(--acc-ink);color:#fff}
+.row-chk input:focus-visible + .chk-box{outline:2px solid var(--acc);outline-offset:2px}
+#tblKK tbody tr.is-checked td{background:rgba(var(--acc-rgb),.05)}
+.df-mrow .row-chk{margin-right:0}
+.df-mrow.is-checked{background:rgba(var(--acc-rgb),.05)}
+.kk-bulk-bar{display:flex;align-items:center;gap:14px;padding:12px 22px;background:rgba(var(--acc-rgb),.06);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.kk-bulk-bar[hidden]{display:none}
+.kk-bulk-bar .bb-count{font-size:13px;font-weight:700;color:var(--ink)}
+.kk-bulk-bar .bb-acts{display:flex;gap:10px;margin-left:auto}
+@media(max-width:640px){
+  .kk-bulk-bar{padding:12px 16px}
+  .kk-bulk-bar .bb-acts{margin-left:0;width:100%}
+  .kk-bulk-bar .bb-acts .btn{flex:1}
+}
 </style>
 </head>
 <body data-sec="operasyon" data-screen="kredikarti">
@@ -144,6 +165,7 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
         <div class="ph-sub">4 firma kartı · kart bazlı harcama, limit ve ekstre takibi</div>
       </div>
       <div class="ph-actions">
+        <a class="btn btn-ghost btn-sm" href="crm-operasyon-kredikarti-cikti.html?banka=hepsi" id="btnKkCikti"><i class="fa-solid fa-print"></i> Çıktı Al</a>
         <a class="btn btn-ghost btn-sm" href="crm-operasyon-kredikarti-kart-form.html" data-view="karttanim" hidden><i class="fa-solid fa-credit-card"></i> Yeni Kart</a>
         <a class="btn btn-acc btn-sm" href="crm-operasyon-kredikarti-form.html" data-view="olusturabilir" hidden><i class="fa-solid fa-plus"></i> Harcama Kaydı</a>
       </div>
@@ -212,12 +234,23 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
             <button class="chip" data-durum="bekliyor">Onay Bekliyor</button>
           </div>
         </div>
+        <div class="filter-row">
+          <span class="frow-lbl">Tarih Aralığı</span>
+          <div id="kkDateRange"></div>
+        </div>
+      </div>
+      <div class="kk-bulk-bar" id="kkBulkBar" hidden>
+        <span class="bb-count" id="kkBbCount">0 kayıt seçildi</span>
+        <div class="bb-acts">
+          <button type="button" class="btn btn-ghost btn-sm" id="kkBbClear"><i class="fa-solid fa-xmark"></i> Seçimi Temizle</button>
+          <button type="button" class="btn btn-acc btn-sm" id="kkBbCikti"><i class="fa-solid fa-print"></i> Seçili Kayıtların Çıktısını Al</button>
+        </div>
       </div>
       <div class="gc-body flush">
         <table class="gtable" id="tblKK" data-paginate="25">
           <thead>
             <tr>
-              <th class="df-no">#</th>
+              <th class="df-no"><label class="row-chk" id="kkChkAllWrap" hidden><input type="checkbox" id="kkChkAll" aria-label="Görünen tüm hareketleri seç"><span class="chk-box"><i class="fa-solid fa-check"></i></span></label>#</th>
               <th class="df-date">Tarih</th>
               <th>Banka / Kart</th>
               <th>Açıklama</th>
@@ -339,6 +372,14 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
   function fmtTL(n){ return '₺' + n.toLocaleString('tr-TR'); }
   function pct(borc, limit){ return Math.round(borc / limit * 100); }
 
+  /* [T-G / §13] "18 Haziran 2026" → "2026-06-18" — gvDateRange aralık karşılaştırması
+     data-tarih ISO bekler; kanonik tarihUzun alanından türetilir, yeni veri EKLENMEZ. */
+  var AY_ISO = {Ocak:'01',Şubat:'02',Mart:'03',Nisan:'04',Mayıs:'05',Haziran:'06',Temmuz:'07',Ağustos:'08',Eylül:'09',Ekim:'10',Kasım:'11',Aralık:'12'};
+  function isoFromUzun(s){
+    var p = s.split(' ');   /* ['18','Haziran','2026'] */
+    return p[2] + '-' + AY_ISO[p[1]] + '-' + (p[0].length < 2 ? '0' + p[0] : p[0]);
+  }
+
   /* ---- kart şeridi render — D19/S12: kasa .ks-card gibi SEÇİCİ ---- */
   var strip = document.getElementById('kkStrip');
   var sh = '';
@@ -379,7 +420,7 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
         var rid = 'kkr-' + t.id;
         var waitHtml = t.durum === 'bekliyor' ? '<span class="df-wait"><i class="fa-solid fa-hourglass-half"></i> onayda</span>' : '';
         var taksitTxt = t.taksit === 'tek' ? '' : ' ('+t.taksit+' Taksit)';
-        html += '<tr data-banka="'+key+'" data-durum="'+t.durum+'" data-id="'+rid+'">'
+        html += '<tr data-banka="'+key+'" data-durum="'+t.durum+'" data-id="'+rid+'" data-tarih="'+isoFromUzun(t.tarihUzun)+'">'
           + '<td class="df-no">'+(i + 1)+'</td><td class="df-date">'+t.tarih+'</td>'
           + '<td class="df-firm">'+K.banka+' <span class="kk-no">•'+K.no+'</span>'+waitHtml+'</td>'
           + '<td class="df-desc">'+t.firma+' — '+t.desc+taksitTxt+' — KKR-2026-'+t.id+'</td>'
@@ -549,7 +590,7 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
      Banka PRİMER kapsamdır (kasa .ks-card→#tblDefter idiyomu); "hepsi" seçiliyken
      4 bankanın defteri art arda görünür. devir/toplam/mevcut çerçeve satırları yalnız
      banka eşleşmesine bakar, Durum/arama filtresinden etkilenmez. ---- */
-  var curBanka = 'hepsi', curDurum = 'hepsi';
+  var curBanka = 'hepsi', curDurum = 'hepsi', curTarih = null;   /* curTarih: {key,from:Date,to:Date,label} | null */
   var dfBanka = document.getElementById('dfBanka');
   function syncBankaUI(){
     strip.querySelectorAll('.kk-card').forEach(function(el){
@@ -570,13 +611,21 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
       total++;
       var okDurum = curDurum === 'hepsi' || tr.getAttribute('data-durum') === curDurum;
       var okTerm = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
-      var show = okDurum && okTerm;
+      var okTarih = true;
+      if(curTarih){
+        var d = new Date(tr.getAttribute('data-tarih') + 'T00:00:00');
+        okTarih = d >= curTarih.from && d <= curTarih.to;
+      }
+      var show = okDurum && okTerm && okTarih;
       tr.hidden = !show;
       if(show) shown++;
     });
     document.getElementById('kkEmpty').hidden = shown !== 0;
     document.getElementById('kkFoot').textContent = shown + ' hareket gösteriliyor · toplam ' + TOPLAM_KAYIT + ' kayıt';
     buildLedgerCards();
+    injectMobileChecks();
+    syncSelectAllState();
+    if(typeof syncCiktiHref === 'function') syncCiktiHref();
     gvPagerRefresh('#tblKK', true);
   }
   strip.addEventListener('click', function(e){
@@ -599,6 +648,148 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
     applyFilter();
   });
   document.getElementById('kkSearch').addEventListener('input', applyFilter);
+  window.gvDateRange('#kkDateRange', {
+    emptyLabel:'Tüm zamanlar',
+    onChange:function(val){ curTarih = val; applyFilter(); }
+  });
+
+  /* ============ §14/T-G — çoklu seçim (row-chk) + "Çıktı Al" seçim çubuğu.
+     crm-personel.html Madde 5 çoklu-seçim deseninin bu sayfaya uyarlanması: yeni bir
+     ui.js primitifi İCAT EDİLMEZ, sayfa-lokal state (selectedKK) kalır. Yalnız gerçek
+     işlem satırları ([data-id]) seçilebilir — devir/toplam/mevcut çerçevesi hariç.
+     "Tümünü Seç" yalnız GÖRÜNEN (hidden olmayan) satırları kapsar. ============ */
+  var selectedKK = {};   /* rid -> true */
+  function selKKCount(){ return Object.keys(selectedKK).length; }
+  function makeChk(rid){
+    var lbl = document.createElement('label');
+    lbl.className = 'row-chk';
+    lbl.setAttribute('data-rid', rid);
+    lbl.innerHTML = '<input type="checkbox" class="kk-chk" aria-label="Seç"><span class="chk-box"><i class="fa-solid fa-check"></i></span>';
+    return lbl;
+  }
+  document.querySelectorAll('#tblKK tbody tr[data-id]').forEach(function(tr){
+    var rid = tr.getAttribute('data-id');
+    var cell = tr.querySelector('.df-no');
+    if(cell) cell.insertBefore(makeChk(rid), cell.firstChild);
+  });
+  /* mobil kartlar #tblKKMobile'da kendi data-id'sini taşımaz (bkz dfCardBody) — ama
+     buildLedgerCards() tbody satırlarını 1:1 aynı sırada (gizli/görünür ayrımı YAPMADAN)
+     dolaşıp kart üretir, bu yüzden index eşleşmesi kesindir; her rebuild sonrası burada
+     rid tekrar damgalanır ve checkbox yeniden eklenir. */
+  function injectMobileChecks(){
+    var rows = document.querySelectorAll('#tblKK tbody tr');
+    var cards = document.querySelectorAll('#tblKKMobile .df-mrow');
+    rows.forEach(function(tr, i){
+      var rid = tr.getAttribute('data-id');
+      var card = cards[i];
+      if(!rid || !card) return;
+      card.setAttribute('data-id', rid);
+      if(!card.querySelector('.row-chk')){
+        var top = card.querySelector('.df-mrow-top');
+        if(top) top.insertBefore(makeChk(rid), top.firstChild);
+      }
+      card.classList.toggle('is-checked', !!selectedKK[rid]);
+    });
+  }
+  function updateRowHighlight(rid, on){
+    document.querySelectorAll('.row-chk[data-rid="' + rid + '"]').forEach(function(chkLbl){
+      var row = chkLbl.closest('tr') || chkLbl.closest('.df-mrow');
+      if(row) row.classList.toggle('is-checked', on);
+    });
+  }
+  var kkBulkBar = document.getElementById('kkBulkBar');
+  var kkBbCount = document.getElementById('kkBbCount');
+  function syncBulkBar(){
+    var n = selKKCount();
+    if(kkBulkBar) kkBulkBar.hidden = n === 0;
+    if(kkBbCount) kkBbCount.textContent = n + ' kayıt seçildi';
+  }
+  var kkChkAllWrap = document.getElementById('kkChkAllWrap');
+  var kkChkAll = document.getElementById('kkChkAll');
+  if(kkChkAllWrap) kkChkAllWrap.hidden = false;
+  function syncSelectAllState(){
+    if(!kkChkAll) return;
+    var visible = 0, visibleSelected = 0;
+    document.querySelectorAll('#tblKK tbody tr[data-id]').forEach(function(tr){
+      if(tr.hidden) return;
+      visible++;
+      if(selectedKK[tr.getAttribute('data-id')]) visibleSelected++;
+    });
+    if(!visible){ kkChkAll.checked = false; kkChkAll.indeterminate = false; return; }
+    kkChkAll.checked = visibleSelected === visible;
+    kkChkAll.indeterminate = visibleSelected > 0 && visibleSelected < visible;
+  }
+  document.addEventListener('change', function(e){
+    var input = e.target.closest('.row-chk input'); if(!input) return;
+    var rid = input.closest('.row-chk').getAttribute('data-rid');
+    if(input.checked) selectedKK[rid] = true; else delete selectedKK[rid];
+    updateRowHighlight(rid, input.checked);
+    document.querySelectorAll('.row-chk[data-rid="' + rid + '"] input').forEach(function(other){ if(other !== input) other.checked = input.checked; });
+    syncBulkBar();
+    syncSelectAllState();
+  });
+  if(kkChkAll) kkChkAll.addEventListener('change', function(){
+    document.querySelectorAll('#tblKK tbody tr[data-id]').forEach(function(tr){
+      if(tr.hidden) return;
+      var rid = tr.getAttribute('data-id');
+      document.querySelectorAll('.row-chk[data-rid="' + rid + '"] input').forEach(function(i){ i.checked = kkChkAll.checked; });
+      if(kkChkAll.checked) selectedKK[rid] = true; else delete selectedKK[rid];
+      updateRowHighlight(rid, kkChkAll.checked);
+    });
+    syncBulkBar();
+  });
+  var kkBbClear = document.getElementById('kkBbClear');
+  if(kkBbClear) kkBbClear.addEventListener('click', function(){
+    Object.keys(selectedKK).forEach(function(rid){ updateRowHighlight(rid, false); });
+    selectedKK = {};
+    document.querySelectorAll('.row-chk input').forEach(function(i){ i.checked = false; });
+    syncBulkBar();
+    syncSelectAllState();
+  });
+
+  /* ---- Çıktı Al navigasyonu — aktif filtreler (banka/durum/tarih) çıktı kapsamına
+     taşınır; hiç kayıt seçili değilken "Tüm liste mi çıktı alınsın?" onayı sorulur
+     (§14 kabul kriteri); seçili varsa doğrudan seçili kayıtlarla gidilir. ---- */
+  /* yerel-tarih güvenli ISO — toISOString() KULLANILMAZ (UTC kayması gün değiştirebilir,
+     ui.js gvDateRange'in kendi iso() yardımcısıyla AYNI mantık) */
+  function isoLocal(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function buildOutputUrl(withSelection){
+    var p = new URLSearchParams();
+    if(withSelection){
+      p.set('ids', Object.keys(selectedKK).join(','));
+    } else {
+      p.set('banka', curBanka);
+      p.set('durum', curDurum);
+      if(curTarih){
+        p.set('from', isoLocal(curTarih.from));
+        p.set('to', isoLocal(curTarih.to));
+        p.set('dlabel', curTarih.label);
+      }
+    }
+    return 'crm-operasyon-kredikarti-cikti.html?' + p.toString();
+  }
+  function syncCiktiHref(){
+    var btn = document.getElementById('btnKkCikti');
+    if(btn) btn.href = buildOutputUrl(false);
+  }
+  document.getElementById('btnKkCikti').addEventListener('click', function(e){
+    if(selKKCount() > 0){
+      e.preventDefault();
+      location.href = buildOutputUrl(true);
+      return;
+    }
+    e.preventDefault();
+    gvConfirm({
+      title:'Tüm liste mi çıktı alınsın?',
+      message:'Hiç kayıt seçilmedi. Aktif filtrelere göre TÜM hareketlerin çıktısı alınacak.',
+      ok:'Evet, Tümünü Al', cancel:'Vazgeç',
+      onConfirm:function(){ location.href = buildOutputUrl(false); }
+    });
+  });
+  document.getElementById('kkBbCikti').addEventListener('click', function(){
+    location.href = buildOutputUrl(true);
+  });
+  syncCiktiHref();
 
   syncBankaUI();
   applyFilter();
