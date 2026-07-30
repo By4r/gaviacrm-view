@@ -73,6 +73,19 @@
 .side-tip i{color:var(--acc-ink);font-size:13px;width:16px;text-align:center;flex:none;margin-top:1px}
 .side-tip span{font-size:12.5px;color:var(--muted);line-height:1.5}
 
+/* son işlemler — işlem kaydı simülasyonu (§17 imza sirküleri değişiklikleri de loglanır) */
+.iz-log{display:flex;flex-direction:column}
+.iz-log-row{display:flex;align-items:flex-start;gap:11px;padding:12px 0;border-bottom:1px solid var(--line)}
+.iz-log-row:last-child{border-bottom:none}
+.iz-log-ico{width:30px;height:30px;flex:none;border-radius:9px;display:grid;place-items:center;font-size:12px;background:rgba(var(--acc-rgb),.1);color:var(--acc-ink);margin-top:1px}
+.iz-log-body{flex:1;min-width:0;line-height:1.45}
+.iz-log-line{font-size:12.5px;color:var(--ink-2)}
+.iz-log-line b{color:var(--ink);font-weight:700}
+.iz-log-meta{margin-top:3px;font-size:11px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.iz-log-meta a{color:var(--acc-ink);font-weight:700}
+.iz-log-meta a:hover{text-decoration:underline}
+.iz-log-empty{font-size:12.5px;color:var(--muted);padding:6px 0}
+
 .ctx-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;font-size:13px}
 .ctx-row:not(:last-child){border-bottom:1px solid var(--line)}
 .ctx-row .ctx-lbl{color:var(--muted)}
@@ -272,6 +285,15 @@
             <div class="side-tip"><i class="fa-solid fa-triangle-exclamation"></i><span>Geçerlilik bitişine 60 gün veya daha az kalan sirküler "Süresi yaklaşıyor" rozetiyle işaretlenir.</span></div>
             <div class="side-tip"><i class="fa-solid fa-code-branch"></i><span>Yeni versiyon eklendiğinde önceki versiyon arşivlenir, silinmez — geçmiş sözleşmelerde referans olarak kalır.</span></div>
             <div class="side-tip"><i class="fa-solid fa-flask"></i><span>Bu form simülasyondur; kayıt tarayıcı oturumunda tutulur, kalıcı veritabanına yazılmaz.</span></div>
+          </div>
+        </div>
+
+        <div class="gv-card">
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> Son İşlemler</div></div>
+          <div class="gc-body">
+            <div class="iz-log" id="izLog">
+              <div class="iz-log-empty" id="izLogEmpty">Bu oturumda henüz imza sirküleri değişikliği yapılmadı.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -527,6 +549,27 @@
     if(btn.getAttribute('data-act') === 'retry'){ itemEl.remove(); }
   });
 
+  /* ============ son işlemler mini akış — işlem kayıtlarına yazma simülasyonu ============ */
+  var izLogSeq = 860; /* crm-ayarlar-yetkili-form.html kendi serisini 850'den başlatıyor —
+     çakışmayı önlemek için bu sayfa 860'tan başlar (kararlar.md #14 desenine devam). */
+  var izLogList = document.getElementById('izLog');
+  var izLogEmpty = document.getElementById('izLogEmpty');
+  function addIzLog(lineHtml){
+    izLogSeq++;
+    if(izLogEmpty){ izLogEmpty.remove(); izLogEmpty = null; }
+    var row = document.createElement('div');
+    row.className = 'iz-log-row';
+    var now = new Date();
+    var saat = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+    row.innerHTML =
+      '<div class="iz-log-ico"><i class="fa-solid fa-file-signature"></i></div>' +
+      '<div class="iz-log-body">' +
+        '<div class="iz-log-line">' + lineHtml + '</div>' +
+        '<div class="iz-log-meta"><span>LOG-2026-' + izLogSeq + '</span><span>· ' + saat + '</span><a href="crm-ayarlar-log.html">İşlem kayıtlarında görüntüle</a></div>' +
+      '</div>';
+    izLogList.insertBefore(row, izLogList.firstChild);
+  }
+
   /* ---- aksiyonlar ---- */
   document.getElementById('btnGecersiz').addEventListener('click', function(){
     var willInvalid = !(rec && rec.gecersiz);
@@ -535,6 +578,7 @@
     document.getElementById('pageTitle').querySelector('.gstat').outerHTML = '<span class="gstat ' + computeDurum(rec || {gecersiz:willInvalid}).cls + '">' + computeDurum(rec || {gecersiz:willInvalid}).lbl + '</span>';
     renderGecerlilik();
     gvToast((imzaNo || 'Sirküler') + (willInvalid ? ' geçersiz olarak işaretlendi.' : ' yeniden geçerli olarak işaretlendi.'), {type: willInvalid ? 'danger' : 'ok'});
+    addIzLog((imzaNo || 'Sirküler') + ' — <b>' + (willInvalid ? 'Geçersiz olarak işaretlendi' : 'Yeniden geçerli işaretlendi') + '</b>');
   });
   document.getElementById('btnArsiv').addEventListener('click', function(){
     var no = imzaNo || 'Sirküler';
@@ -544,6 +588,7 @@
       message: no + ' arşivlenecek — sözleşme ve resmî evrak önerilerinde artık kullanılmaz, geçmiş kayıtlarda görünür kalır.',
       onConfirm:function(){
         gvToast(no + ' arşivlendi — sözleşme önerilerinde artık kullanılmaz.', {type:'danger'});
+        addIzLog(no + ' — <b>Arşivlendi</b>');
         setTimeout(function(){ location.href = 'crm-ayarlar-firma.html#bilgi'; }, 900);
       }
     });
@@ -555,6 +600,7 @@
     if(!bit){ gvToast('Geçerlilik bitiş tarihini girin.', {type:'danger'}); return; }
     var no = rec ? imzaNo : document.getElementById('fBelgeNo').value;
     gvToast(mod === 'duzenle' ? no + ' güncellendi.' : no + ' — "' + ad + '" sirküleri eklendi.');
+    addIzLog((no || 'Sirküler') + (mod === 'duzenle' ? ' bilgileri güncellendi' : ' — "' + ad + '" sirküleri olarak eklendi') + ' — <b>' + ad + '</b>');
     setTimeout(function(){ location.href = 'crm-ayarlar-firma.html#bilgi'; }, 900);
   });
 })();

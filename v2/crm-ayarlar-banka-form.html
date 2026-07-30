@@ -48,6 +48,19 @@
 .bf-switchrow + .bf-switchrow{margin-top:10px}
 .bf-switchrow .bf-sw-lbl{font-size:13px;font-weight:700;color:var(--ink)}
 .bf-switchrow .bf-sw-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+
+/* son işlemler — işlem kaydı simülasyonu (§2.2 "değişiklikler işlem kayıtlarına yazılmalıdır") */
+.bk-log{display:flex;flex-direction:column}
+.bk-log-row{display:flex;align-items:flex-start;gap:11px;padding:12px 0;border-bottom:1px solid var(--line)}
+.bk-log-row:last-child{border-bottom:none}
+.bk-log-ico{width:30px;height:30px;flex:none;border-radius:9px;display:grid;place-items:center;font-size:12px;background:rgba(var(--acc-rgb),.1);color:var(--acc-ink);margin-top:1px}
+.bk-log-body{flex:1;min-width:0;line-height:1.45}
+.bk-log-line{font-size:12.5px;color:var(--ink-2)}
+.bk-log-line b{color:var(--ink);font-weight:700}
+.bk-log-meta{margin-top:3px;font-size:11px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bk-log-meta a{color:var(--acc-ink);font-weight:700}
+.bk-log-meta a:hover{text-decoration:underline}
+.bk-log-empty{font-size:12.5px;color:var(--muted);padding:6px 0}
 </style>
 </head>
 <body data-sec="ayarlar" data-screen="banka-form">
@@ -193,6 +206,15 @@
             <div class="side-tip"><i class="fa-solid fa-star"></i><span>Varsayılan hesap değiştirildiğinde önceki varsayılan otomatik düşer; her zaman en az bir varsayılan hesap kalır.</span></div>
           </div>
         </div>
+
+        <div class="gv-card">
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> Son İşlemler</div></div>
+          <div class="gc-body">
+            <div class="bk-log" id="bkFormLog">
+              <div class="bk-log-empty" id="bkFormLogEmpty">Bu oturumda henüz bu formdan bir işlem yapılmadı.</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -319,6 +341,26 @@
   /* şef rolü ise hesap sahibi/banka bilgisi salt-okunur değildir (bu ekran yalnız
      ayarlar erişimi olan roller için menüde açılır) — GV.role bazlı ek kısıt yok */
 
+  /* ============ son işlemler mini akış — işlem kayıtlarına yazma simülasyonu ============ */
+  var bkFormLogSeq = 870; /* T-B'nin yetkili(850)/imza(860) serileriyle çakışmaması için 870'ten başlar. */
+  var bkFormLogList = document.getElementById('bkFormLog');
+  var bkFormLogEmpty = document.getElementById('bkFormLogEmpty');
+  function addBkFormLog(lineHtml){
+    bkFormLogSeq++;
+    if(bkFormLogEmpty){ bkFormLogEmpty.remove(); bkFormLogEmpty = null; }
+    var row = document.createElement('div');
+    row.className = 'bk-log-row';
+    var now = new Date();
+    var saat = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+    row.innerHTML =
+      '<div class="bk-log-ico"><i class="fa-solid fa-building-columns"></i></div>' +
+      '<div class="bk-log-body">' +
+        '<div class="bk-log-line">' + lineHtml + '</div>' +
+        '<div class="bk-log-meta"><span>LOG-2026-' + bkFormLogSeq + '</span><span>· ' + saat + '</span><a href="crm-ayarlar-log.html">İşlem kayıtlarında görüntüle</a></div>' +
+      '</div>';
+    bkFormLogList.insertBefore(row, bkFormLogList.firstChild);
+  }
+
   document.getElementById('bankaSubmit').addEventListener('click', function(){
     var hesapAd = f.hesapAd.value.trim();
     var bankaAd = f.bankaAd.value.trim();
@@ -331,6 +373,7 @@
     var msg = (mod === 'duzenle' ? (hesapAd + ' güncellendi') : (hesapAd + ' banka hesabı olarak eklendi'))
       + (f.varsayilan.checked ? ' ve varsayılan hesap yapıldı' : '') + '.';
     gvToast(msg + ' İşlem kaydına yazıldı.');
+    addBkFormLog(bankaAd + ' — <b>' + hesapAd + '</b> ' + (mod === 'duzenle' ? 'güncellendi' : 'eklendi') + (f.varsayilan.checked ? ' · varsayılan yapıldı' : ''));
     setTimeout(function(){ location.href = 'crm-ayarlar-firma.html#bilgi'; }, 900);
   });
 })();
