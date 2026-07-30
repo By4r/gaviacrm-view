@@ -386,19 +386,26 @@
   GV.crumb(rec.no);
   document.title = rec.kisi + ' — Saha Bildirimi — Gavia CRM';
 
+  /* §17 — arşiv durumu; onay/görülme akışından (yeni/görüldü) BAĞIMSIZ ayrı bir eksen,
+     bu sayfa oturumu içinde tutulur (repo genelindeki sayfa-lokal state konvansiyonu). */
+  var isArchived = false;
+
   var root = document.getElementById('bilRoot');
   root.innerHTML = ''
     + '<div class="gd-head">'
     +   '<div>'
     +     '<div class="gd-eyebrow">' + rec.site + ' · Saha Bildirimi #' + rec.no + '</div>'
     +     '<h1>' + rec.baslik + '</h1>'
-    +     '<div class="gd-badges">'
+    +     '<div class="gd-badges" id="bilBadges">'
     +       '<span class="gtag"><i class="fa-solid ' + rec.turIcon + '"></i> ' + rec.tur + '</span>'
     +       (rec.yeni ? '<span class="gstat info" id="yeniBadge">Yeni</span>' : '<span class="gstat off" id="yeniBadge">Görüldü</span>')
     +     '</div>'
     +   '</div>'
     +   '<div class="ph-actions">'
     +     '<a class="btn btn-ghost btn-sm" href="crm-santiye-bildirimler.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>'
+    +     '<a class="btn btn-ghost btn-sm" href="crm-santiye-bildirim-form.html?mod=duzenle&bil=' + id + '"><i class="fa-solid fa-pen"></i> Düzenle</a>'
+    +     '<button type="button" class="btn btn-sm btn-danger" data-no-confirm id="bilArsivBtn"><i class="fa-solid fa-box-archive"></i> Arşivle</button>'
+    +     '<a class="btn btn-ghost btn-sm" href="crm-ayarlar-log.html" data-no-confirm><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişi</a>'
     +   '</div>'
     + '</div>'
     + '<div class="gd-grid">'
@@ -502,6 +509,36 @@
     var n = parseInt(eye.textContent, 10) || 0;
     eye.innerHTML = '<i class="fa-solid fa-eye"></i> ' + (n + 1) + ' kişi gördü';
   });
+
+  /* §17 — Arşivle / Aktife Al. Bu sayfada statik kalıcı .gv-modal-ov yok — gvConfirm
+     doğrudan kullanılabilir. Arşiv durumu görülme/yeni rozetinden bağımsız ayrı eksen. */
+  var arsivBtn = document.getElementById('bilArsivBtn');
+  if(arsivBtn){
+    arsivBtn.addEventListener('click', function(){
+      var willArchive = !isArchived;
+      gvConfirm({
+        danger: willArchive, icon: willArchive ? 'fa-box-archive' : 'fa-rotate-left',
+        title: rec.no + (willArchive ? ' arşivlensin mi?' : ' yeniden aktif edilsin mi?'),
+        message: willArchive
+          ? 'Bu bildirim arşivlenecek; Saha Bildirimleri akışında varsayılan görünümde görünmeyecek, kayıt SİLİNMEZ ve "Arşivlenenleri Göster" ile her zaman erişilebilir kalır.'
+          : 'Bu bildirim yeniden aktif duruma alınacak ve akışta varsayılan görünüme dönecek.',
+        ok: willArchive ? 'Arşivle' : 'Aktife Al', cancel:'Vazgeç',
+        onConfirm:function(){
+          isArchived = willArchive;
+          arsivBtn.className = 'btn btn-sm ' + (isArchived ? 'btn-ghost' : 'btn-danger');
+          arsivBtn.innerHTML = '<i class="fa-solid ' + (isArchived ? 'fa-rotate-left' : 'fa-box-archive') + '"></i> ' + (isArchived ? 'Aktife Al' : 'Arşivle');
+          var badges = document.getElementById('bilBadges');
+          var existing = badges.querySelector('.gstat.off[data-arsiv-badge]');
+          if(isArchived && !existing){
+            badges.insertAdjacentHTML('beforeend', '<span class="gstat off" data-arsiv-badge>Arşivlendi</span>');
+          } else if(!isArchived && existing){
+            existing.remove();
+          }
+          gvToast(rec.no + (isArchived ? ' arşivlendi — işlem kaydına eklendi.' : ' yeniden aktif.'), {type: isArchived ? 'danger' : 'ok'});
+        }
+      });
+    });
+  }
 
   function initials(name){ return String(name).split(' ').map(function(w){ return w[0] || ''; }).join('').slice(0,2).toUpperCase(); }
   function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }

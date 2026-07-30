@@ -113,14 +113,14 @@
     <div class="gv-crumb">
       <a href="crm-santiye-bildirimler.html">Saha Bildirimleri</a>
       <i class="fa-solid fa-chevron-right"></i>
-      <span>Bildirim Paylaş</span>
+      <span id="crumbNow">Bildirim Paylaş</span>
     </div>
 
     <div class="gv-page-head">
       <div>
         <div class="ph-eyebrow">Saha</div>
-        <h1>Saha Bildirimi Paylaş</h1>
-        <div class="ph-sub">Foto ve notunuz şantiye akışına düşer; ilgili ekip üyeleri bildirimden haberdar olur.</div>
+        <h1 id="pageTitle">Saha Bildirimi Paylaş</h1>
+        <div class="ph-sub" id="pageSub">Foto ve notunuz şantiye akışına düşer; ilgili ekip üyeleri bildirimden haberdar olur.</div>
       </div>
     </div>
 
@@ -261,6 +261,48 @@
   }
   [fSantiye, fTur, fAciklama].forEach(function(el){ el.addEventListener('input', syncPreview); el.addEventListener('change', syncPreview); });
   syncPreview();
+
+  /* ============ §17 — Düzenle modu (?mod=duzenle&bil=NNN). Kaynak veri
+     crm-santiye-bildirimler.html feed kartlarıyla BİREBİR (22 kanonik bildirim). ============ */
+  var BIL_DATA = {
+    '001':{santiye:'vadi',tur:'yapi',aciklama:'B Blok temel betonu bugün tamamlandı, ekip 3. kat kalıp işine geçiyor. Döküm sırasında hava koşulları uygundu, numune küpleri laboratuvara gönderildi.'},
+    '002':{santiye:'vadi',tur:'elektrik',aciklama:'Zemin kat elektrik tesisatı döşemesi başladı, kablo kanalları B ve C aksında tamamlandı.'},
+    '003':{santiye:'liman',tur:'yapi',aciklama:'Çelik konstrüksiyon montajı 3. modülde tamamlandı; vinç operasyonu güvenlik çemberi kapatılarak yürütüldü, kaza/ramak kala kaydı yok.'},
+    '004':{santiye:'liman',tur:'isg',aciklama:'Haftalık İSG toplantısı yapıldı; baret, emniyet kemeri ve iş ayakkabısı kontrolü tüm ekipte tamamlandı, eksik ekipman yok.'},
+    '005':{santiye:'merkez',tur:'atolye',aciklama:'Atölye çatı kaplama işi yaklaşık %80 seviyesinde; kalan panel siparişi bu hafta içinde tamamlanacak.'},
+    '006':{santiye:'merkez',tur:'malzeme',aciklama:'Yeni gelen kalıp kerestesi sahaya indirildi ve depo alanında istiflendi; irsaliye Satın Alma\'ya iletildi.'},
+    '007':{santiye:'liman',tur:'kalite',aciklama:'Kaynak noktalarının kalite kontrolü tamamlandı; tutanak ve fotoğraflar ekte, revize gereken nokta çıkmadı.'},
+    '008':{santiye:'vadi',tur:'yapi',aciklama:'3. kat perde kalıbı kuruldu, demir donatı kontrolü için Teknik Müdür\'ün onayı bekleniyor.'},
+    '009':{santiye:'vadi',tur:'beton',aciklama:'C Blok perde betonu bugün döküldü, numune küpleri laboratuvara gönderildi.'},
+    '010':{santiye:'liman',tur:'hasar',aciklama:'Forklift hidrolik hortumunda sızıntı tespit edildi, ekipman geçici olarak devre dışı bırakıldı.'},
+    '011':{santiye:'vadi',tur:'isg-uygunsuzluk',aciklama:'3. kat kalıp iskelesinde iki işçinin emniyet kemeri takmadığı tespit edildi, uyarı yapıldı ve İSG sorumlusuna bildirildi.'},
+    '012':{santiye:'merkez',tur:'makine-ariza',aciklama:'Atölyedeki kompresörde arıza oluştu, yedek parça siparişi Satın Alma\'ya iletildi; iş bu süreçte mobil kompresörle sürdürülüyor.'},
+    '013':{santiye:'vadi',tur:'taseron-sahada',aciklama:'Demir-Beton İnş. Ltd. ekibi bugün 10 kişilik kadrosundan 8\'iyle sahada, B Blok demir donatı işine devam ediyor.'},
+    '014':{santiye:'liman',tur:'is-tamamlandi',aciklama:'3. modül çelik konstrüksiyon montajı tamamlandı, teslim tutanağı hazırlandı.'},
+    '015':{santiye:'vadi',tur:'revize-gerekiyor',aciklama:'B Blok 3. kat perde kalıbı ölçüsünde sapma tespit edildi, teknik ofisten revize onayı bekleniyor.'},
+    '016':{santiye:'liman',tur:'acil',aciklama:'Vinç operasyonu sırasında ani rüzgar nedeniyle çalışma durduruldu, ekip güvenli alana çekildi; acil durum protokolü uygulandı.'},
+    '017':{santiye:'merkez',tur:'hava',aciklama:'Beklenmeyen sağanak nedeniyle atölye çatı işi bugün durduruldu, program bir gün ötelendi.'},
+    '018':{santiye:'liman',tur:'denetim',aciklama:'Haftalık kalite denetiminde temel kalıp toleransları kontrol edildi, iki noktada küçük sapma raporlandı.'},
+    '019':{santiye:'vadi',tur:'hakedis-kanit',aciklama:'Haziran dönemi hakediş kanıtı için B Blok temel imalatının fotoğrafları çekildi, muhasebeye iletildi.'},
+    '020':{santiye:'merkez',tur:'oncesi-sonrasi',aciklama:'Atölye çatı kaplaması öncesi/sonrası karşılaştırma kaydı alındı, %80 tamamlanma net görülüyor.'},
+    '021':{santiye:'liman',tur:'cevre',aciklama:'Şantiye çevresine yağmur suyu drenaj hattı için geçici toprak set çekildi, çevre etkisi azaltıldı.'},
+    '022':{santiye:'vadi',tur:'ilerleme-kaydi',aciklama:'Haftalık şantiye ilerleme kaydı: 3. kat kalıp %60 tamamlandı, malzeme akışı planlandığı gibi.'}
+  };
+  var q = new URLSearchParams(location.search);
+  var mod = q.get('mod');
+  var bilNo = q.get('bil');
+  var isEdit = mod === 'duzenle' && bilNo && BIL_DATA[bilNo];
+  if(isEdit){
+    var rec = BIL_DATA[bilNo];
+    document.getElementById('crumbNow').textContent = 'SBL-2026-' + bilNo + ' — Düzenle';
+    document.getElementById('pageTitle').textContent = 'Bildirimi Düzenle — SBL-2026-' + bilNo;
+    document.getElementById('pageSub').textContent = 'Mevcut saha bildirimi üzerinde değişiklik yapın; değişiklikler işlem kayıtlarına yazılır.';
+    fSantiye.value = rec.santiye;
+    Array.prototype.forEach.call(fTur.options, function(o){ if(o.getAttribute('data-slug') === rec.tur) fTur.value = o.value; });
+    fAciklama.value = rec.aciklama;
+    document.getElementById('btnGonder').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Değişiklikleri Kaydet';
+    syncPreview();
+  }
 
   /* ============ MEDYA / BELGE EKİ — §9.1 video yükleme (D-Dalga20) ============
      Gerçek File API akışı: dosya boyutu ve (video için) süre GERÇEKTEN File/Video API'siyle
@@ -513,6 +555,11 @@
     }
     if(mediaItems.some(function(m){ return m.state === 'yukleniyor' || m.state === 'isleniyor'; })){
       gvToast('Medya yüklemesi devam ediyor — tamamlanmasını bekleyin.', {type:'info'});
+      return;
+    }
+    if(isEdit){
+      gvToast('SBL-2026-' + bilNo + ' güncellendi — işlem kaydına eklendi.');
+      setTimeout(function(){ location.href = 'crm-santiye-bildirim-detay.html?bil=' + bilNo; }, 900);
       return;
     }
     gvToast('Saha bildiriminiz paylaşıldı.');

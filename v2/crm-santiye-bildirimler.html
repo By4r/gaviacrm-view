@@ -77,6 +77,25 @@
 .post-detail:hover{color:var(--acc-deep)}
 .post-detail i{font-size:10px}
 
+/* §17 — kayıt aksiyonları (Düzenle/Arşivle), "Gördüm" ile aynı sırada */
+.post-acts{display:flex;align-items:center;gap:6px}
+.post.is-arsiv{opacity:.6}
+
+/* Arşivlenenleri Göster — switch, crm-santiye.html'deki "Pasif Şantiyeleri Göster" ile
+   BİREBİR aynı sayfa-lokal bileşen (ui.js'e yeni primitif eklenmez) */
+/* ui.css'te .gv-toggle ZATEN farklı bir bileşen (checkbox+.tg-track, width:42px sabit) —
+   width'i BURADA açıkça override etmek ŞART, aksi halde ui.css'in width:42px'i (property-
+   bazlı cascade, sonradan gelen ruleset width belirtmezse ÖNCEKİ değer geçerli kalır)
+   metni kutunun dışına taşırır (crm-santiye.html'deki T-H switch'i width:100% ile bu
+   çakışmayı zaten örtük olarak çözmüştü). */
+.gv-toggle{display:flex;flex:none;width:auto;height:auto;position:static;align-items:center;gap:10px;font-family:inherit;background:none;border:none;cursor:pointer;padding:6px 4px;-webkit-tap-highlight-color:transparent;margin-left:auto}
+.gv-toggle-track{width:38px;height:22px;border-radius:var(--r-pill);background:var(--line-2);position:relative;flex:none;transition:background .18s var(--ease)}
+.gv-toggle-thumb{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:var(--sh-sm);transition:transform .18s var(--ease)}
+.gv-toggle[aria-checked="true"] .gv-toggle-track{background:var(--acc)}
+.gv-toggle[aria-checked="true"] .gv-toggle-thumb{transform:translateX(16px)}
+.gv-toggle-lbl{font-size:12.5px;font-weight:700;color:var(--ink-2);white-space:nowrap}
+@media(max-width:640px){.gv-toggle{margin-left:0;width:100%;justify-content:space-between}}
+
 /* sağ sütun: özet + şantiye lejantı */
 .leg-item{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:12.5px;color:var(--ink-2)}
 .leg-dot{width:11px;height:11px;border-radius:4px;flex:none}
@@ -125,6 +144,10 @@
           <button class="chip" data-filter="vadi">Vadi Konakları <span class="ch-cnt">9</span></button>
           <button class="chip" data-filter="liman">Liman Lojistik <span class="ch-cnt">8</span></button>
           <button class="chip" data-filter="merkez">Merkez Şantiye <span class="ch-cnt">5</span></button>
+          <button type="button" class="gv-toggle" id="swArsivBil" role="switch" aria-checked="false">
+            <span class="gv-toggle-track"><span class="gv-toggle-thumb"></span></span>
+            <span class="gv-toggle-lbl">Arşivlenenleri Göster</span>
+          </button>
         </div>
 
         <div class="feed-filter" id="turBar">
@@ -155,7 +178,7 @@
         </div>
 
         <div id="feedList" class="feed-col">
-          <article class="post" data-santiye="vadi" data-sbl="001" data-tur="yapi">
+          <article class="post" data-santiye="vadi" data-sbl="001" data-tur="yapi" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)">HD</div>
               <div class="post-who"><b>Hasan Demirci</b><span>Şantiye Şefi · <a href="crm-santiye-detay.html">Vadi Konakları</a> · 2 Temmuz 2026, 09:40</span></div>
@@ -166,10 +189,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 6 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=001">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=001" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="001" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="vadi" data-sbl="002" data-tur="elektrik">
+          <article class="post" data-santiye="vadi" data-sbl="002" data-tur="elektrik" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">İS</div>
               <div class="post-who"><b>İbrahim Sönmez</b><span>Formen · <a href="crm-santiye-detay.html">Vadi Konakları</a> · 2 Temmuz 2026, 08:15</span></div>
@@ -180,10 +203,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 3 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=002">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=002" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="002" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="liman" data-sbl="003" data-tur="yapi">
+          <article class="post" data-santiye="liman" data-sbl="003" data-tur="yapi" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--info-tint);color:var(--info)">AK</div>
               <div class="post-who"><b>Aylin Koç</b><span>Şantiye Şefi · <a href="crm-santiye-detay.html">Liman Lojistik Merkezi</a> · 1 Temmuz 2026, 16:20</span></div>
@@ -194,10 +217,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 9 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=003">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=003" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="003" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="liman" data-sbl="004" data-tur="isg">
+          <article class="post" data-santiye="liman" data-sbl="004" data-tur="isg" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">ŞA</div>
               <div class="post-who"><b>Şükrü Aslan</b><span>Formen · <a href="crm-santiye-detay.html">Liman Lojistik Merkezi</a> · 1 Temmuz 2026, 11:05</span></div>
@@ -208,10 +231,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 5 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=004">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=004" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="004" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="merkez" data-sbl="005" data-tur="atolye">
+          <article class="post" data-santiye="merkez" data-sbl="005" data-tur="atolye" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--warn-tint);color:var(--warn)">ÖT</div>
               <div class="post-who"><b>Ömer Taşkın</b><span>Şantiye Şefi · <a href="crm-santiye-detay.html">Merkez Şantiye</a> · 30 Haziran 2026, 14:50</span></div>
@@ -221,10 +244,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 4 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=005">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=005" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="005" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="merkez" data-sbl="006" data-tur="malzeme">
+          <article class="post" data-santiye="merkez" data-sbl="006" data-tur="malzeme" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">RY</div>
               <div class="post-who"><b>Recep Yaman</b><span>Formen · <a href="crm-santiye-detay.html">Merkez Şantiye</a> · 30 Haziran 2026, 10:30</span></div>
@@ -234,10 +257,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 2 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=006">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=006" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="006" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="liman" data-sbl="007" data-tur="kalite">
+          <article class="post" data-santiye="liman" data-sbl="007" data-tur="kalite" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">MÇ</div>
               <div class="post-who"><b>Metin Çetin</b><span>Kaynakçı · <a href="crm-santiye-detay.html">Liman Lojistik Merkezi</a> · 29 Haziran 2026, 09:00</span></div>
@@ -247,10 +270,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 3 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=007">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=007" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="007" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="vadi" data-sbl="008" data-tur="yapi">
+          <article class="post" data-santiye="vadi" data-sbl="008" data-tur="yapi" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">RK</div>
               <div class="post-who"><b>Ramazan Kılıç</b><span>Kalıpçı · <a href="crm-santiye-detay.html">Vadi Konakları</a> · 28 Haziran 2026, 15:40</span></div>
@@ -260,12 +283,12 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 4 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=008">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=008" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="008" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
           <!-- ---- D-Dalga20 §9.4 — 009-022, 14 tür genişlemesi için eklenen kayıtlar
                (mevcut 8 kişi/şantiyeden türetildi, kanonik kadroya yeni isim eklenmedi) ---- -->
-          <article class="post" data-santiye="vadi" data-sbl="009" data-tur="beton">
+          <article class="post" data-santiye="vadi" data-sbl="009" data-tur="beton" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)">HD</div>
               <div class="post-who"><b>Hasan Demirci</b><span>Şantiye Şefi · <a href="crm-santiye-detay.html">Vadi Konakları</a> · 27 Haziran 2026, 14:20</span></div>
@@ -275,10 +298,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 5 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=009">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=009" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="009" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="liman" data-sbl="010" data-tur="hasar">
+          <article class="post" data-santiye="liman" data-sbl="010" data-tur="hasar" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">ŞA</div>
               <div class="post-who"><b>Şükrü Aslan</b><span>Formen · <a href="crm-santiye-detay.html">Liman Lojistik Merkezi</a> · 26 Haziran 2026, 10:10</span></div>
@@ -288,10 +311,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 6 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=010">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=010" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="010" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="vadi" data-sbl="011" data-tur="isg-uygunsuzluk">
+          <article class="post" data-santiye="vadi" data-sbl="011" data-tur="isg-uygunsuzluk" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">İS</div>
               <div class="post-who"><b>İbrahim Sönmez</b><span>Formen · <a href="crm-santiye-detay.html">Vadi Konakları</a> · 25 Haziran 2026, 09:00</span></div>
@@ -301,10 +324,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 8 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=011">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=011" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="011" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="merkez" data-sbl="012" data-tur="makine-ariza">
+          <article class="post" data-santiye="merkez" data-sbl="012" data-tur="makine-ariza" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--warn-tint);color:var(--warn)">ÖT</div>
               <div class="post-who"><b>Ömer Taşkın</b><span>Şantiye Şefi · <a href="crm-santiye-detay.html">Merkez Şantiye</a> · 24 Haziran 2026, 16:45</span></div>
@@ -314,10 +337,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 4 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=012">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=012" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="012" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="vadi" data-sbl="013" data-tur="taseron-sahada">
+          <article class="post" data-santiye="vadi" data-sbl="013" data-tur="taseron-sahada" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)">HD</div>
               <div class="post-who"><b>Hasan Demirci</b><span>Şantiye Şefi · <a href="crm-santiye-detay.html">Vadi Konakları</a> · 23 Haziran 2026, 11:30</span></div>
@@ -327,10 +350,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 3 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=013">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=013" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="013" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="liman" data-sbl="014" data-tur="is-tamamlandi">
+          <article class="post" data-santiye="liman" data-sbl="014" data-tur="is-tamamlandi" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--info-tint);color:var(--info)">AK</div>
               <div class="post-who"><b>Aylin Koç</b><span>Şantiye Şefi · <a href="crm-santiye-detay.html">Liman Lojistik Merkezi</a> · 22 Haziran 2026, 17:00</span></div>
@@ -340,10 +363,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 6 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=014">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=014" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="014" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="vadi" data-sbl="015" data-tur="revize-gerekiyor">
+          <article class="post" data-santiye="vadi" data-sbl="015" data-tur="revize-gerekiyor" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)">HD</div>
               <div class="post-who"><b>Hasan Demirci</b><span>Şantiye Şefi · <a href="crm-santiye-detay.html">Vadi Konakları</a> · 21 Haziran 2026, 10:15</span></div>
@@ -353,10 +376,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 5 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=015">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=015" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="015" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="liman" data-sbl="016" data-tur="acil">
+          <article class="post" data-santiye="liman" data-sbl="016" data-tur="acil" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--info-tint);color:var(--info)">AK</div>
               <div class="post-who"><b>Aylin Koç</b><span>Şantiye Şefi · <a href="crm-santiye-detay.html">Liman Lojistik Merkezi</a> · 20 Haziran 2026, 15:20</span></div>
@@ -366,10 +389,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 10 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=016">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=016" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="016" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="merkez" data-sbl="017" data-tur="hava">
+          <article class="post" data-santiye="merkez" data-sbl="017" data-tur="hava" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">RY</div>
               <div class="post-who"><b>Recep Yaman</b><span>Formen · <a href="crm-santiye-detay.html">Merkez Şantiye</a> · 19 Haziran 2026, 08:10</span></div>
@@ -379,10 +402,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 4 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=017">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=017" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="017" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="liman" data-sbl="018" data-tur="denetim">
+          <article class="post" data-santiye="liman" data-sbl="018" data-tur="denetim" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--info-tint);color:var(--info)">AK</div>
               <div class="post-who"><b>Aylin Koç</b><span>Şantiye Şefi · <a href="crm-santiye-detay.html">Liman Lojistik Merkezi</a> · 18 Haziran 2026, 13:40</span></div>
@@ -392,10 +415,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 5 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=018">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=018" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="018" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="vadi" data-sbl="019" data-tur="hakedis-kanit">
+          <article class="post" data-santiye="vadi" data-sbl="019" data-tur="hakedis-kanit" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:rgba(var(--acc-rgb),.14);color:var(--acc-ink)">HD</div>
               <div class="post-who"><b>Hasan Demirci</b><span>Şantiye Şefi · <a href="crm-santiye-detay.html">Vadi Konakları</a> · 17 Haziran 2026, 11:00</span></div>
@@ -405,10 +428,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 3 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=019">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=019" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="019" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="merkez" data-sbl="020" data-tur="oncesi-sonrasi">
+          <article class="post" data-santiye="merkez" data-sbl="020" data-tur="oncesi-sonrasi" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--warn-tint);color:var(--warn)">ÖT</div>
               <div class="post-who"><b>Ömer Taşkın</b><span>Şantiye Şefi · <a href="crm-santiye-detay.html">Merkez Şantiye</a> · 16 Haziran 2026, 09:30</span></div>
@@ -418,10 +441,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 4 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=020">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=020" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="020" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="liman" data-sbl="021" data-tur="cevre">
+          <article class="post" data-santiye="liman" data-sbl="021" data-tur="cevre" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">ŞA</div>
               <div class="post-who"><b>Şükrü Aslan</b><span>Formen · <a href="crm-santiye-detay.html">Liman Lojistik Merkezi</a> · 15 Haziran 2026, 14:50</span></div>
@@ -431,10 +454,10 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 3 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=021">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=021" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="021" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
 
-          <article class="post" data-santiye="vadi" data-sbl="022" data-tur="ilerleme-kaydi">
+          <article class="post" data-santiye="vadi" data-sbl="022" data-tur="ilerleme-kaydi" data-arsiv="0">
             <div class="post-head">
               <div class="post-ava" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">İS</div>
               <div class="post-who"><b>İbrahim Sönmez</b><span>Formen · <a href="crm-santiye-detay.html">Vadi Konakları</a> · 14 Haziran 2026, 16:10</span></div>
@@ -444,7 +467,7 @@
             <div class="post-meta">
               <div class="post-meta-l"><span><i class="fa-solid fa-eye"></i> 4 kişi gördü</span><a class="post-detail" href="crm-santiye-bildirim-detay.html?bil=022">Detayı gör <i class="fa-solid fa-arrow-right"></i></a></div>
               <button class="post-ack" data-no-confirm><i class="fa-regular fa-thumbs-up"></i> Gördüm</button>
-            </div>
+            <div class="post-acts"><a class="ia-btn" href="crm-santiye-bildirim-form.html?mod=duzenle&amp;bil=022" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-bil-arsiv="022" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></div>
           </article>
         </div>
 
@@ -485,6 +508,7 @@
   var chips = document.querySelectorAll('#feedChips .chip[data-filter]');
   var turSelect = document.getElementById('turSelect');
   var empty = document.querySelector('[data-table-empty]');
+  var swArsivBil = document.getElementById('swArsivBil');
   function activeSantiye(){
     var on = document.querySelector('#feedChips .chip.is-on');
     return on ? on.getAttribute('data-filter') : 'hepsi';
@@ -492,10 +516,12 @@
   function applyFeedFilter(){
     var f = activeSantiye();
     var t = turSelect ? turSelect.value : 'hepsi';
+    var showArsiv = swArsivBil && swArsivBil.getAttribute('aria-checked') === 'true';
     var shown = 0;
     document.querySelectorAll('#feedList .post').forEach(function(p){
       var show = ((f === 'hepsi') || (p.getAttribute('data-santiye') === f))
-        && ((t === 'hepsi') || (p.getAttribute('data-tur') === t));
+        && ((t === 'hepsi') || (p.getAttribute('data-tur') === t))
+        && (showArsiv || p.getAttribute('data-arsiv') !== '1');
       p.hidden = !show;
       if(show) shown++;
     });
@@ -509,6 +535,42 @@
     });
   });
   if(turSelect) turSelect.addEventListener('change', applyFeedFilter);
+  if(swArsivBil){
+    swArsivBil.addEventListener('click', function(){
+      var on = swArsivBil.getAttribute('aria-checked') !== 'true';
+      swArsivBil.setAttribute('aria-checked', on ? 'true' : 'false');
+      applyFeedFilter();
+    });
+  }
+
+  /* §17 — Arşivle / Aktife Al. Saha bildirimi resmi bir kayıt değildir ama sistem
+     genelindeki §17 prensibi gereği kalıcı silinmez; arşivleme akışın örneği burada
+     kanıtlanır. Bu sayfada statik kalıcı .gv-modal-ov yok, gvConfirm doğrudan kullanılabilir. */
+  document.getElementById('feedList').addEventListener('click', function(e){
+    var btn = e.target.closest('[data-bil-arsiv]'); if(!btn) return;
+    var article = btn.closest('.post');
+    var no = btn.getAttribute('data-bil-arsiv');
+    var willArchive = article.getAttribute('data-arsiv') !== '1';
+    var baslik = article.querySelector('.post-body p');
+    var ozet = baslik ? baslik.textContent.trim().slice(0, 60) : ('SBL-2026-' + no);
+    gvConfirm({
+      danger: willArchive, icon: willArchive ? 'fa-box-archive' : 'fa-rotate-left',
+      title: 'SBL-2026-' + no + (willArchive ? ' arşivlensin mi?' : ' yeniden aktif edilsin mi?'),
+      message: willArchive
+        ? ('"' + ozet + '…" bildirimi arşivlenecek; akışta varsayılan görünümde görünmeyecek, kayıt SİLİNMEZ. "Arşivlenenleri Göster" ile her zaman erişilebilir kalır.')
+        : ('"' + ozet + '…" bildirimi yeniden aktif hale getirilecek ve akışta varsayılan görünüme dönecek.'),
+      ok: willArchive ? 'Arşivle' : 'Aktife Al', cancel:'Vazgeç',
+      onConfirm:function(){
+        article.setAttribute('data-arsiv', willArchive ? '1' : '0');
+        article.classList.toggle('is-arsiv', willArchive);
+        btn.setAttribute('aria-label', willArchive ? 'Aktife Al' : 'Arşivle');
+        btn.setAttribute('data-tip', willArchive ? 'Aktife Al' : 'Arşivle');
+        btn.innerHTML = '<i class="fa-solid ' + (willArchive ? 'fa-rotate-left' : 'fa-box-archive') + '"></i>';
+        gvToast('SBL-2026-' + no + (willArchive ? ' arşivlendi — işlem kaydına eklendi.' : ' yeniden aktif.'), {type: willArchive ? 'danger' : 'ok'});
+        applyFeedFilter();
+      }
+    });
+  });
 
   /* gördüm aksiyonu — okundu işaretler, sayaç artırır */
   document.querySelectorAll('.post-ack').forEach(function(btn){
