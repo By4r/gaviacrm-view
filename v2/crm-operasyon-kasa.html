@@ -605,6 +605,12 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
 (function(){
   if(!window.GV) return;
 
+  /* ============ §13 — kasa listesindeki aktif tarih aralığı Çıktı Al'a taşınır ============
+     Gelişmiş Filtre panelinin (fpKasa) tarih state'i burada erken tanımlanır ki setKasa()
+     ve ciktiHref() aşağıda — gvFilterPanel.init() daha geç çağrılmadan önce bile —
+     güvenle okuyabilsin. */
+  var kasaFpState = {};
+
   /* durum rozetleri — gvChainBadge'in tek kaynağından render edilir */
   document.querySelectorAll('[data-badge]').forEach(function(el){
     el.innerHTML = gvChainBadge(el.getAttribute('data-badge'));
@@ -706,6 +712,19 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
   var KS_ADLAR = { vadi:'Vadi Konakları', liman:'Liman Lojistik Merkezi', merkez:'Merkez Şantiye' };
   var dfSantiye = document.getElementById('dfSantiye');
   var btnCikti = document.getElementById('btnCikti');
+  /* §13 — Çıktı Al linki: şantiye + (varsa) aktif Gelişmiş Filtre tarih aralığı, emsal
+     kredikarti/pluxee çıktı butonlarının aynı query-string taşıma yaklaşımı. */
+  function isoDate(d){ return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2); }
+  function ciktiHref(ks){
+    var url = 'crm-operasyon-kasa-cikti.html?santiye=' + ks;
+    var dr = kasaFpState.tarih ? kasaFpState.tarih.raw : null;
+    if(dr && dr.from && dr.to){
+      url += '&from=' + isoDate(dr.from) + '&to=' + isoDate(dr.to);
+      var lbl = kasaFpState.tarih.label ? kasaFpState.tarih.label.replace(/^Tarih:\s*/,'') : '';
+      if(lbl) url += '&dlabel=' + encodeURIComponent(lbl);
+    }
+    return url;
+  }
   function setKasa(ks){
     if(!KS_ADLAR[ks]) return;
     document.querySelectorAll('#ksGrid .ks-card[data-ks]').forEach(function(c){
@@ -715,7 +734,7 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
       tr.hidden = tr.getAttribute('data-ks') !== ks;
     });
     if(dfSantiye) dfSantiye.textContent = KS_ADLAR[ks];
-    if(btnCikti) btnCikti.href = 'crm-operasyon-kasa-cikti.html?santiye=' + ks;
+    if(btnCikti) btnCikti.href = ciktiHref(ks);
     /* Y17: şantiye değişince kart listesi de senkron kalır (masaüstü tr.hidden emsali) */
     buildDefterCards();
     /* D17: şantiye değişince defter satır seti değişir → pager sayfa 1'e döner (RB §5) */
@@ -814,11 +833,20 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
   }
   /* URL-state + pager refresh delegasyon sahibinde (ui.js applyFilters) */
   tblKasa._gvApply = applyKasaCombinedFilter;
-  var kasaFpState = {};
+  function curKsKey(){
+    var on = document.querySelector('#ksGrid .ks-card.is-on[data-ks]');
+    return on ? on.getAttribute('data-ks') : 'vadi';
+  }
   window.gvFilterPanel.init('#fpKasa', {
     activeRow: '#achipsKasa',
-    onApply: function(state){ kasaFpState = state; applyKasaCombinedFilter(); },
-    onClear: function(){ kasaFpState = {}; }
+    onApply: function(state){
+      kasaFpState = state; applyKasaCombinedFilter();
+      if(btnCikti) btnCikti.href = ciktiHref(curKsKey());
+    },
+    onClear: function(){
+      kasaFpState = {};
+      if(btnCikti) btnCikti.href = ciktiHref(curKsKey());
+    }
   });
   turChipsWrap.addEventListener('click', function(e){
     var ch = e.target.closest('.chip[data-tur]'); if(!ch) return;
