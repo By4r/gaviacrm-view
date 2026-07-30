@@ -128,6 +128,11 @@ a.tg-ev:hover{box-shadow:var(--sh-md);transform:translateY(-1px)}
 @media(max-width:640px){
   .ajd-kebab{opacity:1;width:26px;height:26px}
 }
+/* ---- "+N daha" rozeti — zaman ızgarasında çakışan etkinlikler için (Ay görünümündeki
+   .mn-more "+N daha" idiyomunun aynısı, konum yalnızca .evw köşesine uyarlandı; kebab
+   köşe-overlay deseniyle AYNI teknik). Tıklanabilir değil, title tooltip'inde gizlenen
+   etkinliklerin saat+başlığı taşınır. Panel-ajanda.html ile BİREBİR aynı düzeltme. ---- */
+.tg-more-badge{position:absolute;bottom:3px;right:3px;z-index:3;font-size:8.5px;font-weight:800;color:var(--acc-ink);background:rgba(var(--acc-rgb),.18);border-radius:var(--r-pill);padding:1px 6px;line-height:1.3;white-space:nowrap;cursor:default}
 /* fixed kart menüsü — .gv-pop <button> varyantı (ui.js'in .gv-pop a stili yalnız
    <a> hedefliyor; sayfa-lokal <button> stili burada, ui.js'e DOKUNULMADI) */
 .gv-pop button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:11px;width:100%;padding:9px 12px;border-radius:var(--r-sm);font-size:13.5px;font-weight:600;color:var(--ink-2);cursor:pointer;transition:.15s var(--ease);font-family:inherit}
@@ -568,6 +573,17 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
         it.col = c; ends[c] = it.end;
       });
       cluster.forEach(function(it){ it.cols = ends.length; });
+      /* ---- Görsel denetim düzeltmesi (panel-ajanda.html ile AYNI, tutarlılık için —
+         bu sayfanın kanonik verisinde şu an çakışma yok ama fonksiyon paylaşılan desen)
+         "+N toplama": Ay görünümündeki "+N daha" (.mn-more) idiyomunun aynısı zaman
+         ızgarasına uygulanır — yeni bileşen İCAT EDİLMEDİ. ---- */
+      if(ends.length > 1){
+        var sorted = cluster.slice().sort(function(a,b){ return a.start - b.start; });
+        var primary = sorted[0], hidden = sorted.slice(1);
+        primary.moreCount = hidden.length;
+        primary.moreTitle = hidden.map(function(h){ return h.o.saat + ' — ' + h.o.baslik; }).join(' · ');
+        hidden.forEach(function(h){ h.hiddenByCluster = true; });
+      }
       cluster = []; clusterEnd = -1;
     }
     list.forEach(function(it){
@@ -590,21 +606,25 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
   function tipStyle(tip){ var c = TIPC[tip] || TIPC.toplanti; return '--evc:'+c[0]+';--evt:'+c[1]; }
 
   function timedBlockHTML(it, showMeta){
+    if(it.hiddenByCluster) return '';   /* "+N daha" rozetine toplandı, kendi kutusu yok */
     var o = it.o, T = TIP[o.tip] || TIP.toplanti;
     var start = Math.max(DAY_START, Math.min(it.start, DAY_END - DEF_DUR));
     var top = (start - DAY_START)/60*HOUR_H;
     var h = DEF_DUR/60*HOUR_H - 2;
-    var l = (it.col/it.cols*100), w = (100/it.cols);
+    var solo = !it.cols || it.cols === 1 || it.moreCount != null;
+    var l = solo ? 0 : (it.col/it.cols*100), w = solo ? 100 : (100/it.cols);
     var pos = 'top:'+top.toFixed(1)+'px;height:'+h+'px;left:calc('+l.toFixed(3)+'% + 2px);width:calc('+w.toFixed(3)+'% - 4px);';
     var tag = o.href ? 'a' : 'div';
     var tt = esc(o.saat + ' · ' + T.lbl + ' — ' + o.baslik + (o.santiye ? ' — ' + o.santiye : '') + (o.kisi ? ' — ' + o.kisi : ''));
     var meta = showMeta ? ((o.santiye ? o.santiye : '') + (o.santiye && o.kisi ? ' · ' : '') + (o.kisi ? o.kisi : '')) : '';
+    var moreBadge = it.moreCount ? '<span class="tg-more-badge" title="'+esc(it.moreCount+' etkinlik daha: '+it.moreTitle)+'">+'+it.moreCount+' daha</span>' : '';
     return '<div class="evw" style="'+pos+'">'
       + '<'+tag+' class="tg-ev" style="'+tipStyle(o.tip)+'"'+(tag==='a'?' href="'+o.href+'"':'')+' title="'+tt+'">'
       +   '<span class="tg-evtop"><i class="fa-solid '+T.ic+' tg-ico"></i><span class="tg-time">'+esc(o.saat)+'</span></span>'
       +   '<span class="tg-ttl">'+esc(o.baslik)+'</span>'
       +   (meta ? '<span class="tg-meta">'+esc(meta)+'</span>' : '')
       + '</'+tag+'>'
+      + moreBadge
       + kebabHTML()
       + '</div>';
   }
