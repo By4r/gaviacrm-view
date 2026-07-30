@@ -96,6 +96,13 @@ table.pp-tbl{width:100%;min-width:170mm;border-collapse:collapse;border:1.5px so
 .pp-legend{display:flex;flex-wrap:wrap;gap:12px;border:1.5px solid #111;border-top:none;padding:6px 10px;font-size:8px;font-weight:600;color:#333}
 .pp-legend b{font-weight:800}
 
+/* kapsam bilgi şeridi (D-TE §11.2 — seçili/taşeron/tümü çıktılarında görünür, varsayılan
+   şantiye-bazlı modda gizli) */
+.pp-kapsam{border:1.5px solid #111;border-top:none;padding:6px 10px;font-size:9px;font-weight:700;
+  color:#333;background:#fafafa;letter-spacing:.02em}
+.pp-kapsam b{color:#111}
+.pp-kapsam-note{display:block;margin-top:2px;font-weight:600;color:#555;font-size:8.3px}
+
 /* firma özet tablosu */
 .pp-ozet-title{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;margin:10px 0 4px;color:#222}
 table.pp-ozet{width:100%;border-collapse:collapse;border:1.5px solid #111;font-size:8.5px}
@@ -146,6 +153,7 @@ table.pp-ozet{width:100%;border-collapse:collapse;border:1.5px solid #111;font-s
     <option value="merkez">Merkez Şantiye</option>
   </select>
   <a class="cb-btn" href="crm-operasyon-puantaj.html" id="ckBack"><i class="fa-solid fa-arrow-left"></i> Puantaj</a>
+  <button class="cb-btn" type="button" id="ckExcel"><i class="fa-solid fa-file-excel"></i> Excel İndir</button>
   <button class="cb-btn acc" type="button" onclick="window.print()"><i class="fa-solid fa-print"></i> Yazdır</button>
 </div>
 
@@ -163,11 +171,14 @@ table.pp-ozet{width:100%;border-collapse:collapse;border:1.5px solid #111;font-s
     <div class="pi-row"><div class="pi-lbl">İşyeri / Proje Adı</div><div class="pi-val" id="ppProje">İSTANBUL İLİ ÇEKMEKÖY İLÇESİ VADİ KONAKLARI 214 KONUT VE ÇEVRE DÜZENLEMESİ İNŞAATI</div></div>
   </div>
 
+  <!-- §11.2 kapsam şeridi — yalnız şantiye-bazlı DIŞI modlarda görünür (seçili/taşeron/tümü) -->
+  <div class="pp-kapsam" id="ppKapsamBar" hidden></div>
+
   <div class="pp-title">
-    <div class="pt-name"><b id="ppSantiyeAdi">VADİ KONAKLARI ŞANTİYESİ</b><span>Haftalık Puantaj Tablosu</span></div>
+    <div class="pt-name"><b id="ppSantiyeAdi">VADİ KONAKLARI ŞANTİYESİ</b><span id="ppAltBaslik">Haftalık Puantaj Tablosu</span></div>
     <div class="pt-range">
       <b id="ppDonem">29.06.2026 - 05.07.2026</b>
-      <span>AİT OLDUĞU ÇALIŞMA DÖNEMİ</span>
+      <span id="ppDonemAlt">AİT OLDUĞU ÇALIŞMA DÖNEMİ</span>
     </div>
   </div>
 
@@ -396,89 +407,270 @@ table.pp-ozet{width:100%;border-collapse:collapse;border:1.5px solid #111;font-s
     return fmtDate(start) + ' - ' + fmtDate(end);
   }
 
+  /* ============ §11.2 revizesi — toplu ÇIKTI yerine kapsam/dönem/format destekli
+     genel motor. Geriye dönük UYUM: eski link (?santiye=X&hafta=Y, kapsam parametresi
+     YOK) kapsam=santiye + donem=haftalik varsayılanına düşer — davranış BİREBİR aynı
+     kalır. Yeni kapsamlar (secili/taseron/tumu) crm-operasyon-puantaj.html'deki
+     "Puantaj Çıktısı Al" modalından üretilir; bu sayfa yalnız TÜKETİR, kanonik
+     kişi/gun verisine (SANTIYELER) DOKUNMAZ — yalnız süzer/gruplar. ============ */
   var q = new URLSearchParams(location.search);
   var ks = q.get('santiye');
   if(!SANTIYELER[ks]) ks = 'vadi';
   var hafta = q.get('hafta') || '2026-06-29';
+  var kapsam = q.get('kapsam') || 'santiye';
+  if(['santiye','secili','taseron','tumu'].indexOf(kapsam) === -1) kapsam = 'santiye';
+  var kisilerParam = (q.get('kisiler') || '').split('|').filter(Boolean);
+  var firmaParam = q.get('firma') || '';
+  var donem = q.get('donem') || 'haftalik';
+  if(['haftalik','gunluk','aylik','aralik'].indexOf(donem) === -1) donem = 'haftalik';
+  var basParam = q.get('bas') || '';
+  var bitParam = q.get('bit') || '';
 
-  function render(key){
-    var S = SANTIYELER[key];
-    document.title = 'Haftalık Puantaj Çıktısı — ' + S.ad + ' — Gavia CRM';
-    document.getElementById('ckSantiye').value = key;
-    document.getElementById('ckBack').href = 'crm-operasyon-puantaj.html?santiye=' + key;
-    document.getElementById('ppSicil').textContent = S.sicil;
-    document.getElementById('ppProje').textContent = S.proje;
-    document.getElementById('ppSantiyeAdi').textContent = S.unvan;
-    document.getElementById('ppDonem').textContent = donemLabel(hafta);
+  var DAY_LBL_FULL = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+  var TASERON_FIRMA_MAP = {
+    'demir-beton':        {ad:'Demir-Beton İnş. Ltd.', santiye:'vadi'},
+    'elektromek':         {ad:'ElektroMek Taahhüt',    santiye:'vadi'},
+    'yalitim-kardesler':  {ad:'Yalıtım Kardeşler',     santiye:'liman'}
+  };
+
+  function dayIdxListOf(tip){ return tip === 'gunluk' ? [3] : [0,1,2,3,4,5,6]; }
+  function fmtDateIso(iso){
+    var p = (iso || '').split('-');
+    return p.length === 3 ? (p[2] + '.' + p[1] + '.' + p[0]) : iso;
+  }
+
+  /* ---- kapsam süzgeci — kanonik SANTIYELER kişi/gun verisini FİLTRELER/GRUPLAR,
+     yeni kişi/sayı ÜRETMEZ (kanonik kilit korunur; bkz. tasks/kararlar.md D-TE-1). ---- */
+  function buildScope(){
+    var out = {kisiler:[], taseronlar:[], baslik:'', altBaslik:'', kapsamText:'', tumu:false, santiyeKey:ks};
+    if(kapsam === 'tumu'){
+      out.tumu = true;
+      ['vadi','liman','merkez'].forEach(function(sk){
+        var S = SANTIYELER[sk];
+        S.kisiler.forEach(function(k){ out.kisiler.push({ad:k.ad, gorev:k.gorev, gun:k.gun, _santiye:S.ad}); });
+        S.taseronlar.forEach(function(k){ out.taseronlar.push({ad:k.ad, poz:k.poz, firma:k.firma, gun:k.gun, _santiye:S.ad}); });
+      });
+      out.baslik = 'TÜM ŞANTİYELER';
+      out.altBaslik = 'Tüm Şantiyeler Puantaj Tablosu';
+      out.kapsamText = 'Kapsam: <b>Tüm Puantaj</b> — 3 şantiye · ' + (out.kisiler.length + out.taseronlar.length) + ' personel ('
+        + out.kisiler.length + ' öz kadro + ' + out.taseronlar.length + ' taşeron)';
+      out.sicil = 'Tüm Şantiyeler (3 işyeri)';
+      out.proje = 'VADİ KONAKLARI, LİMAN LOJİSTİK MERKEZİ VE MERKEZ ŞANTİYE — KONSOLİDE PUANTAJ DÖKÜMÜ';
+      out.hazirlayan = {name:'Murat Denizli', title:'Genel Müdür'};
+      out.sef = {name:'Kemal Yapıcıoğlu', title:'Firma Sahibi'};
+    } else if(kapsam === 'taseron'){
+      var fm = TASERON_FIRMA_MAP[firmaParam];
+      var sk2 = fm ? fm.santiye : ks;
+      var S2 = SANTIYELER[sk2];
+      out.santiyeKey = sk2;
+      out.kisiler = [];
+      out.taseronlar = fm ? S2.taseronlar.filter(function(k){ return k.firma === fm.ad; }) : S2.taseronlar.slice();
+      out.baslik = S2.unvan;
+      out.altBaslik = (fm ? fm.ad : 'Taşeron') + ' — Taşeron Puantaj Tablosu';
+      out.kapsamText = 'Kapsam: <b>Taşeron Bazlı</b> — ' + (fm ? fm.ad : 'Taşeron') + ' · ' + S2.ad + ' · ' + out.taseronlar.length + ' kişi';
+      out.sicil = S2.sicil; out.proje = S2.proje;
+    } else if(kapsam === 'secili'){
+      var S3 = SANTIYELER[ks];
+      var set = {}; kisilerParam.forEach(function(n){ set[n] = true; });
+      out.kisiler = S3.kisiler.filter(function(k){ return set[k.ad]; });
+      out.taseronlar = S3.taseronlar.filter(function(k){ return set[k.ad]; });
+      var n = out.kisiler.length + out.taseronlar.length;
+      out.baslik = S3.unvan;
+      out.altBaslik = (n === 1 ? 'Tek Personel Puantaj Tablosu' : 'Seçili Personel Puantaj Tablosu');
+      var adlar = out.kisiler.concat(out.taseronlar).map(function(k){ return k.ad; }).join(', ');
+      out.kapsamText = 'Kapsam: <b>' + (n === 1 ? 'Tek Personel Çıktısı' : 'Seçili Personellerin Çıktısı') + '</b> — '
+        + n + ' kişi (' + (adlar || '—') + ')';
+      /* ---- eşleşmeyen isim uyarısı — şantiye şefi/yönetim kaydı bu resmi puantaj
+         tablosunun "sahada çalışan" satır setinde AYRICA yer almaz (bkz. tasks/kararlar.md
+         D-TE-2); bu kişiler sessizce düşürülmez, kapsam şeridinde NOT olarak belirtilir. ---- */
+      var bulunanlar = {}; out.kisiler.concat(out.taseronlar).forEach(function(k){ bulunanlar[k.ad] = true; });
+      var eksik = kisilerParam.filter(function(nm){ return !bulunanlar[nm]; });
+      if(eksik.length){
+        out.kapsamText += ' · <span class="pp-kapsam-note">Not: ' + eksik.join(', ')
+          + ' bu resmi puantaj tablosunda ayrı satır olarak yer almaz (şeflik/yönetim kaydı — sahada çalışan headcount’una dahil değildir).</span>';
+      }
+      out.sicil = S3.sicil; out.proje = S3.proje;
+    } else {
+      var S4 = SANTIYELER[ks];
+      out.kisiler = S4.kisiler.slice();
+      out.taseronlar = S4.taseronlar.slice();
+      out.baslik = S4.unvan;
+      out.altBaslik = 'Haftalık Puantaj Tablosu';
+      out.sicil = S4.sicil; out.proje = S4.proje;
+    }
+    return out;
+  }
+
+  function renderAll(){
+    var scope = buildScope();
+    var dayIdx = dayIdxListOf(donem);
+    var siteForSign = SANTIYELER[scope.santiyeKey || ks];
+
+    document.title = 'Puantaj Çıktısı — ' + scope.baslik + ' — Gavia CRM';
+    var ckSel = document.getElementById('ckSantiye');
+    ckSel.value = scope.santiyeKey || ks;
+    ckSel.disabled = (kapsam !== 'santiye');
+    document.getElementById('ckBack').href = 'crm-operasyon-puantaj.html' + (scope.santiyeKey ? ('?santiye=' + scope.santiyeKey) : '');
+    document.getElementById('ppSicil').textContent = scope.sicil;
+    document.getElementById('ppProje').textContent = scope.proje;
+    document.getElementById('ppSantiyeAdi').textContent = scope.baslik;
+    document.getElementById('ppAltBaslik').textContent = scope.altBaslik;
+
+    var kapsamBar = document.getElementById('ppKapsamBar');
+    if(scope.kapsamText){ kapsamBar.hidden = false; kapsamBar.innerHTML = scope.kapsamText; }
+    else { kapsamBar.hidden = true; kapsamBar.innerHTML = ''; }
+
+    var donemAltEl = document.getElementById('ppDonemAlt');
+    var donemValEl = document.getElementById('ppDonem');
+    var donemNote = '';
+    if(donem === 'gunluk'){
+      donemValEl.textContent = '02.07.2026';
+      donemAltEl.textContent = 'GÜNLÜK ÇALIŞMA KAYDI — PERŞEMBE';
+    } else if(donem === 'aylik'){
+      donemValEl.textContent = 'TEMMUZ 2026';
+      donemAltEl.textContent = 'AYLIK ÇALIŞMA DÖNEMİ';
+      donemNote = ' Ay içindeki veri kapsamı, mock veri setinde işlenmiş tek hafta olan 29 Haziran – 5 Temmuz aralığıyla sınırlıdır.';
+    } else if(donem === 'aralik' && basParam && bitParam){
+      donemValEl.textContent = fmtDateIso(basParam) + ' - ' + fmtDateIso(bitParam);
+      donemAltEl.textContent = 'ÖZEL TARİH ARALIĞI';
+      donemNote = ' Seçilen aralıktaki günlük veri, mock veri setinde işlenmiş 29 Haziran – 5 Temmuz haftasından derlenmiştir.';
+    } else {
+      donemValEl.textContent = donemLabel(hafta);
+      donemAltEl.textContent = 'AİT OLDUĞU ÇALIŞMA DÖNEMİ';
+    }
+
+    /* gün kolonu başlıkları — yalnız "günlük" dönemde 1 koloma daralır */
+    var theadRow = document.querySelector('.pp-tbl thead tr');
+    var headCells = ['<th class="c-no">Sıra<br>No</th>', '<th class="c-ad">Adı Soyadı</th>', '<th class="c-gorev">Görev</th>',
+      '<th class="c-firma">Çalıştığı Firma /<br>Taşeron</th>'];
+    dayIdx.forEach(function(i){ headCells.push('<th class="c-gun">' + DAY_LBL_FULL[i] + '</th>'); });
+    headCells.push('<th class="c-top">Çalıştığı<br>Top. Gün</th>', '<th class="c-imza">Personel<br>İmza</th>');
+    theadRow.innerHTML = headCells.join('');
 
     var no = 0, rows = '';
-    S.kisiler.forEach(function(k){
+    function personRow(k, taseron){
       no++;
-      rows += '<tr><td class="c-no">' + no + '</td><td class="c-ad">' + k.ad + '</td>'
-        + '<td class="c-gorev">' + k.gorev + '</td><td class="c-firma">Yapıtaş İnşaat A.Ş.</td>';
-      k.gun.forEach(function(g){
-        rows += '<td class="c-gun' + (g === 'HT' ? ' ht' : '') + '">' + g + '</td>';
-      });
-      rows += '<td class="c-top">' + fmtGun(tg(k.gun)) + '</td><td class="c-imza"></td></tr>';
-    });
-    /* ---- taşeron satırları — D19 revizesi: kişi bazlı ADLI satır, imza kolonu öz kadroyla
-       aynı BOŞ hücre (kişi ıslak imzası). "Firma yetkilisi" imzası artık yalnız firma özet
-       bloğunda alınır (S8). ---- */
-    S.taseronlar.forEach(function(k){
-      no++;
-      rows += '<tr class="r-taseron"><td class="c-no">' + no + '</td><td class="c-ad">' + k.ad + '</td>'
-        + '<td class="c-gorev">' + k.poz + '</td><td class="c-firma">' + k.firma + '</td>';
-      k.gun.forEach(function(g){
-        rows += '<td class="c-gun' + (g === 'HT' ? ' ht' : '') + '">' + g + '</td>';
-      });
-      rows += '<td class="c-top">' + fmtGun(tg(k.gun)) + '</td><td class="c-imza"></td></tr>';
-    });
-    document.getElementById('ppRows').innerHTML = rows;
+      var firmaTxt = taseron ? k.firma : 'Yapıtaş İnşaat A.Ş.';
+      if(scope.tumu) firmaTxt = k._santiye + ' — ' + firmaTxt;
+      var cells = dayIdx.map(function(i){
+        var g = k.gun[i];
+        return '<td class="c-gun' + (g === 'HT' ? ' ht' : '') + '">' + g + '</td>';
+      }).join('');
+      var top = dayIdx.reduce(function(a, i){ var g = k.gun[i]; return a + (g === '+' ? 1 : (g === '½' ? .5 : 0)); }, 0);
+      return '<tr' + (taseron ? ' class="r-taseron"' : '') + '><td class="c-no">' + no + '</td><td class="c-ad">' + k.ad + '</td>'
+        + '<td class="c-gorev">' + (taseron ? k.poz : k.gorev) + '</td><td class="c-firma">' + firmaTxt + '</td>'
+        + cells + '<td class="c-top">' + fmtGun(top) + '</td><td class="c-imza"></td></tr>';
+    }
+    scope.kisiler.forEach(function(k){ rows += personRow(k, false); });
+    scope.taseronlar.forEach(function(k){ rows += personRow(k, true); });
+    var colTotal = 4 + dayIdx.length + 2;
+    document.getElementById('ppRows').innerHTML = rows
+      || ('<tr><td colspan="' + colTotal + '" style="text-align:center;padding:14px;color:#777">Seçilen kapsamda kayıt bulunamadı.</td></tr>');
 
-    /* ---- firma bazlı özet: öz kadro (Yapıtaş) günlük adam-gün grid'den derlenir; her
-       taşeron firması kendi kişi satırlarından gruplanıp türetilir — sabit veri DEĞİL.
-       Bu döngü B1-B3/B4-B6 kordon vektörlerini üretmek ZORUNDADIR (bkz. tasks/kordon.md);
-       TOPLAM satırı 35+10+6=51 (Vadi) gibi kanonik headcount'a birebir eşitlenir. ---- */
-    function gunSayisi(list, dayIdx){
-      var t = 0;
-      list.forEach(function(k){ var g = k.gun[dayIdx]; if(g === '+') t += 1; else if(g === '½') t += .5; });
+    /* ---- firma bazlı özet: kanonik kişi/gun verisinden TÜRETİLİR — ayrı sabit veri
+       DEĞİL. Öz kadro satırı yalnız kapsamda öz kadro kişisi VARSA basılır. ---- */
+    function gunSayisi(list, i){
+      var t = 0; list.forEach(function(k){ var g = k.gun[i]; if(g === '+') t += 1; else if(g === '½') t += .5; });
       return t;
     }
-    var ozRow = {ad:'Yapıtaş İnşaat A.Ş. (öz kadro)', sayi:S.kisiler.length,
-      gun:[0,1,2,3,4,5,6].map(function(d){ return gunSayisi(S.kisiler, d); })};
+    var ozetSatirlari = [];
+    if(scope.kisiler.length){
+      ozetSatirlari.push({ad:'Yapıtaş İnşaat A.Ş. (öz kadro)', sayi:scope.kisiler.length,
+        gun: dayIdx.map(function(i){ return gunSayisi(scope.kisiler, i); })});
+    }
     var firmaSirasi = [], firmaKisileri = {};
-    S.taseronlar.forEach(function(k){
+    scope.taseronlar.forEach(function(k){
       if(!firmaKisileri[k.firma]){ firmaKisileri[k.firma] = []; firmaSirasi.push(k.firma); }
       firmaKisileri[k.firma].push(k);
     });
-    var ozetSatirlari = [ozRow].concat(firmaSirasi.map(function(fad){
+    firmaSirasi.forEach(function(fad){
       var list = firmaKisileri[fad];
-      return {ad:fad, sayi:list.length, gun:[0,1,2,3,4,5,6].map(function(d){ return gunSayisi(list, d); }), tas:true};
-    }));
-    var toplamSayi = 0, toplamGunHafta = [0,0,0,0,0,0,0], genelHaftalik = 0;
-    var oh = '';
+      ozetSatirlari.push({ad:fad, sayi:list.length, gun: dayIdx.map(function(i){ return gunSayisi(list, i); }), tas:true});
+    });
+
+    var ozetThead = document.querySelector('.pp-ozet thead tr');
+    ozetThead.innerHTML = '<th style="text-align:left">Firma</th><th>Personel<br>Sayısı</th>'
+      + dayIdx.map(function(i){ return '<th>' + DAY_LBL_FULL[i] + '</th>'; }).join('')
+      + '<th>' + (dayIdx.length > 1 ? 'Haftalık<br>' : '') + 'Adam-Gün</th><th>Firma Yetkilisi<br>İmza</th>';
+
+    var toplamSayi = 0, toplamGun = dayIdx.map(function(){ return 0; }), genelToplam = 0, oh = '';
+    if(!ozetSatirlari.length){
+      oh = '<tr><td colspan="' + (3 + dayIdx.length) + '" style="text-align:center;padding:8px;color:#777">Kayıt yok</td></tr>';
+    }
     ozetSatirlari.forEach(function(r){
-      var haftalik = r.gun.reduce(function(a,b){ return a + b; }, 0);
-      toplamSayi += r.sayi; genelHaftalik += haftalik;
-      r.gun.forEach(function(g, i){ toplamGunHafta[i] += g; });
+      var toplam = r.gun.reduce(function(a, b){ return a + b; }, 0);
+      toplamSayi += r.sayi; genelToplam += toplam;
+      r.gun.forEach(function(g, i){ toplamGun[i] += g; });
       oh += '<tr><td class="c-ofirma">' + r.ad + '</td><td>' + r.sayi + '</td>'
         + r.gun.map(function(g){ return '<td>' + (g % 1 === 0 ? g : g.toString().replace('.', ',')) + '</td>'; }).join('')
-        + '<td>' + fmtGun(haftalik) + '</td><td class="c-oimza">' + (r.tas ? '' : '—') + '</td></tr>';
+        + '<td>' + fmtGun(toplam) + '</td><td class="c-oimza">' + (r.tas ? '' : '—') + '</td></tr>';
     });
-    oh += '<tr class="r-genel"><td class="c-ofirma">TOPLAM</td><td>' + toplamSayi + '</td>'
-      + toplamGunHafta.map(function(g){ return '<td>' + fmtGun(g) + '</td>'; }).join('')
-      + '<td>' + fmtGun(genelHaftalik) + '</td><td class="c-oimza">—</td></tr>';
+    if(ozetSatirlari.length > 1){
+      oh += '<tr class="r-genel"><td class="c-ofirma">TOPLAM</td><td>' + toplamSayi + '</td>'
+        + toplamGun.map(function(g){ return '<td>' + fmtGun(g) + '</td>'; }).join('')
+        + '<td>' + fmtGun(genelToplam) + '</td><td class="c-oimza">—</td></tr>';
+    }
     document.getElementById('ppOzetRows').innerHTML = oh;
+    document.querySelector('.pp-ozet-title').textContent = scope.tumu
+      ? 'Şantiye + Firma Bazlı Özet (Tüm Şantiyeler)'
+      : (kapsam === 'taseron' ? 'Taşeron Firma Özeti' : 'Firma Bazlı Haftalık Özet');
 
+    var signName1 = scope.hazirlayan || siteForSign.hazirlayan;
+    var signName2 = scope.sef || siteForSign.sef;
     document.getElementById('ppSign').innerHTML =
-      '<div class="sg"><div class="sg-role">Hazırlayan</div><div class="sg-name">' + S.hazirlayan.name + '</div><div class="sg-title">' + S.hazirlayan.title + '</div><div class="sg-line">İMZA</div></div>'
-      + '<div class="sg"><div class="sg-role">Şantiye Şefi</div><div class="sg-name">' + S.sef.name + '</div><div class="sg-title">' + S.sef.title + '</div><div class="sg-line">İMZA</div></div>';
+      '<div class="sg"><div class="sg-role">Hazırlayan</div><div class="sg-name">' + signName1.name + '</div><div class="sg-title">' + signName1.title + '</div><div class="sg-line">İMZA</div></div>'
+      + '<div class="sg"><div class="sg-role">Şantiye Şefi</div><div class="sg-name">' + signName2.name + '</div><div class="sg-title">' + signName2.title + '</div><div class="sg-line">İMZA</div></div>';
+
+    document.querySelector('.pp-note').textContent = 'Bu döküm, ilgili çalışma dönemine ait Gavia CRM puantaj kayıtlarının tamamını içerir; '
+      + 'el ile eklenen kayıt geçersizdir. Taşeron puantajı kişi bazında tutulur; kişi satırlarındaki imza kolonu ıslak imza içindir. '
+      + 'Firma yetkilisi imzası özet bloğunda, adam-gün toplamlarının yanında alınır. İmzalar tamamlanmadan dönem kapatılmaz.' + donemNote;
   }
 
-  render(ks);
+  /* ---- Excel (CSV) çıktısı — gerçek Blob+indirme, ölü buton DEĞİL. Ekranda görünen
+     kapsam/dönem süzgeciyle BİREBİR aynı veriyi üretir (buildScope/dayIdxListOf paylaşılır). ---- */
+  function toCsvCell(v){
+    v = (v === null || v === undefined) ? '' : String(v);
+    if(/[",;\n]/.test(v)) v = '"' + v.replace(/"/g, '""') + '"';
+    return v;
+  }
+  function exportExcel(){
+    var scope = buildScope();
+    var dayIdx = dayIdxListOf(donem);
+    var lines = [];
+    lines.push(['Sıra No', 'Adı Soyadı', 'Görev', 'Firma / Taşeron'].concat(dayIdx.map(function(i){ return DAY_LBL_FULL[i]; }))
+      .concat(['Toplam Gün']).map(toCsvCell).join(';'));
+    var no = 0;
+    function pushRow(k, taseron){
+      no++;
+      var firmaTxt = taseron ? k.firma : 'Yapıtaş İnşaat A.Ş.';
+      if(scope.tumu) firmaTxt = k._santiye + ' — ' + firmaTxt;
+      var top = dayIdx.reduce(function(a, i){ var g = k.gun[i]; return a + (g === '+' ? 1 : (g === '½' ? .5 : 0)); }, 0);
+      var row = [no, k.ad, (taseron ? k.poz : k.gorev), firmaTxt].concat(dayIdx.map(function(i){ return k.gun[i]; })).concat([fmtGun(top)]);
+      lines.push(row.map(toCsvCell).join(';'));
+    }
+    scope.kisiler.forEach(function(k){ pushRow(k, false); });
+    scope.taseronlar.forEach(function(k){ pushRow(k, true); });
+    var csv = '﻿' + lines.join('\r\n');
+    var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'puantaj-cikti-' + (scope.santiyeKey || 'tum-santiyeler') + '-' + kapsam + '-' + donem + '.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }
+  document.getElementById('ckExcel').addEventListener('click', exportExcel);
+
+  renderAll();
+  /* crm-operasyon-puantaj.html çıktı modalından format=excel ile gelinirse (bkz. §11.2)
+     bu sayfanın kendi kanonik SANTIYELER verisinden ÜRETİLEN CSV otomatik indirilir —
+     kaynak sayfada (puantaj.html) yalnız 40 adı geçen kişi var, tam 93 kişilik kanonik
+     roster yalnız burada; bu yüzden Excel üretimi HER ZAMAN bu sayfadan yapılır. */
+  if(q.get('format') === 'excel') exportExcel();
   document.getElementById('ckSantiye').addEventListener('change', function(){
-    history.replaceState(null, '', 'crm-operasyon-puantaj-cikti.html?santiye=' + this.value + '&hafta=' + hafta);
-    render(this.value);
+    ks = this.value; kapsam = 'santiye';
+    history.replaceState(null, '', 'crm-operasyon-puantaj-cikti.html?santiye=' + ks + '&hafta=' + hafta);
+    renderAll();
   });
 })();
 </script>
