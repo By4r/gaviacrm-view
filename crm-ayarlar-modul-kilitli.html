@@ -135,7 +135,9 @@
       <div>
         <div class="ph-eyebrow">Ayarlar · SaaS</div>
         <h1 style="font-size:15px;font-weight:700;color:var(--muted)">Modül Kilitli</h1>
-        <div class="ph-sub">Yapıtaş İnşaat A.Ş. — mevcut paketinizde kapalı olan bir modüle eriştiniz</div>
+        <!-- statik bake — DEFAULT (?modul= yoksa) satis-crm bloğuyla eşleşir; JS yüklenince
+             SUB[] haritasından aktif bloğun gerçek çerçevesiyle ezilir (K-16) -->
+        <div class="ph-sub">Yapıtaş İnşaat A.Ş. — bu modül paket bazında CRM + Sales kapsamındadır; demo tenant'ınızda tanıtım eklentisi olarak açıktır.</div>
       </div>
     </div>
 
@@ -156,7 +158,7 @@
       <div class="mlk-hero">
         <div class="mlk-hero-ico"><i class="fa-solid fa-chart-line"></i></div>
         <div class="mlk-hero-txt">
-          <div class="mlk-eyebrow"><i class="fa-solid fa-lock"></i> Kilitli modül · CRM + Sales pakette açılır</div>
+          <div class="mlk-eyebrow"><i class="fa-solid fa-gift"></i> CRM + Sales kapsamında · bu demo tenant'ında tanıtım eklentisi olarak açık</div>
           <h1>Satış CRM</h1>
           <p class="mlk-value">Potansiyel müşteriden sözleşme ve teslimata kadar tüm satış sürecini tek ekrandan yönetin.</p>
         </div>
@@ -214,9 +216,10 @@
             </div>
           </div>
           <div class="gv-card mlk-cta">
+            <a class="btn btn-ghost" href="crm-satis-pipeline.html"><i class="fa-solid fa-arrow-right"></i> Modülü Şimdi Görün</a>
             <a class="btn btn-acc" href="crm-ayarlar-paket-degistir.html?hedef=crm-sales"><i class="fa-solid fa-arrow-up"></i> Paketi Yükselt</a>
             <button type="button" class="btn btn-ghost" data-no-confirm onclick="gvContact()"><i class="fa-solid fa-headset"></i> Satış Ekibiyle Görüş</button>
-            <span class="inv-note" style="display:flex;gap:8px;font-size:12px;color:var(--muted)"><i class="fa-solid fa-circle-info" style="color:var(--acc-ink)"></i> Yükseltme talebi anında uygulanır, ek taahhüt yoktur.</span>
+            <span class="inv-note" style="display:flex;gap:8px;font-size:12px;color:var(--muted)"><i class="fa-solid fa-circle-info" style="color:var(--acc-ink)"></i> Bu modül CRM + Sales pakette standarttır; demo tenant'ınızda tanıtım eklentisi olarak şimdiden açıktır. Yükseltme, eklentiyi kalıcı hale getirir.</span>
           </div>
         </div>
       </div>
@@ -229,7 +232,7 @@
       <div class="mlk-hero">
         <div class="mlk-hero-ico"><i class="fa-solid fa-building-circle-check"></i></div>
         <div class="mlk-hero-txt">
-          <div class="mlk-eyebrow"><i class="fa-solid fa-lock"></i> Kilitli modül · CRM + Sales pakette açılır</div>
+          <div class="mlk-eyebrow"><i class="fa-solid fa-gift"></i> CRM + Sales kapsamında · bu demo tenant'ında tanıtım eklentisi olarak açık</div>
           <h1>Bağımsız Bölüm Yönetimi</h1>
           <p class="mlk-value">Daire, ofis ve dükkan birimlerini blok–kat–bağımsız bölüm hiyerarşisiyle, satış durumu ve ödeme planıyla birlikte yönetin.</p>
         </div>
@@ -290,9 +293,10 @@
             </div>
           </div>
           <div class="gv-card mlk-cta">
+            <a class="btn btn-ghost" href="crm-satis-birimler.html"><i class="fa-solid fa-arrow-right"></i> Modülü Şimdi Görün</a>
             <a class="btn btn-acc" href="crm-ayarlar-paket-degistir.html?hedef=crm-sales"><i class="fa-solid fa-arrow-up"></i> Paketi Yükselt</a>
             <button type="button" class="btn btn-ghost" data-no-confirm onclick="gvContact()"><i class="fa-solid fa-headset"></i> Satış Ekibiyle Görüş</button>
-            <span class="inv-note" style="display:flex;gap:8px;font-size:12px;color:var(--muted)"><i class="fa-solid fa-circle-info" style="color:var(--acc-ink)"></i> Bağımsız Bölüm Yönetimi, Satış CRM modülüyle birlikte açılır.</span>
+            <span class="inv-note" style="display:flex;gap:8px;font-size:12px;color:var(--muted)"><i class="fa-solid fa-circle-info" style="color:var(--acc-ink)"></i> Bağımsız Bölüm Yönetimi, Satış CRM modülüyle birlikte CRM + Sales pakette standarttır; demo tenant'ınızda tanıtım eklentisi olarak şimdiden açıktır.</span>
           </div>
         </div>
       </div>
@@ -305,7 +309,7 @@
       <div class="mlk-hero">
         <div class="mlk-hero-ico"><i class="fa-solid fa-warehouse"></i></div>
         <div class="mlk-hero-txt">
-          <div class="mlk-eyebrow"><i class="fa-solid fa-lock"></i> Kilitli modül · Enterprise pakette açılır</div>
+          <div class="mlk-eyebrow"><i class="fa-solid fa-gift"></i> Enterprise kapsamında · bu demo tenant'ında tanıtım eklentisi olarak açık</div>
           <h1>Stok &amp; ERP</h1>
           <p class="mlk-value">Sipariş, irsaliye, fatura ve depo stoklarını uçtan uca senkron tutun; bütçe ve nakit akışını tek yerden izleyin.</p>
         </div>
@@ -363,9 +367,10 @@
             </div>
           </div>
           <div class="gv-card mlk-cta">
+            <a class="btn btn-ghost" href="crm-satinalma-stok.html"><i class="fa-solid fa-arrow-right"></i> Modülü Şimdi Görün</a>
             <a class="btn btn-acc" href="crm-ayarlar-paket-degistir.html?hedef=enterprise"><i class="fa-solid fa-arrow-up"></i> Paketi Yükselt</a>
             <button type="button" class="btn btn-ghost" data-no-confirm onclick="gvContact()"><i class="fa-solid fa-headset"></i> Satış Ekibiyle Görüş</button>
-            <span class="inv-note" style="display:flex;gap:8px;font-size:12px;color:var(--muted)"><i class="fa-solid fa-circle-info" style="color:var(--acc-ink)"></i> Yükseltme talebi anında uygulanır, ek taahhüt yoktur.</span>
+            <span class="inv-note" style="display:flex;gap:8px;font-size:12px;color:var(--muted)"><i class="fa-solid fa-circle-info" style="color:var(--acc-ink)"></i> Bu modül Enterprise pakette standarttır; demo tenant'ınızda tanıtım eklentisi olarak şimdiden açıktır. Yükseltme, eklentiyi kalıcı hale getirir.</span>
           </div>
         </div>
       </div>
@@ -583,6 +588,20 @@
   document.querySelectorAll('.mlk-switch .chip').forEach(function(a){
     a.classList.toggle('is-on', a.getAttribute('data-modul') === slug);
   });
+
+  /* K-16 — üst başlık alt metni de blok gerçeğiyle tutarlı olsun: "açık tanıtım eklentisi"
+     ile "gerçekten kilitli" ile "yol haritası" farklı ifadelerle anlatılır, tek bir
+     genel-geçer "kapalı bir modüle eriştiniz" cümlesi 3 blok için artık yanlış olurdu. */
+  var SUB = {
+    'satis-crm':      "Yapıtaş İnşaat A.Ş. — bu modül paket bazında CRM + Sales kapsamındadır; demo tenant'ınızda tanıtım eklentisi olarak açıktır.",
+    'bagimsiz-bolum': "Yapıtaş İnşaat A.Ş. — bu modül paket bazında CRM + Sales kapsamındadır; demo tenant'ınızda tanıtım eklentisi olarak açıktır.",
+    'stok-erp':       "Yapıtaş İnşaat A.Ş. — bu modül paket bazında Enterprise kapsamındadır; demo tenant'ınızda tanıtım eklentisi olarak açıktır.",
+    'coklu-firma':    "Yapıtaş İnşaat A.Ş. — mevcut paketinizde kapalı olan bir modüle eriştiniz.",
+    'cok-dil':        "Yapıtaş İnşaat A.Ş. — mevcut paketinizde kapalı olan bir modüle eriştiniz.",
+    'ai-asistan':     "Yapıtaş İnşaat A.Ş. — Faz 3 yol haritasında, henüz hiçbir pakette kapsama girmedi."
+  };
+  var subEl = document.querySelector('.gv-page-head .ph-sub');
+  if(subEl && SUB[slug]) subEl.textContent = SUB[slug];
 })();
 
 function gvContact(){
