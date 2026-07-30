@@ -119,6 +119,27 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
   .filter-row .frow-lbl{min-width:0;width:100%}
   .gv-detail-grid{grid-template-columns:1fr;padding:16px}
 }
+
+/* ============ §14/T-G — çoklu seçim (row-chk) + Çıktı Al seçim çubuğu; crm-personel.html
+   .row-chk/.bulk-bar deseninin bu sayfaya birebir uyarlanması — yeni ui.js primitifi
+   İCAT EDİLMEZ, sayfa-lokal kalır (kasa/personel/kredikarti sayfa-lokal desen emsali). ============ */
+.row-chk{position:relative;display:inline-flex;width:16px;height:16px;flex:none;cursor:pointer;margin-right:8px;vertical-align:middle}
+.row-chk input{position:absolute;opacity:0;pointer-events:none;width:100%;height:100%;margin:0}
+.row-chk .chk-box{width:16px;height:16px;border-radius:4px;border:2px solid var(--line-2);display:flex;align-items:center;justify-content:center;color:transparent;font-size:9px;transition:.15s var(--ease);background:var(--paper);flex:none}
+.row-chk input:checked + .chk-box{background:var(--acc-ink);border-color:var(--acc-ink);color:#fff}
+.row-chk input:focus-visible + .chk-box{outline:2px solid var(--acc);outline-offset:2px}
+#tblPluxee tbody tr.is-checked td{background:rgba(var(--acc-rgb),.05)}
+.df-mrow .row-chk{margin-right:0}
+.df-mrow.is-checked{background:rgba(var(--acc-rgb),.05)}
+.plx-bulk-bar{display:flex;align-items:center;gap:14px;padding:12px 22px;background:rgba(var(--acc-rgb),.06);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.plx-bulk-bar[hidden]{display:none}
+.plx-bulk-bar .bb-count{font-size:13px;font-weight:700;color:var(--ink)}
+.plx-bulk-bar .bb-acts{display:flex;gap:10px;margin-left:auto}
+@media(max-width:640px){
+  .plx-bulk-bar{padding:12px 16px}
+  .plx-bulk-bar .bb-acts{margin-left:0;width:100%}
+  .plx-bulk-bar .bb-acts .btn{flex:1}
+}
 </style>
 </head>
 <body data-sec="operasyon" data-screen="pluxee">
@@ -149,6 +170,7 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
         <div class="ph-sub">13 kart · personel yemek kartı yükleme ve harcama takibi</div>
       </div>
       <div class="ph-actions">
+        <a class="btn btn-ghost btn-sm" href="crm-operasyon-pluxee-cikti.html?kart=4471" id="btnPlxCikti"><i class="fa-solid fa-print"></i> Çıktı Al</a>
         <a class="btn btn-ghost btn-sm" href="#" data-export="Pluxee hareketleri"><i class="fa-solid fa-download"></i> Dışa Aktar</a>
         <a class="btn btn-acc btn-sm" href="crm-operasyon-pluxee-form.html" data-view="olusturabilir" hidden><i class="fa-solid fa-plus"></i> Yükleme / Harcama Kaydı</a>
       </div>
@@ -229,12 +251,23 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
             <button class="chip" data-santiye="merkez">Merkez <span class="ch-cnt">0</span></button>
           </div>
         </div>
+        <div class="filter-row">
+          <span class="frow-lbl">Tarih Aralığı</span>
+          <div id="plxDateRange"></div>
+        </div>
+      </div>
+      <div class="plx-bulk-bar" id="plxBulkBar" hidden>
+        <span class="bb-count" id="plxBbCount">0 kayıt seçildi</span>
+        <div class="bb-acts">
+          <button type="button" class="btn btn-ghost btn-sm" id="plxBbClear"><i class="fa-solid fa-xmark"></i> Seçimi Temizle</button>
+          <button type="button" class="btn btn-acc btn-sm" id="plxBbCikti"><i class="fa-solid fa-print"></i> Seçili Kayıtların Çıktısını Al</button>
+        </div>
       </div>
       <div class="gc-body flush">
         <table class="gtable" id="tblPluxee" data-paginate="25">
           <thead>
             <tr>
-              <th class="df-no">#</th>
+              <th class="df-no"><label class="row-chk" id="plxChkAllWrap" hidden><input type="checkbox" id="plxChkAll" aria-label="Görünen tüm hareketleri seç"><span class="chk-box"><i class="fa-solid fa-check"></i></span></label>#</th>
               <th class="df-date">Tarih</th>
               <th>Kart / Personel</th>
               <th>Açıklama</th>
@@ -354,6 +387,14 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
   }
   function cardName(k){ return k.ad + ' •' + k.no; }
 
+  /* [T-G / §13] "1 Temmuz 2026" → "2026-07-01" — gvDateRange aralık karşılaştırması
+     data-tarih ISO bekler; kanonik tarihUzun alanından türetilir, yeni veri EKLENMEZ. */
+  var AY_ISO = {Ocak:'01',Şubat:'02',Mart:'03',Nisan:'04',Mayıs:'05',Haziran:'06',Temmuz:'07',Ağustos:'08',Eylül:'09',Ekim:'10',Kasım:'11',Aralık:'12'};
+  function isoFromUzun(s){
+    var p = s.split(' ');
+    return p[2] + '-' + AY_ISO[p[1]] + '-' + (p[0].length < 2 ? '0' + p[0] : p[0]);
+  }
+
   /* ---- kart ızgarası render — D19/S12: kasa .ks-card gibi SEÇİCİ ---- */
   var grid = document.getElementById('plxGrid');
   var gh = '';
@@ -393,7 +434,7 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
         run += (inAmt || 0) - (outAmt || 0);
         toplamIn += inAmt || 0; toplamOut += outAmt || 0;
         var rid = 'plx-' + t.id;
-        html += '<tr data-plx="'+k.no+'" data-id="'+rid+'" data-tur="'+t.tur+'" data-santiye="'+k.santiye+'">'
+        html += '<tr data-plx="'+k.no+'" data-id="'+rid+'" data-tur="'+t.tur+'" data-santiye="'+k.santiye+'" data-tarih="'+isoFromUzun(t.tarihUzun)+'">'
           + '<td class="df-no">'+(i + 1)+'</td><td class="df-date">'+t.tarih+'</td>'
           + '<td class="df-firm">'+k.ad+' <span class="plx-no">•'+k.no+'</span></td>'
           + '<td class="df-desc">'+t.desc+' — '+t.no+'</td>'
@@ -523,7 +564,7 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
      metin; kart seçimi PRİMER kapsam (kasa .ks-card→#tblDefter idiyomu), Tür/Şantiye/arama
      yalnız seçili kartın işlem satırlarını daraltır — devir/toplam/mevcut çerçeve satırları
      kart seçimiyle görünür kalır, alt-filtreden etkilenmez. ============ */
-  var curPlx = '4471', curTur = 'hepsi', curSantiye = 'hepsi';
+  var curPlx = '4471', curTur = 'hepsi', curSantiye = 'hepsi', curTarih = null;   /* curTarih: {key,from:Date,to:Date,label} | null */
   var dfKart = document.getElementById('dfKart');
   function recalcChips(){
     var rows = document.querySelectorAll('#tblPluxee tbody tr[data-plx="'+curPlx+'"][data-tur]');
@@ -548,13 +589,21 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
       var okTur = curTur === 'hepsi' || tr.getAttribute('data-tur') === curTur;
       var okSantiye = curSantiye === 'hepsi' || tr.getAttribute('data-santiye') === curSantiye;
       var okTerm = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
-      var show = okTur && okSantiye && okTerm;
+      var okTarih = true;
+      if(curTarih){
+        var d = new Date(tr.getAttribute('data-tarih') + 'T00:00:00');
+        okTarih = d >= curTarih.from && d <= curTarih.to;
+      }
+      var show = okTur && okSantiye && okTerm && okTarih;
       tr.hidden = !show;
       if(show) shown++;
     });
     document.getElementById('plxEmpty').hidden = shown !== 0;
     document.getElementById('plxFoot').textContent = shown + ' hareket gösteriliyor · toplam ' + total + ' kayıt';
     buildLedgerCards();
+    injectMobileChecks();
+    syncSelectAllState();
+    if(typeof syncCiktiHref === 'function') syncCiktiHref();
     gvPagerRefresh('#tblPluxee', true);
   }
   function setCard(no){
@@ -589,6 +638,176 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
     curSantiye = ch.getAttribute('data-santiye');
     applyFilter();
   });
+  window.gvDateRange('#plxDateRange', {
+    emptyLabel:'Tüm zamanlar',
+    onChange:function(val){ curTarih = val; applyFilter(); }
+  });
+
+  /* ============ §14/T-G — çoklu seçim (row-chk) + "Çıktı Al" seçim çubuğu.
+     crm-personel.html Madde 5 çoklu-seçim deseninin bu sayfaya uyarlanması: yeni bir
+     ui.js primitifi İCAT EDİLMEZ, sayfa-lokal state (selectedPlx) kalır. Yalnız gerçek
+     işlem satırları ([data-id]) seçilebilir — devir/toplam/mevcut çerçevesi hariç.
+     "Tümünü Seç" yalnız GÖRÜNEN (hidden olmayan, yani seçili karta ait) satırları kapsar. ============ */
+  /* ÖNEMLİ: toplu yükleme kaydı (id "041") 12 kartın HEPSİNDE aynı — data-id="plx-041"
+     tabloda TEKRARLANIR (kart bazına özgü DEĞİL). Bu yüzden seçim anahtarı yalnız data-id
+     DEĞİL, "<kart no>:<data-id>" bileşik anahtarıdır — aksi halde bir kartın 041 satırını
+     seçmek diğer 11 kartın (gizli) 041 satırını da sessizce seçerdi. */
+  var selectedPlx = {};   /* "<plxNo>:<rid>" -> true */
+  function selPlxCount(){ return Object.keys(selectedPlx).length; }
+  function makeChk(key){
+    var lbl = document.createElement('label');
+    lbl.className = 'row-chk';
+    lbl.setAttribute('data-rid', key);
+    lbl.innerHTML = '<input type="checkbox" class="plx-chk" aria-label="Seç"><span class="chk-box"><i class="fa-solid fa-check"></i></span>';
+    return lbl;
+  }
+  document.querySelectorAll('#tblPluxee tbody tr[data-id]').forEach(function(tr){
+    var key = tr.getAttribute('data-plx') + ':' + tr.getAttribute('data-id');
+    var cell = tr.querySelector('.df-no');
+    if(cell) cell.insertBefore(makeChk(key), cell.firstChild);
+  });
+  /* mobil kartlar #tblPluxeeMobile'da kendi data-id'sini taşımaz (bkz dfCardBody) — ama
+     buildLedgerCards() tbody satırlarını 1:1 aynı sırada (gizli/görünür ayrımı YAPMADAN)
+     dolaşıp kart üretir (data-plx zaten kopyalanır), bu yüzden index eşleşmesi kesindir. */
+  function injectMobileChecks(){
+    var rows = document.querySelectorAll('#tblPluxee tbody tr');
+    var cards = document.querySelectorAll('#tblPluxeeMobile .df-mrow');
+    rows.forEach(function(tr, i){
+      var rid = tr.getAttribute('data-id');
+      var card = cards[i];
+      if(!rid || !card) return;
+      var key = tr.getAttribute('data-plx') + ':' + rid;
+      card.setAttribute('data-id', rid);
+      if(!card.querySelector('.row-chk')){
+        var top = card.querySelector('.df-mrow-top');
+        if(top) top.insertBefore(makeChk(key), top.firstChild);
+      }
+      card.classList.toggle('is-checked', !!selectedPlx[key]);
+    });
+  }
+  function updateRowHighlight(rid, on){
+    document.querySelectorAll('.row-chk[data-rid="' + rid + '"]').forEach(function(chkLbl){
+      var row = chkLbl.closest('tr') || chkLbl.closest('.df-mrow');
+      if(row) row.classList.toggle('is-checked', on);
+    });
+  }
+  var plxBulkBar = document.getElementById('plxBulkBar');
+  var plxBbCount = document.getElementById('plxBbCount');
+  function syncBulkBar(){
+    var n = selPlxCount();
+    if(plxBulkBar) plxBulkBar.hidden = n === 0;
+    if(plxBbCount) plxBbCount.textContent = n + ' kayıt seçildi';
+  }
+  var plxChkAllWrap = document.getElementById('plxChkAllWrap');
+  var plxChkAll = document.getElementById('plxChkAll');
+  if(plxChkAllWrap) plxChkAllWrap.hidden = false;
+  function syncSelectAllState(){
+    if(!plxChkAll) return;
+    var visible = 0, visibleSelected = 0;
+    document.querySelectorAll('#tblPluxee tbody tr[data-id]').forEach(function(tr){
+      if(tr.hidden) return;
+      visible++;
+      var key = tr.getAttribute('data-plx') + ':' + tr.getAttribute('data-id');
+      if(selectedPlx[key]) visibleSelected++;
+    });
+    if(!visible){ plxChkAll.checked = false; plxChkAll.indeterminate = false; return; }
+    plxChkAll.checked = visibleSelected === visible;
+    plxChkAll.indeterminate = visibleSelected > 0 && visibleSelected < visible;
+  }
+  document.addEventListener('change', function(e){
+    var input = e.target.closest('.row-chk input'); if(!input) return;
+    var rid = input.closest('.row-chk').getAttribute('data-rid');
+    if(input.checked) selectedPlx[rid] = true; else delete selectedPlx[rid];
+    updateRowHighlight(rid, input.checked);
+    document.querySelectorAll('.row-chk[data-rid="' + rid + '"] input').forEach(function(other){ if(other !== input) other.checked = input.checked; });
+    syncBulkBar();
+    syncSelectAllState();
+  });
+  if(plxChkAll) plxChkAll.addEventListener('change', function(){
+    document.querySelectorAll('#tblPluxee tbody tr[data-id]').forEach(function(tr){
+      if(tr.hidden) return;
+      var key = tr.getAttribute('data-plx') + ':' + tr.getAttribute('data-id');
+      document.querySelectorAll('.row-chk[data-rid="' + key + '"] input').forEach(function(i){ i.checked = plxChkAll.checked; });
+      if(plxChkAll.checked) selectedPlx[key] = true; else delete selectedPlx[key];
+      updateRowHighlight(key, plxChkAll.checked);
+    });
+    syncBulkBar();
+  });
+  var plxBbClear = document.getElementById('plxBbClear');
+  if(plxBbClear) plxBbClear.addEventListener('click', function(){
+    Object.keys(selectedPlx).forEach(function(rid){ updateRowHighlight(rid, false); });
+    selectedPlx = {};
+    document.querySelectorAll('.row-chk input').forEach(function(i){ i.checked = false; });
+    syncBulkBar();
+    syncSelectAllState();
+  });
+
+  /* yerel-tarih güvenli ISO — toISOString() KULLANILMAZ (UTC kayması gün değiştirebilir,
+     ui.js gvDateRange'in kendi iso() yardımcısıyla AYNI mantık) */
+  function isoLocal(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  /* ---- Çıktı Al navigasyonu — aktif filtreler (kart/tür/şantiye/tarih) çıktı kapsamına
+     taşınır; hiç kayıt seçili değilken "Tüm liste mi çıktı alınsın?" onayı sorulur
+     (§14 kabul kriteri); seçili varsa doğrudan seçili kayıtlarla gidilir. ---- */
+  function buildOutputUrl(withSelection){
+    var p = new URLSearchParams();
+    if(withSelection){
+      p.set('ids', Object.keys(selectedPlx).join(','));
+    } else {
+      p.set('kart', curPlx);
+      p.set('tur', curTur);
+      p.set('santiye', curSantiye);
+      if(curTarih){
+        p.set('from', isoLocal(curTarih.from));
+        p.set('to', isoLocal(curTarih.to));
+        p.set('dlabel', curTarih.label);
+      }
+    }
+    return 'crm-operasyon-pluxee-cikti.html?' + p.toString();
+  }
+  function syncCiktiHref(){
+    var btn = document.getElementById('btnPlxCikti');
+    if(btn) btn.href = buildOutputUrl(false);
+  }
+  document.getElementById('btnPlxCikti').addEventListener('click', function(e){
+    if(selPlxCount() > 0){
+      e.preventDefault();
+      location.href = buildOutputUrl(true);
+      return;
+    }
+    e.preventDefault();
+    gvConfirm({
+      title:'Tüm liste mi çıktı alınsın?',
+      message:'Hiç kayıt seçilmedi. Aktif filtrelere göre TÜM hareketlerin çıktısı alınacak.',
+      ok:'Evet, Tümünü Al', cancel:'Vazgeç',
+      onConfirm:function(){ location.href = buildOutputUrl(false); }
+    });
+  });
+  document.getElementById('plxBbCikti').addEventListener('click', function(){
+    location.href = buildOutputUrl(true);
+  });
+
+  /* ---- Dışa Aktar — gerçek CSV/Excel indirme (kasa.html GV_EXPORTERS deseninin devralımı;
+     önceden [MOCK-SİM] toast'a düşen ölü buton burada gerçek indirmeye bağlanır) ---- */
+  window.GV_EXPORTERS = window.GV_EXPORTERS || {};
+  window.GV_EXPORTERS['Pluxee hareketleri'] = function(){
+    var aoa = [
+      ['Pluxee Kart Hareketleri — Gavia CRM'],
+      [dfKart ? dfKart.textContent : 'Tümü'],
+      ['#','Tarih','Kart','Personel','Şantiye','Açıklama','Yükleme','Harcama','Bakiye']
+    ];
+    document.querySelectorAll('#tblPluxee tbody tr[data-id]:not([hidden])').forEach(function(tr){
+      var no = tr.querySelector('.df-no').textContent.trim();
+      var tarih = tr.querySelector('.df-date').textContent.trim();
+      var firm = tr.querySelector('.df-firm').textContent.replace(/\s+/g,' ').trim();
+      var desc = tr.querySelector('.df-desc').textContent.trim();
+      var gelenEl = tr.querySelector('.df-in'), cikanEl = tr.querySelector('.df-out');
+      var bak = tr.querySelector('.df-bak').textContent.trim();
+      var k = KARTLAR_BY_NO[tr.getAttribute('data-plx')];
+      aoa.push([no, tarih, firm, k ? k.ad : '', k ? SANTIYE_ADI[k.santiye] : '', desc,
+        gelenEl ? gelenEl.textContent.trim() : '', cikanEl ? cikanEl.textContent.trim() : '', bak]);
+    });
+    return {file:'pluxee-hareketleri-' + curPlx, sheet:'Pluxee', cols:[5,10,20,16,16,34,12,12,12], aoa:aoa};
+  };
 
   /* ?kart= ile açılış kartı seçilebilir (kasa ?santiye= emsali); yoksa/tanınmıyorsa
      varsayılan ilk kart (Ali Vural •4471) seçili gelir (D19/S12 "makul varsayılan") */
