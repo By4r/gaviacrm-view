@@ -64,6 +64,10 @@
   .rev-row .rv-arrow{display:none}
 }
 .rev-empty{padding:26px 22px;text-align:center;color:var(--muted);font-size:13px}
+.rev-ver{font-size:10.5px;font-weight:800;letter-spacing:.03em;color:var(--acc-ink);background:rgba(var(--acc-rgb),.12);border-radius:var(--r-pill);padding:2px 9px;margin-right:8px}
+.rev-files{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.rev-file-added{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:var(--r-sm);background:var(--info-tint);color:var(--ink-2);font-size:12px}
+.rev-file-added i{color:var(--info)}
 
 /* ---- ek protokol ekleme formu — gform/gfield dilinin uyarlaması (kasa-form emsali) ---- */
 .gform-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
@@ -100,7 +104,7 @@
       <label for="szlSelect">Sözleşme</label>
       <select id="szlSelect"><option value="t05" selected="">SZL-2025-T05 — Demir-Beton İnş. Ltd.</option><option value="t06">SZL-2025-T06 — Yalıtım Kardeşler</option><option value="t07">SZL-2025-T07 — ElektroMek Taahhüt</option><option value="k01">SZL-2026-K01 — Körfez GYO</option><option value="k02">SZL-2026-K02 — Aliağa Liman İşletmeleri</option><option value="k03">SZL-2026-K03 — Sapanca Belediyesi</option></select>
     </div>
-    <div id="szlRoot"><div class="gd-head"><div><div class="gd-eyebrow">Demir-Beton İnş. Ltd. · Taşeron Sözleşmesi #SZL-2025-T05 · Revizyon / Ek Protokol</div><h1>Vadi Konakları kaba inşaat — kalıp, demir, beton işleri</h1><div class="gd-badges"><span class="gstat ok">Yürürlükte</span> <span class="gtag">Taşeron</span></div></div><div class="ph-actions"><a class="btn btn-ghost btn-sm" href="crm-finans-sozlesme-detay.html?szl=t05"><i class="fa-solid fa-arrow-left"></i> Sözleşme Detayına Dön</a></div></div><div class="gd-grid"><div class="gv-side-stack"><div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> Revizyon Geçmişi</div><span class="gc-link" style="cursor:default">1 kayıt</span></div><div class="rev-card"><div class="rev-top"><span class="rev-no">EP-SZL-2025-T05-01</span><span class="gstat ok">Onaylandı</span></div><div class="rev-meta">15 Mayıs 2026 · Murat Denizli · Genel Müdür onayladı</div><p class="rev-desc">A Blok zemin kat kalıp iskelesi kapsamı sözleşmeye eklendi; ek metraj için bedel güncellendi.</p><div class="rev-diff"><div class="rev-row"><span class="rv-lbl">Sözleşme Bedeli</span><span class="rv-eski">₺420.000</span><i class="fa-solid fa-arrow-right rv-arrow"></i><span class="rv-yeni">₺450.000</span></div></div></div></div><div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-circle-plus"></i> Yeni Ek Protokol</div></div><div class="gd-block"><form class="gform" id="revForm" onsubmit="return false"><div class="gform-2col"><div class="gfield"><label for="fKalem">Değişen Kalem</label><select id="fKalem"><option>Sözleşme Bedeli</option><option>Süre</option><option>Kapsam</option><option>Teminat</option><option>Diğer</option></select></div><div class="gfield"><label for="fTarih">Tarih</label><input id="fTarih" type="date"></div><div class="gfield"><label for="fEski">Eski Değer</label><input id="fEski" type="text" placeholder="ör. ₺450.000"></div><div class="gfield"><label for="fYeni">Yeni Değer</label><input id="fYeni" type="text" placeholder="ör. yeni tutar/tarih/madde"></div></div><div class="gfield full" style="margin-top:14px"><label for="fGerekce">Gerekçe / Açıklama</label><textarea id="fGerekce" rows="3" placeholder="Değişikliğin nedeni — kalem/metraj artışı, kapsam genişlemesi, süre uzatımı vb."></textarea></div><div class="gfield full" style="margin-top:14px"><label>Belge</label><button type="button" class="btn btn-ghost btn-sm" data-demo="Belge yükleme hazırlanıyor (demo)" data-no-confirm=""><i class="fa-solid fa-paperclip"></i> Ek Protokol Belgesi Ekle</button></div><div class="frm-acts" style="margin-top:16px"><button type="button" class="btn btn-ghost btn-sm" id="btnRevDraft" data-no-confirm=""><i class="fa-solid fa-floppy-disk"></i> Taslak Kaydet</button><button type="button" class="btn btn-acc btn-sm" id="btnRevSend"><i class="fa-solid fa-paper-plane"></i> Onaya Gönder</button></div></form></div></div></div><div class="gv-side-stack"><div class="gv-card"><div class="gd-block"><div class="gd-label">Taraflar</div><div class="ctx-row"><span class="ctx-lbl">Taraf A</span><span class="ctx-val">Yapıtaş İnşaat A.Ş.</span></div><div class="ctx-row"><span class="ctx-lbl">Taraf B</span><span class="ctx-val"><a href="crm-cari-durum.html?cari=demir-beton" style="color:var(--acc-ink)">Demir-Beton İnş. Ltd.</a></span></div></div><div class="gd-block"><div class="ctx-row"><span class="ctx-lbl">Güncel bedel</span><span class="ctx-val">₺450.000 <span class="muted" style="font-weight:500">(KDV hariç)</span></span></div><div class="ctx-row"><span class="ctx-lbl">Güncel süre</span><span class="ctx-val">1 Nisan 2026 – 30 Eylül 2026</span></div><div class="ctx-row"><span class="ctx-lbl">Teminat</span><span class="ctx-val">%5 kesin teminat mektubu</span></div><div class="ctx-row"><span class="ctx-lbl">Şantiye</span><span class="ctx-val"><a href="crm-santiye-detay.html" style="color:var(--acc-ink);font-weight:700">Vadi Konakları</a></span></div><div class="ctx-row"><span class="ctx-lbl">İmza tarihi</span><span class="ctx-val">28 Mart 2026</span></div></div></div></div></div></div>
+    <div id="szlRoot"><div class="gd-head"><div><div class="gd-eyebrow">Demir-Beton İnş. Ltd. · Taşeron Sözleşmesi #SZL-2025-T05 · Revizyon / Ek Protokol</div><h1>Vadi Konakları kaba inşaat — kalıp, demir, beton işleri</h1><div class="gd-badges"><span class="gstat ok">Yürürlükte</span> <span class="gtag">Taşeron</span></div></div><div class="ph-actions"><a class="btn btn-ghost btn-sm" href="crm-finans-sozlesme-detay.html?szl=t05"><i class="fa-solid fa-arrow-left"></i> Sözleşme Detayına Dön</a></div></div><div class="gd-grid"><div class="gv-side-stack"><div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> Revizyon Geçmişi</div><span class="gc-link" style="cursor:default">1 kayıt</span></div><div class="rev-card"><div class="rev-top"><span class="rev-ver">v2</span><span class="rev-no">EP-SZL-2025-T05-01</span><span class="gstat ok">Onaylandı</span></div><div class="rev-meta">15 Mayıs 2026 · Murat Denizli · Genel Müdür onayladı</div><p class="rev-desc">A Blok zemin kat kalıp iskelesi kapsamı sözleşmeye eklendi; ek metraj için bedel güncellendi.</p><div class="rev-diff"><div class="rev-row"><span class="rv-lbl">Sözleşme Bedeli</span><span class="rv-eski">₺420.000</span><i class="fa-solid fa-arrow-right rv-arrow"></i><span class="rv-yeni">₺450.000</span></div></div><div class="rev-files"><div class="file-row"><div class="file-ico pdf"><i class="fa-solid fa-file-pdf"></i></div><div class="file-info"><b>ek-protokol-szl-2025-t05-01.pdf</b><span>340 KB · İmzalı nüsha</span></div><button class="ia-btn" data-demo="Belge önizleme hazırlanıyor (demo)" data-no-confirm="" aria-label="Görüntüle"><i class="fa-solid fa-eye"></i></button><button class="ia-btn" data-demo="İndirme hazırlanıyor (demo)" data-no-confirm="" aria-label="İndir"><i class="fa-solid fa-download"></i></button></div></div></div></div><div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-circle-plus"></i> Yeni Ek Protokol</div></div><div class="gd-block"><form class="gform" id="revForm" onsubmit="return false"><div class="gform-2col"><div class="gfield"><label for="fKalem">Değişen Kalem</label><select id="fKalem"><option>Sözleşme Bedeli</option><option>Süre</option><option>Kapsam</option><option>Teminat</option><option>Diğer</option></select></div><div class="gfield"><label for="fTarih">Tarih</label><input id="fTarih" type="date"></div><div class="gfield"><label for="fEski">Eski Değer</label><input id="fEski" type="text" placeholder="ör. ₺450.000"></div><div class="gfield"><label for="fYeni">Yeni Değer</label><input id="fYeni" type="text" placeholder="ör. yeni tutar/tarih/madde"></div></div><div class="gfield full" style="margin-top:14px"><label for="fGerekce">Gerekçe / Açıklama</label><textarea id="fGerekce" rows="3" placeholder="Değişikliğin nedeni — kalem/metraj artışı, kapsam genişlemesi, süre uzatımı vb."></textarea></div><div class="gfield full" style="margin-top:14px"><label>Belge</label><button type="button" class="btn btn-ghost btn-sm" id="btnRevBelgeEkle" data-no-confirm=""><i class="fa-solid fa-paperclip"></i> Ek Protokol Belgesi Ekle</button><div id="revBelgeListe" class="rev-files"></div></div><div class="frm-acts" style="margin-top:16px"><button type="button" class="btn btn-ghost btn-sm" id="btnRevDraft" data-no-confirm=""><i class="fa-solid fa-floppy-disk"></i> Taslak Kaydet</button><button type="button" class="btn btn-acc btn-sm" id="btnRevSend"><i class="fa-solid fa-paper-plane"></i> Onaya Gönder</button></div></form></div></div></div><div class="gv-side-stack"><div class="gv-card"><div class="gd-block"><div class="gd-label">Taraflar</div><div class="ctx-row"><span class="ctx-lbl">Taraf A</span><span class="ctx-val">Yapıtaş İnşaat A.Ş.</span></div><div class="ctx-row"><span class="ctx-lbl">Taraf B</span><span class="ctx-val"><a href="crm-cari-durum.html?cari=demir-beton" style="color:var(--acc-ink)">Demir-Beton İnş. Ltd.</a></span></div></div><div class="gd-block"><div class="ctx-row"><span class="ctx-lbl">Güncel bedel</span><span class="ctx-val">₺450.000 <span class="muted" style="font-weight:500">(KDV hariç)</span></span></div><div class="ctx-row"><span class="ctx-lbl">Güncel süre</span><span class="ctx-val">1 Nisan 2026 – 30 Eylül 2026</span></div><div class="ctx-row"><span class="ctx-lbl">Teminat</span><span class="ctx-val">%5 kesin teminat mektubu</span></div><div class="ctx-row"><span class="ctx-lbl">Şantiye</span><span class="ctx-val"><a href="crm-santiye-detay.html" style="color:var(--acc-ink);font-weight:700">Vadi Konakları</a></span></div><div class="ctx-row"><span class="ctx-lbl">İmza tarihi</span><span class="ctx-val">28 Mart 2026</span></div></div></div></div></div></div>
   </main>
 </div>
 
@@ -129,7 +133,8 @@
       revs:[
         {no:'EP-SZL-2025-T05-01', tarih:'15 Mayıs 2026', durum:'onaylandi', onaylayan:'Murat Denizli · Genel Müdür',
          aciklama:'A Blok zemin kat kalıp iskelesi kapsamı sözleşmeye eklendi; ek metraj için bedel güncellendi.',
-         degisen:[{alan:'Sözleşme Bedeli', eski:'₺420.000', yeni:'₺450.000'}]}
+         degisen:[{alan:'Sözleşme Bedeli', eski:'₺420.000', yeni:'₺450.000'}],
+         belge:{ad:'ek-protokol-szl-2025-t05-01.pdf', meta:'340 KB · İmzalı nüsha'}}
       ]},
     t06:{ no:'SZL-2025-T06', ad:'Yalıtım Kardeşler', ini:'YK', tip:'Taşeron', title:'Liman Lojistik Merkezi — çatı ve cephe yalıtımı',
       santiye:'Liman Lojistik Merkezi', santiyeHref:false, durum:'ok', durumLbl:'Yürürlükte',
@@ -138,7 +143,8 @@
       revs:[
         {no:'EP-SZL-2025-T06-01', tarih:'1 Haziran 2026', durum:'onaylandi', onaylayan:'Murat Denizli · Genel Müdür',
          aciklama:'Çatı yalıtım malzemesi temini taşerona devredildi; malzeme bedeli sonraki hakedişlerden mahsup edilecek (bkz. TH-2026-008).',
-         degisen:[{alan:'Kapsam', eski:'Malzeme Yapıtaş İnşaat tarafından temin edilir', yeni:'Malzeme taşeron tarafından temin edilir, hakedişten mahsup edilir'}]}
+         degisen:[{alan:'Kapsam', eski:'Malzeme Yapıtaş İnşaat tarafından temin edilir', yeni:'Malzeme taşeron tarafından temin edilir, hakedişten mahsup edilir'}],
+         belge:{ad:'ek-protokol-szl-2025-t06-01.pdf', meta:'298 KB · İmzalı nüsha'}}
       ]},
     t07:{ no:'SZL-2025-T07', ad:'ElektroMek Taahhüt', ini:'EM', tip:'Taşeron', title:'Vadi Konakları elektrik tesisat taahhüdü',
       santiye:'Vadi Konakları', santiyeHref:true, durum:'ok', durumLbl:'Yürürlükte',
@@ -152,7 +158,8 @@
       revs:[
         {no:'EP-SZL-2026-K01-01', tarih:'10 Mart 2025', durum:'onaylandi', onaylayan:'Murat Denizli · Genel Müdür',
          aciklama:'B Blok dış cephe kaplama ve peyzaj imalatları kapsama eklendi; sözleşme bedeli buna göre güncellendi.',
-         degisen:[{alan:'Sözleşme Bedeli', eski:'₺23.800.000', yeni:'₺24.500.000'}]}
+         degisen:[{alan:'Sözleşme Bedeli', eski:'₺23.800.000', yeni:'₺24.500.000'}],
+         belge:{ad:'ek-protokol-szl-2026-k01-01.pdf', meta:'410 KB · İmzalı nüsha'}}
       ]},
     k02:{ no:'SZL-2026-K02', ad:'Aliağa Liman İşletmeleri', ini:'AL', tip:'Kurum', title:'Liman Lojistik Merkezi — kurumsal işveren sözleşmesi',
       santiye:'Liman Lojistik Merkezi', santiyeHref:false, durum:'ok', durumLbl:'Yürürlükte', sureUyari:'Süresi yaklaşıyor',
@@ -209,9 +216,17 @@
     : rec.santiye;
   var detayHref = 'crm-finans-sozlesme-detay.html?szl=' + id;
 
+  /* ---- §8.4 revizyonu — versiyon numarası: orijinal sözleşme v1 kabul edilir, her
+     onaylanmış ek protokol sırayla v2/v3… numarası alır (taslak/beklemede olanlar henüz
+     versiyon numarası ALMAZ — yürürlüğe girmedi). Ek protokol dosyaları orijinal sözleşme
+     dosyasından (crm-finans-sozlesme-detay.html "Belge" bloğu) AYRI, kendi file-row'una
+     sahiptir — §14 koruma: mevcut yapı üzerine eklenir. ---- */
+  var verCounter = 1;
   var revHtml = rec.revs.length
     ? rec.revs.map(function(r){
         var st = REV_DURUM[r.durum];
+        var verBadge = '';
+        if(r.durum === 'onaylandi'){ verCounter++; verBadge = '<span class="rev-ver">v' + verCounter + '</span>'; }
         var diffHtml = r.degisen.map(function(d){
           return '<div class="rev-row' + (r.durum === 'taslak' ? ' is-draft' : '') + '">'
             + '<span class="rv-lbl">' + d.alan + '</span>'
@@ -220,11 +235,18 @@
             + '<span class="rv-yeni">' + d.yeni + '</span>'
             + '</div>';
         }).join('');
+        var belgeHtml = r.belge
+          ? '<div class="rev-files"><div class="file-row"><div class="file-ico pdf"><i class="fa-solid fa-file-pdf"></i></div>'
+            + '<div class="file-info"><b>' + r.belge.ad + '</b><span>' + r.belge.meta + '</span></div>'
+            + '<button class="ia-btn" data-demo="Belge önizleme hazırlanıyor (demo)" data-no-confirm aria-label="Görüntüle"><i class="fa-solid fa-eye"></i></button>'
+            + '<button class="ia-btn" data-demo="İndirme hazırlanıyor (demo)" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button></div></div>'
+          : '<div class="rev-files"><p class="gd-desc" style="margin:0;font-size:12px">Bu protokol için henüz imzalı belge yüklenmedi.</p></div>';
         return '<div class="rev-card">'
-          + '<div class="rev-top"><span class="rev-no">' + r.no + '</span><span class="gstat ' + st.cls + '">' + st.lbl + '</span></div>'
+          + '<div class="rev-top">' + verBadge + '<span class="rev-no">' + r.no + '</span><span class="gstat ' + st.cls + '">' + st.lbl + '</span></div>'
           + '<div class="rev-meta">' + r.tarih + (r.onaylayan ? ' · ' + r.onaylayan + ' onayladı' : '') + '</div>'
           + '<p class="rev-desc">' + r.aciklama + '</p>'
           + '<div class="rev-diff">' + diffHtml + '</div>'
+          + belgeHtml
           + '</div>';
       }).join('')
     : '<div class="rev-empty">' + (rec.durum === 'wait' ? 'Sözleşme henüz imzalanmadı; imza öncesi revizyon/ek protokol uygulanamaz.' : 'Bu sözleşmede henüz revizyon veya ek protokol yok.') + '</div>';
@@ -244,7 +266,7 @@
           +     '<div class="gfield"><label for="fYeni">Yeni Değer</label><input id="fYeni" type="text" placeholder="ör. yeni tutar/tarih/madde"></div>'
           +   '</div>'
           +   '<div class="gfield full" style="margin-top:14px"><label for="fGerekce">Gerekçe / Açıklama</label><textarea id="fGerekce" rows="3" placeholder="Değişikliğin nedeni — kalem/metraj artışı, kapsam genişlemesi, süre uzatımı vb."></textarea></div>'
-          +   '<div class="gfield full" style="margin-top:14px"><label>Belge</label><button type="button" class="btn btn-ghost btn-sm" data-demo="Belge yükleme hazırlanıyor (demo)" data-no-confirm><i class="fa-solid fa-paperclip"></i> Ek Protokol Belgesi Ekle</button></div>'
+          +   '<div class="gfield full" style="margin-top:14px"><label>Belge</label><button type="button" class="btn btn-ghost btn-sm" id="btnRevBelgeEkle" data-no-confirm><i class="fa-solid fa-paperclip"></i> Ek Protokol Belgesi Ekle</button><div id="revBelgeListe" class="rev-files"></div></div>'
           +   '<div class="frm-acts" style="margin-top:16px">'
           +     '<button type="button" class="btn btn-ghost btn-sm" id="btnRevDraft" data-no-confirm><i class="fa-solid fa-floppy-disk"></i> Taslak Kaydet</button>'
           +     '<button type="button" class="btn btn-acc btn-sm" id="btnRevSend"><i class="fa-solid fa-paper-plane"></i> Onaya Gönder</button>'
@@ -294,6 +316,18 @@
     fKalem.addEventListener('change', function(){
       var map = {'Sözleşme Bedeli':rec.bedel, 'Süre':rec.sure, 'Teminat':rec.teminat};
       fEski.value = map[fKalem.value] || '';
+    });
+    /* ---- §8.4 revizyonu — "Ek Protokol Belgesi Ekle" artık GERÇEK [MOCK-SİM]: tıklanınca
+       forma bağlı bir dosya satırı eklenir (data-demo toast stub'ı DEĞİL); en fazla 1 belge
+       (gerçek dosya seçici yok, tek sabit mock ad üretilir, tekrar tıklama no-op). ---- */
+    var revBelgeEklendi = false;
+    document.getElementById('btnRevBelgeEkle').addEventListener('click', function(){
+      if(revBelgeEklendi) return;
+      revBelgeEklendi = true;
+      var ad = 'ek-protokol-' + id + '-taslak.pdf';
+      document.getElementById('revBelgeListe').innerHTML =
+        '<div class="rev-file-added"><i class="fa-solid fa-paperclip"></i> ' + ad + ' eklendi (demo) — kaydedilince protokol dosyası olarak listelenecek.</div>';
+      gvToast('Belge forma eklendi (demo).', {type:'info'});
     });
     document.getElementById('btnRevDraft').addEventListener('click', function(){
       gvToast('Ek protokol taslak olarak kaydedildi.', {type:'info'});
