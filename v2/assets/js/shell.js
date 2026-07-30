@@ -1331,16 +1331,16 @@
      okuyamaz, meta-veri iki dosyada AYRI AYRI tutulur. Biri değişirse diğeri elle
      güncellenmeli (otomatik senkron YOK — iki dosya ayrı sahipte). */
   var GOREV_HAVUZ = [
-    {slug:'liman-cevre-aydinlatma-kesfi',      dept:'satinalma', santiye:'liman'},
-    {slug:'kule-kesin-hesap-kontrolu',          dept:'muhasebe'},
-    {slug:'vadi-numune-daire-fotograf',         dept:'satis',     santiye:'vadi'},
-    {slug:'merkez-yil-ortasi-sayim',            dept:'depo',      santiye:'merkez'},
-    {slug:'gol-evleri-ruhsat-evrak',            dept:'teknik'},
-    {slug:'arac-takip-cizelgesi',               dept:'sef',       santiye:'merkez'},
+    {id:'021', slug:'liman-cevre-aydinlatma-kesfi',      title:'Liman Lojistik çevre aydınlatma keşfi',              dept:'satinalma', santiye:'liman',  santiyeAd:'Liman Lojistik Merkezi'},
+    {id:'022', slug:'kule-kesin-hesap-kontrolu',          title:'Kule Ofis kesin hesap dosyası kontrolü',             dept:'muhasebe',  santiye:'kule',   santiyeAd:'Kule Ofis B Blok'},
+    {id:'023', slug:'vadi-numune-daire-fotograf',         title:'Vadi Konakları numune daire fotoğraf çekimi',        dept:'satis',     santiye:'vadi',   santiyeAd:'Vadi Konakları'},
+    {id:'024', slug:'merkez-yil-ortasi-sayim',            title:'Merkez depo yıl ortası sayım planı',                 dept:'depo',      santiye:'merkez', santiyeAd:'Merkez Şantiye'},
+    {id:'025', slug:'gol-evleri-ruhsat-evrak',            title:'Göl Evleri 2. Etap ruhsat evrak listesi',            dept:'teknik',    santiye:'gol',    santiyeAd:'Göl Evleri 2. Etap'},
+    {id:'026', slug:'arac-takip-cizelgesi',               title:'Şantiye araç takip çizelgesi güncelleme',            dept:'sef',       santiye:'merkez', santiyeAd:'Merkez Şantiye'},
     /* [T-GOREV-02] 2 yeni kanonik havuz görevi — ik ve yonetim havuzlarını doldurur
        (önceden boştu). GRV-2026-030/031, crm-gorev.html'de gerçek satır olarak var. */
-    {slug:'merkez-ozluk-evrak-kontrolu',        dept:'ik',        santiye:'merkez'},
-    {slug:'gol-evleri-yatirim-komitesi-sunumu', dept:'yonetim',   santiye:'gol'}
+    {id:'030', slug:'merkez-ozluk-evrak-kontrolu',        title:'Merkez Şantiye personel özlük evrak eksik kontrolü', dept:'ik',        santiye:'merkez', santiyeAd:'Merkez Şantiye'},
+    {id:'031', slug:'gol-evleri-yatirim-komitesi-sunumu', title:'Göl Evleri 2. Etap yatırım komitesi sunum hazırlığı',dept:'yonetim',   santiye:'gol',    santiyeAd:'Göl Evleri 2. Etap'}
   ];
   var GOREV_POOL = GOREV_HAVUZ.map(function(t){ return t.slug; });
   var MGMT_ROLES = ['superadmin','sahip','yonetim'];
@@ -1359,10 +1359,17 @@
   }
   /* D8: personel havuzda YALNIZ kendi şantiyesindeki tek görevi görür (departman
      kuralına GİRMEZ — crm-gorev.html'de de actor='personel' tekil satırla ayrı
-     ele alınıyor, bu fonksiyon o davranışın shell.js karşılığıdır) */
+     ele alınıyor, bu fonksiyon o davranışın shell.js karşılığıdır).
+     [T-PANEL] gorevPoolVisibleList TEK KAYNAK — hem sayı (rail rozeti) hem liste
+     (panel widget'ı) BURADAN türer, iki ayrı hesap YOK. */
+  function gorevPoolVisibleList(r){
+    if(r === 'personel'){
+      return GOREV_HAVUZ.filter(function(t){ return t.slug === 'vadi-numune-daire-fotograf'; });
+    }
+    return GOREV_HAVUZ.filter(function(t){ return canSeeHavuzTask(t, r); });
+  }
   function gorevPoolVisibleCount(r){
-    if(r === 'personel') return 1;
-    return GOREV_HAVUZ.filter(function(t){ return canSeeHavuzTask(t, r); }).length;
+    return gorevPoolVisibleList(r).length;
   }
 
   /* D15: görev havuzu "Üzerime Al" claim'leri (localStorage gv_gorev_claims —
@@ -1538,6 +1545,23 @@
     if(role !== 'personel') setCnt(menuEl.querySelector('.gv-mlink[href^="crm-gorev.html?f=bana"]'), 7 + n);
   };
   GV.syncGorevBadges();
+
+  /* [T-PANEL] Havuz API'si — kural TEK KAYNAKTA (bu dosya) kalsın diye açılıyor.
+     crm-panel.html (ve gerekirse başka sayfalar) KENDİ kopyasını YAZMAZ, bu 3
+     erişim noktasını kullanır. GOREV_HAVUZ / canSeeHavuzTask / gorevPoolVisibleList
+     zaten YUKARIDA tanımlı (bkz T-GOREV-01/02) — burada yalnız GV'ye BAĞLANIYOR.
+     Değişirse (yeni görev/departman) tek yerden (GOREV_HAVUZ + canSeeHavuzTask)
+     güncellenir, üç sayfa da (rail, crm-gorev.html, panel) otomatik senkron kalır
+     — crm-gorev.html kendi canSeeHavuzRow'unu KORUR (ayrı dosya, ayrı sahip),
+     yalnız KURAL MANTIĞI aynı kalacak şekilde elle senkron tutulur (bkz üstteki not). */
+  GV.GOREV_HAVUZ = GOREV_HAVUZ;
+  GV.gorevPoolVisible = function(r){ return gorevPoolVisibleList(r); };
+  GV.canSeeHavuzTask = function(r, gorevId){
+    var t = GOREV_HAVUZ.filter(function(x){ return x.id === gorevId; })[0];
+    if(!t) return false;
+    if(r === 'personel') return t.slug === 'vadi-numune-daire-fotograf';
+    return canSeeHavuzTask(t, r);
+  };
 
   /* ---- 3) topbar: persona + tenant çipi + dil çipi ---- */
   var nameEl = document.getElementById('gvName'), roleEl = document.getElementById('gvRole'), avaEl = document.getElementById('gvAva');
