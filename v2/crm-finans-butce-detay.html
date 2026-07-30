@@ -82,6 +82,16 @@
   /* 2-kolon mobil kpi-grid'de yedi haneli ₺ tutarları kart genişliğini taşırıyor — crm-finans-kurum.html deseni */
   .kpi-num.compact{font-size:16px !important}
 }
+
+/* ============ §17 — Revizyon Ekle (taslak) + Çıktı Al ============ */
+.rev-card.is-taslak{border-style:dashed;border-color:var(--line-2)}
+.rev-card.is-taslak .rev-head span{color:var(--warn);font-weight:700}
+@media print{
+  .gv-rail,.gv-menu,.gv-divider,.gv-overlay,.gv-top,.ph-actions,.gv-crumb,.proje-switch{display:none !important}
+  .gv-main{margin:0 !important;padding:0 !important}
+  .gv-app{display:block !important}
+  .tab-panel[hidden]{display:block !important;margin-top:18px}
+}
 </style>
 </head>
 <body data-sec="finans" data-screen="butce">
@@ -120,8 +130,11 @@
         <div class="gd-badges" id="gdBadges"><span class="gtag mint">Konut · Çekmeköy/İstanbul</span><span class="gtag"><i class="fa-solid fa-helmet-safety"></i> Hasan Demirci</span><span class="gstat warn">R2 revize</span></div>
       </div>
       <div class="ph-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="btnRevEkle"><i class="fa-solid fa-file-circle-plus"></i> Revizyon Ekle</button>
         <a class="btn btn-ghost btn-sm" href="crm-finans-maliyet.html" id="btnMaliyet"><i class="fa-solid fa-chart-column"></i> Gerçekleşen Maliyet</a>
         <a class="btn btn-ghost btn-sm" href="#" data-export="Proje bütçe detayı"><i class="fa-solid fa-download"></i> Dışa Aktar</a>
+        <button type="button" class="btn btn-ghost btn-sm" id="btnButceYazdir"><i class="fa-solid fa-print"></i> Çıktı Al</button>
+        <a class="btn btn-ghost btn-sm" id="btnButceGecmis" href="crm-ayarlar-log.html"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişini Gör</a>
       </div>
     </div>
 
@@ -192,6 +205,29 @@
       </div>
     </section>
   </main>
+
+  <!-- ============ §17 — Revizyon Ekle modalı. Yeni revizyon TASLAK olarak eklenir;
+       kategori tablosundaki kilitli orijinal/revize/gerçekleşen rakamlarına
+       DOKUNMAZ — yalnız Revizyonlar sekmesine "onay bekliyor" kartı düşer (taşeron
+       kartı Personel Ekle modalının aynı ilkesi: kanonik veri KORUNUR). ============ -->
+  <div class="gv-modal-ov" id="revModalOv">
+    <div class="gv-modal" role="dialog" aria-modal="true" aria-labelledby="revModalTitle">
+      <h3 id="revModalTitle">Bütçe Revizyonu Ekle</h3>
+      <p class="gd-desc" style="margin-bottom:14px"><i class="fa-solid fa-circle-info" style="color:var(--acc-ink);margin-right:6px"></i>Bu revizyon <b>taslak</b> olarak kaydedilir; kategori tablosundaki mevcut orijinal/revize/gerçekleşen rakamları etkilenmez, onaylandığında bütçeye yansıtılır.</p>
+      <form class="gform" id="revForm" onsubmit="return false">
+        <div class="gform-2col">
+          <div class="gfield"><label for="rvKategori">Etkilenen Kategori</label><select id="rvKategori"></select></div>
+          <div class="gfield"><label for="rvDelta">Bütçe Değişimi (₺)</label><input id="rvDelta" type="number" placeholder="ör. 1500000" min="1" step="1000"></div>
+        </div>
+        <div class="gfield full" style="margin-top:14px"><label for="rvGerekce">Gerekçe</label><input id="rvGerekce" type="text" placeholder="ör. Malzeme fiyat artışı"></div>
+        <div class="gfield full" style="margin-top:14px"><label for="rvOnaylayan">Onaylayacak Yetkili</label><input id="rvOnaylayan" type="text" value="Murat Denizli · Genel Müdür"></div>
+      </form>
+      <div class="gv-modal-acts">
+        <button type="button" class="btn btn-ghost btn-sm" id="revModalClose">Vazgeç</button>
+        <button type="button" class="btn btn-acc btn-sm" id="revModalSave">Taslak Olarak Kaydet</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -354,13 +390,67 @@
 
   /* ---- sekme geçişi ---- */
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.gv-tab'));
+  function activateTab(id){
+    tabs.forEach(function(x){ x.classList.toggle('is-active', x.getAttribute('data-tab') === id); x.setAttribute('aria-selected', x.getAttribute('data-tab') === id ? 'true' : 'false'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.hidden = p.getAttribute('data-tab-panel') !== id; });
+  }
   tabs.forEach(function(t){
-    t.addEventListener('click', function(){
-      tabs.forEach(function(x){ x.classList.remove('is-active'); x.setAttribute('aria-selected','false'); });
-      t.classList.add('is-active'); t.setAttribute('aria-selected','true');
-      document.querySelectorAll('.tab-panel').forEach(function(p){ p.hidden = p.getAttribute('data-tab-panel') !== t.getAttribute('data-tab'); });
-    });
+    t.addEventListener('click', function(){ activateTab(t.getAttribute('data-tab')); });
   });
+
+  /* ============ §17 — Revizyon Ekle (taslak) + Çıktı Al + İşlem Geçmişini Gör ============ */
+  var rvKatSel = document.getElementById('rvKategori');
+  if(rvKatSel) rvKatSel.innerHTML = KATEGORI_ADI.map(function(k){ return '<option>' + k + '</option>'; }).join('');
+
+  var pendingRev = [];
+  function renderPendingRev(){
+    var revBody = document.getElementById('revBody');
+    if(!revBody) return;
+    var grid = revBody.querySelector('.rev-grid');
+    if(!grid){
+      revBody.innerHTML = '<div class="rev-grid"></div>';
+      grid = revBody.querySelector('.rev-grid');
+    }
+    grid.querySelectorAll('.rev-card.is-taslak').forEach(function(c){ c.remove(); });
+    pendingRev.forEach(function(r){
+      var div = document.createElement('div');
+      div.className = 'rev-card is-taslak';
+      div.innerHTML = '<div class="rev-head"><b>' + r.kod + '</b><span>Taslak — onay bekliyor</span></div>'
+        + '<div class="rev-row"><span class="rv-lbl">Gerekçe</span><span class="rv-val">' + r.gerekce + '</span></div>'
+        + '<div class="rev-row"><span class="rv-lbl">Etkilenen kalem</span><span class="rv-val">' + r.kalem + '</span></div>'
+        + '<div class="rev-row"><span class="rv-lbl">Bütçe değişimi</span><span class="rv-val delta">' + r.delta + '</span></div>'
+        + '<div class="rev-row"><span class="rv-lbl">Onaylayacak</span><span class="rv-val">' + r.onaylayan + '</span></div>';
+      grid.appendChild(div);
+    });
+    var cntEl = document.getElementById('revCnt');
+    if(cntEl) cntEl.textContent = (P.revizyon.length + pendingRev.length) || '';
+  }
+
+  var revOv = document.getElementById('revModalOv');
+  var btnRevEkle = document.getElementById('btnRevEkle');
+  if(btnRevEkle) btnRevEkle.addEventListener('click', function(){ revOv.classList.add('open'); });
+  var revModalClose = document.getElementById('revModalClose');
+  if(revModalClose) revModalClose.addEventListener('click', function(){ revOv.classList.remove('open'); });
+  revOv.addEventListener('click', function(e){ if(e.target === revOv) revOv.classList.remove('open'); });
+  var revModalSave = document.getElementById('revModalSave');
+  if(revModalSave) revModalSave.addEventListener('click', function(){
+    var kalem = rvKatSel.value;
+    var deltaNum = parseInt(document.getElementById('rvDelta').value, 10);
+    var gerekce = document.getElementById('rvGerekce').value.trim();
+    var onaylayan = document.getElementById('rvOnaylayan').value.trim() || 'Murat Denizli · Genel Müdür';
+    if(!gerekce || !deltaNum){ gvToast('Bütçe değişimi ve gerekçe alanı zorunludur.', {type:'danger'}); return; }
+    var kod = 'BTC-2026-R' + (P.revizyon.length + pendingRev.length + 1) + '-TASLAK';
+    pendingRev.push({kod:kod, gerekce:gerekce, kalem:kalem, delta:'+' + tl(deltaNum), onaylayan:onaylayan});
+    renderPendingRev();
+    activateTab('revizyonlar');
+    revOv.classList.remove('open');
+    document.getElementById('revForm').reset();
+    document.getElementById('rvOnaylayan').value = 'Murat Denizli · Genel Müdür';
+    gvToast(kod + ' taslak olarak kaydedildi — onaylandığında bütçeye yansıtılır.', {type:'info'});
+  });
+
+  var btnButceYazdir = document.getElementById('btnButceYazdir');
+  if(btnButceYazdir) btnButceYazdir.addEventListener('click', function(){ window.print(); });
 })();
 </script>
 </body>

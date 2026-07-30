@@ -63,6 +63,20 @@
 .cross-link a i{font-size:11px;transition:.25s var(--ease)}
 .cross-link a:hover i{transform:translateX(3px)}
 @media(max-width:640px){.cross-link{flex-wrap:wrap;padding:14px 16px}.cross-link a{margin-left:0}}
+
+/* ============ §9/§17 (Dalga 6 / Finans-Hakediş) — kart grid'i için filtre + arşiv
+   ekseni. Kart listesi <table> KULLANMADIĞI için ui.js'in tbody-tr motoru burada
+   çalışmaz — arama/chip/panel/arşiv tamamen sayfa-lokal (bkz. script bloğu). ============ */
+.tas-grid .tas-card[data-lc="pasif"],.tas-grid .tas-card[data-lc="arsiv"]{opacity:.62}
+.tas-grid .tas-card[hidden]{display:none}
+.tas-lc-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:6px;letter-spacing:.02em;vertical-align:middle}
+.tas-lc-badge.pasif{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.tas-lc-badge.arsiv{background:var(--warn-tint);color:var(--warn)}
+.tas-lc-acts{display:flex;align-items:center;gap:6px}
+.gv-empty-cards{padding:44px 20px;text-align:center}
+.gv-empty-cards .ge-ico{width:48px;height:48px;border-radius:50%;background:var(--bg);display:grid;place-items:center;margin:0 auto 12px;color:var(--muted);font-size:17px}
+.gv-empty-cards h4{font-size:13.5px;color:var(--ink);margin-bottom:5px}
+.gv-empty-cards p{font-size:12px;color:var(--muted);margin:0}
 </style>
 </head>
 <body data-sec="finans" data-screen="taseronlar">
@@ -120,8 +134,35 @@
       </div>
     </div>
 
+    <div class="gv-card" style="margin-bottom:16px">
+      <div class="filter-bar">
+        <div class="fb-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="tasSearch" placeholder="Taşeron adı veya kapsam ara">
+        </div>
+        <div class="chips" id="tasChips">
+          <button class="chip is-on" data-filter="hepsi">Tümü <span class="ch-cnt">3</span></button>
+          <button class="chip" data-filter="aktif">Aktif <span class="ch-cnt">3</span></button>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpTaseronlar">
+          <i class="fa-solid fa-sliders"></i> Gelişmiş Filtre
+        </button>
+      </div>
+      <div class="gv-achips-row" id="achipsTaseronlar" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor.">
+            <i class="fa-solid fa-lock"></i> Filtreleri Kaydet
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all>
+            <i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="tas-grid" id="tasGrid">
-      <div class="gv-card tas-card is-warn" data-santiye="vadi">
+      <div class="gv-card tas-card is-warn" data-santiye="vadi" data-tas="TAS-01" data-lc="aktif">
         <div class="tas-head">
           <div class="tas-mark">DB</div>
           <div class="tas-id">
@@ -149,11 +190,15 @@
         </div>
         <div class="tas-foot">
           <span class="tf-bal">Cari: <b>₺342.000</b> borç</span>
+          <div class="tas-lc-acts">
+            <button type="button" class="ia-btn" data-tas-lc-act="pasif" data-no-confirm data-tip="Pasife Al" aria-label="Pasife Al"><i class="fa-solid fa-ban"></i></button>
+            <button type="button" class="ia-btn" data-tas-lc-act="arsiv" data-no-confirm data-tip="Arşivle" aria-label="Arşivle"><i class="fa-solid fa-box-archive"></i></button>
+          </div>
           <a href="crm-finans-taseron-detay.html?tas=TAS-01">Detaya git <i class="fa-solid fa-arrow-right"></i></a>
         </div>
       </div>
 
-      <div class="gv-card tas-card" data-santiye="vadi">
+      <div class="gv-card tas-card" data-santiye="vadi" data-tas="TAS-02" data-lc="aktif">
         <div class="tas-head">
           <div class="tas-mark">EM</div>
           <div class="tas-id">
@@ -177,11 +222,15 @@
         </div>
         <div class="tas-foot">
           <span class="tf-bal">Cari: <b>₺76.200</b> alacaklı</span>
+          <div class="tas-lc-acts">
+            <button type="button" class="ia-btn" data-tas-lc-act="pasif" data-no-confirm data-tip="Pasife Al" aria-label="Pasife Al"><i class="fa-solid fa-ban"></i></button>
+            <button type="button" class="ia-btn" data-tas-lc-act="arsiv" data-no-confirm data-tip="Arşivle" aria-label="Arşivle"><i class="fa-solid fa-box-archive"></i></button>
+          </div>
           <a href="crm-finans-taseron-detay.html?tas=TAS-02">Detaya git <i class="fa-solid fa-arrow-right"></i></a>
         </div>
       </div>
 
-      <div class="gv-card tas-card" data-santiye="liman">
+      <div class="gv-card tas-card" data-santiye="liman" data-tas="TAS-03" data-lc="aktif">
         <div class="tas-head">
           <div class="tas-mark">YK</div>
           <div class="tas-id">
@@ -205,9 +254,19 @@
         </div>
         <div class="tas-foot">
           <span class="tf-bal">Cari: <b>₺128.500</b> alacaklı</span>
+          <div class="tas-lc-acts">
+            <button type="button" class="ia-btn" data-tas-lc-act="pasif" data-no-confirm data-tip="Pasife Al" aria-label="Pasife Al"><i class="fa-solid fa-ban"></i></button>
+            <button type="button" class="ia-btn" data-tas-lc-act="arsiv" data-no-confirm data-tip="Arşivle" aria-label="Arşivle"><i class="fa-solid fa-box-archive"></i></button>
+          </div>
           <a href="crm-finans-taseron-detay.html?tas=TAS-03">Detaya git <i class="fa-solid fa-arrow-right"></i></a>
         </div>
       </div>
+    </div>
+
+    <div class="gv-empty-cards" id="tasEmpty" hidden>
+      <div class="ge-ico"><i class="fa-solid fa-people-arrows"></i></div>
+      <h4>Eşleşen taşeron yok</h4>
+      <p>Aramayı temizleyin veya farklı bir durum/şantiye filtresi seçin.</p>
     </div>
 
     <div class="gv-card" style="margin-top:20px">
@@ -218,6 +277,48 @@
       </div>
     </div>
   </main>
+
+  <!-- ============ §9 — sağ off-canvas gelişmiş filtre paneli (kart grid'i için —
+       tarih aralığı burada anlamlı değil: taşeron kartının tek tarih alanı imza
+       tarihidir, aralık filtrelenecek bir KAYIT LİSTESİ değildir — bkz. rapor karar
+       gerekçesi; §13 bu yüzden BİLİNÇLİ olarak uygulanmadı). ============ -->
+  <div class="gv-fpanel-ov" id="fpTaseronlarOv">
+    <aside class="gv-fpanel" id="fpTaseronlar" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+      <div class="gv-fpanel-head">
+        <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+        <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="gv-fpanel-body">
+        <div class="gfield">
+          <label>Durum</label>
+          <select data-fp-key="durum" data-fp-label="Durum">
+            <option value="">Tümü</option>
+            <option value="aktif">Aktif</option>
+            <option value="pasif">Pasif</option>
+            <option value="arsiv">Arşivlendi</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>Şantiye</label>
+          <select data-fp-key="santiye" data-fp-label="Şantiye">
+            <option value="">Tümü</option>
+            <option value="vadi">Vadi Konakları</option>
+            <option value="liman">Liman Lojistik Merkezi</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:600">
+            <input type="checkbox" data-fp-key="arsivgoster" data-fp-label="Arşivlenenleri Göster">
+            Arşivlenenleri Göster
+          </label>
+        </div>
+      </div>
+      <div class="gv-fpanel-foot">
+        <button type="button" class="btn btn-ghost" data-fp-clear>Temizle</button>
+        <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+      </div>
+    </aside>
+  </div>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -241,7 +342,110 @@
     document.querySelectorAll('#tasGrid .tas-foot a').forEach(function(a){
       a.innerHTML = 'Görüntüle <i class="fa-solid fa-arrow-right"></i>';
     });
+    /* sef yönetimsel aksiyon göremez (Pasife Al/Arşivle) — salt-okunur görünüm */
+    document.querySelectorAll('.tas-lc-acts').forEach(function(el){ el.hidden = true; });
   }
+
+  /* ============ §9/§17 — kart grid'i için sayfa-lokal arama+chip+panel+arşiv motoru.
+     <table> kullanılmadığından ui.js'in tbody-tr motoru burada ÇALIŞMAZ; bu yüzden
+     arama/chip/panel state'i BAĞIMSIZ, sayfa-lokal bir render() fonksiyonunda birleşir
+     (spec-filtre-tarih.md §3 "sayfanın kendi motoru" ilkesiyle tutarlı). ============ */
+  var TAS_NAME = {'TAS-01':'Demir-Beton İnş. Ltd.', 'TAS-02':'ElektroMek Taahhüt', 'TAS-03':'Yalıtım Kardeşler'};
+  var fpState = {};
+  var quickFilter = 'hepsi';
+
+  function cards(){ return Array.prototype.slice.call(document.querySelectorAll('#tasGrid .tas-card')); }
+
+  function render(){
+    var term = (document.getElementById('tasSearch').value || '').trim().toLocaleLowerCase('tr');
+    var showArchived = !!(fpState.arsivgoster);
+    var shown = 0;
+    cards().forEach(function(c){
+      var lc = c.getAttribute('data-lc') || 'aktif';
+      var santiye = c.getAttribute('data-santiye');
+      var okQuick = quickFilter === 'hepsi' || (quickFilter === 'aktif' && lc === 'aktif');
+      var okDurum = !fpState.durum || lc === fpState.durum.value;
+      var okSantiye = !fpState.santiye || santiye === fpState.santiye.value;
+      var okTerm = !term || c.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
+      var okArsiv = lc !== 'arsiv' || showArchived || (fpState.durum && fpState.durum.value === 'arsiv');
+      var show = okQuick && okDurum && okSantiye && okTerm && okArsiv;
+      c.hidden = !show;
+      if(show) shown++;
+    });
+    document.getElementById('tasEmpty').hidden = shown !== 0;
+  }
+
+  document.getElementById('tasSearch').addEventListener('input', render);
+  document.querySelectorAll('#tasChips .chip[data-filter]').forEach(function(ch){
+    ch.addEventListener('click', function(){
+      document.querySelectorAll('#tasChips .chip').forEach(function(x){ x.classList.remove('is-on'); });
+      ch.classList.add('is-on');
+      quickFilter = ch.getAttribute('data-filter');
+      render();
+    });
+  });
+
+  if(window.gvFilterPanel){
+    window.gvFilterPanel.init('#fpTaseronlar', {
+      activeRow: '#achipsTaseronlar',
+      onApply: function(state){ fpState = state; render(); },
+      onClear: function(){ fpState = {}; render(); }
+    });
+  }
+
+  /* ---- §17 kart durumu (aktif/pasif/arsiv) — kanonik 3 taşeron KART SİLİNMEZ,
+     yalnız oturum-lokal bir yaşam-döngüsü ekseni eklenir (crm-operasyon-kredikarti.html
+     kartDurum ilkesiyle AYNI: hakediş/cari/adam-gün rakamlarından TAMAMEN bağımsız). ---- */
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-tas-lc-act]'); if(!btn) return;
+    var card = btn.closest('.tas-card'); if(!card) return;
+    var tas = card.getAttribute('data-tas');
+    var name = TAS_NAME[tas] || 'Taşeron';
+    var act = btn.getAttribute('data-tas-lc-act');
+    var lc = card.getAttribute('data-lc') || 'aktif';
+
+    function paintBadge(){
+      var h3 = card.querySelector('.tas-id h3');
+      var old = h3.querySelector('.tas-lc-badge'); if(old) old.remove();
+      var cur = card.getAttribute('data-lc');
+      if(cur === 'pasif'){ var s=document.createElement('span'); s.className='tas-lc-badge pasif'; s.textContent='Pasif'; h3.appendChild(s); }
+      if(cur === 'arsiv'){ var s2=document.createElement('span'); s2.className='tas-lc-badge arsiv'; s2.textContent='Arşivlendi'; h3.appendChild(s2); }
+    }
+
+    if(act === 'pasif'){
+      var toPasif = lc !== 'pasif';
+      gvConfirm({
+        icon: toPasif ? 'fa-ban' : 'fa-check',
+        title: toPasif ? (name + ' pasife alınsın mı?') : (name + ' yeniden aktif edilsin mi?'),
+        message: toPasif
+          ? 'Taşeron kartı pasife alınır; hakediş/sözleşme/cari geçmişi ve adam-gün rakamları DEĞİŞMEZ, TERSİNİR bir işlemdir.'
+          : name + ' yeniden Aktif duruma alınacak.',
+        ok: toPasif ? 'Pasife Al' : 'Aktif Et', cancel:'Vazgeç',
+        onConfirm:function(){
+          card.setAttribute('data-lc', toPasif ? 'pasif' : 'aktif');
+          paintBadge(); render();
+          gvToast(name + (toPasif ? ' pasife alındı.' : ' yeniden aktif.'), {type: toPasif ? 'danger' : 'ok'});
+        }
+      });
+    } else if(act === 'arsiv'){
+      var toArsiv = lc !== 'arsiv';
+      gvConfirm({
+        danger: toArsiv, icon:'fa-box-archive',
+        title: toArsiv ? (name + ' arşivlensin mi?') : (name + ' arşivden çıkarılsın mı?'),
+        message: toArsiv
+          ? 'Taşeron kartı kalıcı olarak SİLİNMEZ; arşive alınır ve varsayılan listede görünmez olur. Hakediş/sözleşme/adam-gün rakamları DEĞİŞMEZ — "Arşivlenenleri Göster" filtresiyle tekrar görüntülenebilir.'
+          : name + ' arşivden çıkarılıp Pasif duruma alınacak.',
+        ok: toArsiv ? 'Arşivle' : 'Arşivden Çıkar', cancel:'Vazgeç',
+        onConfirm:function(){
+          card.setAttribute('data-lc', toArsiv ? 'arsiv' : 'pasif');
+          paintBadge(); render();
+          gvToast(name + (toArsiv ? ' arşivlendi.' : ' arşivden çıkarıldı.'), {type: toArsiv ? 'danger' : 'ok'});
+        }
+      });
+    }
+  });
+
+  render();
 })();
 </script>
 </body>

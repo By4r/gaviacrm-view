@@ -63,6 +63,10 @@
      yalnız bu breakpoint'te daraltılır, ui.js/.css .kpi-num varsayılanı bozulmaz */
   .kpi-num.compact{font-size:17px}
 }
+
+/* ---- §17 arşiv görünürlüğü — kalıcı silme YERİNE (crm-finans-taseron.html deseni) ---- */
+#tblKurum tbody tr[data-arsiv="1"]{display:none}
+#tblKurum.gv-show-arsiv tbody tr[data-arsiv="1"]{display:table-row}
 </style>
 </head>
 <body data-sec="finans" data-screen="kurum">
@@ -132,6 +136,20 @@
           <button class="chip" data-filter="onaylandi">Onaylandı <span class="ch-cnt">1</span></button>
           <button class="chip" data-filter="odendi">Ödendi <span class="ch-cnt">4</span></button>
         </div>
+        <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpKurum">
+          <i class="fa-solid fa-sliders"></i> Gelişmiş Filtre
+        </button>
+      </div>
+      <div class="gv-achips-row" id="achipsKurum" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor.">
+            <i class="fa-solid fa-lock"></i> Filtreleri Kaydet
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all>
+            <i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle
+          </button>
+        </div>
       </div>
       <div class="gv-site-bar">
         <label for="fltSantiye"><i class="fa-solid fa-helmet-safety"></i> Şantiye</label>
@@ -159,7 +177,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr data-f="bekliyor" data-firma="korfez" data-santiye="vadi">
+            <tr data-f="bekliyor" data-firma="korfez" data-santiye="vadi" data-tarih="2026-06-20">
               <td><div class="hk-cell"><div class="hk-mark"><i class="fa-solid fa-building-columns"></i></div><div class="hk-info"><b>HKD-2026-006</b><span>Gönderildi · 20 Haz 2026</span></div></div></td>
               <td class="t-strong">Körfez GYO</td>
               <td>Vadi Konakları</td>
@@ -169,7 +187,7 @@
               <td data-badge="bekliyor"></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-finans-hakedis-detay.html?hkd=006" data-no-confirm aria-label="Hakediş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="odendi" data-firma="korfez" data-santiye="vadi">
+            <tr data-f="odendi" data-firma="korfez" data-santiye="vadi" data-tarih="2026-06-01">
               <td><div class="hk-cell"><div class="hk-mark"><i class="fa-solid fa-building-columns"></i></div><div class="hk-info"><b>HKD-2026-005</b><span>Dönem: Mayıs 2026</span></div></div></td>
               <td class="t-strong">Körfez GYO</td>
               <td>Vadi Konakları</td>
@@ -179,7 +197,7 @@
               <td><span class="gstat ok">Ödendi</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-finans-hakedis-detay.html?hkd=005" data-no-confirm aria-label="Hakediş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="odendi" data-firma="korfez" data-santiye="vadi">
+            <tr data-f="odendi" data-firma="korfez" data-santiye="vadi" data-tarih="2026-05-02">
               <td><div class="hk-cell"><div class="hk-mark"><i class="fa-solid fa-building-columns"></i></div><div class="hk-info"><b>HKD-2026-004</b><span>Dönem: Nisan 2026</span></div></div></td>
               <td class="t-strong">Körfez GYO</td>
               <td>Vadi Konakları</td>
@@ -189,7 +207,7 @@
               <td><span class="gstat ok">Ödendi</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-finans-hakedis-detay.html?hkd=004" data-no-confirm aria-label="Hakediş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="onaylandi" data-firma="aliaga" data-santiye="liman">
+            <tr data-f="onaylandi" data-firma="aliaga" data-santiye="liman" data-tarih="2026-06-18">
               <td><div class="hk-cell"><div class="hk-mark"><i class="fa-solid fa-building-columns"></i></div><div class="hk-info"><b>HKD-2026-003</b><span>Onaylandı · tahsilat bekliyor</span></div></div></td>
               <td class="t-strong">Aliağa Liman İşletmeleri</td>
               <td>Liman Lojistik Merkezi</td>
@@ -199,7 +217,7 @@
               <td data-badge="onaylandi"></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-finans-hakedis-detay.html?hkd=003" data-no-confirm aria-label="Hakediş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="odendi" data-firma="aliaga" data-santiye="liman">
+            <tr data-f="odendi" data-firma="aliaga" data-santiye="liman" data-tarih="2026-05-20">
               <td><div class="hk-cell"><div class="hk-mark"><i class="fa-solid fa-building-columns"></i></div><div class="hk-info"><b>HKD-2026-002</b><span>Dönem: Mayıs 2026</span></div></div></td>
               <td class="t-strong">Aliağa Liman İşletmeleri</td>
               <td>Liman Lojistik Merkezi</td>
@@ -209,7 +227,7 @@
               <td><span class="gstat ok">Ödendi</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-finans-hakedis-detay.html?hkd=002" data-no-confirm aria-label="Hakediş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="odendi" data-firma="aliaga" data-santiye="liman">
+            <tr data-f="odendi" data-firma="aliaga" data-santiye="liman" data-tarih="2026-04-18">
               <td><div class="hk-cell"><div class="hk-mark"><i class="fa-solid fa-building-columns"></i></div><div class="hk-info"><b>HKD-2026-001</b><span>Dönem: Nisan 2026</span></div></div></td>
               <td class="t-strong">Aliağa Liman İşletmeleri</td>
               <td>Liman Lojistik Merkezi</td>
@@ -234,6 +252,49 @@
       </div>
     </div>
   </main>
+
+  <!-- ============ §9 — sağ off-canvas gelişmiş filtre paneli ============ -->
+  <div class="gv-fpanel-ov" id="fpKurumOv">
+    <aside class="gv-fpanel" id="fpKurum" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+      <div class="gv-fpanel-head">
+        <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+        <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="gv-fpanel-body">
+        <div class="gfield">
+          <label>Kurum</label>
+          <select data-fp-key="kurum" data-fp-label="Kurum">
+            <option value="">Tümü</option>
+            <option value="korfez">Körfez GYO</option>
+            <option value="aliaga">Aliağa Liman İşletmeleri</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>Onay Durumu</label>
+          <select data-fp-key="durum" data-fp-label="Onay Durumu">
+            <option value="">Tümü</option>
+            <option value="bekliyor">Onay Bekliyor</option>
+            <option value="onaylandi">Onaylandı</option>
+            <option value="odendi">Ödendi</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>Hakediş Dönemi Tarih Aralığı</label>
+          <div data-gvdaterange data-fp-key="tarih" data-fp-label="Tarih"></div>
+        </div>
+        <div class="gfield">
+          <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:600">
+            <input type="checkbox" data-fp-key="arsivgoster" data-fp-label="Arşivlenenleri Göster">
+            Arşivlenenleri Göster
+          </label>
+        </div>
+      </div>
+      <div class="gv-fpanel-foot">
+        <button type="button" class="btn btn-ghost" data-fp-clear>Temizle</button>
+        <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+      </div>
+    </aside>
+  </div>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -264,6 +325,9 @@
   var SANTIYE_LABEL = {vadi:'Vadi Konakları', liman:'Liman Lojistik Merkezi', merkez:'Merkez Şantiye', 'gol-evleri':'Göl Evleri 2. Etap', 'kule-ofis':'Kule Ofis B Blok'};
   var tblKurum = document.getElementById('tblKurum');
   if(tblKurum){
+    /* ============ §9/§13 (spec-filtre-tarih.md §3) — bileşik motor korunur, opts.table
+       VERİLMEZ (crm-finans-taseron.html ile AYNI desen). ============ */
+    var fpState = {};
     tblKurum._gvApply = function(){
       var card = tblKurum.closest('.gv-card');
       var inp = card.querySelector('input[data-table-search]');
@@ -272,12 +336,22 @@
       var f = on ? on.getAttribute('data-filter') : 'hepsi';
       var siteSel = document.getElementById('fltSantiye');
       var site = siteSel ? siteSel.value : 'hepsi';
+      var showArchived = !!(fpState.arsivgoster);
       var shown = 0;
       tblKurum.querySelectorAll('tbody tr').forEach(function(tr){
         var okF = f === 'hepsi' || tr.getAttribute('data-f') === f;
         var okSite = site === 'hepsi' || tr.getAttribute('data-santiye') === site;
         var okT = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
-        var show = okF && okSite && okT;
+        var okKurum = !fpState.kurum || tr.getAttribute('data-firma') === fpState.kurum.value;
+        var okDurum = !fpState.durum || tr.getAttribute('data-f') === fpState.durum.value;
+        var okTarih = true;
+        if(fpState.tarih && fpState.tarih.raw){
+          var d = new Date(tr.getAttribute('data-tarih') + 'T00:00:00');
+          okTarih = d >= fpState.tarih.raw.from && d <= fpState.tarih.raw.to;
+        }
+        var isArsiv = tr.getAttribute('data-arsiv') === '1';
+        var okArsiv = !isArsiv || showArchived;
+        var show = okF && okSite && okT && okKurum && okDurum && okTarih && okArsiv;
         tr.hidden = !show;
         if(show) shown++;
       });
@@ -290,7 +364,7 @@
           p.textContent = 'Bu proje için henüz hakediş kaydı oluşturulmamış. Kurum veya taşeron hakedişlerini buradan ekleyebilirsiniz.';
         } else if(shown === 0){
           h4.textContent = 'Eşleşen hakediş yok';
-          p.textContent = 'Aramayı temizleyin veya farklı bir durum/şantiye filtresi seçin.';
+          p.textContent = 'Aramayı temizleyin veya farklı bir durum/şantiye/filtre kombinasyonu seçin.';
         }
       }
       var cnt = card.querySelector('[data-table-count]') || document.querySelector('[data-table-count]');
@@ -298,6 +372,46 @@
     };
     var siteSel = document.getElementById('fltSantiye');
     if(siteSel) siteSel.addEventListener('change', function(){ gvApplyFilters(tblKurum, true); });
+
+    if(window.gvFilterPanel){
+      window.gvFilterPanel.init('#fpKurum', {
+        activeRow: '#achipsKurum',
+        onApply: function(state){ fpState = state; gvApplyFilters(tblKurum, true); },
+        onClear: function(){ fpState = {}; gvApplyFilters(tblKurum, true); }
+      });
+    }
+
+    /* ---- §17 satır arşivleme — kalıcı silme YERİNE ---- */
+    function gvWireRowArchive(rowSel){
+      document.querySelectorAll(rowSel).forEach(function(row){
+        var acts = row.querySelector('.row-acts');
+        if(!acts || acts.querySelector('[data-arsiv-btn]')) return;
+        var btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'ia-btn'; btn.setAttribute('data-no-confirm', '');
+        btn.setAttribute('data-arsiv-btn', ''); btn.setAttribute('data-tip', 'Arşivle'); btn.setAttribute('aria-label', 'Arşivle');
+        btn.innerHTML = '<i class="fa-solid fa-box-archive"></i>';
+        acts.appendChild(btn);
+      });
+    }
+    gvWireRowArchive('#tblKurum tbody tr');
+
+    document.addEventListener('click', function(e){
+      var btn = e.target.closest('#tblKurum [data-arsiv-btn]'); if(!btn) return;
+      var row = btn.closest('tr'); if(!row) return;
+      if(row.getAttribute('data-arsiv') === '1'){ gvToast('Bu hakediş zaten arşivde.', {type:'info'}); return; }
+      var labelEl = row.querySelector('.hk-info b');
+      var label = labelEl ? labelEl.textContent.trim() : 'Hakediş';
+      gvConfirm({
+        danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+        title: label + ' arşivlensin mi?',
+        message: 'Hakediş kaydı kalıcı olarak silinmez; arşive alınır ve varsayılan listede görünmez olur. Tutar bilgisi DEĞİŞMEZ. İşlem kaydına yazılır ve "Arşivlenenleri Göster" filtresiyle tekrar görüntülenebilir.',
+        onConfirm:function(){
+          row.setAttribute('data-arsiv', '1');
+          gvToast(label + ' arşivlendi — varsayılan listede artık görünmeyecek.', {type:'danger'});
+          gvApplyFilters(tblKurum, true);
+        }
+      });
+    });
   }
 })();
 </script>
