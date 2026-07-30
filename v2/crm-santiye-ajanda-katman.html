@@ -178,6 +178,7 @@
           <button type="button" class="chip is-on" data-durum="hepsi">Tümü</button>
           <button type="button" class="chip" data-durum="aktif">Aktif</button>
           <button type="button" class="chip" data-durum="gizli">Gizli</button>
+          <button type="button" class="chip" data-durum="arsiv">Arşivlenen</button>
         </div>
         <button type="button" class="chip" id="ktmMineChip" data-tip="Yalnız oluşturduğunuz katmanları gösterir"><i class="fa-solid fa-user" style="font-size:10.5px;margin-right:5px"></i> Sadece Kendi Katmanlarım</button>
       </div>
@@ -400,7 +401,8 @@
       : '<span class="gstat ok">Herkese Açık</span>';
     badges += k.varsayilanAcik ? '<span class="gstat info">Varsayılan Açık</span>' : '<span class="gstat off">Varsayılan Kapalı</span>';
     badges += k.durum === 'gizli' ? '<span class="gstat danger">Gizli</span>' : '';
-    return '<div class="ktm-row'+(k.durum === 'gizli' ? ' is-gizli' : '')+'" data-id="'+k.id+'">'
+    badges += k.durum === 'arsiv' ? '<span class="gstat off">Arşivlendi</span>' : '';
+    return '<div class="ktm-row'+(k.durum === 'gizli' ? ' is-gizli' : '')+(k.durum === 'arsiv' ? ' is-gizli' : '')+'" data-id="'+k.id+'">'
       + '<span class="ktm-swatch" style="background:'+k.renk+'"><i class="fa-solid '+k.ikon+'"></i></span>'
       + '<div class="ktm-info"><b>'+esc(k.ad)+'</b><div class="ktm-meta">'+meta.join('')+'</div></div>'
       + '<div class="ktm-badges">'+badges+'</div>'
@@ -412,7 +414,12 @@
   }
 
   function matches(k){
-    if(fDurum !== 'hepsi' && k.durum !== fDurum) return false;
+    /* §17 — arşivlenen katman "Tümü/Aktif/Gizli" filtrelerinin HİÇBİRİNDE varsayılan
+       görünmez; yalnız "Arşivlenen" chip'i açıkça seçilirse görünür (silme yerine
+       arşivleme — kalıcı olarak kaldırılmaz, tasks/kararlar.md). */
+    if(fDurum === 'arsiv'){ if(k.durum !== 'arsiv') return false; }
+    else if(k.durum === 'arsiv') return false;
+    else if(fDurum !== 'hepsi' && k.durum !== fDurum) return false;
     if(fMine && k.olusturan !== MY_NAME) return false;
     if(fSantiye && k.santiye !== fSantiye) return false;
     if(fDepartman && k.departman !== fDepartman) return false;
@@ -612,11 +619,13 @@
     if(!k) return;
     var pop = document.createElement('div');
     pop.className = 'gv-pop open';
+    var arsivLbl = k.durum === 'arsiv' ? 'Aktife Al' : 'Arşivle';
+    var arsivIco = k.durum === 'arsiv' ? 'fa-rotate-left' : 'fa-box-archive';
     pop.innerHTML =
       '<button type="button" data-ract="duzenle"><i class="fa-solid fa-pen"></i> Düzenle</button>'
-    + '<button type="button" data-ract="gizle"><i class="fa-solid '+(k.durum === 'gizli' ? 'fa-eye' : 'fa-eye-slash')+'"></i> '+(k.durum === 'gizli' ? 'Takvimde Göster' : 'Takvimden Gizle')+'</button>'
+    + (k.durum !== 'arsiv' ? '<button type="button" data-ract="gizle"><i class="fa-solid '+(k.durum === 'gizli' ? 'fa-eye' : 'fa-eye-slash')+'"></i> '+(k.durum === 'gizli' ? 'Takvimde Göster' : 'Takvimden Gizle')+'</button>' : '')
     + '<div class="gp-div"></div>'
-    + '<button type="button" class="danger" data-ract="sil" data-no-confirm><i class="fa-solid fa-trash"></i> Sil</button>';
+    + '<button type="button" class="danger" data-ract="arsiv" data-no-confirm><i class="fa-solid '+arsivIco+'"></i> '+arsivLbl+'</button>';
     document.body.appendChild(pop);
     var r = btn.getBoundingClientRect();
     pop.style.position = 'fixed';
@@ -642,14 +651,20 @@
           gvToast('"'+k.ad+'" ' + (k.durum === 'gizli' ? 'takvimden gizlendi.' : 'takvimde tekrar gösteriliyor.'), {type:'ok'});
           return;
         }
-        if(act === 'sil'){
+        if(act === 'arsiv'){
+          var willArchive = k.durum !== 'arsiv';
           gvConfirm({
-            danger:true, icon:'fa-trash', ok:'Sil', cancel:'Vazgeç', title:'Katman silinsin mi?',
-            message:'"'+k.ad+'" kalıcı olarak silinecek. Bu katmanı kullanan takvim filtreleri de etkilenir. Bu işlem geri alınamaz.',
+            danger: willArchive, icon: willArchive ? 'fa-box-archive' : 'fa-rotate-left',
+            ok: willArchive ? 'Arşivle' : 'Aktife Al', cancel:'Vazgeç',
+            title: willArchive ? 'Katman arşivlensin mi?' : 'Katman yeniden aktif edilsin mi?',
+            message: willArchive
+              ? ('"'+k.ad+'" arşivlenecek; katman listesinde varsayılan görünümde görünmeyecek, kayıt SİLİNMEZ. "Arşivlenen" filtresiyle her zaman erişilebilir kalır ve bu katmanı kullanan takvim filtreleri etkilenebilir.')
+              : ('"'+k.ad+'" yeniden aktif duruma alınacak ve katman listesinde varsayılan görünüme dönecek.'),
             onConfirm:function(){
-              katmanlar = katmanlar.filter(function(x){ return x.id !== id; });
+              if(willArchive){ k._prevDurum = k.durum; k.durum = 'arsiv'; }
+              else { k.durum = k._prevDurum || 'aktif'; delete k._prevDurum; }
               saveKatmanlar(katmanlar); render();
-              gvToast('"'+k.ad+'" silindi.', {type:'danger'});
+              gvToast('"'+k.ad+'" ' + (willArchive ? 'arşivlendi — işlem kaydına eklendi.' : 'yeniden aktif.'), {type: willArchive ? 'danger' : 'ok'});
             }
           });
         }

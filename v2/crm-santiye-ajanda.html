@@ -896,10 +896,11 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
 
   /* ---- kart işlem menüsü (⋯) [MOCK-SİM] — kebab düğmesi kart <a>'sının SIBLING
      overlay'i (üstteki CSS yorumundaki interceptor gerekçesi). Menü, kaydırmalı
-     ızgarada kırpılmamak için body'ye FIXED .gv-pop olarak açılır. Tüm aksiyonlar
-     toast sim (6D); "Sil" ui.js'in global yıkıcı-aksiyon interceptor'ına
-     (fa-trash → destrKind) düşer ve KENDİ confirm akışını kullanır
-     (data-no-confirm YOK, kasıtlı). ---- */
+     ızgarada kırpılmamak için body'ye FIXED .gv-pop olarak açılır. Diğer aksiyonlar
+     toast sim (6D — santiye-ajanda'da tam CRUD yok, bkz. tasks/kararlar.md);
+     "Arşivle" (§17) İSTİSNAdır — gerçek DOM mutasyonu yapar: gvConfirm ile onay alır,
+     kartı akıştan soldurup kaldırır (kalıcı silme YOK, yalnız görünürlük — olay kaydı
+     "hafif modül" kararı gereği ayrı bir arşiv listesi/durum ekseni kurulmadı). ---- */
   var cardPop = null;
   var popGuardTs = 0;   /* açılış anındaki buton fokus-scroll'unun pop'u anında kapatmasını önler */
   function closeCardPop(){
@@ -919,6 +920,7 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
     pop.className = 'gv-pop ajd-card-pop open';
     pop.setAttribute('role','menu');
     pop.dataset.title = title;
+    pop._srcWrap = wrap;
     pop.innerHTML =
       '<button type="button" data-cact="duzenle"><i class="fa-solid fa-pen"></i> Düzenle</button>'
     + '<button type="button" data-cact="tamamla"><i class="fa-solid fa-check"></i> Tamamlandı İşaretle</button>'
@@ -926,7 +928,7 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
     + '<button type="button" data-cact="hatirlatma"><i class="fa-solid fa-bell"></i> Hatırlatma Ekle</button>'
     + '<button type="button" data-cact="ata"><i class="fa-solid fa-user-plus"></i> İlgili Personele Ata</button>'
     + '<div class="gp-div"></div>'
-    + '<button type="button" class="danger" data-cact="sil"><i class="fa-solid fa-trash"></i> Sil</button>';
+    + '<button type="button" class="danger" data-cact="arsiv" data-no-confirm><i class="fa-solid fa-box-archive"></i> Arşivle</button>';
     document.body.appendChild(pop);
     var r = kb.getBoundingClientRect();
     pop.style.position = 'fixed';
@@ -966,7 +968,24 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
       var pop = item.closest('.ajd-card-pop');
       var title = pop ? (pop.dataset.title || '') : '';
       var kind = item.getAttribute('data-cact');
+      var cardWrap = pop && pop._srcWrap;
       closeCardPop();
+      if(kind === 'arsiv'){
+        gvConfirm({
+          danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+          title:(title ? '“' + title + '”' : 'Bu etkinlik') + ' arşivlensin mi?',
+          message:'Etkinlik ajanda görünümünden kaldırılacak; kayıt kalıcı SİLİNMEZ, geçmiş görünümlerde ve işlem kayıtlarında izlenebilir kalır.',
+          onConfirm:function(){
+            if(cardWrap){
+              cardWrap.style.transition = 'opacity .25s var(--ease)';
+              cardWrap.style.opacity = '0';
+              setTimeout(function(){ cardWrap.remove(); }, 260);
+            }
+            gvToast((title ? '“' + title + '” ' : 'Etkinlik ') + 'arşivlendi — işlem kaydına eklendi.', {type:'danger'});
+          }
+        });
+        return;
+      }
       var V = CACT_MSG[kind];
       if(V) gvToast((title ? '“' + title + '” ' : 'Etkinlik ') + V.msg, {type:V.type});
       return;
