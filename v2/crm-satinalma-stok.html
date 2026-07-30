@@ -255,6 +255,7 @@
             <button class="chip" data-filter="fire">Fire <span class="ch-cnt">2</span></button>
             <button class="chip" data-filter="sayim">Sayım <span class="ch-cnt">1</span></button>
           </div>
+          <div id="hkDateRange" style="margin-top:10px"></div>
           <label class="chip" style="cursor:pointer;display:inline-flex;align-items:center;gap:7px;margin-top:10px">
             <input type="checkbox" id="chkArsivHareket" style="margin:0"> Arşivlenenleri Göster
           </label>
@@ -392,6 +393,15 @@
   ];
   var TUR_LBL = {giris:'Giriş', cikis:'Çıkış', transfer:'Transfer', iade:'İade', fire:'Fire', sayim:'Sayım'};
 
+  /* §13 — HAREKET.tarih kısa TR biçiminde ("2 Tem 2026"); satırın data-tarih (ISO)
+     özniteliği için ay kısaltma sözlüğü (crm-operasyon-kasa.html AY_KISA ile aynı desen). */
+  var AY_KISA_STK = {Oca:'01',Şub:'02',Mar:'03',Nis:'04',May:'05',Haz:'06',Tem:'07',Ağu:'08',Eyl:'09',Eki:'10',Kas:'11',Ara:'12'};
+  function hkIso(tarihKisa){
+    var p = tarihKisa.trim().split(/\s+/);
+    if(p.length < 3 || !AY_KISA_STK[p[1]]) return '';
+    return p[2] + '-' + AY_KISA_STK[p[1]] + '-' + ('0' + p[0]).slice(-2);
+  }
+
   /* ---- Kalemler tablosu ---- */
   var kmBody = document.getElementById('kmBody');
   var kmHtml = '';
@@ -469,7 +479,7 @@
   HAREKET.slice().reverse().forEach(function(h){
     var kalemAd = null;
     KALEM.forEach(function(k){ if(k.slug === h.kalem) kalemAd = k.ad; });
-    hkHtml += '<tr data-f="'+h.tur+'">';
+    hkHtml += '<tr data-f="'+h.tur+'" data-tarih="'+hkIso(h.tarih)+'">';
     hkHtml += '<td class="t-strong">'+h.no+'</td>';
     hkHtml += '<td class="muted">'+h.tarih+'</td>';
     hkHtml += '<td><span class="mv '+h.tur+'">'+TUR_LBL[h.tur]+'</span></td>';
@@ -480,6 +490,29 @@
   });
   hkBody.innerHTML = hkHtml;
   gvWireRowArchive('#tblHareket tbody tr');
+
+  /* ============ §13 — Tarih Aralığı (Hareketler sekmesi — hareket varsa uygulanır;
+     Kalemler master veri, tarih ekseni taşımaz; Depolar özet kart görünümü, liste
+     değil — ikisine ZORLANMADI, bkz. tasks/kararlar.md). Bu sayfada §9 off-canvas
+     paneli yok (madde 46 — çok sekmeli basitleştirilmiş desen), gvDateRange BAĞIMSIZ
+     kullanıldı (kredikarti/pluxee emsali); kendi tetikleyicisi aktif aralığı gösterir.
+     ui.js'in kendi chip/arama motoru tr.hidden'ı YÖNETİR — gv-fp-hide (!important)
+     bunun ÜZERİNE bağımsız bir katman olarak eklenir, ikisi çakışmaz. ============ */
+  var hkDr = null;
+  function applyHkDateFilter(){
+    document.querySelectorAll('#tblHareket tbody tr').forEach(function(tr){
+      var ok = true;
+      if(hkDr && hkDr.from){
+        var iso = tr.getAttribute('data-tarih');
+        if(iso){ var d = new Date(iso + 'T00:00:00'); ok = d >= hkDr.from && d <= hkDr.to; }
+      }
+      tr.classList.toggle('gv-fp-hide', !ok);
+    });
+  }
+  window.gvDateRange('#hkDateRange', {
+    emptyLabel: 'Tüm zamanlar',
+    onChange: function(val){ hkDr = val; applyHkDateFilter(); }
+  });
 
   /* ---- Depolar sekmesi kartları ---- */
   var depoGrid = document.getElementById('depoGrid');

@@ -91,6 +91,7 @@
         <div class="ph-sub" id="tkSub">3 satın alma formu · teklif toplama süreci</div>
       </div>
       <div class="ph-actions">
+        <div id="tkDateRange"></div>
         <label class="chip" style="cursor:pointer;display:inline-flex;align-items:center;gap:7px">
           <input type="checkbox" id="chkArsivTeklif" style="margin:0"> Arşivlenenleri Göster
         </label>
@@ -215,6 +216,24 @@
   var showArsiv = false;
   document.getElementById('chkArsivTeklif').addEventListener('change', function(){ showArsiv = this.checked; render(); });
 
+  /* ============ §13 — Tarih Aralığı. Bu sayfa kart-tabanlı (satır/tablo yok), bu
+     yüzden standart panel yerine BAĞIMSIZ gvDateRange kullanıldı (madde 46 emsali,
+     yukarıdaki §17 notuyla AYNI gerekçe). Anlamlı tarih ekseni bu modülde "son tarih"
+     (teklif toplama son teslim tarihi) — kart başına tek gerçek tarih alanı budur.
+     F.sonTarih TR biçiminde ("5 Temmuz 2026", tamamlanan süreçte "… (tamamlandı)"
+     son eki de olabilir) — ilk 3 jetonu (gün/ay/yıl) ayrıştırıp ISO'ya çevrilir. ============ */
+  var TK_AY = {Ocak:'01',Şubat:'02',Mart:'03',Nisan:'04',Mayıs:'05',Haziran:'06',Temmuz:'07',Ağustos:'08',Eylül:'09',Ekim:'10',Kasım:'11',Aralık:'12'};
+  function tkIso(sonTarih){
+    var p = sonTarih.trim().split(/\s+/);
+    if(p.length < 3 || !TK_AY[p[1]]) return '';
+    return p[2].replace(/\D/g, '') + '-' + TK_AY[p[1]] + '-' + ('0' + p[0]).slice(-2);
+  }
+  var curTarih = null;
+  window.gvDateRange('#tkDateRange', {
+    emptyLabel: 'Tüm zamanlar',
+    onChange: function(val){ curTarih = val; render(); }
+  });
+
   function render(){
     var listEl = document.getElementById('tkList');
     var html = '';
@@ -222,12 +241,16 @@
 
     FORMS.forEach(function(F){
       if(F.arsiv && !showArsiv) return;
+      if(curTarih && curTarih.from){
+        var fIso = tkIso(F.sonTarih);
+        if(fIso){ var fd = new Date(fIso + 'T00:00:00'); if(fd < curTarih.from || fd > curTarih.to) return; }
+      }
       if(F.closed) tamam++; else aktif++;
       var yanitlayan = F.suppliers.filter(function(s){ return s.durum === 'yanitladi'; }).length;
       gelenToplam += yanitlayan;
       var toplam = F.suppliers.length;
 
-      html += '<div class="gv-card tk-card" data-form="' + F.key + '">'
+      html += '<div class="gv-card tk-card" data-form="' + F.key + '" data-tarih="' + tkIso(F.sonTarih) + '">'
         + '<div class="tk-head">'
         +   '<div class="tk-head-l"><div class="tk-eyebrow">' + F.santiye + ' · ' + F.no + '</div>'
         +   '<div class="tk-title">' + F.kalem + '</div>'
