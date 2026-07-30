@@ -1024,6 +1024,7 @@
       {ic:'fa-list-check',     lbl:'Görevlerim',       href:'crm-gorev.html?f=bana'},
       {ic:'fa-stamp',          lbl:'Bekleyen Onaylar', href:'crm-panel-onaylar.html',     screen:'onaylar', cnt:'12'},
       {ic:'fa-bell',           lbl:'Bildirimler',      href:'crm-panel-bildirimler.html', screen:'bildirimler'},
+      {ic:'fa-bullhorn',       lbl:'Duyurular',        href:'crm-panel-duyurular.html',   screen:'duyurular'},
       {seclbl:'Analiz'},
       /* [D13] yönetici paneli — scr ile yalnız superadmin+sahip+yonetim (2.15) */
       {ic:'fa-table-cells-large', lbl:'Yönetici Paneli', href:'crm-panel-yonetici.html',  screen:'yonetici'},
@@ -1067,7 +1068,7 @@
       {ic:'fa-cart-shopping',  lbl:'Siparişler',          href:'crm-satinalma-siparisler.html', screen:'siparisler', cnt:'5'},
       {ic:'fa-truck-ramp-box', lbl:'Termin Takibi',       href:'crm-satinalma-termin.html',   screen:'termin'},
       {ic:'fa-receipt',        lbl:'İrsaliye & Fatura',   href:'crm-satinalma-irsaliye-fatura.html', screen:'irsaliye', cnt:'1'},
-      {seclbl:'Depo & Tedarik'},
+      {seclbl:'Depo & Tedarik', tag:'Faz 2'},
       {ic:'fa-warehouse',      lbl:'Stok & Depo',         href:'crm-satinalma-stok.html',     screen:'stok', cnt:'3'},
       {ic:'fa-industry',       lbl:'Tedarikçiler',        href:'crm-satinalma-tedarikciler.html', screen:'tedarikciler'}
     ]},
@@ -1083,7 +1084,7 @@
       {ic:'fa-people-arrows',  lbl:'Taşeron Hakedişleri',  href:'crm-finans-taseron.html',     screen:'taseron', cnt:'2'},
       {ic:'fa-id-card-clip',   lbl:'Taşeron Kartları',     href:'crm-finans-taseronlar.html',  screen:'taseronlar'},
       {ic:'fa-file-contract',  lbl:'Sözleşme Arşivi',      href:'crm-finans-sozlesmeler.html', screen:'sozlesmeler'},
-      {seclbl:'Bütçe & Nakit'},
+      {seclbl:'Bütçe & Nakit', tag:'Faz 2'},
       {ic:'fa-coins',          lbl:'Proje Bütçesi',        href:'crm-finans-butce.html',       screen:'butce'},
       {ic:'fa-chart-pie',      lbl:'Gerçekleşen Maliyet',  href:'crm-finans-maliyet.html',     screen:'maliyet', cnt:'1'},
       {ic:'fa-money-bill-trend-up', lbl:'Nakit Akışı',     href:'crm-finans-nakit.html',       screen:'nakit'}
@@ -1094,7 +1095,16 @@
       {ic:'fa-user-shield',    lbl:'Roller & Yetkiler',href:'crm-ayarlar-roller.html',       screen:'roller'},
       {ic:'fa-diagram-project',lbl:'Onay Akışları',    href:'crm-ayarlar-onay.html',         screen:'onay'},
       {ic:'fa-puzzle-piece',   lbl:'Modüller',         href:'crm-ayarlar-moduller.html',     screen:'moduller'},
-      {ic:'fa-clock-rotate-left', lbl:'İşlem Kayıtları', href:'crm-ayarlar-log.html',        screen:'log'}
+      {ic:'fa-plug',           lbl:'Entegrasyonlar',   href:'crm-ayarlar-entegrasyonlar.html', screen:'entegrasyonlar'},
+      {ic:'fa-clock-rotate-left', lbl:'İşlem Kayıtları', href:'crm-ayarlar-log.html',        screen:'log'},
+      {seclbl:'Genişleme Modülleri'},
+      /* [Dalga 6A / K-13] Faz 2 kilitli önizleme + Faz 3 planlı — ölü sayfa yasağı gereği
+         gerçek hedeflere gider (crm-ayarlar-coklu-firma/cok-dil.html, d5-kilitli; AI Asistan
+         crm-ayarlar-modul-kilitli.html?modul=ai-asistan roadmap tonunda, K-13 ile K-07 teaser
+         yasağı geçersiz kılındı) */
+      {ic:'fa-shuffle', lbl:'Çoklu Firma Yönetimi', href:'crm-ayarlar-coklu-firma.html', screen:'coklu-firma', tag:'Faz 2'},
+      {ic:'fa-globe',   lbl:'Çok Dil Desteği',      href:'crm-ayarlar-cok-dil.html',     screen:'cok-dil',     tag:'Faz 2'},
+      {ic:'fa-wand-magic-sparkles', lbl:'AI Asistan', href:'crm-ayarlar-modul-kilitli.html?modul=ai-asistan', tag:'Yakında'}
     ]},
     /* [D10 1.13] hesap — rail-DIŞI kişisel bölüm (RAIL_ORDER'da YOK, tüm roller erişir);
        hesap dropdown'undaki Profil / Hesap Ayarları / Bildirim Tercihleri buraya bağlanır */
@@ -1132,35 +1142,35 @@
        superadmin+sahip+yonetim'de — bu 4 rolün görünen panel seti DEĞİŞMEDİ */
     teknik:    { name:'Elif Sarıkaya',    role:'Teknik Müdür',              ini:'ES',
                  secs:['panel','santiye','gorev','operasyon','satinalma','finans','satis'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar'],
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar','duyurular'],
                        satis:['talepler'], satinalma:['stok'],
-                       finans:['kurum','taseron','sozlesmeler','butce','maliyet','taseronlar'] } },
+                       finans:['kurum','taseron','sozlesmeler','butce','maliyet','taseronlar','sozlesme-revizyon','hakedis-onay-gecmisi'] } },
     sef:       { name:'Hasan Demirci',    role:'Şantiye Şefi — Vadi Konakları', ini:'HD',
                  secs:['panel','santiye','gorev','personel','operasyon','satinalma','finans'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar'],
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar','duyurular'],
                        satinalma:['talepler','formlar','siparisler','termin','irsaliye','stok'],
                        finans:['taseronlar'] } },
     muhasebe:  { name:'Nesrin Aydın',     role:'Muhasebe',                  ini:'NA',
                  secs:['panel','operasyon','satinalma','cari','finans','personel'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar'],
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar','duyurular'],
                        satinalma:['siparisler','irsaliye','stok','tedarikciler'] } },
     satinalma: { name:'Baran Yıldız',     role:'Satın Alma Sorumlusu',      ini:'BY',
                  secs:['panel','satinalma','cari','gorev'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } },
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','duyurular'] } },
     ik:        { name:'Seda Karaca',      role:'İK Uzmanı',                 ini:'SK',
                  secs:['panel','personel','gorev','operasyon'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar'],
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar','duyurular'],
                        operasyon:['kasa','pluxee','puantaj','demirbas','arac'] } },
     personel:  { name:'Ali Vural',        role:'Saha Personeli',            ini:'AV',
                  secs:['panel','gorev'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } },
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','duyurular'] } },
     /* [D11] satış personaları (9→11) — indirim zinciri: %0–3 temsilci · %3–7 müdür · %7+ GM */
     satistemsilci:{ name:'Selin Acar',    role:'Satış Temsilcisi',          ini:'SA',
                  secs:['panel','gorev','satis'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } },
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','duyurular'] } },
     satismudur:{ name:'Okan Eren',        role:'Satış Müdürü',              ini:'OE',
                  secs:['panel','gorev','satis','cari'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler'] } }
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','duyurular'] } }
   };
   /* scr = ekran-seviyesi budama (4C): bölüm İÇİNDE rolün görebildiği data-screen
      listesi. Tanımsızsa bölümün tamamı görünür (bölüm-seviyesi RBAC aynen).
@@ -1218,13 +1228,18 @@
   var sec = document.body.dataset.sec || 'panel';
   var screen = document.body.dataset.screen || null;
   /* 'hesap' rail-dışı kişisel bölüm — her rol kendi profiline erişir (D10 1.13) */
-  if(sec !== 'giris' && sec !== 'hesap' && R.secs.indexOf(sec) === -1){ location.replace(R.land); return; }
-  /* ekran-seviyesi guard (scr) — kısıtlı bölümde liste-dışı ekran landing'e döner */
+  /* [Dalga 6A / A-03 onarımı] Önceden sessizce R.land'e (crm-panel.html) atıyordu —
+     kullanıcı kendi işleminin/isteğinin SONUCUNU hiç göremiyordu (doküman §6.8 ihlali).
+     Artık gerçek bir 403 ekranına gider (crm-sistem-403.html, kabuksuz — shell.js hiç
+     yüklemez, döngü riski YOK). 'giris'/'hesap' muaf kalmaya devam eder; crm-sistem-* ve
+     crm-auth-* aileleri zaten shell.js'i hiç include ETMEDİĞİ için bu guard'a hiç girmez. */
+  if(sec !== 'giris' && sec !== 'hesap' && R.secs.indexOf(sec) === -1){ location.replace('crm-sistem-403.html?hedef='+encodeURIComponent(sec)); return; }
+  /* ekran-seviyesi guard (scr) — kısıtlı bölümde liste-dışı ekrana erişim de artık 403'e gider */
   function scrOk(secKey, m){
     var lim = R.scr && R.scr[secKey];
     return !lim || !m.screen || lim.indexOf(m.screen) !== -1;
   }
-  if(sec !== 'giris' && screen && !scrOk(sec, {screen:screen})){ location.replace(R.land); return; }
+  if(sec !== 'giris' && screen && !scrOk(sec, {screen:screen})){ location.replace('crm-sistem-403.html?hedef='+encodeURIComponent(sec+'/'+screen)); return; }
   var S = SECTIONS[sec];
 
   window.GV = { role:role, R:R, sec:sec, screen:screen, STR:STR };
@@ -1257,10 +1272,13 @@
     var mlist = S.menu.filter(function(m){ return m.seclbl || scrOk(sec, m); });
     mlist = mlist.filter(function(m, i){ return !m.seclbl || (mlist[i+1] && !mlist[i+1].seclbl); });
     mlist.forEach(function(m){
-      if(m.seclbl){ mh += '<div class="gv-msec">'+m.seclbl+'</div>'; return; }
+      if(m.seclbl){ mh += '<div class="gv-msec">'+m.seclbl+(m.tag?' <span style="opacity:.7;text-transform:none;letter-spacing:0">· '+m.tag+'</span>':'')+'</div>'; return; }
       var isActive = screen && m.screen === screen;
       var cls = 'gv-mlink'+(isActive?' is-active':'');
+      /* .ml-cnt sayı rozetiyle AYNI kalıp, Faz etiketleri için nötr tonda (K-13/§27.4:
+         etiket metinleri tek yerden — burası) */
       var tail = m.cnt ? '<span class="ml-cnt">'+m.cnt+'</span>' : '';
+      if(m.tag) tail += '<span class="ml-cnt" style="background:var(--gv-border-dark);color:var(--on-dark)">'+m.tag+'</span>';
       mh += '<a class="'+cls+'" href="'+(m.href||'#')+'"><i class="fa-solid '+m.ic+'"></i> '+m.lbl+tail+'</a>';
     });
     mh += '</div><div class="gv-menu-foot">'
@@ -1378,9 +1396,21 @@
   }
 
   /* topbar zili → bildirim merkezi (Dalga 3)
-     [D10 1.13/K6] TR dil çipi KALDIRILDI — dil tercihi Ayarlar > Firma > Aidiyet & Tercihler */
+     [D10 1.13/K6] TR dil çipi KALDIRILDI idi — [Dalga 6A] CLAUDE.md'nin öngördüğü "pasif
+     dil düğmesi (TR çipi, kilitli — çok-dil Faz 2+)" artık gerçek bir hedefe (d5-kilitli'nin
+     crm-ayarlar-cok-dil.html'i) sahip olduğundan, K-13 ("Faz 2 kalemi tıklanınca ölü değil
+     gerçek önizlemeye gider") gereği geri getirildi. Yalnız 'ayarlar' erişimi olan SA/SH
+     görür — dil, firma-seviyesi bir ayardır. */
   var tools = document.querySelector('.gv-top-tools');
   if(tools){
+    if(R.secs.indexOf('ayarlar') !== -1){
+      var langBtn = document.createElement('a');
+      langBtn.className = 'gv-iconbtn';
+      langBtn.href = 'crm-ayarlar-cok-dil.html';
+      langBtn.setAttribute('data-tip', 'Çok Dil — Faz 2 önizleme');
+      langBtn.innerHTML = '<span style="font-size:11px;font-weight:800;letter-spacing:.01em">TR</span>';
+      tools.insertBefore(langBtn, tools.firstChild);
+    }
     var bell = tools.querySelector('.gv-iconbtn[data-tip="'+STR.notif+'"]');
     if(bell){ bell.addEventListener('click', function(){ location.href = 'crm-panel-bildirimler.html'; }); }
   }
