@@ -7,12 +7,21 @@
    ≤980px: rail+menü off-canvas drawer. Ortak çekirdek dosya — değişiklikler tek elden yapılır.
    ===================================================================== */
 
+/* §8 — DENENDİ VE GERİ ALINDI: `*{min-width:0}` evrensel reseti (flex/grid
+   öğelerinin implicit min-content taşmasına karşı teorik önlem) regresyon
+   taramasında 3 sayfada YENİ bozulmaya sebep oldu (`.gc-head-r` içindeki
+   nowrap `.gstat` rozetleri artık korumasız shrink edip KENDİ kutularının
+   dışına taşıyor — kkDetailBadge/duyDetailBadge, bkz tasks/kararlar.md #7).
+   Taban tarama zaten BU teorik sorunu sıfır sayfada doğrulamamıştı (243
+   düz-1fr grid örneğine rağmen 0/202 doc-seviyeli taşma) — kanıtlanmamış
+   faydaya karşı kanıtlanmış zarar olduğundan reset KALDIRILDI. */
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
   font-family:var(--font);font-weight:500;font-size:14px;
   color:var(--ink);background:var(--bg);line-height:1.55;
   -webkit-font-smoothing:antialiased;
+  overflow-x:clip;   /* zararsız doğrulandı (tasks/wheel-check.cjs) — genel emniyet çizgisi */
 }
 h1,h2,h3,h4{font-weight:800;color:var(--ink);line-height:1.15;letter-spacing:-.02em}
 a{color:inherit;text-decoration:none}
@@ -249,8 +258,17 @@ img{display:block;max-width:100%}
 }
 @media(max-width:640px){
   .gv-top{gap:8px}
-  .gv-search{max-width:none}
+  /* §8/açık-kalem kök sebep: max-width:none tek başına yetmiyor — flex:1 min-width:0
+     olduğu için arama kutusu sabit-genişlikli komşular (burger/zil/avatar/tenant çipi)
+     karşısında 0'a yakın daralıyor, placeholder metni fiilen görünmez oluyor (161 sayfa).
+     Taban ölçüm: superadmin varsayılan persona + tenant çipiyle 390px'te ~54px genişlik.
+     Zemin: metin alanı için gerçekçi bir alt sınır. */
+  .gv-search{max-width:none;min-width:104px}
   .gv-lang{display:none}
+  /* şell.js'in ürettiği gerçek Faz-2 dil düğmesi .gv-lang SINIFINI taşımıyor
+     (.gv-iconbtn + data-tip) — üstteki kural hiç eşleşmiyordu (ölü seçici).
+     shell.js bu dalgada dokunulmaz; nitelik seçiciyle aynı öğeyi dar ekranda gizle. */
+  .gv-top-tools a.gv-iconbtn[data-tip^="Çok Dil"]{display:none}
   .gv-tenant{padding:0 10px}
   .gv-tenant .tn-lbl{max-width:86px}
   .gv-page-head h1{font-size:20px}
@@ -258,6 +276,13 @@ img{display:block;max-width:100%}
      yok sayar → doc-level yatay taşma; dar ekranda tam genişlik + sarma */
   .gv-page-head .ph-actions{flex-wrap:wrap;width:100%}
   .gv-page-head .ph-actions .btn{flex:1 1 auto;justify-content:center}
+}
+@media(max-width:480px){
+  /* dar telefon: tenant çipi (yalnız superadmin) etiketi+ok'u ile arama kutusunu
+     sıkıştırmaya devam ediyor — ikona indir, arama kutusuna gerçek alan bırak */
+  .gv-tenant{padding:0 9px;gap:0}
+  .gv-tenant .tn-lbl,.gv-tenant>i{display:none}
+  .gv-search{min-width:120px}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{transition:none !important;animation:none !important}
