@@ -35,6 +35,11 @@
 .kk-owner{font-size:12px;color:var(--muted);margin-bottom:10px}
 .kk-avail{font-size:12px;color:var(--ink-2);font-weight:600;margin-top:8px}
 .kk-ekstre{font-size:11px;color:var(--muted);margin-top:9px;padding-top:9px;border-top:1px solid var(--line);display:flex;align-items:center;gap:6px}
+.kk-card.is-pasif{opacity:.62}
+.kk-card.is-pasif:hover{transform:none;box-shadow:var(--sh-sm)}
+.kk-card-badge{margin-left:6px}
+.kk-card-acts{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+@media(max-width:640px){ .kk-card-acts{width:100%;order:-1} .kk-card-acts .btn span{display:none} }
 
 /* ============ D19/S12 — Kart Defteri (crm-operasyon-kasa.html #tblDefter kolon
    düzeninin birebir devralımı: df-no/df-date/df-firm/df-desc/df-in/df-out/df-bak,
@@ -205,6 +210,13 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
       <div class="gc-head">
         <div class="gc-title"><i class="fa-solid fa-book"></i> Kart Defteri — <span id="dfBanka">Tümü Bankalar</span></div>
         <div class="df-head-tools">
+          <!-- [§17 / Denetim-C] Seçili karta (curBanka≠'hepsi') bağlı arşivleme aksiyonları —
+               kanonik 4 firma kartı SİLİNEMEZ, yalnız Pasife Al/Arşivle ile durum değiştirir. -->
+          <div class="kk-card-acts" id="kkCardActs" hidden>
+            <button type="button" class="btn btn-ghost btn-sm" id="kkActPasif" data-no-confirm><i class="fa-solid fa-ban"></i> <span>Pasife Al</span></button>
+            <button type="button" class="btn btn-ghost btn-sm" id="kkActArsiv" data-no-confirm><i class="fa-solid fa-box-archive"></i> <span>Arşivle</span></button>
+            <a class="btn btn-ghost btn-sm" id="kkActLog" href="crm-ayarlar-log.html"><i class="fa-solid fa-clock-rotate-left"></i> <span>İşlem Geçmişini Gör</span></a>
+          </div>
           <span class="df-donem"><i class="fa-solid fa-calendar-days"></i> 18 Haziran – 2 Temmuz 2026 · cari ekstre dönemi</span>
         </div>
       </div>
@@ -224,6 +236,8 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
             <button class="chip" data-banka="is">İş Bankası <span class="ch-cnt">3</span></button>
             <button class="chip" data-banka="ykb">Yapı Kredi <span class="ch-cnt">2</span></button>
           </div>
+          <!-- [§17] Arşivlenen kart varsayılan şeritte/chip'te görünmez — bu anahtarla gösterilir -->
+          <button type="button" class="chip" id="kkArsivToggle" aria-pressed="false"><i class="fa-solid fa-box-archive"></i> Arşivlenenleri Göster</button>
         </div>
         <div class="filter-row">
           <span class="frow-lbl">Durum</span>
@@ -368,6 +382,12 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
   };
   var KART_ORDER = ['garanti','akbank','is','ykb'];
   var DURUM_LBL = {ok:'Kayıtlı', onaylandi:'Onaylandı'};
+  /* [§17 / Denetim-C] kartDurum: aktif/pasif/arsiv — kanonik limit/borç/devir/tx
+     rakamlarından TAMAMEN ayrı, oturum-lokal ikinci bir eksen (kararlar.md T-L
+     madde 67 ile aynı ilke: arşiv durumu iş/ödeme durumundan bağımsız). Kart doğrudan
+     SİLİNEMEZ — yalnız bu üç durum arasında geçiş yapar. */
+  KART_ORDER.forEach(function(key){ KARTLAR[key].kartDurum = 'aktif'; });
+  var showArsivKart = false;
 
   function fmtTL(n){ return '₺' + n.toLocaleString('tr-TR'); }
   function pct(borc, limit){ return Math.round(borc / limit * 100); }
@@ -380,24 +400,42 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
     return p[2] + '-' + AY_ISO[p[1]] + '-' + (p[0].length < 2 ? '0' + p[0] : p[0]);
   }
 
-  /* ---- kart şeridi render — D19/S12: kasa .ks-card gibi SEÇİCİ ---- */
+  /* ---- kart şeridi render — D19/S12: kasa .ks-card gibi SEÇİCİ ----
+     [§17] arşivlenen kart (kartDurum:'arsiv') showArsivKart açık olmadıkça hiç basılmaz;
+     pasif kart soluk render + "Pasif" rozetiyle basılır (silinmez, yalnız görünürlük). */
   var strip = document.getElementById('kkStrip');
-  var sh = '';
-  KART_ORDER.forEach(function(key){
-    var K = KARTLAR[key];
-    var p = pct(K.borc, K.limit);
-    var barCls = p >= 70 ? 'warn' : '';
-    var avail = K.limit - K.borc;
-    sh += '<button type="button" class="kk-card" data-banka="'+key+'">'
-        +   '<div class="kk-top"><div class="kk-mark" style="background:'+K.bg+';color:'+K.fg+'">'+K.mark+'</div>'
-        +   '<div class="kk-id"><div class="kk-bank">'+K.banka+'</div><span class="kk-no">•'+K.no+'</span></div></div>'
-        +   '<div class="kk-owner">'+K.sahip+'</div>'
-        +   '<div class="gbar"><div class="gbar-track"><div class="gbar-fill '+barCls+'" style="width:'+p+'%"></div></div><span class="gbar-val">%'+p+'</span></div>'
-        +   '<div class="kk-avail">Kullanılabilir '+fmtTL(avail)+'</div>'
-        +   '<div class="kk-ekstre"><i class="fa-regular fa-calendar"></i> Ekstre kesim: '+K.ekstre+'</div>'
-        + '</button>';
-  });
-  strip.innerHTML = sh;
+  function renderStrip(){
+    var sh = '';
+    KART_ORDER.forEach(function(key){
+      if(GV.role === 'sef' && key !== 'garanti') return;   /* şef budaması — her yeniden çizimde korunur */
+      var K = KARTLAR[key];
+      if(K.kartDurum === 'arsiv' && !showArsivKart) return;
+      var p = pct(K.borc, K.limit);
+      var barCls = p >= 70 ? 'warn' : '';
+      var avail = K.limit - K.borc;
+      var cardCls = 'kk-card' + (K.kartDurum === 'pasif' ? ' is-pasif' : '') + (K.kartDurum === 'arsiv' ? ' is-pasif' : '');
+      var badge = K.kartDurum === 'pasif' ? ' <span class="gstat off kk-card-badge">Pasif</span>' : (K.kartDurum === 'arsiv' ? ' <span class="gstat off kk-card-badge">Arşivde</span>' : '');
+      sh += '<button type="button" class="'+cardCls+'" data-banka="'+key+'" data-kdurum="'+K.kartDurum+'">'
+          +   '<div class="kk-top"><div class="kk-mark" style="background:'+K.bg+';color:'+K.fg+'">'+K.mark+'</div>'
+          +   '<div class="kk-id"><div class="kk-bank">'+K.banka+badge+'</div><span class="kk-no">•'+K.no+'</span></div></div>'
+          +   '<div class="kk-owner">'+K.sahip+'</div>'
+          +   '<div class="gbar"><div class="gbar-track"><div class="gbar-fill '+barCls+'" style="width:'+p+'%"></div></div><span class="gbar-val">%'+p+'</span></div>'
+          +   '<div class="kk-avail">Kullanılabilir '+fmtTL(avail)+'</div>'
+          +   '<div class="kk-ekstre"><i class="fa-regular fa-calendar"></i> Ekstre kesim: '+K.ekstre+'</div>'
+          + '</button>';
+    });
+    strip.innerHTML = sh;
+  }
+  renderStrip();
+  function syncBankaChipsVisibility(){
+    document.querySelectorAll('#kkBankaChips .chip[data-banka]').forEach(function(ch){
+      var key = ch.getAttribute('data-banka');
+      if(key === 'hepsi') return;
+      if(GV.role === 'sef' && key !== 'garanti') return;   /* şef için chip zaten kalıcı kaldırılmış olabilir */
+      ch.hidden = KARTLAR[key].kartDurum === 'arsiv' && !showArsivKart;
+    });
+  }
+  syncBankaChipsVisibility();
   /* [D17 Y15] "Tümünü Göster" karosu KALDIRILDI (Beyar, DK12) — banka-filtre sıfırlama
      işini alttaki "Tümü" chip'i zaten yapıyor; kart şeridi salt kart seçicidir. */
 
@@ -600,7 +638,84 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
       ch.classList.toggle('is-on', ch.getAttribute('data-banka') === curBanka);
     });
     if(dfBanka) dfBanka.textContent = curBanka === 'hepsi' ? 'Tümü Bankalar' : KARTLAR[curBanka].banka;
+    syncCardActs();
   }
+  /* [§17 / Denetim-C] seçili tek karta bağlı Pasife Al/Arşivle/İşlem Geçmişi aksiyonları —
+     "Tümü Bankalar" seçiliyken (tek kayıt yok) gizlenir. */
+  var kkCardActs = document.getElementById('kkCardActs');
+  var kkActPasif = document.getElementById('kkActPasif');
+  var kkActArsiv = document.getElementById('kkActArsiv');
+  var kkActLog = document.getElementById('kkActLog');
+  function syncCardActs(){
+    if(!kkCardActs) return;
+    if(curBanka === 'hepsi'){ kkCardActs.hidden = true; return; }
+    var K = KARTLAR[curBanka];
+    kkCardActs.hidden = false;
+    /* kart yaşam-döngüsü (pasife al/arşivle) yönetimsel bir karar — kart tanımlayabilen
+       roller ile AYNI kısıt (KART_TANIMLAYABILIR); İşlem Geçmişi görüntüleme herkese açık. */
+    var canManage = KART_TANIMLAYABILIR.indexOf(GV.role) !== -1;
+    kkActPasif.hidden = !canManage;
+    kkActArsiv.hidden = !canManage;
+    kkActPasif.innerHTML = K.kartDurum === 'pasif'
+      ? '<i class="fa-solid fa-check"></i> <span>Aktif Et</span>'
+      : '<i class="fa-solid fa-ban"></i> <span>Pasife Al</span>';
+    kkActArsiv.innerHTML = K.kartDurum === 'arsiv'
+      ? '<i class="fa-solid fa-box-open"></i> <span>Arşivden Çıkar</span>'
+      : '<i class="fa-solid fa-box-archive"></i> <span>Arşivle</span>';
+    kkActArsiv.disabled = false;
+    kkActLog.href = 'crm-ayarlar-log.html?kayit=' + encodeURIComponent(K.banka + ' •' + K.no);
+  }
+  function setKartDurum(key, yeni){
+    KARTLAR[key].kartDurum = yeni;
+    if(yeni === 'arsiv' && curBanka === key){ curBanka = 'hepsi'; curDurum = 'hepsi'; }
+    renderStrip();
+    syncBankaChipsVisibility();
+    syncBankaUI();
+    applyFilter();
+  }
+  kkActPasif.addEventListener('click', function(){
+    var K = KARTLAR[curBanka]; if(!K) return;
+    if(K.kartDurum === 'pasif'){
+      setKartDurum(curBanka, 'aktif');
+      gvToast(K.banka + ' •' + K.no + ' yeniden aktif — İşlem Kayıtları\'na yazıldı.');
+      return;
+    }
+    gvConfirm({
+      title:'Kart pasife alınsın mı?',
+      message:K.banka + ' •' + K.no + ' pasife alınacak — yeni harcama kaydı girilemez, TERSİNİR bir işlemdir, "Aktif Et" ile geri alınabilir.',
+      ok:'Evet, Pasife Al', cancel:'Vazgeç',
+      onConfirm:function(){
+        setKartDurum(curBanka, 'pasif');
+        gvToast(K.banka + ' •' + K.no + ' pasife alındı — İşlem Kayıtları\'na yazıldı.');
+      }
+    });
+  });
+  kkActArsiv.addEventListener('click', function(){
+    var K = KARTLAR[curBanka]; if(!K) return;
+    if(K.kartDurum === 'arsiv'){
+      setKartDurum(curBanka, 'aktif');
+      gvToast(K.banka + ' •' + K.no + ' arşivden çıkarıldı — İşlem Kayıtları\'na yazıldı.');
+      return;
+    }
+    gvConfirm({
+      title:'Kart arşivlensin mi?',
+      message:K.banka + ' •' + K.no + ' arşivlenecek — varsayılan kart şeridinde/listede görünmeyecek, kayıt SİLİNMEZ, "Arşivlenenleri Göster" ile her zaman geri gösterilebilir.',
+      ok:'Evet, Arşivle', cancel:'Vazgeç',
+      onConfirm:function(){
+        setKartDurum(curBanka, 'arsiv');
+        gvToast(K.banka + ' •' + K.no + ' arşivlendi — İşlem Kayıtları\'na yazıldı.');
+      }
+    });
+  });
+  var kkArsivToggle = document.getElementById('kkArsivToggle');
+  kkArsivToggle.addEventListener('click', function(){
+    showArsivKart = !showArsivKart;
+    kkArsivToggle.classList.toggle('is-on', showArsivKart);
+    kkArsivToggle.setAttribute('aria-pressed', String(showArsivKart));
+    renderStrip();
+    syncBankaChipsVisibility();
+    syncBankaUI();
+  });
   function applyFilter(){
     var term = document.getElementById('kkSearch').value.trim().toLocaleLowerCase('tr');
     var shown = 0, total = 0;

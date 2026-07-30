@@ -41,6 +41,9 @@
 .plx-foot{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted)}
 @media(max-width:980px){.plx-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.plx-grid{grid-template-columns:1fr}}
+.plx-card-badge{margin-left:6px}
+.plx-card-acts{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+@media(max-width:640px){ .plx-card-acts{width:100%;order:-1} .plx-card-acts .btn span{display:none} }
 
 /* ============ D19/S12 — Kart Defteri (crm-operasyon-kasa.html #tblDefter kolon
    düzeninin birebir devralımı: df-no/df-date/df-firm/df-desc/df-in/df-out/df-bak,
@@ -224,6 +227,13 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
       <div class="gc-head">
         <div class="gc-title"><i class="fa-solid fa-book"></i> Kart Defteri — <span id="dfKart">Ali Vural •4471</span></div>
         <div class="df-head-tools">
+          <!-- [§17 / Denetim-C] Seçili karta bağlı arşivleme aksiyonları — kart doğrudan
+               SİLİNEMEZ, yalnız Pasife Al/Arşivle ile durum değiştirir. -->
+          <div class="plx-card-acts" id="plxCardActs" hidden>
+            <button type="button" class="btn btn-ghost btn-sm" id="plxActPasif" data-no-confirm><i class="fa-solid fa-ban"></i> <span>Pasife Al</span></button>
+            <button type="button" class="btn btn-ghost btn-sm" id="plxActArsiv" data-no-confirm><i class="fa-solid fa-box-archive"></i> <span>Arşivle</span></button>
+            <a class="btn btn-ghost btn-sm" id="plxActLog" href="crm-ayarlar-log.html"><i class="fa-solid fa-clock-rotate-left"></i> <span>İşlem Geçmişini Gör</span></a>
+          </div>
           <span class="df-donem"><i class="fa-solid fa-calendar-days"></i> 01 – 15 Temmuz 2026 · cari dönem</span>
         </div>
       </div>
@@ -241,6 +251,8 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
             <button class="chip" data-tur="yukleme">Yükleme <span class="ch-cnt">1</span></button>
             <button class="chip" data-tur="harcama">Harcama <span class="ch-cnt">1</span></button>
           </div>
+          <!-- [§17] Arşivlenen kart varsayılan ızgarada görünmez — bu anahtarla gösterilir -->
+          <button type="button" class="chip" id="plxArsivToggle" aria-pressed="false"><i class="fa-solid fa-box-archive"></i> Arşivlenenleri Göster</button>
         </div>
         <div class="filter-row">
           <span class="frow-lbl">Şantiye</span>
@@ -379,7 +391,12 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
   ];
   var PASIF = {no:'6253', ad:'Sadık Öz', santiye:'merkez', son:'30 Haz 2026'};
   var KARTLAR_BY_NO = {};
-  KARTLAR.forEach(function(k){ KARTLAR_BY_NO[k.no] = k; });
+  /* [§17 / Denetim-C] kartDurum: aktif/pasif/arsiv — kanonik bakiye/tx rakamlarından
+     TAMAMEN ayrı, oturum-lokal ikinci bir eksen (kararlar.md T-L madde 67 ile aynı
+     ilke). Kart doğrudan SİLİNEMEZ — yalnız bu üç durum arasında geçiş yapar. PASIF
+     (Sadık Öz) zaten sabit bir "kayıp/pasif" örneği — bu ekseni ETKİLEMEZ, ayrı kalır. */
+  KARTLAR.forEach(function(k){ k.kartDurum = 'aktif'; KARTLAR_BY_NO[k.no] = k; });
+  var showArsivKart = false;
 
   function fmtTL(n){
     if(n == null) return '₺—';
@@ -395,26 +412,34 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
     return p[2] + '-' + AY_ISO[p[1]] + '-' + (p[0].length < 2 ? '0' + p[0] : p[0]);
   }
 
-  /* ---- kart ızgarası render — D19/S12: kasa .ks-card gibi SEÇİCİ ---- */
+  /* ---- kart ızgarası render — D19/S12: kasa .ks-card gibi SEÇİCİ ----
+     [§17] arşivlenen kart (kartDurum:'arsiv') showArsivKart açık olmadıkça hiç basılmaz;
+     pasif kart soluk render (.is-off) + rozetle basılır (silinmez, yalnız görünürlük). */
   var grid = document.getElementById('plxGrid');
-  var gh = '';
-  KARTLAR.forEach(function(k){
-    gh += '<button type="button" class="plx-card" data-plx="'+k.no+'">'
-        +   '<div class="plx-top"><div class="plx-who"><div class="plx-name">'+k.ad+'</div><span class="plx-no">•'+k.no+'</span></div>'
+  function renderGrid(){
+    var gh = '';
+    KARTLAR.forEach(function(k){
+      if(k.kartDurum === 'arsiv' && !showArsivKart) return;
+      var offCls = k.kartDurum === 'pasif' || k.kartDurum === 'arsiv' ? ' is-off' : '';
+      var badge = k.kartDurum === 'pasif' ? ' <span class="gstat off plx-card-badge">Pasif</span>' : (k.kartDurum === 'arsiv' ? ' <span class="gstat off plx-card-badge">Arşivde</span>' : '');
+      gh += '<button type="button" class="plx-card'+offCls+'" data-plx="'+k.no+'" data-kdurum="'+k.kartDurum+'">'
+          +   '<div class="plx-top"><div class="plx-who"><div class="plx-name">'+k.ad+badge+'</div><span class="plx-no">•'+k.no+'</span></div>'
+          +   '<div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div>'
+          +   '<div class="plx-santiye">'+SANTIYE_ADI[k.santiye]+'</div>'
+          +   '<div class="plx-bakiye">'+fmtTL(k.bakiye)+'</div><div class="plx-bakiye-lbl">güncel bakiye</div>'
+          +   '<div class="plx-foot">Son işlem: '+k.son+'</div>'
+          + '</button>';
+    });
+    gh += '<div class="plx-card is-off">'
+        +   '<div class="plx-top"><div class="plx-who"><div class="plx-name">'+PASIF.ad+'</div><span class="plx-no">•'+PASIF.no+'</span></div>'
         +   '<div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div>'
-        +   '<div class="plx-santiye">'+SANTIYE_ADI[k.santiye]+'</div>'
-        +   '<div class="plx-bakiye">'+fmtTL(k.bakiye)+'</div><div class="plx-bakiye-lbl">güncel bakiye</div>'
-        +   '<div class="plx-foot">Son işlem: '+k.son+'</div>'
-        + '</button>';
-  });
-  gh += '<div class="plx-card is-off">'
-      +   '<div class="plx-top"><div class="plx-who"><div class="plx-name">'+PASIF.ad+'</div><span class="plx-no">•'+PASIF.no+'</span></div>'
-      +   '<div class="plx-mark"><i class="fa-solid fa-credit-card"></i></div></div>'
-      +   '<div class="plx-santiye">'+SANTIYE_ADI[PASIF.santiye]+'</div>'
-      +   '<div class="plx-bakiye"><span class="gstat off">Kayıp — kart pasif</span></div>'
-      +   '<div class="plx-foot">Bildirim: '+PASIF.son+'</div>'
-      + '</div>';
-  grid.innerHTML = gh;
+        +   '<div class="plx-santiye">'+SANTIYE_ADI[PASIF.santiye]+'</div>'
+        +   '<div class="plx-bakiye"><span class="gstat off">Kayıp — kart pasif</span></div>'
+        +   '<div class="plx-foot">Bildirim: '+PASIF.son+'</div>'
+        + '</div>';
+    grid.innerHTML = gh;
+  }
+  renderGrid();
 
   /* ---- Kart Defteri render — kasa #tblDefter kolon+satır düzeninin BİREBİR devralımı
      (madde 1-2 / S12 kanonik tanımı, shell.js DALGA 9): yükleme/harcama satırları + df-devir/
@@ -615,7 +640,82 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
     if(dfKart) dfKart.textContent = cardName(KARTLAR_BY_NO[no]);
     recalcChips();
     applyFilter();
+    syncCardActs();
   }
+  /* [§17 / Denetim-C] seçili tek karta bağlı Pasife Al/Arşivle/İşlem Geçmişi aksiyonları. */
+  var plxCardActs = document.getElementById('plxCardActs');
+  var plxActPasif = document.getElementById('plxActPasif');
+  var plxActArsiv = document.getElementById('plxActArsiv');
+  var plxActLog = document.getElementById('plxActLog');
+  function syncCardActs(){
+    if(!plxCardActs) return;
+    var K = KARTLAR_BY_NO[curPlx];
+    if(!K){ plxCardActs.hidden = true; return; }
+    plxCardActs.hidden = false;
+    /* kart yaşam-döngüsü (pasife al/arşivle) yönetimsel bir karar — kart tanımlayabilen
+       roller ile AYNI kısıt (OLUSTURABILIR); İşlem Geçmişi görüntüleme herkese açık. */
+    var canManage = OLUSTURABILIR.indexOf(GV.role) !== -1;
+    plxActPasif.hidden = !canManage;
+    plxActArsiv.hidden = !canManage;
+    plxActPasif.innerHTML = K.kartDurum === 'pasif'
+      ? '<i class="fa-solid fa-check"></i> <span>Aktif Et</span>'
+      : '<i class="fa-solid fa-ban"></i> <span>Pasife Al</span>';
+    plxActArsiv.innerHTML = K.kartDurum === 'arsiv'
+      ? '<i class="fa-solid fa-box-open"></i> <span>Arşivden Çıkar</span>'
+      : '<i class="fa-solid fa-box-archive"></i> <span>Arşivle</span>';
+    plxActLog.href = 'crm-ayarlar-log.html?kayit=' + encodeURIComponent(cardName(K));
+  }
+  function setKartDurum(no, yeni){
+    KARTLAR_BY_NO[no].kartDurum = yeni;
+    if(yeni === 'arsiv' && curPlx === no){
+      var ilkAktif = KARTLAR.filter(function(k){ return k.kartDurum !== 'arsiv'; })[0];
+      curPlx = ilkAktif ? ilkAktif.no : no;
+    }
+    renderGrid();
+    setCard(curPlx);
+  }
+  plxActPasif.addEventListener('click', function(){
+    var K = KARTLAR_BY_NO[curPlx]; if(!K) return;
+    if(K.kartDurum === 'pasif'){
+      setKartDurum(curPlx, 'aktif');
+      gvToast(cardName(K) + ' yeniden aktif — İşlem Kayıtları\'na yazıldı.');
+      return;
+    }
+    gvConfirm({
+      title:'Kart pasife alınsın mı?',
+      message:cardName(K) + ' pasife alınacak — yeni yükleme/harcama işlenemez, TERSİNİR bir işlemdir, "Aktif Et" ile geri alınabilir.',
+      ok:'Evet, Pasife Al', cancel:'Vazgeç',
+      onConfirm:function(){
+        setKartDurum(curPlx, 'pasif');
+        gvToast(cardName(K) + ' pasife alındı — İşlem Kayıtları\'na yazıldı.');
+      }
+    });
+  });
+  plxActArsiv.addEventListener('click', function(){
+    var K = KARTLAR_BY_NO[curPlx]; if(!K) return;
+    if(K.kartDurum === 'arsiv'){
+      setKartDurum(curPlx, 'aktif');
+      gvToast(cardName(K) + ' arşivden çıkarıldı — İşlem Kayıtları\'na yazıldı.');
+      return;
+    }
+    gvConfirm({
+      title:'Kart arşivlensin mi?',
+      message:cardName(K) + ' arşivlenecek — varsayılan kart ızgarasında/listede görünmeyecek, kayıt SİLİNMEZ, "Arşivlenenleri Göster" ile her zaman geri gösterilebilir.',
+      ok:'Evet, Arşivle', cancel:'Vazgeç',
+      onConfirm:function(){
+        setKartDurum(curPlx, 'arsiv');
+        gvToast(cardName(K) + ' arşivlendi — İşlem Kayıtları\'na yazıldı.');
+      }
+    });
+  });
+  var plxArsivToggle = document.getElementById('plxArsivToggle');
+  plxArsivToggle.addEventListener('click', function(){
+    showArsivKart = !showArsivKart;
+    plxArsivToggle.classList.toggle('is-on', showArsivKart);
+    plxArsivToggle.setAttribute('aria-pressed', String(showArsivKart));
+    renderGrid();
+    setCard(curPlx);
+  });
   document.getElementById('plxGrid').addEventListener('click', function(e){
     var c = e.target.closest('.plx-card[data-plx]'); if(!c) return;
     setCard(c.getAttribute('data-plx'));
