@@ -691,4 +691,362 @@
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireTables);
   else wireTables();
+
+  /* ---- D1-T-CSS — YATAY KAYDIRMA İPUCU (§8 açık kalem) ----
+     .gv-tabs/.pf-tabs (sayfa-lokal <style>, scrollbar-width:none kullanır — kaydırılabilir
+     olduğu HİÇ görünmez) ve .gc-body.flush (geniş .gtable sarmalayıcısı) için gerçek
+     scrollWidth/scrollLeft ölçümüne göre kenar ipucu (ui.css .gv-scroll-l/-r). ---- */
+  function wireScrollHints(){
+    var sel = '.gv-tabs,.pf-tabs,.gc-body.flush';
+    function update(el){
+      var canL = el.scrollLeft > 3;
+      var canR = el.scrollLeft < (el.scrollWidth - el.clientWidth - 3);
+      el.classList.toggle('gv-scroll-l', canL);
+      el.classList.toggle('gv-scroll-r', canR);
+    }
+    function scan(){
+      document.querySelectorAll(sel).forEach(function(el){
+        if(el._gvScrollHintWired) { update(el); return; }
+        el._gvScrollHintWired = true;
+        el.addEventListener('scroll', function(){ update(el); }, {passive:true});
+        update(el);
+      });
+    }
+    scan();
+    window.addEventListener('resize', scan);
+    window.addEventListener('load', scan);
+    /* sayfa-scripti içeriği DOMContentLoaded SONRASI basıyorsa (JS-render tablo/sekme)
+       scrollWidth geç netleşir — kısa gecikmeli yeniden tarama */
+    setTimeout(scan, 400);
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireScrollHints);
+  else wireScrollHints();
+
+  /* ---- §8 GERÇEK KÖK SEBEP — düşey fare tekerleğinin yatay konteynere
+     "yönlendirilmesi" (D1-T-CSS taban taramasında document.scrollWidth SIFIR
+     bulundu — mevcut sayfalar zaten taşmıyor; şikayet edilen "normal fare ile
+     kullanırken sayfa sol/sağa kayıyor" DAVRANIŞI, tarayıcının SADECE yatay
+     kaydırabilen bir kutuda (overflow-x:auto + dikey kaydırma kapasitesi yok —
+     .gv-tabs/.pf-tabs/.gc-body.flush) düşey tekerlek delta'sını otomatik olarak
+     yatay kaydırmaya çevirmesinden kaynaklanıyor. scrollbar-width:none bu
+     kaymayı GÖRÜNMEZ kılıyor — kullanıcı "sayfa bozuldu" hissediyor.
+     Fix: baskın eksen DÜŞEY ise (deltaX ≈ 0, gerçek yatay niyet YOK) olayı
+     kapsayıcıya bıraktırma, sayfayı normal kaydır; shift+tekerlek/trackpad
+     iki-parmak yatay hareketi (deltaX baskın) DOKUNULMADAN kendi işini görür. ---- */
+  document.addEventListener('wheel', function(e){
+    if(e.ctrlKey) return;   /* pinch-zoom — müdahale etme */
+    var el = e.target.closest('.gv-tabs,.pf-tabs,.gc-body.flush');
+    if(!el) return;
+    if(el.scrollWidth <= el.clientWidth + 1) return;   /* taşma yoksa yönlendirilecek bir şey yok */
+    if(Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;   /* kullanıcı zaten bilerek yatay kaydırıyor */
+    e.preventDefault();
+    window.scrollBy(0, e.deltaY);
+  }, {passive:false});
+
+  /* ============ D1-T-CSS — TARİH ARALIĞI BİLEŞENİ (gvDateRange, §13) ============
+     Kısayollar GERÇEK new Date() ile hesaplanır (mock bağlamdaki "bugün 2 Temmuz 2026"
+     sabit değildir — üretimde/gerçek tarihte de tutarlı çalışır; sabit "15 gün" kısıtı YOK).
+     Deklaratif: <div data-gvdaterange></div> — DOMContentLoaded'da otomatik kurulur.
+     İmperatif: gvDateRange(el, {onChange(val), initial:{key}, emptyLabel}) —
+     val: {key, from:Date, to:Date, label} | null (temizlendiğinde). ============ */
+  var DR_PRESETS = [
+    {k:'bugun',    lbl:'Bugün'},
+    {k:'dun',      lbl:'Dün'},
+    {k:'bu_hafta', lbl:'Bu hafta'},
+    {k:'son7',     lbl:'Son 7 gün'},
+    {k:'son15',    lbl:'Son 15 gün'},
+    {k:'bu_ay',    lbl:'Bu ay'},
+    {k:'son30',    lbl:'Son 30 gün'},
+    {k:'gecen_ay', lbl:'Geçen ay'},
+    {k:'bu_yil',   lbl:'Bu yıl'},
+    {k:'ozel',     lbl:'Özel tarih aralığı'}
+  ];
+  var DR_AY = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+  function drFmt(d){ return d.getDate() + ' ' + DR_AY[d.getMonth()] + ' ' + d.getFullYear(); }
+  function drStartOfDay(d){ var x = new Date(d); x.setHours(0,0,0,0); return x; }
+  function drEndOfDay(d){ var x = new Date(d); x.setHours(23,59,59,999); return x; }
+  function drRange(key){
+    var today = new Date();
+    var s = drStartOfDay(today), e = drEndOfDay(today);
+    if(key === 'dun'){
+      s = drStartOfDay(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1));
+      e = drEndOfDay(s);
+    } else if(key === 'bu_hafta'){
+      var dow = (today.getDay() + 6) % 7;   /* Pazartesi=0 … Pazar=6 (TR hafta başı) */
+      s = drStartOfDay(new Date(today.getFullYear(), today.getMonth(), today.getDate() - dow));
+    } else if(key === 'son7'){
+      s = drStartOfDay(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6));
+    } else if(key === 'son15'){
+      s = drStartOfDay(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 14));
+    } else if(key === 'bu_ay'){
+      s = drStartOfDay(new Date(today.getFullYear(), today.getMonth(), 1));
+    } else if(key === 'son30'){
+      s = drStartOfDay(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 29));
+    } else if(key === 'gecen_ay'){
+      s = drStartOfDay(new Date(today.getFullYear(), today.getMonth() - 1, 1));
+      e = drEndOfDay(new Date(today.getFullYear(), today.getMonth(), 0));
+    } else if(key === 'bu_yil'){
+      s = drStartOfDay(new Date(today.getFullYear(), 0, 1));
+    }
+    return {from:s, to:e};
+  }
+  window.gvDateRange = function(el, opts){
+    if(typeof el === 'string') el = document.querySelector(el);
+    if(!el || el._gvDr) return el && el._gvDr;
+    opts = opts || {};
+    var emptyLabel = opts.emptyLabel || 'Tüm zamanlar';
+    el.classList.add('gv-drange');
+    el.innerHTML =
+      '<button type="button" class="gv-drange-trigger btn btn-ghost btn-sm">'
+        + '<i class="fa-solid fa-calendar-days"></i><span class="dr-lbl"></span>'
+        + '<i class="fa-solid fa-chevron-down"></i></button>'
+      + '<div class="gv-drange-pop gv-pop">'
+        + '<div class="dr-presets">' + DR_PRESETS.map(function(p){
+            return '<button type="button" class="dr-preset-btn' + (p.k === 'ozel' ? ' dr-ozel' : '') + '" data-dr="' + p.k + '">' + p.lbl + '</button>';
+          }).join('') + '</div>'
+        + '<div class="dr-custom">'
+          + '<div class="gfield"><label>Başlangıç</label><input type="date" class="dr-start"></div>'
+          + '<div class="gfield"><label>Bitiş</label><input type="date" class="dr-end"></div>'
+        + '</div>'
+        + '<div class="dr-foot">'
+          + '<button type="button" class="btn btn-ghost btn-sm dr-clear">Temizle</button>'
+          + '<button type="button" class="btn btn-acc btn-sm dr-apply">Uygula</button>'
+        + '</div>'
+      + '</div>';
+    var trigger = el.querySelector('.gv-drange-trigger');
+    var pop = el.querySelector('.gv-drange-pop');
+    var lblEl = el.querySelector('.dr-lbl'); lblEl.textContent = emptyLabel;
+    var customWrap = el.querySelector('.dr-custom');
+    var startInp = el.querySelector('.dr-start');
+    var endInp = el.querySelector('.dr-end');
+    var pendingKey = null;
+
+    function iso(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+    function setOpen(o){ pop.classList.toggle('open', o); trigger.setAttribute('aria-expanded', o ? 'true' : 'false'); }
+    trigger.addEventListener('click', function(e){ e.stopPropagation(); setOpen(!pop.classList.contains('open')); });
+    document.addEventListener('click', function(e){ if(!el.contains(e.target)) setOpen(false); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') setOpen(false); });
+
+    el.querySelectorAll('[data-dr]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        el.querySelectorAll('[data-dr]').forEach(function(b){ b.classList.remove('is-on'); });
+        btn.classList.add('is-on');
+        pendingKey = btn.getAttribute('data-dr');
+        customWrap.classList.toggle('open', pendingKey === 'ozel');
+        if(pendingKey === 'ozel' && !startInp.value){
+          var r = drRange('son30');
+          startInp.value = iso(r.from); endInp.value = iso(r.to);
+        }
+      });
+    });
+
+    function apply(){
+      if(!pendingKey) return;
+      var val;
+      if(pendingKey === 'ozel'){
+        if(!startInp.value || !endInp.value) return;
+        var s = drStartOfDay(new Date(startInp.value + 'T00:00:00'));
+        var e = drEndOfDay(new Date(endInp.value + 'T00:00:00'));
+        val = {key:'ozel', from:s, to:e, label: drFmt(s) + ' – ' + drFmt(e)};
+      } else {
+        var r = drRange(pendingKey);
+        var p = DR_PRESETS.filter(function(x){ return x.k === pendingKey; })[0];
+        val = {key:pendingKey, from:r.from, to:r.to, label:p.lbl};
+      }
+      el._gvValue = val;
+      lblEl.textContent = val.label;
+      trigger.classList.add('is-set');
+      setOpen(false);
+      el.dispatchEvent(new CustomEvent('gvdaterange', {bubbles:true, detail:val}));
+      if(opts.onChange) opts.onChange(val);
+    }
+    function clear(){
+      pendingKey = null;
+      el.querySelectorAll('[data-dr]').forEach(function(b){ b.classList.remove('is-on'); });
+      customWrap.classList.remove('open');
+      startInp.value = ''; endInp.value = '';
+      el._gvValue = null;
+      lblEl.textContent = emptyLabel;
+      trigger.classList.remove('is-set');
+      setOpen(false);
+      el.dispatchEvent(new CustomEvent('gvdaterange', {bubbles:true, detail:null}));
+      if(opts.onChange) opts.onChange(null);
+    }
+    el.querySelector('.dr-apply').addEventListener('click', apply);
+    el.querySelector('.dr-clear').addEventListener('click', clear);
+
+    if(opts.initial && opts.initial.key){
+      var ib = el.querySelector('[data-dr="' + opts.initial.key + '"]');
+      if(ib){ ib.click(); apply(); }
+    }
+
+    el._gvDr = { apply:apply, clear:clear, el:el };
+    return el._gvDr;
+  };
+  function wireDateRanges(){
+    document.querySelectorAll('[data-gvdaterange]').forEach(function(el){
+      if(!el._gvDr) window.gvDateRange(el);
+    });
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireDateRanges);
+  else wireDateRanges();
+
+  /* ============ D1-T-CSS — GELİŞMİŞ FİLTRE PANELİ (gvFilterPanel, §9) ============
+     HTML iskeleti + sınıf sözleşmesi: tasks/spec-filtre-tarih.md.
+     gvFilterPanel.init(panelSel, opts):
+       opts.table       — '#tblId' (opsiyonel; verilirse satırlar data-<key>="<değer>"
+                           ile eşleştirilir; tarih alanı data-tarih="YYYY-MM-DD" ISO okur)
+       opts.trigger      — açma butonu seçicisi (opsiyonel, varsayılan [data-fpanel="#panelId"])
+       opts.activeRow     — aktif filtre çipi satırı seçicisi (opsiyonel, varsayılan .gv-achips-row)
+       opts.onApply(state) — her uygula/temizle/çip-kaldırdıktan SONRA çağrılır (state: {key:{value,label,raw}})
+       opts.onClear()      — yalnız Temizle'de çağrılır
+     Panel içi alanlar [data-fp-key="..."] taşır (select/input/checkbox veya
+     [data-gvdaterange] sarmalayıcı). Footer: [data-fp-apply] / [data-fp-clear].
+     Aktif satırdaki toplu temizleme: [data-fp-clear-all]. ============ */
+  window.gvFilterPanel = {
+    init: function(panelSel, opts){
+      var panel = typeof panelSel === 'string' ? document.querySelector(panelSel) : panelSel;
+      if(!panel || panel._gvFp) return panel && panel._gvFp;
+      opts = opts || {};
+      var ov = panel.closest('.gv-fpanel-ov');
+      if(!ov){ console.warn('gvFilterPanel: .gv-fpanel-ov sarmalayıcısı bulunamadı', panel); return null; }
+      var panelId = panel.id ? '#' + panel.id : null;
+      var triggers = document.querySelectorAll(opts.trigger || (panelId ? '[data-fpanel="' + panelId + '"]' : '[data-fpanel]'));
+      var activeRow = opts.activeRow ? document.querySelector(opts.activeRow) : document.querySelector('.gv-achips-row');
+      var activeList = activeRow ? activeRow.querySelector('.gv-achips') : null;
+      var table = opts.table ? document.querySelector(opts.table) : null;
+      var closeBtn = panel.querySelector('.gv-fpanel-close');
+      var state = {};
+
+      function setOpen(o){ ov.classList.toggle('open', o); }
+      triggers.forEach(function(t){ t.addEventListener('click', function(e){ e.preventDefault(); setOpen(true); }); });
+      if(closeBtn) closeBtn.addEventListener('click', function(){ setOpen(false); });
+      ov.addEventListener('click', function(e){ if(e.target === ov) setOpen(false); });
+      document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && ov.classList.contains('open')) setOpen(false); });
+
+      function fieldLabel(field){
+        var lbl = field.getAttribute('data-fp-label');
+        if(lbl) return lbl;
+        var wrap = field.closest('.gfield');
+        var l = wrap && wrap.querySelector('label');
+        return l ? l.textContent.trim() : field.getAttribute('data-fp-key');
+      }
+      function fieldValueLabel(field){
+        if(field.tagName === 'SELECT'){
+          var opt = field.options[field.selectedIndex];
+          return opt ? opt.textContent.trim() : field.value;
+        }
+        return field.value;
+      }
+      function readFilters(){
+        var out = {};
+        panel.querySelectorAll('[data-fp-key]').forEach(function(field){
+          var key = field.getAttribute('data-fp-key');
+          if(field.hasAttribute('data-gvdaterange')){
+            var v = field._gvValue;
+            if(v) out[key] = {value:v, label:fieldLabel(field) + ': ' + v.label, raw:v};
+            return;
+          }
+          if(field.type === 'checkbox'){
+            if(field.checked) out[key] = {value:'1', label:fieldLabel(field)};
+            return;
+          }
+          if(!field.value) return;
+          out[key] = {value:field.value, label:fieldLabel(field) + ': ' + fieldValueLabel(field)};
+        });
+        return out;
+      }
+      function applyToTable(){
+        if(!table) return;
+        var keys = Object.keys(state);
+        table.querySelectorAll('tbody tr').forEach(function(row){
+          var ok = true;
+          keys.forEach(function(k){
+            if(!ok) return;
+            if(k === 'tarih'){
+              var ds = row.getAttribute('data-tarih');
+              var rg = state[k].raw;
+              if(ds && rg && rg.from){
+                var d = new Date(ds + 'T00:00:00');
+                if(d < rg.from || d > rg.to) ok = false;
+              }
+              return;
+            }
+            var attr = row.getAttribute('data-' + k);
+            if(attr !== null && attr !== state[k].value) ok = false;
+          });
+          if(row.hidden) ok = false;   /* mevcut arama/hızlı-çip filtresiyle AND (D18 delegasyonu olmayan basit tablo) */
+          row.classList.toggle('gv-fp-hide', !ok);
+        });
+        if(window.gvPagerRefresh) window.gvPagerRefresh(table, true);
+      }
+      function renderChips(){
+        var keys = Object.keys(state);
+        var count = keys.length;
+        triggers.forEach(function(t){
+          var badge = t.querySelector('.fp-count');
+          if(!badge){ badge = document.createElement('span'); badge.className = 'fp-count'; t.appendChild(badge); }
+          badge.textContent = count; badge.hidden = !count;
+        });
+        if(!activeRow) return;
+        activeRow.hidden = !count;
+        if(!activeList) return;
+        activeList.innerHTML = '';
+        keys.forEach(function(k){
+          var chip = document.createElement('span');
+          chip.className = 'gv-achip';
+          var txt = document.createElement('span'); txt.textContent = state[k].label;
+          var x = document.createElement('button');
+          x.type = 'button'; x.className = 'ac-x'; x.setAttribute('data-k', k); x.setAttribute('aria-label', 'Filtreyi kaldır');
+          x.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+          x.addEventListener('click', function(){ removeOne(k); });
+          chip.appendChild(txt); chip.appendChild(x);
+          activeList.appendChild(chip);
+        });
+      }
+      function resetFields(){
+        panel.querySelectorAll('[data-fp-key]').forEach(function(field){
+          if(field.hasAttribute('data-gvdaterange')){ if(field._gvDr) field._gvDr.clear(); }
+          else if(field.type === 'checkbox') field.checked = false;
+          else field.value = '';
+        });
+      }
+      function removeOne(key){
+        delete state[key];
+        var field = panel.querySelector('[data-fp-key="' + key + '"]');
+        if(field){
+          if(field.hasAttribute('data-gvdaterange')){ if(field._gvDr) field._gvDr.clear(); }
+          else if(field.type === 'checkbox') field.checked = false;
+          else field.value = '';
+        }
+        applyToTable(); renderChips();
+        if(opts.onApply) opts.onApply(state);
+      }
+      function doApply(){
+        state = readFilters();
+        applyToTable(); renderChips();
+        setOpen(false);
+        if(opts.onApply) opts.onApply(state);
+      }
+      function doClear(){
+        resetFields();
+        state = {};
+        applyToTable(); renderChips();
+        setOpen(false);
+        if(opts.onClear) opts.onClear();
+        if(opts.onApply) opts.onApply(state);
+      }
+      var applyBtn = panel.querySelector('[data-fp-apply]');
+      var clearBtn = panel.querySelector('[data-fp-clear]');
+      if(applyBtn) applyBtn.addEventListener('click', doApply);
+      if(clearBtn) clearBtn.addEventListener('click', doClear);
+      if(activeRow){
+        var clearAllBtn = activeRow.querySelector('[data-fp-clear-all]');
+        if(clearAllBtn) clearAllBtn.addEventListener('click', doClear);
+      }
+
+      panel._gvFp = { apply:doApply, clear:doClear, state:function(){ return state; }, refresh:function(){ applyToTable(); renderChips(); } };
+      return panel._gvFp;
+    }
+  };
 })();
