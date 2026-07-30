@@ -114,8 +114,9 @@
               <input type="number" id="fKendi" min="0" step="1" value="0">
             </div>
             <div class="gfield">
-              <label for="fTaseron">Taşeron Sayısı</label>
+              <label for="fTaseron">Taşeron Sayısı <span class="gf-hint">(yemekhane hesabına dahil olanlar)</span></label>
               <input type="number" id="fTaseron" min="0" step="1" value="0">
+              <div class="gf-hint" style="margin-top:6px;font-weight:600">Yalnız taşeron kartında "Yemekhane hesabına dahil edilsin mi?" işaretli personel sayılır (§6.3).</div>
             </div>
             <div class="gfield">
               <label for="fMisafir">Misafir Sayısı <span class="gf-hint">(isteğe bağlı)</span></label>
@@ -146,6 +147,7 @@
             <div class="side-tip"><i class="fa-solid fa-calculator"></i><span>Toplam, kendi kadro + taşeron + misafir sayılarının otomatik toplamıdır; alanları değiştirdikçe canlı güncellenir.</span></div>
             <div class="side-tip"><i class="fa-solid fa-user-group"></i><span>Misafir sayısı çoğu günlük sayımda 0'dır — bu alanın varsayılanı da 0'dır; girildiğinde yalnız bu kayda eklenir, geçmiş sayımların toplamlarını değiştirmez.</span></div>
             <div class="side-tip"><i class="fa-solid fa-flask"></i><span>Bu form simülasyondur; gönderilen bilgiler yemekhane ana tablosuna veya haftalık özete kalıcı olarak eklenmez.</span></div>
+            <div class="side-tip"><i class="fa-solid fa-people-group"></i><span>Bugünkü kanonik taşeron dağılımı (referans): Demir-Beton 10 · ElektroMek 6 · Yalıtım Kardeşler 8 — <a href="crm-operasyon-taseron-puantaj.html" style="color:var(--acc-ink);font-weight:700">taşeron puantajından</a> güncel kişi bazlı durumu görüntüleyin.</span></div>
           </div>
         </div>
       </div>
