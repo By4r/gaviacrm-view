@@ -88,6 +88,11 @@
 .ek-add-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding-top:12px;margin-top:4px;border-top:1px solid var(--line)}
 .ek-add-row select{flex:1;min-width:150px}
 .ek-add-row input[type="text"]{flex:1;min-width:150px}
+/* dar ekranda select+input aynı satırda sıkışıp placeholder'ı kırpıyordu — 640px altında
+   tam genişliğe yayılıp alt alta dizilir (D18-B2/.gv-site-bar select emsaliyle aynı fikir) */
+@media(max-width:640px){
+  .ek-add-row select,.ek-add-row input[type="text"]{flex:1 1 100%;min-width:0}
+}
 </style>
 </head>
 <body data-sec="gorev" data-screen="form">
@@ -324,7 +329,7 @@
                   <option value="hakedis">Hakediş Eki</option>
                   <option value="isg">İSG Belgesi</option>
                 </select>
-                <input type="text" id="ekAciklama" placeholder="Açıklama (isteğe bağlı)">
+                <input type="text" id="ekAciklama" placeholder="Açıklama">
                 <label class="btn btn-ghost btn-sm" for="fDosya"><i class="fa-regular fa-paperclip"></i> Dosya Seç</label>
                 <input type="file" id="fDosya" multiple hidden>
                 <button type="button" class="btn btn-acc btn-sm" id="ekEkleBtn" data-no-confirm><i class="fa-solid fa-plus"></i> Ekle</button>
