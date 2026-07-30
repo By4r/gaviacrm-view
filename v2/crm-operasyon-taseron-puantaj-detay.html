@@ -87,7 +87,7 @@
       <div>
         <div class="gd-eyebrow" id="tpdEyebrow">Puantaj · Taşeron Puantaj Detayı #TP-001</div>
         <h1 id="tpdTitle">Hüseyin Palabıyık</h1>
-        <div class="gd-badges" id="tpdBadges"><span class="gtag mint">Kalıpçı · Kalfa</span><span class="gtag"><i class="fa-solid fa-helmet-safety"></i> Vadi Konakları</span><span class="gstat info">Teknik Ofis Onayında</span></div>
+        <div class="gd-badges" id="tpdBadges"><span class="gtag">Taşeron Personeli</span><span class="gtag mint">Kalıpçı · Kalfa</span><span class="gtag"><i class="fa-solid fa-helmet-safety"></i> Vadi Konakları</span><span class="gstat info">Teknik Ofis Onayında</span></div>
       </div>
       <div class="ph-actions">
         <a class="btn btn-ghost btn-sm" href="crm-operasyon-taseron-puantaj.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>
@@ -283,7 +283,8 @@
   document.getElementById('tpdEyebrow').textContent = 'Puantaj · Taşeron Puantaj Detayı #' + tpId;
   document.getElementById('tpdTitle').textContent = P.ad;
   document.getElementById('tpdBadges').innerHTML =
-      '<span class="gtag mint">' + P.poz + (P.kalfa ? ' · Kalfa' : '') + '</span>'
+      '<span class="gtag">Taşeron Personeli</span>'
+    + '<span class="gtag mint">' + P.poz + (P.kalfa ? ' · Kalfa' : '') + '</span>'
     + '<span class="gtag"><i class="fa-solid fa-helmet-safety"></i> ' + F.santiye + '</span>'
     + '<span class="gstat ' + tps.cls + '">' + tps.lbl + '</span>';
 
