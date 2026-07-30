@@ -45,6 +45,10 @@
 @media(max-width:640px){
   .tm-desc{max-width:140px}
 }
+
+/* §17 arşiv — varsayılan listede gizli, "Arşivlenenleri Göster" ile açılır */
+#tblTermin tbody tr[data-arsiv="1"]{display:none}
+#tblTermin.gv-show-arsiv tbody tr[data-arsiv="1"]{display:table-row}
 </style>
 </head>
 <body data-sec="satinalma" data-screen="termin">
@@ -114,7 +118,23 @@
           <button class="chip" data-filter="gecikti">Geciken <span class="ch-cnt">1</span></button>
           <button class="chip" data-filter="teslim">Teslim Alındı <span class="ch-cnt">3</span></button>
         </div>
+        <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpTermin">
+          <i class="fa-solid fa-sliders"></i> Gelişmiş Filtre
+        </button>
       </div>
+
+      <div class="gv-achips-row" id="achipsTermin" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor.">
+            <i class="fa-solid fa-lock"></i> Filtreleri Kaydet
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all>
+            <i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle
+          </button>
+        </div>
+      </div>
+
       <div class="gc-body flush">
         <table class="gtable" id="tblTermin">
           <thead>
@@ -128,7 +148,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr data-f="yaklasan" data-santiye="vadi">
+            <tr data-f="yaklasan" data-durum="yaklasan" data-santiye="vadi">
               <td><div class="tm-cell"><div class="tm-mark"><i class="fa-solid fa-truck-ramp-box"></i></div><div class="tm-info"><b>SAT-2026-016</b><span>Ege Hazır Beton</span></div></div></td>
               <td>Vadi Konakları</td>
               <td><span class="tm-desc">Kalıp kerestesi</span></td>
@@ -136,7 +156,7 @@
               <td><span class="kalan-pill today"><span class="k-dot"></span> Bugün teslim</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-form-detay.html?form=016" data-no-confirm aria-label="Form detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="yaklasan" data-santiye="merkez">
+            <tr data-f="yaklasan" data-durum="yaklasan" data-santiye="merkez">
               <td><div class="tm-cell"><div class="tm-mark"><i class="fa-solid fa-truck-ramp-box"></i></div><div class="tm-info"><b>SAT-2026-012</b><span>Anadolu Hırdavat</span></div></div></td>
               <td>Merkez Şantiye</td>
               <td><span class="tm-desc">Elektrik kablosu NYY</span></td>
@@ -144,7 +164,7 @@
               <td><span class="kalan-pill near"><span class="k-dot"></span> 1 gün kaldı</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-form-detay.html?form=012" data-no-confirm aria-label="Form detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="gecikti" data-santiye="merkez">
+            <tr data-f="gecikti" data-durum="gecikti" data-santiye="merkez">
               <td><div class="tm-cell"><div class="tm-mark" style="background:var(--danger-tint);color:var(--danger)"><i class="fa-solid fa-truck-ramp-box"></i></div><div class="tm-info"><b>SAT-2026-011</b><span>Ege Hazır Beton</span></div></div></td>
               <td>Merkez Şantiye</td>
               <td><span class="tm-desc">Yalıtım malzemesi (XPS)</span></td>
@@ -152,7 +172,7 @@
               <td><span class="kalan-pill late"><span class="k-dot"></span> 2 gün gecikti</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-form-detay.html?form=011" data-no-confirm aria-label="Form detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="teslim" data-santiye="liman">
+            <tr data-f="teslim" data-durum="teslim" data-santiye="liman">
               <td><div class="tm-cell"><div class="tm-mark" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-truck-ramp-box"></i></div><div class="tm-info"><b>SAT-2026-010</b><span>Anadolu Hırdavat</span></div></div></td>
               <td>Liman Lojistik Merkezi</td>
               <td><span class="tm-desc">Kaynak teli + gaz tüpü</span></td>
@@ -160,7 +180,7 @@
               <td><span class="kalan-pill done"><span class="k-dot"></span> Teslim alındı</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-form-detay.html?form=010" data-no-confirm aria-label="Form detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="teslim" data-santiye="vadi">
+            <tr data-f="teslim" data-durum="teslim" data-santiye="vadi">
               <td><div class="tm-cell"><div class="tm-mark" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-truck-ramp-box"></i></div><div class="tm-info"><b>SAT-2026-009</b><span>Anadolu Hırdavat</span></div></div></td>
               <td>Vadi Konakları</td>
               <td><span class="tm-desc">PVC boru seti</span></td>
@@ -168,7 +188,7 @@
               <td><span class="kalan-pill done"><span class="k-dot"></span> Teslim alındı</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-satinalma-form-detay.html?form=009" data-no-confirm aria-label="Form detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="teslim" data-santiye="vadi">
+            <tr data-f="teslim" data-durum="teslim" data-santiye="vadi">
               <td><div class="tm-cell"><div class="tm-mark" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-truck-ramp-box"></i></div><div class="tm-info"><b>SAT-2026-008</b><span>Ege Hazır Beton</span></div></div></td>
               <td>Vadi Konakları</td>
               <td><span class="tm-desc">Alçı sıva malzemesi</span></td>
@@ -188,6 +208,36 @@
   </main>
 </div>
 
+<div class="gv-fpanel-ov" id="fpTerminOv">
+  <aside class="gv-fpanel" id="fpTermin" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+    <div class="gv-fpanel-head">
+      <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+      <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="gv-fpanel-body">
+      <div class="gfield">
+        <label>Durum</label>
+        <select data-fp-key="durum" data-fp-label="Durum">
+          <option value="">Tümü</option>
+          <option value="yaklasan">Yaklaşan</option>
+          <option value="gecikti">Geciken</option>
+          <option value="teslim">Teslim Alındı</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:600">
+          <input type="checkbox" data-fp-key="arsivgoster" data-fp-label="Arşivlenenleri Göster">
+          Arşivlenenleri Göster
+        </label>
+      </div>
+    </div>
+    <div class="gv-fpanel-foot">
+      <button type="button" class="btn btn-ghost" data-fp-clear">Temizle</button>
+      <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+    </div>
+  </aside>
+</div>
+
 <script src="assets/js/shell.js"></script>
 <script src="assets/js/ui.js"></script>
 <script>
@@ -200,6 +250,45 @@
       if(tr.getAttribute('data-santiye') !== 'vadi') tr.remove();
     });
   }
+
+  /* ---- §17 Sistem Genelinde Düzenleme/Arşivleme — Gelişmiş Filtre + arşivle aksiyonu ---- */
+  if(window.gvFilterPanel){
+    window.gvFilterPanel.init('#fpTermin', {
+      table: '#tblTermin',
+      onApply: function(state){
+        var tbl = document.getElementById('tblTermin');
+        if(tbl) tbl.classList.toggle('gv-show-arsiv', !!(state.arsivgoster));
+      }
+    });
+  }
+  function gvWireRowArchive(rowSel){
+    document.querySelectorAll(rowSel).forEach(function(row){
+      var acts = row.querySelector('.row-acts');
+      if(!acts || acts.querySelector('[data-arsiv-btn]')) return;
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'ia-btn'; btn.setAttribute('data-no-confirm','');
+      btn.setAttribute('data-arsiv-btn',''); btn.setAttribute('data-tip','Arşivle'); btn.setAttribute('aria-label','Arşivle');
+      btn.innerHTML = '<i class="fa-solid fa-box-archive"></i>';
+      acts.appendChild(btn);
+    });
+  }
+  gvWireRowArchive('#tblTermin tbody tr');
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-arsiv-btn]'); if(!btn) return;
+    var row = btn.closest('tr'); if(!row) return;
+    if(row.getAttribute('data-arsiv') === '1'){ gvToast('Bu kayıt zaten arşivde.', {type:'info'}); return; }
+    var labelEl = row.querySelector('b');
+    var label = labelEl ? labelEl.textContent.trim() : 'Kayıt';
+    gvConfirm({
+      danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+      title: label + ' arşivlensin mi?',
+      message: 'Kayıt kalıcı olarak silinmez; arşive alınır ve varsayılan listede görünmez olur. İşlem kaydına yazılır (İşlem Kayıtları\'ndan izlenebilir) ve "Arşivlenenleri Göster" filtresiyle ya da Ayarlar > Arşiv Merkezi\'nden tekrar görüntülenebilir.',
+      onConfirm:function(){
+        row.setAttribute('data-arsiv','1');
+        gvToast(label + ' arşivlendi — varsayılan listede artık görünmeyecek.', {type:'danger'});
+      }
+    });
+  });
 })();
 </script>
 </body>

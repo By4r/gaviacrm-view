@@ -42,6 +42,10 @@
 @media(max-width:640px){
   .tdr-info b{max-width:150px}
 }
+
+/* §17 arşiv — varsayılan listede gizli, "Arşivlenenleri Göster" ile açılır */
+#tblTedarikci tbody tr[data-arsiv="1"]{display:none}
+#tblTedarikci.gv-show-arsiv tbody tr[data-arsiv="1"]{display:table-row}
 </style>
 </head>
 <body data-sec="satinalma" data-screen="tedarikciler">
@@ -111,7 +115,23 @@
           <button class="chip" data-filter="aktif">Aktif Siparişi Olan <span class="ch-cnt">4</span></button>
           <button class="chip" data-filter="gecikme">Gecikme Kaydı Olan <span class="ch-cnt">2</span></button>
         </div>
+        <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpTedarikci">
+          <i class="fa-solid fa-sliders"></i> Gelişmiş Filtre
+        </button>
       </div>
+
+      <div class="gv-achips-row" id="achipsTedarikci" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor.">
+            <i class="fa-solid fa-lock"></i> Filtreleri Kaydet
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all>
+            <i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle
+          </button>
+        </div>
+      </div>
+
       <div class="gc-body flush">
         <table class="gtable" id="tblTedarikci">
           <thead>
@@ -135,6 +155,35 @@
       </div>
     </div>
   </main>
+</div>
+
+<div class="gv-fpanel-ov" id="fpTedarikciOv">
+  <aside class="gv-fpanel" id="fpTedarikci" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+    <div class="gv-fpanel-head">
+      <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+      <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="gv-fpanel-body">
+      <div class="gfield">
+        <label>Durum</label>
+        <select data-fp-key="durum" data-fp-label="Durum">
+          <option value="">Tümü</option>
+          <option value="aktif">Aktif Siparişi Olan</option>
+          <option value="gecikme">Gecikme Kaydı Olan</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:600">
+          <input type="checkbox" data-fp-key="arsivgoster" data-fp-label="Arşivlenenleri Göster">
+          Arşivlenenleri Göster
+        </label>
+      </div>
+    </div>
+    <div class="gv-fpanel-foot">
+      <button type="button" class="btn btn-ghost" data-fp-clear">Temizle</button>
+      <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+    </div>
+  </aside>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -176,7 +225,12 @@
     var fArr = ['hepsi'];
     if(t.aktifSip) fArr.push('aktif');
     if(t.gecikme) fArr.push('gecikme');
-    html += '<tr data-f="' + fArr.join(' ') + '">';
+    /* Gelişmiş Filtre "Durum" select'i data-f'nin tek-değerli en belirgin durumunu
+       yansıtır (gecikme > aktif > hepsi) — data-f'nin literal İLK token'ı her satırda
+       sabit "hepsi" olduğu için (her tedarikçi "hepsi" kümesinde) o token'ı aynen almak
+       filtreyi işlevsiz bırakırdı; bu yüzden en spesifik durumu mirror'luyoruz. */
+    var durumVal = t.gecikme ? 'gecikme' : (t.aktifSip ? 'aktif' : 'hepsi');
+    html += '<tr data-f="' + fArr.join(' ') + '" data-durum="' + durumVal + '">';
     html += '<td><div class="tdr-cell"><div class="tdr-mark">' + initials(t.ad) + '</div>'
       + '<div class="tdr-info"><b>' + t.ad + '</b><span>' + t.no + ' · ' + t.kisi + ' · ' + t.tel + '</span></div></div></td>';
     html += '<td>' + t.kat + '</td>';
@@ -192,6 +246,45 @@
   var OLUSTURABILIR = ['superadmin','sahip','satinalma'];
   document.querySelectorAll('[data-view="olusturabilir"]').forEach(function(el){
     el.hidden = OLUSTURABILIR.indexOf(GV.role) === -1;
+  });
+
+  /* ---- §17 Sistem Genelinde Düzenleme/Arşivleme — Gelişmiş Filtre + arşivle aksiyonu ---- */
+  if(window.gvFilterPanel){
+    window.gvFilterPanel.init('#fpTedarikci', {
+      table: '#tblTedarikci',
+      onApply: function(state){
+        var tbl = document.getElementById('tblTedarikci');
+        if(tbl) tbl.classList.toggle('gv-show-arsiv', !!(state.arsivgoster));
+      }
+    });
+  }
+  function gvWireRowArchive(rowSel){
+    document.querySelectorAll(rowSel).forEach(function(row){
+      var acts = row.querySelector('.row-acts');
+      if(!acts || acts.querySelector('[data-arsiv-btn]')) return;
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'ia-btn'; btn.setAttribute('data-no-confirm','');
+      btn.setAttribute('data-arsiv-btn',''); btn.setAttribute('data-tip','Arşivle'); btn.setAttribute('aria-label','Arşivle');
+      btn.innerHTML = '<i class="fa-solid fa-box-archive"></i>';
+      acts.appendChild(btn);
+    });
+  }
+  gvWireRowArchive('#tblTedarikci tbody tr');
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-arsiv-btn]'); if(!btn) return;
+    var row = btn.closest('tr'); if(!row) return;
+    if(row.getAttribute('data-arsiv') === '1'){ gvToast('Bu kayıt zaten arşivde.', {type:'info'}); return; }
+    var labelEl = row.querySelector('b');
+    var label = labelEl ? labelEl.textContent.trim() : 'Kayıt';
+    gvConfirm({
+      danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+      title: label + ' arşivlensin mi?',
+      message: 'Kayıt kalıcı olarak silinmez; arşive alınır ve varsayılan listede görünmez olur. İşlem kaydına yazılır (İşlem Kayıtları\'ndan izlenebilir) ve "Arşivlenenleri Göster" filtresiyle ya da Ayarlar > Arşiv Merkezi\'nden tekrar görüntülenebilir.',
+      onConfirm:function(){
+        row.setAttribute('data-arsiv','1');
+        gvToast(label + ' arşivlendi — varsayılan listede artık görünmeyecek.', {type:'danger'});
+      }
+    });
   });
 })();
 </script>

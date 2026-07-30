@@ -113,6 +113,12 @@ tr.is-mismatch td{background:rgba(var(--danger-rgb,209,67,67),.05)}
   #tblIrs, #tblFtr{display:none}
   .df-mobile-list{display:block}
 }
+
+/* §17 arşiv — varsayılan listede gizli, "Arşivlenenleri Göster" ile açılır (masaüstü tablo + mobil kart ikizi) */
+#tblIrs tbody tr[data-arsiv="1"],#tblFtr tbody tr[data-arsiv="1"]{display:none}
+#tblIrs.gv-show-arsiv tbody tr[data-arsiv="1"],#tblFtr.gv-show-arsiv tbody tr[data-arsiv="1"]{display:table-row}
+#tblIrsMobile .df-mrow[data-arsiv="1"],#tblFtrMobile .df-mrow[data-arsiv="1"]{display:none}
+#tblIrsMobile.gv-show-arsiv .df-mrow[data-arsiv="1"],#tblFtrMobile.gv-show-arsiv .df-mrow[data-arsiv="1"]{display:block}
 </style>
 </head>
 <body data-sec="satinalma" data-screen="irsaliye">
@@ -184,6 +190,11 @@ tr.is-mismatch td{background:rgba(var(--danger-rgb,209,67,67),.05)}
       </div>
 
       <section class="tab-panel" data-tab-panel="irsaliye" role="tabpanel" aria-label="İrsaliyeler">
+        <div class="filter-bar">
+          <label class="chip" style="cursor:pointer;display:inline-flex;align-items:center;gap:7px">
+            <input type="checkbox" id="chkArsivIrs" style="margin:0"> Arşivlenenleri Göster
+          </label>
+        </div>
         <div class="gc-body flush">
           <table class="gtable" id="tblIrs">
             <thead>
@@ -221,6 +232,11 @@ tr.is-mismatch td{background:rgba(var(--danger-rgb,209,67,67),.05)}
       </section>
 
       <section class="tab-panel" data-tab-panel="fatura" role="tabpanel" aria-label="Faturalar" hidden>
+        <div class="filter-bar">
+          <label class="chip" style="cursor:pointer;display:inline-flex;align-items:center;gap:7px">
+            <input type="checkbox" id="chkArsivFtr" style="margin:0"> Arşivlenenleri Göster
+          </label>
+        </div>
         <div class="gc-body flush">
           <table class="gtable" id="tblFtr">
             <thead>
@@ -397,12 +413,38 @@ tr.is-mismatch td{background:rgba(var(--danger-rgb,209,67,67),.05)}
       if(tr.querySelector('.ia-btn[data-belge]')) return;
       var no = tr.querySelector('td').textContent.trim();
       var td = document.createElement('td');
-      td.innerHTML = '<div class="row-acts"><button type="button" class="ia-btn" data-belge="' + no + '" data-kind="' + kind + '" data-no-confirm aria-label="' + no + ' belgesini görüntüle"><i class="fa-regular fa-file-lines"></i></button></div>';
+      /* §17 arşiv — belge görüntüleme butonunun YANINA arşivle butonu (aynı row-acts,
+         data-belge/data-kind KORUNDU); mobil kart ikizi bu innerHTML'i kopyaladığı için
+         (upload akışında) otomatik senkron kalır. */
+      td.innerHTML = '<div class="row-acts"><button type="button" class="ia-btn" data-belge="' + no + '" data-kind="' + kind + '" data-no-confirm aria-label="' + no + ' belgesini görüntüle"><i class="fa-regular fa-file-lines"></i></button>'
+        + '<button type="button" class="ia-btn" data-arsiv-btn data-arsiv-no="' + no + '" data-arsiv-kind="' + kind + '" data-no-confirm data-tip="Arşivle" aria-label="' + no + ' arşivle"><i class="fa-solid fa-box-archive"></i></button></div>';
       tr.appendChild(td);
     });
   }
   addBelgeCol(document.getElementById('tblIrs'), 'irsaliye');
   addBelgeCol(document.getElementById('tblFtr'), 'fatura');
+
+  /* §17 arşiv — statik bake mobil kartlarda arşivle butonu YOK (yalnız belge butonu
+     baked); burada JS ile aynı row-acts'e ikinci buton eklenir. Yeni yüklenen
+     kayıtların mobil kartı zaten addBelgeCol sonrası kopyalandığı için otomatik gelir. */
+  function gvAddArchiveBtn(rowActs, no, kind){
+    if(!rowActs || rowActs.querySelector('[data-arsiv-btn]')) return;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'ia-btn'; btn.setAttribute('data-no-confirm','');
+    btn.setAttribute('data-arsiv-btn',''); btn.setAttribute('data-arsiv-no', no); btn.setAttribute('data-arsiv-kind', kind);
+    btn.setAttribute('data-tip','Arşivle'); btn.setAttribute('aria-label', no + ' arşivle');
+    btn.innerHTML = '<i class="fa-solid fa-box-archive"></i>';
+    rowActs.appendChild(btn);
+  }
+  function gvWireMobileArchiveBtns(mobileSel, kind){
+    document.querySelectorAll(mobileSel + ' .row-acts').forEach(function(ra){
+      var belgeBtn = ra.querySelector('[data-belge]');
+      var no = belgeBtn ? belgeBtn.getAttribute('data-belge') : null;
+      if(no) gvAddArchiveBtn(ra, no, kind);
+    });
+  }
+  gvWireMobileArchiveBtns('#tblIrsMobile', 'irsaliye');
+  gvWireMobileArchiveBtns('#tblFtrMobile', 'fatura');
 
   var belgeOv = document.getElementById('belgeModalOv');
   function openBelge(no, kind){
@@ -536,6 +578,42 @@ tr.is-mismatch td{background:rgba(var(--danger-rgb,209,67,67),.05)}
       gvToast(no2 + ' yüklendi', {icon:'fa-upload'});
     }
     uplOv.classList.remove('open');
+  });
+
+  /* ---- §17 Sistem Genelinde Düzenleme/Arşivleme — basitleştirilmiş inline çip.
+     Masaüstü tablo + mobil kart ikizi belge NO'suyla (data-belge) senkron tutulur
+     (index/sıra yerine — daha güvenilir: her iki temsil de aynı data-belge değerini taşır). ---- */
+  document.getElementById('chkArsivIrs').addEventListener('change', function(){
+    document.getElementById('tblIrs').classList.toggle('gv-show-arsiv', this.checked);
+    document.getElementById('tblIrsMobile').classList.toggle('gv-show-arsiv', this.checked);
+  });
+  document.getElementById('chkArsivFtr').addEventListener('change', function(){
+    document.getElementById('tblFtr').classList.toggle('gv-show-arsiv', this.checked);
+    document.getElementById('tblFtrMobile').classList.toggle('gv-show-arsiv', this.checked);
+  });
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-arsiv-btn]'); if(!btn) return;
+    var no = btn.getAttribute('data-arsiv-no');
+    var kind = btn.getAttribute('data-arsiv-kind');
+    var tblId = kind === 'irsaliye' ? 'tblIrs' : 'tblFtr';
+    var mobileId = kind === 'irsaliye' ? 'tblIrsMobile' : 'tblFtrMobile';
+    var deskBtn = document.querySelector('#' + tblId + ' [data-belge="' + no + '"]');
+    var row = deskBtn ? deskBtn.closest('tr') : null;
+    var mobBtn = document.querySelector('#' + mobileId + ' [data-belge="' + no + '"]');
+    var mCard = mobBtn ? mobBtn.closest('.df-mrow') : null;
+    if((row && row.getAttribute('data-arsiv') === '1') || (mCard && mCard.getAttribute('data-arsiv') === '1')){
+      gvToast('Bu kayıt zaten arşivde.', {type:'info'}); return;
+    }
+    gvConfirm({
+      danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+      title: no + ' arşivlensin mi?',
+      message: 'Kayıt kalıcı olarak silinmez; arşive alınır ve varsayılan listede görünmez olur. İşlem kaydına yazılır (İşlem Kayıtları\'ndan izlenebilir) ve "Arşivlenenleri Göster" filtresiyle ya da Ayarlar > Arşiv Merkezi\'nden tekrar görüntülenebilir.',
+      onConfirm:function(){
+        if(row) row.setAttribute('data-arsiv','1');
+        if(mCard) mCard.setAttribute('data-arsiv','1');
+        gvToast(no + ' arşivlendi — varsayılan listede artık görünmeyecek.', {type:'danger'});
+      }
+    });
   });
 })();
 </script>
