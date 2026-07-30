@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>Yeni Rol — Gavia CRM</title>
+<title id="pageTitleTag">Yeni Rol — Gavia CRM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -85,6 +85,9 @@
 
 .form-foot{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:18px 22px;border-top:1px solid var(--line)}
 
+/* §4 ek alanlar — departman + varsayılan/şantiye bazlı/firma geneli üçlü (mod=ekle|duzenle|kopya ortak) */
+.bool-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:2px}
+
 .side-tip{display:flex;gap:10px;padding:13px 0;border-bottom:1px solid var(--line)}
 .side-tip:last-child{border-bottom:none}
 .side-tip i{color:var(--acc-ink);font-size:13px;width:16px;text-align:center;flex:none;margin-top:1px}
@@ -115,14 +118,14 @@
     <div class="gv-crumb">
       <a href="crm-ayarlar-roller.html">Roller &amp; Yetkiler</a>
       <i class="fa-solid fa-chevron-right"></i>
-      <span>Yeni Rol</span>
+      <span id="crumbTail">Yeni Rol</span>
     </div>
 
     <div class="gv-page-head">
       <div>
         <div class="ph-eyebrow">Yönetim</div>
-        <h1>Yeni Rol <span class="gtag mint">Özel rol (demo)</span></h1>
-        <div class="ph-sub">Yapıtaş İnşaat A.Ş. — bölüm erişimi ve işlem yetkilerini tanımlayan yeni bir rol oluşturun</div>
+        <h1 id="pageH1">Yeni Rol <span class="gtag mint">Özel rol (demo)</span></h1>
+        <div class="ph-sub" id="pageSub">Yapıtaş İnşaat A.Ş. — bölüm erişimi ve işlem yetkilerini tanımlayan yeni bir rol oluşturun</div>
       </div>
     </div>
 
@@ -148,6 +151,27 @@
               <div class="gfield full">
                 <label for="fRolAciklama">Açıklama <span class="gf-hint">(isteğe bağlı)</span></label>
                 <textarea id="fRolAciklama" rows="2" placeholder="Bu rolün sorumluluklarını kısaca tanımlayın"></textarea>
+              </div>
+              <div class="gfield">
+                <label for="fRolDept">Departman</label>
+                <select id="fRolDept">
+                  <option value="Platform">Platform</option>
+                  <option value="Yönetim">Yönetim</option>
+                  <option value="Teknik">Teknik</option>
+                  <option value="Saha Operasyon">Saha Operasyon</option>
+                  <option value="Muhasebe & Finans">Muhasebe &amp; Finans</option>
+                  <option value="Satın Alma">Satın Alma</option>
+                  <option value="İnsan Kaynakları">İnsan Kaynakları</option>
+                  <option value="Satış">Satış</option>
+                </select>
+              </div>
+              <div class="gfield">
+                <label>Kapsam &amp; Durum</label>
+                <div class="bool-row">
+                  <label class="crud-chip"><input type="checkbox" id="fRolVarsayilan"><i class="fa-solid fa-shield-halved"></i> Varsayılan (sistem) rol</label>
+                  <label class="crud-chip"><input type="checkbox" id="fRolSantiye"><i class="fa-solid fa-location-dot"></i> Şantiye bazlı</label>
+                  <label class="crud-chip"><input type="checkbox" id="fRolFirma" checked><i class="fa-solid fa-building"></i> Firma geneli</label>
+                </div>
               </div>
             </form>
           </div>
@@ -180,7 +204,7 @@
           </div>
           <div class="form-foot">
             <a class="btn btn-ghost btn-sm" href="crm-ayarlar-roller.html">Vazgeç</a>
-            <button type="button" class="btn btn-acc btn-sm" data-no-confirm id="rolSubmit"><i class="fa-solid fa-floppy-disk"></i> Rolü Kaydet</button>
+            <button type="button" class="btn btn-acc btn-sm" data-no-confirm id="rolSubmit"><i class="fa-solid fa-floppy-disk"></i> <span id="rolSubmitLbl">Rolü Kaydet</span></button>
           </div>
         </div>
       </div>
@@ -190,9 +214,11 @@
         <div class="gv-card">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-circle-info"></i> Kayıt Notları</div></div>
           <div class="gc-body">
-            <div class="side-tip"><i class="fa-solid fa-table-cells"></i><span>Yetki grupları rail'in 9 bölümüyle birebir eşleşir; Ayarlar bölümü idari yetki taşır ve vurgulu gösterilir.</span></div>
+            <div class="side-tip"><i class="fa-solid fa-table-cells"></i><span>Yetki grupları rail'in bölümleriyle birebir eşleşir; Ayarlar bölümü idari yetki taşır ve vurgulu gösterilir.</span></div>
             <div class="side-tip"><i class="fa-solid fa-circle-half-stroke"></i><span>"Kısmi" seçilen bölümlerde ekran istisnası notu girilebilir — ör. "Raporlar hariç".</span></div>
-            <div class="side-tip"><i class="fa-solid fa-flask"></i><span>Bu form simülasyondur; oluşturulan rol kalıcı olarak kaydedilmez ve mevcut ekranların erişim davranışını değiştirmez.</span></div>
+            <div class="side-tip"><i class="fa-solid fa-sliders"></i><span>12 yetkili (görüntüleme, ekleme, düzenleme, silme, onaylama, raporlama, dışa aktarma, dosya vb.) ayrıntılı matris kaydettikten sonra <a href="crm-ayarlar-rol-matris.html" style="color:var(--acc-ink);font-weight:700">Rol Yetki Matrisi</a> ekranında yönetilir.</span></div>
+            <div class="side-tip"><i class="fa-solid fa-clock-rotate-left"></i><span>Yetki değişiklikleri <a href="crm-ayarlar-log.html" style="color:var(--acc-ink);font-weight:700">İşlem Kayıtları</a>'na yazılır.</span></div>
+            <div class="side-tip"><i class="fa-solid fa-flask"></i><span>Bu form simülasyondur; oluşturulan/güncellenen rol kalıcı olarak kaydedilmez ve mevcut ekranların erişim davranışını değiştirmez.</span></div>
             <div class="side-tip"><i class="fa-solid fa-arrow-left"></i><span>Rol matrisinin tamamı <a href="crm-ayarlar-roller.html" style="color:var(--acc-ink);font-weight:700">Roller &amp; Yetkiler</a> ekranındadır.</span></div>
           </div>
         </div>
@@ -207,6 +233,41 @@
 (function(){
   if(!window.GV) return;
 
+  /* ---- ?mod=ekle|duzenle|kopya & ?rol=<key> — crm-ayarlar-roller.html Rol Listesi'nden gelinir ---- */
+  var q = new URLSearchParams(location.search);
+  var mod = q.get('mod') || 'ekle';
+  var rolKey = q.get('rol') || '';
+
+  /* ROLE_DATA — crm-ayarlar-roller.html ROLES_META ile BİREBİR alan seti + düzenle/kopya
+     ön-doldurma için gerekli secs/part (rol-form'un KENDİ prefill ihtiyacı, roller.html'den
+     kopyalanmadı çünkü sayfalar arası JS paylaşımı yok — MPA, her ekran kendi kendine yeten) */
+  var ROLE_DATA = {
+    superadmin:{ad:'Gavia Platform Yöneticisi', aciklama:'Gavia platformunun tüm tenant\'larını ve sistem ayarlarını yönetir.', dept:'Platform', varsayilan:true, santiye:false, firma:true,
+      secs:['panel','santiye','gorev','personel','operasyon','satinalma','cari','finans','ayarlar'], part:{}, crud:{g:1,o:1,d:1,s:1,on:1}},
+    sahip:{ad:'Firma Sahibi', aciklama:'Firmanın tüm modüllerine tam erişimi olan en üst yetkili.', dept:'Yönetim', varsayilan:true, santiye:false, firma:true,
+      secs:['panel','santiye','gorev','personel','operasyon','satinalma','cari','finans','ayarlar'], part:{}, crud:{g:1,o:1,d:1,s:1,on:1}},
+    yonetim:{ad:'Genel Müdür', aciklama:'Genel müdür düzeyinde, ayarlar hariç tüm bölümlere erişir.', dept:'Yönetim', varsayilan:true, santiye:false, firma:true,
+      secs:['panel','santiye','gorev','personel','operasyon','satinalma','cari','finans'], part:{}, crud:{g:1,o:1,d:1,s:1,on:1}},
+    teknik:{ad:'Teknik Müdür', aciklama:'Teknik müdür; şantiye, operasyon ve finansın teknik yönünü yönetir.', dept:'Teknik', varsayilan:true, santiye:false, firma:true,
+      secs:['panel','santiye','gorev','operasyon','satinalma','finans'], part:{panel:1,satinalma:1,finans:1}, crud:{g:1,o:1,d:1,s:0,on:1}},
+    sef:{ad:'Şantiye Şefi', aciklama:'Şantiye şefi; kendi şantiyesinin saha, personel ve operasyon kayıtlarını yönetir.', dept:'Saha Operasyon', varsayilan:true, santiye:true, firma:false,
+      secs:['panel','santiye','gorev','personel','operasyon','satinalma','finans'], part:{panel:1,satinalma:1,finans:1}, crud:{g:1,o:1,d:1,s:0,on:1}},
+    muhasebe:{ad:'Muhasebe', aciklama:'Muhasebe; kasa, cari ve finans kayıtlarını işler.', dept:'Muhasebe & Finans', varsayilan:true, santiye:false, firma:true,
+      secs:['panel','personel','operasyon','satinalma','cari','finans'], part:{panel:1,satinalma:1}, crud:{g:1,o:1,d:1,s:0,on:1}},
+    satinalma:{ad:'Satın Alma Sorumlusu', aciklama:'Satın alma sorumlusu; malzeme talebi ve tedarik sürecini yürütür.', dept:'Satın Alma', varsayilan:true, santiye:false, firma:true,
+      secs:['panel','gorev','satinalma','cari'], part:{panel:1}, crud:{g:1,o:1,d:1,s:0,on:0}},
+    ik:{ad:'İK Uzmanı', aciklama:'İK uzmanı; personel, izin ve puantaj süreçlerini yönetir.', dept:'İnsan Kaynakları', varsayilan:true, santiye:false, firma:true,
+      secs:['panel','gorev','personel','operasyon'], part:{panel:1,operasyon:1}, crud:{g:1,o:1,d:1,s:0,on:1}},
+    personel:{ad:'Saha Personeli', aciklama:'Saha personeli; kendi görev ve bildirimlerini görüntüler.', dept:'Saha Operasyon', varsayilan:true, santiye:true, firma:false,
+      secs:['panel','gorev'], part:{panel:1}, crud:{g:1,o:0,d:0,s:0,on:0}},
+    satismudur:{ad:'Satış Müdürü', aciklama:'Satış müdürü; pipeline ve teklif onay sürecini yönetir.', dept:'Satış', varsayilan:true, santiye:false, firma:true,
+      secs:['panel','gorev','satis','cari'], part:{panel:1}, crud:{g:1,o:1,d:1,s:0,on:1}},
+    satistemsilci:{ad:'Satış Temsilcisi', aciklama:'Satış temsilcisi; kendi müşteri ve fırsatlarını yönetir.', dept:'Satış', varsayilan:true, santiye:false, firma:true,
+      secs:['panel','gorev','satis'], part:{panel:1,satis:1}, crud:{g:1,o:1,d:1,s:0,on:0}},
+    'ozel-santiye-muhasebe':{ad:'Şantiye Muhasebe Sorumlusu', aciklama:'Özel rol (demo) — tek şantiyenin kasa ve puantaj kayıtlarını muhasebeye ön-hazırlar.', dept:'Muhasebe & Finans', varsayilan:false, santiye:true, firma:false,
+      secs:['panel','operasyon'], part:{panel:1}, crud:{g:1,o:1,d:0,s:0,on:0}}
+  };
+
   /* rail'in 9 bölümü — crm-ayarlar-roller.html SECS ile BİREBİR (ikon/etiket kaynağı) */
   var SECS = [
     {k:'panel',     ic:'fa-gauge-high',     lbl:'Panel'},
@@ -217,6 +278,7 @@
     {k:'satinalma', ic:'fa-cart-flatbed',   lbl:'Satın Alma'},
     {k:'cari',      ic:'fa-address-book',   lbl:'Cari'},
     {k:'finans',    ic:'fa-file-signature', lbl:'Finans'},
+    {k:'satis',     ic:'fa-chart-line',     lbl:'Satış'},
     {k:'ayarlar',   ic:'fa-sliders',        lbl:'Ayarlar', admin:true}
   ];
 
@@ -249,10 +311,54 @@
     });
   });
 
+  /* ---- ?mod=duzenle|kopya ön-doldurma + başlık/rehber/gönder metni uyarlaması ---- */
+  var kaynakRol = ROLE_DATA[rolKey] || null;
+  if((mod === 'duzenle' || mod === 'kopya') && kaynakRol){
+    document.getElementById('fRolAd').value = kaynakRol.ad + (mod === 'kopya' ? ' (Kopya)' : '');
+    document.getElementById('fRolAciklama').value = kaynakRol.aciklama;
+    document.getElementById('fRolDept').value = kaynakRol.dept;
+    document.getElementById('fRolVarsayilan').checked = mod === 'duzenle' ? kaynakRol.varsayilan : false;
+    document.getElementById('fRolSantiye').checked = kaynakRol.santiye;
+    document.getElementById('fRolFirma').checked = kaynakRol.firma;
+    SECS.forEach(function(s){
+      var val = kaynakRol.secs.indexOf(s.k) === -1 ? 'yok' : (kaynakRol.part[s.k] ? 'kismi' : 'tam');
+      var r = body.querySelector('input[name="perm-' + s.k + '"][value="' + val + '"]');
+      if(r){ r.checked = true; r.dispatchEvent(new Event('change')); }
+    });
+    var c = kaynakRol.crud;
+    var chipMap = {g:0, o:1, d:2, s:3, on:4};
+    var chipInputs = document.querySelectorAll('.crud-row input[type=checkbox]');
+    Object.keys(chipMap).forEach(function(k){ if(chipInputs[chipMap[k]]) chipInputs[chipMap[k]].checked = !!c[k]; });
+  }
+
+  var pageH1 = document.getElementById('pageH1');
+  var crumbTail = document.getElementById('crumbTail');
+  var pageSub = document.getElementById('pageSub');
+  var submitLbl = document.getElementById('rolSubmitLbl');
+  var pageTitleTag = document.getElementById('pageTitleTag');
+  if(mod === 'duzenle' && kaynakRol){
+    pageH1.innerHTML = 'Rolü Düzenle <span class="gtag">' + kaynakRol.ad + '</span>';
+    crumbTail.textContent = 'Rolü Düzenle';
+    pageSub.textContent = 'Yapıtaş İnşaat A.Ş. — "' + kaynakRol.ad + '" rolünün bölüm erişimi ve alanlarını güncelleyin';
+    submitLbl.textContent = 'Değişiklikleri Kaydet';
+    pageTitleTag.textContent = 'Rolü Düzenle — Gavia CRM';
+  } else if(mod === 'kopya' && kaynakRol){
+    pageH1.innerHTML = 'Rolü Kopyala <span class="gtag mint">Özel rol (demo)</span>';
+    crumbTail.textContent = 'Rolü Kopyala';
+    pageSub.textContent = 'Yapıtaş İnşaat A.Ş. — "' + kaynakRol.ad + '" rolünün bir kopyasını yeni rol olarak kaydedin';
+    submitLbl.textContent = 'Kopyayı Kaydet';
+    pageTitleTag.textContent = 'Rolü Kopyala — Gavia CRM';
+  }
+
   document.getElementById('rolSubmit').addEventListener('click', function(){
     var ad = document.getElementById('fRolAd').value.trim();
     if(!ad){ gvToast('Rol adı girin.', {type:'danger'}); return; }
-    gvToast('"' + ad + '" rolü oluşturuldu (demo) — RBAC davranışını etkilemez.', {type:'ok'});
+    var msg = mod === 'duzenle'
+      ? '"' + ad + '" rolü güncellendi (demo) — işlem kaydına eklendi, RBAC davranışını etkilemez.'
+      : mod === 'kopya'
+        ? '"' + ad + '" adıyla yeni rol oluşturuldu (demo) — kaynak rolün kopyası, RBAC davranışını etkilemez.'
+        : '"' + ad + '" rolü oluşturuldu (demo) — RBAC davranışını etkilemez.';
+    gvToast(msg, {type:'ok'});
     setTimeout(function(){ location.href = 'crm-ayarlar-roller.html'; }, 1000);
   });
 })();

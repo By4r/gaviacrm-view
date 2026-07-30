@@ -65,6 +65,35 @@ tr.is-owner .rc-mark{background:var(--acc-ink);color:#fff}
 .lg-yes{color:var(--acc-ink);font-size:13px}
 .lg-no{display:inline-block;width:13px;height:2px;border-radius:2px;background:var(--line-2)}
 
+/* ============ Rol Listesi kartı (Dalga 2A / T-C — §4 tam yönetim) ============ */
+.scope{display:inline-flex;align-items:center;gap:7px;font-size:12.5px}
+.scope i{font-size:11px;color:var(--muted)}
+.scope.all{color:var(--acc-ink);font-weight:600}
+.scope.all i{color:var(--acc-ink)}
+.scope.site{color:var(--ink-2)}
+.rl-cnt-link{color:var(--acc-ink);font-weight:700;text-decoration:none}
+.rl-cnt-link:hover{text-decoration:underline}
+.rl-cnt-zero{color:var(--muted);font-weight:600}
+tr.is-pasif td{opacity:.62}
+
+/* rol silme/arşivleme onay modalı — bağlı kullanıcı uyarısı + devret (§4 kabul kriteri) */
+.rol-sil-modal{width:min(560px,100%)}
+.rsm-usercount{
+  display:flex;align-items:center;gap:11px;background:var(--warn-tint);
+  border:1px solid color-mix(in srgb,var(--warn) 30%,var(--paper));
+  border-radius:var(--r-md);padding:12px 14px;margin-bottom:16px;
+}
+.rsm-usercount i{color:var(--warn);font-size:16px;flex:none}
+.rsm-usercount b{color:var(--ink);font-weight:800}
+.rsm-userlist{max-height:190px;overflow-y:auto;border:1px solid var(--line);border-radius:var(--r-md);margin-bottom:16px}
+.rsm-user{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);font-size:12.5px}
+.rsm-user:last-child{border-bottom:none}
+.rsm-user .gcell-mark{width:28px;height:28px;font-size:11px;flex:none}
+.rsm-devret label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.rsm-devret select{width:100%;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);padding:9px 11px;outline:none}
+.rsm-noUsers{display:flex;align-items:center;gap:11px;background:var(--ok-tint);border:1px solid color-mix(in srgb,var(--ok) 28%,var(--paper));border-radius:var(--r-md);padding:12px 14px;margin-bottom:16px;font-size:12.5px;color:var(--ink-2)}
+.rsm-noUsers i{color:var(--ok);font-size:15px}
+
 /* bilgi notu şeridi (matris 10. kolona ŞİŞİRİLMEZ) */
 .phase-note{
   display:flex;align-items:flex-start;gap:13px;
@@ -104,6 +133,35 @@ tr.is-owner .rc-mark{background:var(--acc-ink);color:#fff}
         <div class="ph-sub">Yapıtaş İnşaat A.Ş. — rollerin bölüm erişim matrisi</div>
       </div>
       <a class="btn btn-ghost btn-sm" href="crm-ayarlar-rol-form.html"><i class="fa-solid fa-plus"></i> Yeni rol</a>
+    </div>
+
+    <!-- ============ Rol Listesi — tam yönetim (§4): alan seti + yaşam döngüsü aksiyonları ============ -->
+    <div class="gv-card">
+      <div class="gc-head">
+        <div class="gc-title"><i class="fa-solid fa-list-ul"></i> Rol Listesi <span class="gtag" id="rlCountTag">12 rol</span></div>
+      </div>
+      <div class="gc-body flush">
+        <div class="mtx-wrap">
+          <!-- statik bake — JS ROLES_META dizisinden VERBATIM (roller.html'in kendi rolBody render'ı) -->
+          <table class="gtable" id="rlTable" style="min-width:920px">
+            <thead>
+              <tr>
+                <th>Rol</th>
+                <th>Departman</th>
+                <th>Kapsam</th>
+                <th>Varsayılan</th>
+                <th>Kullanıcı</th>
+                <th>Durum</th>
+                <th>İşlemler</th>
+              </tr>
+            </thead>
+            <tbody id="rlBody"><tr data-rol="superadmin"><td><div class="gcell"><div class="gcell-mark">GP</div><div class="gcell-info"><div class="gcell-name">Gavia Platform Yöneticisi</div><div class="gcell-sub">Sistem · 15.01.2026</div></div></div></td><td>Platform</td><td><span class="scope all"><i class="fa-solid fa-building"></i> Firma Geneli</span></td><td><span class="gtag mint"><i class="fa-solid fa-shield-halved"></i> Sistem</span></td><td><a class="rl-cnt-link" href="crm-ayarlar-rol-kullanicilar.html?rol=superadmin">1 kullanıcı</a></td><td class="rl-durum"><span class="gstat ok">Aktif</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-ayarlar-rol-detay.html?rol=superadmin" aria-label="Detay" data-tip="Detay"><i class="fa-solid fa-eye"></i></a><a class="ia-btn" href="crm-ayarlar-rol-form.html?mod=duzenle&amp;rol=superadmin" aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm="" data-rol-toggle="superadmin" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm="" data-rol-sil="superadmin" aria-label="Sil veya arşivle" data-tip="Sil / Arşivle"><i class="fa-solid fa-trash"></i></button></div></td></tr><tr data-rol="sahip"><td><div class="gcell"><div class="gcell-mark">FS</div><div class="gcell-info"><div class="gcell-name">Firma Sahibi</div><div class="gcell-sub">Sistem · 15.01.2026</div></div></div></td><td>Yönetim</td><td><span class="scope all"><i class="fa-solid fa-building"></i> Firma Geneli</span></td><td><span class="gtag mint"><i class="fa-solid fa-shield-halved"></i> Sistem</span></td><td><a class="rl-cnt-link" href="crm-ayarlar-rol-kullanicilar.html?rol=sahip">1 kullanıcı</a></td><td class="rl-durum"><span class="gstat ok">Aktif</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-ayarlar-rol-detay.html?rol=sahip" aria-label="Detay" data-tip="Detay"><i class="fa-solid fa-eye"></i></a><a class="ia-btn" href="crm-ayarlar-rol-form.html?mod=duzenle&amp;rol=sahip" aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm="" data-rol-toggle="sahip" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm="" data-rol-sil="sahip" aria-label="Sil veya arşivle" data-tip="Sil / Arşivle"><i class="fa-solid fa-trash"></i></button></div></td></tr><tr data-rol="yonetim"><td><div class="gcell"><div class="gcell-mark">GM</div><div class="gcell-info"><div class="gcell-name">Genel Müdür</div><div class="gcell-sub">Sistem · 15.01.2026</div></div></div></td><td>Yönetim</td><td><span class="scope all"><i class="fa-solid fa-building"></i> Firma Geneli</span></td><td><span class="gtag mint"><i class="fa-solid fa-shield-halved"></i> Sistem</span></td><td><a class="rl-cnt-link" href="crm-ayarlar-rol-kullanicilar.html?rol=yonetim">1 kullanıcı</a></td><td class="rl-durum"><span class="gstat ok">Aktif</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-ayarlar-rol-detay.html?rol=yonetim" aria-label="Detay" data-tip="Detay"><i class="fa-solid fa-eye"></i></a><a class="ia-btn" href="crm-ayarlar-rol-form.html?mod=duzenle&amp;rol=yonetim" aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm="" data-rol-toggle="yonetim" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm="" data-rol-sil="yonetim" aria-label="Sil veya arşivle" data-tip="Sil / Arşivle"><i class="fa-solid fa-trash"></i></button></div></td></tr><tr data-rol="teknik"><td><div class="gcell"><div class="gcell-mark">TM</div><div class="gcell-info"><div class="gcell-name">Teknik Müdür</div><div class="gcell-sub">Sistem · 15.01.2026</div></div></div></td><td>Teknik</td><td><span class="scope all"><i class="fa-solid fa-building"></i> Firma Geneli</span></td><td><span class="gtag mint"><i class="fa-solid fa-shield-halved"></i> Sistem</span></td><td><a class="rl-cnt-link" href="crm-ayarlar-rol-kullanicilar.html?rol=teknik">1 kullanıcı</a></td><td class="rl-durum"><span class="gstat ok">Aktif</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-ayarlar-rol-detay.html?rol=teknik" aria-label="Detay" data-tip="Detay"><i class="fa-solid fa-eye"></i></a><a class="ia-btn" href="crm-ayarlar-rol-form.html?mod=duzenle&amp;rol=teknik" aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm="" data-rol-toggle="teknik" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm="" data-rol-sil="teknik" aria-label="Sil veya arşivle" data-tip="Sil / Arşivle"><i class="fa-solid fa-trash"></i></button></div></td></tr><tr data-rol="sef"><td><div class="gcell"><div class="gcell-mark">ŞŞ</div><div class="gcell-info"><div class="gcell-name">Şantiye Şefi</div><div class="gcell-sub">Sistem · 15.01.2026</div></div></div></td><td>Saha Operasyon</td><td><span class="scope site"><i class="fa-solid fa-location-dot"></i> Şantiye Bazlı</span></td><td><span class="gtag mint"><i class="fa-solid fa-shield-halved"></i> Sistem</span></td><td><a class="rl-cnt-link" href="crm-ayarlar-rol-kullanicilar.html?rol=sef">3 kullanıcı</a></td><td class="rl-durum"><span class="gstat ok">Aktif</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-ayarlar-rol-detay.html?rol=sef" aria-label="Detay" data-tip="Detay"><i class="fa-solid fa-eye"></i></a><a class="ia-btn" href="crm-ayarlar-rol-form.html?mod=duzenle&amp;rol=sef" aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm="" data-rol-toggle="sef" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm="" data-rol-sil="sef" aria-label="Sil veya arşivle" data-tip="Sil / Arşivle"><i class="fa-solid fa-trash"></i></button></div></td></tr><tr data-rol="muhasebe"><td><div class="gcell"><div class="gcell-mark">M</div><div class="gcell-info"><div class="gcell-name">Muhasebe</div><div class="gcell-sub">Sistem · 15.01.2026</div></div></div></td><td>Muhasebe &amp; Finans</td><td><span class="scope all"><i class="fa-solid fa-building"></i> Firma Geneli</span></td><td><span class="gtag mint"><i class="fa-solid fa-shield-halved"></i> Sistem</span></td><td><a class="rl-cnt-link" href="crm-ayarlar-rol-kullanicilar.html?rol=muhasebe">1 kullanıcı</a></td><td class="rl-durum"><span class="gstat ok">Aktif</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-ayarlar-rol-detay.html?rol=muhasebe" aria-label="Detay" data-tip="Detay"><i class="fa-solid fa-eye"></i></a><a class="ia-btn" href="crm-ayarlar-rol-form.html?mod=duzenle&amp;rol=muhasebe" aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm="" data-rol-toggle="muhasebe" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm="" data-rol-sil="muhasebe" aria-label="Sil veya arşivle" data-tip="Sil / Arşivle"><i class="fa-solid fa-trash"></i></button></div></td></tr><tr data-rol="satinalma"><td><div class="gcell"><div class="gcell-mark">SA</div><div class="gcell-info"><div class="gcell-name">Satın Alma Sorumlusu</div><div class="gcell-sub">Sistem · 15.01.2026</div></div></div></td><td>Satın Alma</td><td><span class="scope all"><i class="fa-solid fa-building"></i> Firma Geneli</span></td><td><span class="gtag mint"><i class="fa-solid fa-shield-halved"></i> Sistem</span></td><td><a class="rl-cnt-link" href="crm-ayarlar-rol-kullanicilar.html?rol=satinalma">1 kullanıcı</a></td><td class="rl-durum"><span class="gstat ok">Aktif</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-ayarlar-rol-detay.html?rol=satinalma" aria-label="Detay" data-tip="Detay"><i class="fa-solid fa-eye"></i></a><a class="ia-btn" href="crm-ayarlar-rol-form.html?mod=duzenle&amp;rol=satinalma" aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm="" data-rol-toggle="satinalma" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm="" data-rol-sil="satinalma" aria-label="Sil veya arşivle" data-tip="Sil / Arşivle"><i class="fa-solid fa-trash"></i></button></div></td></tr><tr data-rol="ik"><td><div class="gcell"><div class="gcell-mark">İU</div><div class="gcell-info"><div class="gcell-name">İK Uzmanı</div><div class="gcell-sub">Sistem · 15.01.2026</div></div></div></td><td>İnsan Kaynakları</td><td><span class="scope all"><i class="fa-solid fa-building"></i> Firma Geneli</span></td><td><span class="gtag mint"><i class="fa-solid fa-shield-halved"></i> Sistem</span></td><td><a class="rl-cnt-link" href="crm-ayarlar-rol-kullanicilar.html?rol=ik">1 kullanıcı</a></td><td class="rl-durum"><span class="gstat ok">Aktif</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-ayarlar-rol-detay.html?rol=ik" aria-label="Detay" data-tip="Detay"><i class="fa-solid fa-eye"></i></a><a class="ia-btn" href="crm-ayarlar-rol-form.html?mod=duzenle&amp;rol=ik" aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm="" data-rol-toggle="ik" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm="" data-rol-sil="ik" aria-label="Sil veya arşivle" data-tip="Sil / Arşivle"><i class="fa-solid fa-trash"></i></button></div></td></tr><tr data-rol="personel"><td><div class="gcell"><div class="gcell-mark">SP</div><div class="gcell-info"><div class="gcell-name">Saha Personeli</div><div class="gcell-sub">Sistem · 15.01.2026</div></div></div></td><td>Saha Operasyon</td><td><span class="scope site"><i class="fa-solid fa-location-dot"></i> Şantiye Bazlı</span></td><td><span class="gtag mint"><i class="fa-solid fa-shield-halved"></i> Sistem</span></td><td><a class="rl-cnt-link" href="crm-ayarlar-rol-kullanicilar.html?rol=personel">9 kullanıcı</a></td><td class="rl-durum"><span class="gstat ok">Aktif</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-ayarlar-rol-detay.html?rol=personel" aria-label="Detay" data-tip="Detay"><i class="fa-solid fa-eye"></i></a><a class="ia-btn" href="crm-ayarlar-rol-form.html?mod=duzenle&amp;rol=personel" aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm="" data-rol-toggle="personel" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm="" data-rol-sil="personel" aria-label="Sil veya arşivle" data-tip="Sil / Arşivle"><i class="fa-solid fa-trash"></i></button></div></td></tr><tr data-rol="satismudur"><td><div class="gcell"><div class="gcell-mark">SM</div><div class="gcell-info"><div class="gcell-name">Satış Müdürü</div><div class="gcell-sub">Sistem · 15.01.2026</div></div></div></td><td>Satış</td><td><span class="scope all"><i class="fa-solid fa-building"></i> Firma Geneli</span></td><td><span class="gtag mint"><i class="fa-solid fa-shield-halved"></i> Sistem</span></td><td><a class="rl-cnt-link" href="crm-ayarlar-rol-kullanicilar.html?rol=satismudur">1 kullanıcı</a></td><td class="rl-durum"><span class="gstat ok">Aktif</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-ayarlar-rol-detay.html?rol=satismudur" aria-label="Detay" data-tip="Detay"><i class="fa-solid fa-eye"></i></a><a class="ia-btn" href="crm-ayarlar-rol-form.html?mod=duzenle&amp;rol=satismudur" aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm="" data-rol-toggle="satismudur" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm="" data-rol-sil="satismudur" aria-label="Sil veya arşivle" data-tip="Sil / Arşivle"><i class="fa-solid fa-trash"></i></button></div></td></tr><tr data-rol="satistemsilci"><td><div class="gcell"><div class="gcell-mark">ST</div><div class="gcell-info"><div class="gcell-name">Satış Temsilcisi</div><div class="gcell-sub">Sistem · 15.01.2026</div></div></div></td><td>Satış</td><td><span class="scope all"><i class="fa-solid fa-building"></i> Firma Geneli</span></td><td><span class="gtag mint"><i class="fa-solid fa-shield-halved"></i> Sistem</span></td><td><a class="rl-cnt-link" href="crm-ayarlar-rol-kullanicilar.html?rol=satistemsilci">1 kullanıcı</a></td><td class="rl-durum"><span class="gstat ok">Aktif</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-ayarlar-rol-detay.html?rol=satistemsilci" aria-label="Detay" data-tip="Detay"><i class="fa-solid fa-eye"></i></a><a class="ia-btn" href="crm-ayarlar-rol-form.html?mod=duzenle&amp;rol=satistemsilci" aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm="" data-rol-toggle="satistemsilci" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm="" data-rol-sil="satistemsilci" aria-label="Sil veya arşivle" data-tip="Sil / Arşivle"><i class="fa-solid fa-trash"></i></button></div></td></tr><tr data-rol="ozel-santiye-muhasebe" class="is-pasif"><td><div class="gcell"><div class="gcell-mark">ŞM</div><div class="gcell-info"><div class="gcell-name">Şantiye Muhasebe Sorumlusu</div><div class="gcell-sub">Kemal Yapıcıoğlu · 28.06.2026</div></div></div></td><td>Muhasebe &amp; Finans</td><td><span class="scope site"><i class="fa-solid fa-location-dot"></i> Şantiye Bazlı</span></td><td><span class="gtag"><i class="fa-solid fa-user-pen"></i> Özel<span class="gtag mint" style="margin-left:5px">demo</span></span></td><td><span class="rl-cnt-zero">0 kullanıcı</span></td><td class="rl-durum"><span class="gstat off">Pasif</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-ayarlar-rol-detay.html?rol=ozel-santiye-muhasebe" aria-label="Detay" data-tip="Detay"><i class="fa-solid fa-eye"></i></a><a class="ia-btn" href="crm-ayarlar-rol-form.html?mod=duzenle&amp;rol=ozel-santiye-muhasebe" aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm="" data-rol-toggle="ozel-santiye-muhasebe" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm="" data-rol-sil="ozel-santiye-muhasebe" aria-label="Sil veya arşivle" data-tip="Sil / Arşivle"><i class="fa-solid fa-trash"></i></button></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="gc-foot">
+        <span style="display:flex;align-items:center;gap:8px"><i class="fa-solid fa-circle-info" style="color:var(--acc-ink)"></i> Sistem rolleri (Gavia Platform Yöneticisi, Firma Sahibi) pasife alınamaz veya silinemez; özel roller tam yaşam döngüsüyle yönetilir.</span>
+      </div>
     </div>
 
     <div class="gv-card">
@@ -234,6 +292,164 @@ tr.is-owner .rc-mark{background:var(--acc-ink);color:#fff}
     bh += '</tr>';
   });
   body.innerHTML = bh;
+})();
+</script>
+<script>
+/* ============ Rol Listesi — tam yönetim akışı (§4) ============
+   ROLES_META shell.js ROLES config'inden BİREBİR (11 gerçek rol) + 1 "Özel rol (demo)"
+   satırı — rol-form.html'in "Yeni Rol" simülasyonunun listede nasıl görüneceğini
+   gösterir (0 kullanıcı, pasif başlar; sistem rolüne DOKUNMAZ, kararlar.md'de not var).
+   Kullanıcı listeleri crm-ayarlar-kullanicilar.html'deki 18 gerçek hesapla BİREBİR. */
+(function(){
+  if(!window.GV) return;
+
+  var U = {
+    dz:{ini:'DA', ad:'Deniz Aksoy',      sub:'Gavia platform erişimi (tenant koltuğu değil)'},
+    ky:{ini:'KY', ad:'Kemal Yapıcıoğlu', sub:'kemal.yapicioglu@yapitas.com.tr'},
+    md:{ini:'MD', ad:'Murat Denizli',    sub:'murat.denizli@yapitas.com.tr'},
+    es:{ini:'ES', ad:'Elif Sarıkaya',    sub:'elif.sarikaya@yapitas.com.tr'},
+    hd:{ini:'HD', ad:'Hasan Demirci',    sub:'Vadi Konakları'},
+    ak:{ini:'AK', ad:'Aylin Koç',        sub:'Liman Lojistik Merkezi'},
+    ot:{ini:'ÖT', ad:'Ömer Taşkın',      sub:'Merkez Şantiye'},
+    na:{ini:'NA', ad:'Nesrin Aydın',     sub:'nesrin.aydin@yapitas.com.tr'},
+    by:{ini:'BY', ad:'Baran Yıldız',     sub:'baran.yildiz@yapitas.com.tr'},
+    sk:{ini:'SK', ad:'Seda Karaca',      sub:'seda.karaca@yapitas.com.tr'},
+    is:{ini:'İS', ad:'İbrahim Sönmez',   sub:'Vadi Konakları'},
+    sa2:{ini:'ŞA',ad:'Şükrü Aslan',      sub:'Liman Lojistik Merkezi'},
+    ry:{ini:'RY', ad:'Recep Yaman',      sub:'Merkez Şantiye'},
+    av:{ini:'AV', ad:'Ali Vural',        sub:'Vadi Konakları'},
+    hg:{ini:'HG', ad:'Halil Güneş',      sub:'Liman Lojistik Merkezi'},
+    rk:{ini:'RK', ad:'Ramazan Kılıç',    sub:'Vadi Konakları'},
+    sd:{ini:'SD', ad:'Selim Doğan',      sub:'Vadi Konakları'},
+    me:{ini:'ME', ad:'Musa Erdem',       sub:'Vadi Konakları'},
+    vs:{ini:'VŞ', ad:'Veli Şimşek',      sub:'Vadi Konakları'},
+    sa:{ini:'SA', ad:'Selin Acar',       sub:'selin.acar@yapitas.com.tr'},
+    oe:{ini:'OE', ad:'Okan Eren',        sub:'okan.eren@yapitas.com.tr'}
+  };
+
+  var ROLES_META = [
+    {key:'superadmin', ad:'Gavia Platform Yöneticisi', departman:'Platform', varsayilan:true, santiyeBazli:false, firmaGeneli:true, aktif:true, protected:true, olusturan:'Sistem', tarih:'15.01.2026', users:[U.dz]},
+    {key:'sahip', ad:'Firma Sahibi', departman:'Yönetim', varsayilan:true, santiyeBazli:false, firmaGeneli:true, aktif:true, protected:true, olusturan:'Sistem', tarih:'15.01.2026', users:[U.ky]},
+    {key:'yonetim', ad:'Genel Müdür', departman:'Yönetim', varsayilan:true, santiyeBazli:false, firmaGeneli:true, aktif:true, protected:false, olusturan:'Sistem', tarih:'15.01.2026', users:[U.md]},
+    {key:'teknik', ad:'Teknik Müdür', departman:'Teknik', varsayilan:true, santiyeBazli:false, firmaGeneli:true, aktif:true, protected:false, olusturan:'Sistem', tarih:'15.01.2026', users:[U.es]},
+    {key:'sef', ad:'Şantiye Şefi', departman:'Saha Operasyon', varsayilan:true, santiyeBazli:true, firmaGeneli:false, aktif:true, protected:false, olusturan:'Sistem', tarih:'15.01.2026', users:[U.hd,U.ak,U.ot]},
+    {key:'muhasebe', ad:'Muhasebe', departman:'Muhasebe & Finans', varsayilan:true, santiyeBazli:false, firmaGeneli:true, aktif:true, protected:false, olusturan:'Sistem', tarih:'15.01.2026', users:[U.na]},
+    {key:'satinalma', ad:'Satın Alma Sorumlusu', departman:'Satın Alma', varsayilan:true, santiyeBazli:false, firmaGeneli:true, aktif:true, protected:false, olusturan:'Sistem', tarih:'15.01.2026', users:[U.by]},
+    {key:'ik', ad:'İK Uzmanı', departman:'İnsan Kaynakları', varsayilan:true, santiyeBazli:false, firmaGeneli:true, aktif:true, protected:false, olusturan:'Sistem', tarih:'15.01.2026', users:[U.sk]},
+    {key:'personel', ad:'Saha Personeli', departman:'Saha Operasyon', varsayilan:true, santiyeBazli:true, firmaGeneli:false, aktif:true, protected:false, olusturan:'Sistem', tarih:'15.01.2026', users:[U.is,U.sa2,U.ry,U.av,U.hg,U.rk,U.sd,U.me,U.vs]},
+    {key:'satismudur', ad:'Satış Müdürü', departman:'Satış', varsayilan:true, santiyeBazli:false, firmaGeneli:true, aktif:true, protected:false, olusturan:'Sistem', tarih:'15.01.2026', users:[U.oe]},
+    {key:'satistemsilci', ad:'Satış Temsilcisi', departman:'Satış', varsayilan:true, santiyeBazli:false, firmaGeneli:true, aktif:true, protected:false, olusturan:'Sistem', tarih:'15.01.2026', users:[U.sa]},
+    {key:'ozel-santiye-muhasebe', ad:'Şantiye Muhasebe Sorumlusu', departman:'Muhasebe & Finans', varsayilan:false, santiyeBazli:true, firmaGeneli:false, aktif:false, protected:false, olusturan:'Kemal Yapıcıoğlu', tarih:'28.06.2026', users:[], demo:true}
+  ];
+  window._rolesMeta = ROLES_META;   /* rol-detay / rol-kullanicilar / rol-matris aynı diziyi kopyalar (BİREBİR tut) */
+
+  var body = document.getElementById('rlBody');
+  var countTag = document.getElementById('rlCountTag');
+
+  function esc(t){ var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
+
+  function rowHtml(r){
+    var scope = r.firmaGeneli
+      ? '<span class="scope all"><i class="fa-solid fa-building"></i> Firma Geneli</span>'
+      : '<span class="scope site"><i class="fa-solid fa-location-dot"></i> Şantiye Bazlı</span>';
+    var varsa = r.varsayilan
+      ? '<span class="gtag mint"><i class="fa-solid fa-shield-halved"></i> Sistem</span>'
+      : '<span class="gtag"><i class="fa-solid fa-user-pen"></i> Özel<span class="gtag mint" style="margin-left:5px">demo</span></span>';
+    var cnt = r.users.length
+      ? '<a class="rl-cnt-link" href="crm-ayarlar-rol-kullanicilar.html?rol=' + r.key + '">' + r.users.length + ' kullanıcı</a>'
+      : '<span class="rl-cnt-zero">0 kullanıcı</span>';
+    var durum = r.aktif ? '<span class="gstat ok">Aktif</span>' : '<span class="gstat off">Pasif</span>';
+    return '<tr data-rol="' + r.key + '"' + (r.aktif ? '' : ' class="is-pasif"') + '>'
+      + '<td><div class="gcell"><div class="gcell-mark">' + esc(r.ad.split(' ').map(function(w){return w[0];}).slice(0,2).join('')) + '</div>'
+      +   '<div class="gcell-info"><div class="gcell-name">' + esc(r.ad) + '</div><div class="gcell-sub">' + esc(r.olusturan) + ' · ' + esc(r.tarih) + '</div></div></div></td>'
+      + '<td>' + esc(r.departman) + '</td>'
+      + '<td>' + scope + '</td>'
+      + '<td>' + varsa + '</td>'
+      + '<td>' + cnt + '</td>'
+      + '<td class="rl-durum">' + durum + '</td>'
+      + '<td><div class="row-acts">'
+      +   '<a class="ia-btn" href="crm-ayarlar-rol-detay.html?rol=' + r.key + '" aria-label="Detay" data-tip="Detay"><i class="fa-solid fa-eye"></i></a>'
+      +   '<a class="ia-btn" href="crm-ayarlar-rol-form.html?mod=duzenle&rol=' + r.key + '" aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a>'
+      +   '<button type="button" class="ia-btn" data-no-confirm data-rol-toggle="' + r.key + '" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button>'
+      +   '<button type="button" class="ia-btn danger" data-no-confirm data-rol-sil="' + r.key + '" aria-label="Sil veya arşivle" data-tip="Sil / Arşivle"><i class="fa-solid fa-trash"></i></button>'
+      + '</div></td></tr>';
+  }
+
+  function render(){
+    body.innerHTML = ROLES_META.map(rowHtml).join('');
+    countTag.textContent = ROLES_META.length + ' rol';
+  }
+  render();
+
+  function findRole(key){ for(var i=0;i<ROLES_META.length;i++){ if(ROLES_META[i].key === key) return ROLES_META[i]; } return null; }
+
+  /* ---- pasife al / aktif et ---- */
+  body.addEventListener('click', function(e){
+    var t = e.target.closest('[data-rol-toggle]');
+    if(!t) return;
+    var r = findRole(t.getAttribute('data-rol-toggle'));
+    if(!r) return;
+    if(r.protected){ gvToast('"' + r.ad + '" bir sistem rolüdür — pasife alınamaz.', {type:'danger'}); return; }
+    gvConfirm({
+      icon: r.aktif ? 'fa-power-off' : 'fa-play',
+      title: (r.aktif ? 'Pasife alınsın mı?' : 'Aktif edilsin mi?'),
+      message: '"' + r.ad + '" rolü ' + (r.aktif ? 'pasife alınacak; bu role bağlı kullanıcılar oturum açabilir ancak yeni yetki değişikliği alamaz.' : 'yeniden aktif edilecek.'),
+      ok: r.aktif ? 'Pasife Al' : 'Aktif Et', cancel:'Vazgeç',
+      onConfirm:function(){
+        r.aktif = !r.aktif;
+        render();
+        gvToast('"' + r.ad + '" rolü ' + (r.aktif ? 'aktif edildi' : 'pasife alındı') + ' — işlem kaydına eklendi.', {type: r.aktif ? 'ok' : 'info'});
+      }
+    });
+  });
+
+  /* ---- sil / arşivle — bağlı kullanıcı uyarısı + devret (§4 en kritik kabul kriteri) ---- */
+  body.addEventListener('click', function(e){
+    var t = e.target.closest('[data-rol-sil]');
+    if(!t) return;
+    var r = findRole(t.getAttribute('data-rol-sil'));
+    if(!r) return;
+    if(r.protected){ gvToast('"' + r.ad + '" bir sistem rolüdür — silinemez veya arşivlenemez.', {type:'danger'}); return; }
+    if(document.querySelector('.gv-modal-ov')) return;
+
+    var digerRoller = ROLES_META.filter(function(x){ return x.key !== r.key && x.aktif; });
+    var ov = document.createElement('div'); ov.className = 'gv-modal-ov';
+    var m = document.createElement('div'); m.className = 'gv-modal danger rol-sil-modal';
+    m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
+    var body1 = '';
+    if(r.users.length){
+      body1 += '<div class="rsm-usercount"><i class="fa-solid fa-triangle-exclamation"></i><span>Bu role bağlı <b>' + r.users.length + ' kullanıcı</b> var. Devam etmeden önce yeni bir rol seçerek devredin.</span></div>'
+        + '<div class="rsm-userlist">' + r.users.map(function(u){
+            return '<div class="rsm-user"><div class="gcell-mark">' + esc(u.ini) + '</div><div><div style="font-weight:700;color:var(--ink)">' + esc(u.ad) + '</div><div style="color:var(--muted)">' + esc(u.sub) + '</div></div></div>';
+          }).join('') + '</div>'
+        + '<div class="rsm-devret gfield"><label>Kullanıcıları şu role devret</label><select id="rsmDevret">'
+        +   digerRoller.map(function(x){ return '<option value="' + x.key + '">' + esc(x.ad) + '</option>'; }).join('')
+        + '</select></div>';
+    } else {
+      body1 += '<div class="rsm-noUsers"><i class="fa-solid fa-circle-check"></i> Bu role bağlı kullanıcı yok — doğrudan arşivlenebilir.</div>';
+    }
+    m.innerHTML = '<div class="gv-modal-ico"><i class="fa-solid fa-box-archive"></i></div>'
+      + '<h3>"' + esc(r.ad) + '" arşivlensin mi?</h3>'
+      + '<p>Kritik kayıtlar kalıcı olarak silinmez; rol arşivlenir ve rol listesinde "Pasif" görünür. Yetki matrisi ve geçmiş işlem kayıtları korunur.</p>'
+      + body1
+      + '<div class="gv-modal-acts"><button type="button" class="btn btn-ghost btn-sm gv-m-cancel">Vazgeç</button><button type="button" class="btn btn-sm btn-danger gv-m-ok"><i class="fa-solid fa-box-archive"></i> ' + (r.users.length ? 'Devret ve Arşivle' : 'Arşivle') + '</button></div>';
+    ov.appendChild(m); document.body.appendChild(ov);
+    requestAnimationFrame(function(){ ov.classList.add('open'); });
+    function close(){ ov.classList.remove('open'); setTimeout(function(){ ov.remove(); }, 220); document.removeEventListener('keydown', onKey); }
+    function onKey(e2){ if(e2.key === 'Escape') close(); }
+    document.addEventListener('keydown', onKey);
+    ov.addEventListener('click', function(e2){ if(e2.target === ov) close(); });
+    m.querySelector('.gv-m-cancel').addEventListener('click', close);
+    m.querySelector('.gv-m-ok').addEventListener('click', function(){
+      var devretSel = m.querySelector('#rsmDevret');
+      var hedefRol = devretSel ? findRole(devretSel.value) : null;
+      close();
+      r.aktif = false;
+      r.users = [];
+      render();
+      gvToast('"' + r.ad + '" rolü arşivlendi' + (hedefRol ? (' — kullanıcılar "' + hedefRol.ad + '" rolüne devredildi') : '') + '; işlem kaydına eklendi.', {type:'ok'});
+    });
+  });
 })();
 </script>
 </body>
