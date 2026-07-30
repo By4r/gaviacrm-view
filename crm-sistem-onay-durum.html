@@ -62,20 +62,19 @@
 }
 </style>
 </head>
-<body data-sec="hesap" data-screen="onay-durum" class="gv-collapsed">
-<!-- data-sec="hesap": ampirik olarak DOĞRULANDI (11 rol × role= param, headless dump-dom) —
-     bu tek section shell.js guard'ında (`sec !== 'hesap'`) R.secs kontrolünden MUAF ve
-     hiçbir rolün `scr` ekran-allowlist'i 'hesap' anahtarı taşımıyor; dolayısıyla TÜM roller
-     erişebiliyor. Bağlamsal section (operasyon/satinalma/personel/finans/ayarlar, ?islem='e
-     göre) denendi ve REDDEDİLDİ: teknik/sef/muhasebe/satinalma/ik/personel/satistemsilci/
-     satismudur rollerinin çoğu o section'larda ya `secs` dışı ya da `scr` allowlist'i
-     'onay-durum' ekranını içermiyor → location.replace(R.land) ile SESSİZCE yönlendiriliyor,
-     kullanıcı kendi işleminin sonucunu HİÇ GÖREMİYOR (CLAUDE.md "her role= saygılı olmalı"
-     ihlali, redirect en ağır ihlal biçimi). 'hesap' section'ının kendi menüsü (Profil/Hesap
-     Ayarları/Bildirim Tercihleri) bu sayfayla alakasız olduğundan `class="gv-collapsed"` ile
-     KALICI kapatıldı — shell.js bu class'ı yalnız EKLER (localStorage tercihini asla
-     kaldırmaz), rail görünür/marka kimliği kalır, ikinci menü sütunu hiç render edilmez.
-     980px altı zaten off-canvas drawer'a döndüğü için bu class mobilde etkisiz/zararsız. -->
+<body data-sec="panel" data-screen="onaylar">
+<!-- data-sec="panel" data-screen="onaylar": AMPİRİK OLARAK DOĞRULANDI (11 rol × role=
+     param, Playwright). Önceki tur data-sec="hesap" + class="gv-collapsed" kullanıyordu
+     (guard'dan muaf ama menüsüz, GÜNDEM sütunu kayboluyordu — görsel denetim ORTA şiddet
+     bulgusu). Bu daha iyi çözüm: 'panel' section HER rolün `secs` listesinde var VE
+     'onaylar' ekranı (Bekleyen Onaylar) HER rolün `scr.panel` beyaz listesinde var (teknik/
+     sef/muhasebe/satinalma/ik/personel/satistemsilci/satismudur — 7 kısıtlı rolün hepsi),
+     kısıtsız roller zaten sınırsız. Sonuç: 11/11 rol açılıyor VE GÜNDEM menüsü artık
+     GERÇEK içerikle geliyor ("Bekleyen Onaylar" vurgulu) — sibling kabuk-içi durum
+     sayfalarıyla (arama-yok/kayit-yok/ilk-kullanim, hepsi data-sec="panel" + gerçek
+     data-screen kullanıyor) aynı desen. Bağlamsal seçim (operasyon/satinalma/personel/
+     finans/ayarlar, ?islem='e göre) daha önce denenip REDDEDİLMİŞTİ: 8 kısıtlı rolün çoğu
+     o section'larda `secs` dışı ya da `scr` allowlist'i 'onay-durum' ekranını içermiyor. -->
 
 <div class="gv-app">
   <aside class="gv-rail" id="gvRail"></aside>
