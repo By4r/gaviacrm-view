@@ -84,14 +84,14 @@
     <div class="gv-crumb">
       <a href="crm-personel-avans.html">Avanslar</a>
       <i class="fa-solid fa-chevron-right"></i>
-      <span>Yeni Avans Talebi</span>
+      <span id="avfCrumb">Yeni Avans Talebi</span>
     </div>
 
     <div class="gv-page-head">
       <div>
         <div class="ph-eyebrow">İnsan Kaynağı</div>
-        <h1>Avans Talebi Oluştur</h1>
-        <div class="ph-sub">Talebiniz onay akışına düşer; sonuç bildirim olarak size iletilir.</div>
+        <h1 id="avfTitle">Avans Talebi Oluştur</h1>
+        <div class="ph-sub" id="avfSub">Talebiniz onay akışına düşer; sonuç bildirim olarak size iletilir.</div>
       </div>
     </div>
 
@@ -157,7 +157,7 @@
         </div>
         <div class="form-foot">
           <a class="btn btn-ghost btn-sm" href="crm-personel-avans.html">Vazgeç</a>
-          <button type="button" class="btn btn-acc btn-sm" data-no-confirm id="avansSubmit"><i class="fa-solid fa-paper-plane"></i> Talebi Gönder</button>
+          <button type="button" class="btn btn-acc btn-sm" data-no-confirm id="avansSubmit"><i class="fa-solid fa-paper-plane" id="avfSubmitIco"></i> <span id="avfSubmitLbl">Talebi Gönder</span></button>
         </div>
       </div>
 
@@ -331,11 +331,51 @@
   taksit.addEventListener('change', uygulaTaksit);
   uygulaTaksit();
 
+  /* ============ §17 (T-J) — Düzenle (?mod=duzenle&avn=NNN) / Kopyala (?kopya=NNN)
+     prefill. Kaynak alt küme crm-personel-avans-detay.html AVANS{} ile BİREBİR
+     (personel/tutar/tarih/gerekçe) — yalnız prefill amaçlı, yeni tutar İCAT EDİLMEDİ. ============ */
+  var AVANS_SRC = {
+    '015':{personelVal:'014', tutar:'3.500', tarih:'2026-07-01', aciklama:'Kira ödemesi için nakit ihtiyacı.'},
+    '014':{personelVal:'010', tutar:'4.000', tarih:'2026-06-29', aciklama:'Kişisel nakit ihtiyacı (malzeme avansı değil).'},
+    '013':{personelVal:'004', tutar:'8.000', tarih:'2026-06-18', aciklama:'Çocuğunun okul kayıt gideri.'},
+    '012':{personelVal:'008', tutar:'6.500', tarih:'2026-06-10', aciklama:'Ev taşınma masrafları.'},
+    '011':{personelVal:'005', tutar:'10.000', tarih:'2026-06-03', aciklama:'Kişisel ihtiyaç (harcama kalemi belirtilmedi).'}
+  };
+  var fq = new URLSearchParams(location.search);
+  var editId = fq.get('mod') === 'duzenle' ? fq.get('avn') : null;
+  var copyId = fq.get('kopya');
+  var srcId = editId || copyId;
+  var srcRec = srcId ? AVANS_SRC[srcId] : null;
+  var editNo = editId ? 'AVN-2026-' + editId : null;
+
+  if(srcRec){
+    var pSel = document.getElementById('fPersonel');
+    if(pSel){ pSel.value = srcRec.personelVal; pSel.dispatchEvent(new Event('change', {bubbles:true})); }
+    var tInp = document.getElementById('fTutar'); if(tInp) tInp.value = srcRec.tutar;
+    var dInp = document.getElementById('fTarih'); if(dInp) dInp.value = srcRec.tarih;
+    var aInp = document.getElementById('fAciklama'); if(aInp) aInp.value = srcRec.aciklama;
+  }
+  if(editId){
+    document.getElementById('avfCrumb').textContent = editNo + ' Düzenle';
+    document.getElementById('avfTitle').textContent = 'Avans Talebini Düzenle';
+    document.getElementById('avfSub').textContent = editNo + ' talebini güncelleyin; değişiklikler işlem kayıtlarına yazılır.';
+    document.getElementById('avfSubmitLbl').textContent = 'Değişiklikleri Kaydet';
+    document.getElementById('avfSubmitIco').className = 'fa-solid fa-check';
+  } else if(copyId && AVANS_SRC[copyId]){
+    document.getElementById('avfCrumb').textContent = 'Yeni Avans Talebi (kopya)';
+    document.getElementById('avfSub').textContent = 'Bu talep AVN-2026-' + copyId + ' kaydından kopyalandı; göndermeden önce alanları gözden geçirin.';
+  }
+
   var btn = document.getElementById('avansSubmit');
   if(btn){
     btn.addEventListener('click', function(){
-      gvToast('Avans talebiniz oluşturuldu ve onay akışına gönderildi.');
-      setTimeout(function(){ location.href = 'crm-personel-avans.html'; }, 900);
+      if(editId){
+        gvToast(editNo + ' güncellendi.');
+        setTimeout(function(){ location.href = 'crm-personel-avans-detay.html?avn=' + editId; }, 900);
+      } else {
+        gvToast('Avans talebiniz oluşturuldu ve onay akışına gönderildi.');
+        setTimeout(function(){ location.href = 'crm-personel-avans.html'; }, 900);
+      }
     });
   }
 })();
