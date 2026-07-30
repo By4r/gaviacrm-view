@@ -251,7 +251,11 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
           <div><span>Saha başlangıcı</span><b>Eylül 2026</b></div>
           <div><span>Kasa açılışı</span><b>Mobilizasyonla</b></div>
         </div>
-        <div class="ks-resp"><i class="fa-solid fa-compass-drafting"></i> Henüz nakit hareketi yok</div>
+        <!-- §7 boş durum metni — doküman birebir: "Bu şantiye için henüz kasa hareketi
+             eklenmemiş. İlk kasa kaydını oluşturabilirsiniz." Kasa henüz açılmadığı için
+             (mobilizasyon Eylül 2026) CTA linki VERİLMEDİ — kasa-form.html'in şantiye
+             seçicisinde bu saha yok, ölü/erken link üretmemek için yalnız metin taşınır. -->
+        <div class="ks-resp"><i class="fa-solid fa-compass-drafting"></i> Bu şantiye için henüz kasa hareketi eklenmemiş. İlk kasa kaydını oluşturabilirsiniz.</div>
       </div>
     </div>
 
