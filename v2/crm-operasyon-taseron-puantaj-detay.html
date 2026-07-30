@@ -90,6 +90,7 @@
         <div class="gd-badges" id="tpdBadges"><span class="gtag">Taşeron Personeli</span><span class="gtag mint">Kalıpçı · Kalfa</span><span class="gtag"><i class="fa-solid fa-helmet-safety"></i> Vadi Konakları</span><span class="gstat info">Teknik Ofis Onayında</span></div>
       </div>
       <div class="ph-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="tpdArsivBtn" data-no-confirm><i class="fa-solid fa-box-archive"></i> Arşivle</button>
         <a class="btn btn-ghost btn-sm" href="crm-operasyon-taseron-puantaj.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>
       </div>
     </div>
@@ -315,6 +316,46 @@
   document.getElementById('tpdIsleneen').textContent = tamCount + ' / ' + P.gunler.length + ' gün tam';
 
   gvChain(document.getElementById('tpdChainEl'), {steps: chain});
+
+  /* ============ §17 — arşivleme (kalıcı silme YERİNE); liste sayfasıyla (gv_tp_arsiv)
+     AYNI localStorage anahtarını paylaşır — biri diğerini de görür. ============ */
+  var TP_ARSIV_KEY = 'gv_tp_arsiv';
+  function tpArsivMap(){ try{ return JSON.parse(localStorage.getItem(TP_ARSIV_KEY) || '{}'); }catch(e){ return {}; } }
+  function tpSetArsiv(val){ var m = tpArsivMap(); if(val) m[tpId] = 1; else delete m[tpId]; localStorage.setItem(TP_ARSIV_KEY, JSON.stringify(m)); }
+  var tpdArsivBtn = document.getElementById('tpdArsivBtn');
+  function renderArsivBtn(){
+    var arsivli = !!tpArsivMap()[tpId];
+    tpdArsivBtn.innerHTML = '<i class="fa-solid ' + (arsivli ? 'fa-rotate-left' : 'fa-box-archive') + '"></i> ' + (arsivli ? 'Aktife Al' : 'Arşivle');
+    var arsivRozet = document.getElementById('tpdArsivRozet');
+    if(arsivli && !arsivRozet){
+      var span = document.createElement('span');
+      span.id = 'tpdArsivRozet'; span.className = 'gstat off';
+      span.innerHTML = '<i class="fa-solid fa-box-archive" style="margin-right:5px"></i>Arşivlendi';
+      document.getElementById('tpdBadges').appendChild(span);
+    } else if(!arsivli && arsivRozet){
+      arsivRozet.remove();
+    }
+  }
+  tpdArsivBtn.addEventListener('click', function(){
+    var arsivli = !!tpArsivMap()[tpId];
+    if(arsivli){
+      tpSetArsiv(false);
+      renderArsivBtn();
+      gvToast(P.ad + ' yeniden aktife alındı.', {type:'ok', icon:'fa-rotate-left'});
+      return;
+    }
+    gvConfirm({
+      danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+      title: P.ad + ' arşivlensin mi?',
+      message: 'Kayıt kalıcı olarak silinmez; arşive alınır ve taşeron puantaj listesinde varsayılan olarak görünmez olur. "Arşivlenenleri Göster" ile ya da bu ekrandan tekrar aktife alınabilir.',
+      onConfirm:function(){
+        tpSetArsiv(true);
+        renderArsivBtn();
+        gvToast(P.ad + ' arşivlendi — listede varsayılan olarak artık görünmeyecek.', {type:'danger'});
+      }
+    });
+  });
+  renderArsivBtn();
 })();
 </script>
 </body>

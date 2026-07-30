@@ -126,6 +126,12 @@
 .sp-meta div{display:flex;flex-direction:column;gap:1px;min-width:64px}
 .sp-lbl{font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .sp-meta b{font-size:12.5px;font-weight:700;color:var(--ink)}
+/* §10.2 — kan grubu, acil durumda hızlı erişim için sticky bantta (kan-badge
+   crm-personel.html'in aynı sınıfı, aynı token dili — yeni renk İCAT EDİLMEDİ) */
+.sp-meta b.sp-kan-badge-host,.sp-meta b .kan-badge{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;font-weight:700;color:var(--ink-2);display:inline-flex;align-items:center;gap:5px;letter-spacing:.01em;white-space:nowrap}
+.sp-meta b .kan-badge i{font-size:10px;color:var(--danger)}
+.sp-meta b .kan-badge.kan-unknown{color:var(--muted);font-weight:600;font-family:inherit}
+.sp-meta b .kan-badge.kan-unknown i{color:var(--line-2)}
 .sp-docs{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .sp-doc{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;color:var(--ink-2);background:var(--bg);border-radius:20px;padding:4px 9px 4px 7px;white-space:nowrap}
 .sp-doc i{font-size:9px}
@@ -144,6 +150,9 @@
   .sp-name{font-size:11.5px}
   .sp-pos{font-size:9.5px}
   .sp-meta,.sp-docs{display:none}
+  /* §10.2 — kan grubu acil durumda hızlı erişim için mobil daraltmada da GÖRÜNÜR kalır */
+  .sp-meta.has-kan{display:flex}
+  .sp-meta.has-kan > div:not(.sp-kan-wrap){display:none}
   .sp-status .gstat{font-size:9px;padding:2px 6px}
 }
 </style>
@@ -205,19 +214,23 @@
          kaydırıldığında (uzun 25 satırlık matris) topbar'ın altında sabit kalır. -->
     <div class="sp-sentinel" id="spSentinel" aria-hidden="true"></div>
     <div class="gv-card sticky-per" id="stickyPer">
+      <!-- statik bake — DEFAULT seçili kayıt (Ali Vural, per=010); JS yüklenince
+           activate()/updateSticky() aynı mount'u matristeki tıklanan satırla ezer
+           (D18-B2 idiyomu) -->
       <div class="sp-row" id="spRow">
-        <div class="sp-avatar" id="spAvatar">—</div>
+        <div class="sp-avatar" id="spAvatar" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">AV</div>
         <div class="sp-id">
-          <a class="sp-name" id="spName" href="crm-personel-detay.html">—</a>
-          <span class="sp-pos" id="spPos">—</span>
+          <a class="sp-name" id="spName" href="crm-personel-detay.html?per=010">Ali Vural</a>
+          <span class="sp-pos" id="spPos">Saha Personeli · yeni</span>
         </div>
-        <div class="sp-meta">
-          <div><span class="sp-lbl">TC Kimlik</span><b id="spTc">—</b></div>
-          <div><span class="sp-lbl">Departman</span><b id="spDept">—</b></div>
-          <div><span class="sp-lbl">Şantiye</span><b id="spSantiye">—</b></div>
+        <div class="sp-meta has-kan">
+          <div><span class="sp-lbl">TC Kimlik</span><b id="spTc">741••••••05</b></div>
+          <div><span class="sp-lbl">Departman</span><b id="spDept">Saha Ekibi</b></div>
+          <div><span class="sp-lbl">Şantiye</span><b id="spSantiye">Vadi Konakları</b></div>
+          <div class="sp-kan-wrap"><span class="sp-lbl">Kan Grubu</span><b id="spKan"><span class="kan-badge"><i class="fa-solid fa-droplet"></i> 0 Rh+</span></b></div>
         </div>
-        <div class="sp-docs" id="spDocs"></div>
-        <div class="sp-status" id="spStatus"></div>
+        <div class="sp-docs" id="spDocs"><span class="sp-doc ok"><i class="fa-solid fa-check"></i>Kimlik</span><span class="sp-doc ok"><i class="fa-solid fa-check"></i>Sözleşme</span><span class="sp-doc info"><i class="fa-solid fa-hourglass-half"></i>SGK</span><span class="sp-doc danger"><i class="fa-solid fa-xmark"></i>Sağlık</span><span class="sp-doc ok"><i class="fa-solid fa-check"></i>Sertifikalar</span></div>
+        <div class="sp-status" id="spStatus"><span class="gstat danger">Eksik Evrak Var</span></div>
       </div>
     </div>
 
@@ -254,7 +267,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr data-f="tam" data-per="001" data-tc="187••••••02" data-dept="Yönetim" data-sant="Merkez Ofis">
+            <tr data-f="tam" data-per="001" data-tc="187••••••02" data-dept="Yönetim" data-sant="Merkez Ofis" data-kan="A Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">KY</div><div class="gcell-info"><div class="gcell-name">Kemal Yapıcıoğlu</div><span class="gcell-sub">Firma Sahibi</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -269,7 +282,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="tam" data-per="002" data-tc="234••••••18" data-dept="Yönetim" data-sant="Merkez Ofis">
+            <tr data-f="tam" data-per="002" data-tc="234••••••18" data-dept="Yönetim" data-sant="Merkez Ofis" data-kan="0 Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">MD</div><div class="gcell-info"><div class="gcell-name">Murat Denizli</div><span class="gcell-sub">Genel Müdür</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -284,7 +297,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="tam" data-per="003" data-tc="356••••••41" data-dept="Yönetim" data-sant="Merkez Ofis">
+            <tr data-f="tam" data-per="003" data-tc="356••••••41" data-dept="Yönetim" data-sant="Merkez Ofis" data-kan="A Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">ES</div><div class="gcell-info"><div class="gcell-name">Elif Sarıkaya</div><span class="gcell-sub">Teknik Müdür</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -299,7 +312,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="tam" data-santiye="vadi-konaklari" data-per="004" data-tc="298••••••14" data-dept="Şantiye Yönetimi" data-sant="Vadi Konakları">
+            <tr data-f="tam" data-santiye="vadi-konaklari" data-per="004" data-tc="298••••••14" data-dept="Şantiye Yönetimi" data-sant="Vadi Konakları" data-kan="B Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">HD</div><div class="gcell-info"><div class="gcell-name">Hasan Demirci</div><span class="gcell-sub">Şantiye Şefi</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -314,7 +327,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="eksik" data-per="005" data-tc="412••••••27" data-dept="Şantiye Yönetimi" data-sant="Liman Lojistik Merkezi">
+            <tr data-f="eksik" data-per="005" data-tc="412••••••27" data-dept="Şantiye Yönetimi" data-sant="Liman Lojistik Merkezi" data-kan="0 Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">AK</div><div class="gcell-info"><div class="gcell-name">Aylin Koç</div><span class="gcell-sub">Şantiye Şefi</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -332,7 +345,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="tam" data-per="006" data-tc="145••••••63" data-dept="Şantiye Yönetimi" data-sant="Merkez Şantiye">
+            <tr data-f="tam" data-per="006" data-tc="145••••••63" data-dept="Şantiye Yönetimi" data-sant="Merkez Şantiye" data-kan="A Rh-">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">ÖT</div><div class="gcell-info"><div class="gcell-name">Ömer Taşkın</div><span class="gcell-sub">Şantiye Şefi</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -347,7 +360,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="tam" data-per="007" data-tc="278••••••39" data-dept="Merkez Ofis" data-sant="Merkez Ofis">
+            <tr data-f="tam" data-per="007" data-tc="278••••••39" data-dept="Merkez Ofis" data-sant="Merkez Ofis" data-kan="AB Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--warn-tint);color:var(--warn)">NA</div><div class="gcell-info"><div class="gcell-name">Nesrin Aydın</div><span class="gcell-sub">Muhasebe</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -362,7 +375,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="eksik" data-per="008" data-tc="519••••••56" data-dept="Merkez Ofis" data-sant="Merkez Ofis">
+            <tr data-f="eksik" data-per="008" data-tc="519••••••56" data-dept="Merkez Ofis" data-sant="Merkez Ofis" data-kan="0 Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--warn-tint);color:var(--warn)">BY</div><div class="gcell-info"><div class="gcell-name">Baran Yıldız</div><span class="gcell-sub">Satın Alma Sorumlusu</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -380,7 +393,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="tam" data-per="009" data-tc="603••••••81" data-dept="Merkez Ofis" data-sant="Merkez Ofis">
+            <tr data-f="tam" data-per="009" data-tc="603••••••81" data-dept="Merkez Ofis" data-sant="Merkez Ofis" data-kan="A Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--warn-tint);color:var(--warn)">SK</div><div class="gcell-info"><div class="gcell-name">Seda Karaca</div><span class="gcell-sub">İK Uzmanı</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -395,7 +408,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="eksik" data-santiye="vadi-konaklari" data-per="010" data-tc="741••••••05" data-dept="Saha Ekibi" data-sant="Vadi Konakları">
+            <tr data-f="eksik" data-santiye="vadi-konaklari" data-per="010" data-tc="741••••••05" data-dept="Saha Ekibi" data-sant="Vadi Konakları" data-kan="0 Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">AV</div><div class="gcell-info"><div class="gcell-name">Ali Vural</div><span class="gcell-sub">Saha Personeli · yeni</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -419,7 +432,7 @@
                 <a class="doc-cap danger" href="crm-personel-evrak-detay.html?per=10&amp;doc=12">Eksik</a>
               </td>
             </tr>
-            <tr data-f="tam" data-santiye="vadi-konaklari" data-per="011" data-tc="167••••••92" data-dept="Saha Ekibi" data-sant="Vadi Konakları">
+            <tr data-f="tam" data-santiye="vadi-konaklari" data-per="011" data-tc="167••••••92" data-dept="Saha Ekibi" data-sant="Vadi Konakları" data-kan="B Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">İS</div><div class="gcell-info"><div class="gcell-name">İbrahim Sönmez</div><span class="gcell-sub">Formen</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -434,7 +447,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="eksik" data-santiye="vadi-konaklari" data-per="012" data-tc="328••••••14" data-dept="Saha Ekibi" data-sant="Vadi Konakları">
+            <tr data-f="eksik" data-santiye="vadi-konaklari" data-per="012" data-tc="328••••••14" data-dept="Saha Ekibi" data-sant="Vadi Konakları" data-kan="A Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">RK</div><div class="gcell-info"><div class="gcell-name">Ramazan Kılıç</div><span class="gcell-sub">Kalıpçı</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -455,7 +468,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="eksik" data-santiye="vadi-konaklari" data-per="013" data-tc="490••••••67" data-dept="Saha Ekibi" data-sant="Vadi Konakları">
+            <tr data-f="eksik" data-santiye="vadi-konaklari" data-per="013" data-tc="490••••••67" data-dept="Saha Ekibi" data-sant="Vadi Konakları" data-kan="0 Rh-">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">SD</div><div class="gcell-info"><div class="gcell-name">Selim Doğan</div><span class="gcell-sub">Demir Ustası</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -476,7 +489,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="eksik" data-santiye="vadi-konaklari" data-per="014" data-tc="215••••••33" data-dept="Saha Ekibi" data-sant="Vadi Konakları">
+            <tr data-f="eksik" data-santiye="vadi-konaklari" data-per="014" data-tc="215••••••33" data-dept="Saha Ekibi" data-sant="Vadi Konakları" data-kan="Bilinmiyor">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">ME</div><div class="gcell-info"><div class="gcell-name">Musa Erdem</div><span class="gcell-sub">Düz İşçi</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -497,7 +510,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="tam" data-santiye="vadi-konaklari" data-per="015" data-tc="583••••••48" data-dept="Saha Ekibi" data-sant="Vadi Konakları">
+            <tr data-f="tam" data-santiye="vadi-konaklari" data-per="015" data-tc="583••••••48" data-dept="Saha Ekibi" data-sant="Vadi Konakları" data-kan="A Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">VŞ</div><div class="gcell-info"><div class="gcell-name">Veli Şimşek</div><span class="gcell-sub">Elektrik Ustası</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -512,7 +525,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="tam" data-per="016" data-tc="129••••••76" data-dept="Saha Ekibi" data-sant="Liman Lojistik Merkezi">
+            <tr data-f="tam" data-per="016" data-tc="129••••••76" data-dept="Saha Ekibi" data-sant="Liman Lojistik Merkezi" data-kan="B Rh-">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">ŞA</div><div class="gcell-info"><div class="gcell-name">Şükrü Aslan</div><span class="gcell-sub">Formen</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -527,7 +540,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="eksik" data-per="017" data-tc="356••••••20" data-dept="Saha Ekibi" data-sant="Liman Lojistik Merkezi">
+            <tr data-f="eksik" data-per="017" data-tc="356••••••20" data-dept="Saha Ekibi" data-sant="Liman Lojistik Merkezi" data-kan="0 Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">HG</div><div class="gcell-info"><div class="gcell-name">Halil Güneş</div><span class="gcell-sub">Operatör</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -548,7 +561,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="eksik" data-per="018" data-tc="467••••••85" data-dept="Saha Ekibi" data-sant="Liman Lojistik Merkezi">
+            <tr data-f="eksik" data-per="018" data-tc="467••••••85" data-dept="Saha Ekibi" data-sant="Liman Lojistik Merkezi" data-kan="AB Rh-">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">MÇ</div><div class="gcell-info"><div class="gcell-name">Metin Çetin</div><span class="gcell-sub">Kaynakçı</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -569,7 +582,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="tam" data-per="019" data-tc="592••••••31" data-dept="Saha Ekibi" data-sant="Liman Lojistik Merkezi">
+            <tr data-f="tam" data-per="019" data-tc="592••••••31" data-dept="Saha Ekibi" data-sant="Liman Lojistik Merkezi" data-kan="A Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">OP</div><div class="gcell-info"><div class="gcell-name">Osman Polat</div><span class="gcell-sub">Düz İşçi</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -584,7 +597,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="tam" data-per="020" data-tc="108••••••59" data-dept="Saha Ekibi" data-sant="Merkez Şantiye">
+            <tr data-f="tam" data-per="020" data-tc="108••••••59" data-dept="Saha Ekibi" data-sant="Merkez Şantiye" data-kan="0 Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">RY</div><div class="gcell-info"><div class="gcell-name">Recep Yaman</div><span class="gcell-sub">Formen</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -599,7 +612,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="eksik" data-per="021" data-tc="341••••••02" data-dept="Saha Ekibi" data-sant="Merkez Şantiye">
+            <tr data-f="eksik" data-per="021" data-tc="341••••••02" data-dept="Saha Ekibi" data-sant="Merkez Şantiye" data-kan="B Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">İK</div><div class="gcell-info"><div class="gcell-name">İlyas Kurt</div><span class="gcell-sub">Marangoz</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -620,7 +633,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="tam" data-per="022" data-tc="620••••••47" data-dept="Saha Ekibi" data-sant="Merkez Şantiye">
+            <tr data-f="tam" data-per="022" data-tc="620••••••47" data-dept="Saha Ekibi" data-sant="Merkez Şantiye" data-kan="A Rh+">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">SÖ</div><div class="gcell-info"><div class="gcell-name">Sadık Öz</div><span class="gcell-sub">Düz İşçi</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -638,7 +651,7 @@
             <!-- pasif kayıtlar (madde 8 / D19 — 3 kayıt, mevcut 22 aktife EK; F4: matris 22 → 25).
                  023 Kudret Beşikçi zorunlu evrak eksikliği taşır (istifa öncesi SGK evrakı
                  tamamlanmamış — madde 9 uyarı rozetinin somut örneği) -->
-            <tr data-f="eksik" data-santiye="vadi-konaklari" data-durum="pasif" data-per="023" data-tc="482••••••19" data-dept="Saha Ekibi" data-sant="Vadi Konakları">
+            <tr data-f="eksik" data-santiye="vadi-konaklari" data-durum="pasif" data-per="023" data-tc="482••••••19" data-dept="Saha Ekibi" data-sant="Vadi Konakları" data-kan="Bilinmiyor">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">KB</div><div class="gcell-info"><div class="gcell-name">Kudret Beşikçi</div><span class="gcell-sub">Düz İşçi · ayrıldı</span><div class="req-eksik-badge"><span class="gstat danger" data-tip="Zorunlu evrak eksik: SGK işe giriş bildirgesi">Zorunlu Eksik</span></div></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -656,7 +669,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="tam" data-durum="pasif" data-per="024" data-tc="337••••••52" data-dept="Saha Ekibi" data-sant="Liman Lojistik Merkezi">
+            <tr data-f="tam" data-durum="pasif" data-per="024" data-tc="337••••••52" data-dept="Saha Ekibi" data-sant="Liman Lojistik Merkezi" data-kan="Bilinmiyor">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">HU</div><div class="gcell-info"><div class="gcell-name">Hikmet Uğurlu</div><span class="gcell-sub">Operatör · ayrıldı</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -671,7 +684,7 @@
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
             </tr>
-            <tr data-f="tam" data-durum="pasif" data-per="025" data-tc="156••••••07" data-dept="Saha Ekibi" data-sant="Merkez Şantiye">
+            <tr data-f="tam" data-durum="pasif" data-per="025" data-tc="156••••••07" data-dept="Saha Ekibi" data-sant="Merkez Şantiye" data-kan="Bilinmiyor">
               <td><div class="gcell"><div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">NÇ</div><div class="gcell-info"><div class="gcell-name">Nadir Çamlıca</div><span class="gcell-sub">Düz İşçi · ayrıldı</span></div></div></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
               <td class="doc-cell"><span class="doc-dot" data-tip="Tamamlandı"><i class="fa-solid fa-check"></i></span></td>
@@ -899,6 +912,7 @@
   var spTc = document.getElementById('spTc');
   var spDept = document.getElementById('spDept');
   var spSantiye = document.getElementById('spSantiye');
+  var spKan = document.getElementById('spKan');
   var spDocs = document.getElementById('spDocs');
   var spStatus = document.getElementById('spStatus');
   var STAT_ICON = {ok:'fa-check', warn:'fa-clock', info:'fa-hourglass-half', danger:'fa-xmark'};
@@ -934,6 +948,9 @@
     spTc.textContent = trEl.getAttribute('data-tc') || '—';
     spDept.textContent = trEl.getAttribute('data-dept') || '—';
     spSantiye.textContent = trEl.getAttribute('data-sant') || '—';
+    var kan = trEl.getAttribute('data-kan') || 'Bilinmiyor';
+    var kanBilinmiyor = kan === 'Bilinmiyor';
+    spKan.innerHTML = '<span class="kan-badge' + (kanBilinmiyor ? ' kan-unknown' : '') + '"><i class="fa-solid fa-droplet"></i> ' + kan + '</span>';
 
     var kimlik = cellStatusAt(trEl, 1);
     var sozlesme = cellStatusAt(trEl, 2);

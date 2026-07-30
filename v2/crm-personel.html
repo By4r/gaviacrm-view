@@ -231,6 +231,9 @@
             <button class="chip" data-filter="ofis">Ofis <span class="ch-cnt">3</span></button>
             <button class="chip" data-filter="saha">Saha Personeli <span class="ch-cnt">13</span></button>
           </div>
+          <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpPersonel">
+            <i class="fa-solid fa-sliders"></i> Gelişmiş Filtre
+          </button>
           <div class="kolon-menu">
             <button type="button" class="btn btn-ghost btn-sm" id="kolonlarBtn" aria-haspopup="true" aria-expanded="false">
               <i class="fa-solid fa-table-columns"></i> Kolonlar
@@ -253,6 +256,17 @@
             <button class="chip" data-il="izmir">İzmir <span class="ch-cnt">6</span></button>
             <button class="chip" data-il="kocaeli">Kocaeli <span class="ch-cnt">5</span></button>
           </div>
+        </div>
+      </div>
+      <div class="gv-achips-row" id="achipsPersonel" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor.">
+            <i class="fa-solid fa-lock"></i> Filtreleri Kaydet
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all>
+            <i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle
+          </button>
         </div>
       </div>
       <div class="bulk-bar" id="bulkBar" hidden data-admin-only>
@@ -660,6 +674,35 @@
   </main>
 </div>
 
+<!-- ============ §9 — sağ off-canvas gelişmiş filtre paneli (Şantiye ekseni; Durum/
+     Kategori zaten hızlı çip olarak var — tasks/spec-filtre-tarih.md). Sayfanın kendi
+     çok eksenli filtre motoru (tbl._gvApply) olduğu için opts.table VERİLMEZ, onApply
+     içinde applyPersonelCombinedFilter'a devredilir. ============ -->
+<div class="gv-fpanel-ov" id="fpPersonelOv">
+  <aside class="gv-fpanel" id="fpPersonel" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+    <div class="gv-fpanel-head">
+      <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+      <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="gv-fpanel-body">
+      <div class="gfield">
+        <label>Şantiye</label>
+        <select data-fp-key="fpsantiye" data-fp-label="Şantiye">
+          <option value="">Tümü</option>
+          <option value="merkez">Merkez Ofis</option>
+          <option value="vadi-konaklari">Vadi Konakları</option>
+          <option value="liman-lojistik">Liman Lojistik Merkezi</option>
+          <option value="merkez-santiye">Merkez Şantiye</option>
+        </select>
+      </div>
+    </div>
+    <div class="gv-fpanel-foot">
+      <button type="button" class="btn btn-ghost" data-fp-clear>Temizle</button>
+      <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+    </div>
+  </aside>
+</div>
+
 <!-- ============ Madde 5.2 — Şantiyeye Personel Ata Modalı (10 alan) ============ -->
 <div class="ata-modal-ov" id="ataModalOv">
   <div class="gv-modal" style="width:min(520px,100%)" role="dialog" aria-modal="true" aria-labelledby="ataModalTitle">
@@ -796,6 +839,12 @@
   var durumChipsWrap = document.getElementById('durumChips');
   var ilChipsWrap = document.getElementById('ilChips');
   var perSearch = document.querySelector('[data-table-search="#tblPersonel"]');
+  /* ============ §9 — Gelişmiş Filtre'nin Şantiye ekseni. Sayfa kendi çok eksenli
+     motorunu taşıdığından (D18 tbl._gvApply deseni) gvFilterPanel'e opts.table
+     VERİLMEZ; panel yalnız UI/aktif-çip/badge yönetir, gerçek satır eşleşmesi
+     burada, mevcut motora eklenen 4. eksen olarak yapılır (tasks/spec-filtre-tarih.md
+     §3'ün "sayfanın kendi motoru varsa onApply kullan" talimatı). ---- */
+  var fpSantiye = '';
 
   function applyPersonelCombinedFilter(){
     var katOn = katChipsWrap.querySelector('.chip.is-on[data-filter]');
@@ -810,8 +859,9 @@
       var okKat = (kat === 'hepsi') || (tr.getAttribute('data-f') === kat);
       var okDurum = (durum === 'hepsi') || (tr.getAttribute('data-durum') === durum);
       var okIl = (il === 'hepsi') || (tr.getAttribute('data-il') === il);
+      var okSantiye = !fpSantiye || (tr.getAttribute('data-santiye') === fpSantiye);
       var okTerm = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
-      var show = okKat && okDurum && okIl && okTerm;
+      var show = okKat && okDurum && okIl && okSantiye && okTerm;
       tr.hidden = !show;
       if(show) shown++;
     });
@@ -836,6 +886,20 @@
     ch.classList.add('is-on');
     gvApplyFilters(tblPersonel, true);
   });
+
+  if(window.gvFilterPanel){
+    window.gvFilterPanel.init('#fpPersonel', {
+      activeRow: '#achipsPersonel',
+      onApply: function(state){
+        fpSantiye = (state.fpsantiye && state.fpsantiye.value) || '';
+        applyPersonelCombinedFilter();
+      },
+      onClear: function(){
+        fpSantiye = '';
+        applyPersonelCombinedFilter();
+      }
+    });
+  }
 
   /* ---- mobil kart listesi (D18 Y17, bu dalgada ilk uygulama): masaüstü #tblPersonel
      ile aynı tr kümesinden üretilir (gorev/kasa deseni). data-idx eşleşme anahtarıdır;
