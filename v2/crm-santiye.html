@@ -33,6 +33,41 @@
 @media(max-width:640px){
   #tblSantiye{min-width:760px}
 }
+
+/* Pasif Şantiyeleri Göster — switch (§4.1 H1); sayfa-lokal, ui.js'e yeni primitif eklenmez */
+.gv-toggle{display:flex;align-items:center;gap:10px;width:100%;justify-content:flex-end;font-family:inherit;
+  background:none;border:none;cursor:pointer;padding:6px 4px;-webkit-tap-highlight-color:transparent}
+.gv-toggle-track{width:38px;height:22px;border-radius:var(--r-pill);background:var(--line-2);
+  position:relative;flex:none;transition:background .18s var(--ease)}
+.gv-toggle-thumb{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;
+  background:#fff;box-shadow:var(--sh-sm);transition:transform .18s var(--ease)}
+.gv-toggle[aria-checked="true"] .gv-toggle-track{background:var(--acc)}
+.gv-toggle[aria-checked="true"] .gv-toggle-thumb{transform:translateX(16px)}
+.gv-toggle-lbl{font-size:12.5px;font-weight:700;color:var(--ink-2)}
+@media(max-width:640px){.gv-toggle{justify-content:space-between;padding:10px 4px}}
+
+/* Pasif şantiye kart ızgarası (§4.1 — 10 alanlı kart, tablo satırına sığmayan pasif nedeni/
+   son durum metinleri için ayrı bir gv-card kullanılır; switch kapalıyken raw HTML hidden) */
+#pasifGridWrap{margin-top:16px}
+.pasif-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;padding:18px 22px}
+.pasif-card{border:1px solid var(--line);border-radius:var(--r-md);padding:16px 18px;display:flex;flex-direction:column;gap:12px;transition:.18s var(--ease)}
+.pasif-card:hover{box-shadow:var(--sh-sm)}
+.pc-head{display:flex;align-items:flex-start;gap:12px}
+.pc-mark{width:38px;height:38px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:12.5px;font-weight:800}
+.pc-id{flex:1;min-width:0}
+.pc-name{font-size:14px;font-weight:800;color:var(--ink)}
+.pc-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+.pc-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}
+.pc-meta dt{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pc-meta dd{font-size:12.5px;font-weight:700;color:var(--ink);margin-top:1px}
+.pc-meta dd.muted{color:var(--muted);font-weight:600}
+.pc-note{display:flex;gap:10px;align-items:flex-start;background:var(--bg);border-radius:var(--r-sm);padding:11px 13px}
+.pc-note i{color:var(--muted);font-size:13px;margin-top:2px;flex:none}
+.pc-note b{display:block;font-size:12px;color:var(--ink);margin-bottom:2px}
+.pc-note span{font-size:11.5px;color:var(--ink-2);line-height:1.5}
+.pc-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--line)}
+.pc-durum{font-size:11px;color:var(--muted);flex:1;min-width:160px}
+@media(max-width:640px){.pasif-grid{grid-template-columns:1fr;padding:16px}}
 </style>
 </head>
 <body data-sec="santiye" data-screen="liste">
@@ -75,11 +110,19 @@
           <input type="text" placeholder="Şantiye, şef veya lokasyon ara" data-table-search="#tblSantiye">
         </div>
         <div class="chips" data-target="#tblSantiye">
-          <button class="chip is-on" data-filter="hepsi">Tümü <span class="ch-cnt">5</span></button>
+          <button class="chip is-on" data-filter="hepsi">Tümü <span class="ch-cnt">9</span></button>
           <button class="chip" data-filter="aktif">Aktif <span class="ch-cnt">3</span></button>
           <button class="chip" data-filter="planlama">Planlama <span class="ch-cnt">1</span></button>
           <button class="chip" data-filter="tamam">Tamamlanan <span class="ch-cnt">1</span></button>
+          <button class="chip" data-filter="pasif">Pasif <span class="ch-cnt">1</span></button>
+          <button class="chip" data-filter="askida">Askıya Alınan <span class="ch-cnt">1</span></button>
+          <button class="chip" data-filter="arsiv">Arşivlenen <span class="ch-cnt">1</span></button>
+          <button class="chip" data-filter="iptal">İptal Edilen <span class="ch-cnt">1</span></button>
         </div>
+        <button type="button" class="gv-toggle" id="swPasif" role="switch" aria-checked="false">
+          <span class="gv-toggle-track"><span class="gv-toggle-thumb"></span></span>
+          <span class="gv-toggle-lbl">Pasif Şantiyeleri Göster</span>
+        </button>
       </div>
       <div class="gc-body flush">
         <table class="gtable" id="tblSantiye">
@@ -212,25 +255,221 @@
         </div>
       </div>
     </div>
+
+    <!-- Pasif şantiyeler (§4.1 H1) — 4 kurgusal kapalı şantiye, hepsi 0 personel; Vadi 51/Liman
+         30/Merkez 12/toplam 93'e dahil DEĞİL. Varsayılan görünümde raw hidden (switch kapalı) —
+         JS-kapalı bake ikizi burada zaten doğru: switch açılmadan bu blok hiç görünmez. -->
+    <div class="gv-card" id="pasifGridWrap" hidden>
+      <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-box-archive"></i> Pasif Şantiyeler</div></div>
+      <div class="pasif-grid" id="pasifGrid">
+        <div class="pasif-card" data-f="pasif" hidden>
+          <div class="pc-head">
+            <div class="pc-mark" style="background:var(--bg);color:var(--muted)">ÇS</div>
+            <div class="pc-id">
+              <div class="pc-name">Çınar Sokak Karma Proje</div>
+              <div class="pc-sub">Kod CSKP · Ümraniye, İstanbul</div>
+            </div>
+            <span class="gstat off">Pasif</span>
+          </div>
+          <dl class="pc-meta">
+            <div><dt>Şantiye Şefi</dt><dd class="muted">Atanmadı</dd></div>
+            <div><dt>Başlangıç</dt><dd>10 Ocak 2023</dd></div>
+            <div><dt>Kapanış / Teslim</dt><dd class="muted">—</dd></div>
+            <div><dt>Son İşlem Tarihi</dt><dd>3 Mart 2026</dd></div>
+          </dl>
+          <div class="pc-note">
+            <i class="fa-solid fa-circle-info"></i>
+            <div><b>Pasif olma nedeni</b><span>Yatırımcı ile yeniden değerlendirme sürecinde — saha faaliyeti Mart 2026'dan beri durduruldu.</span></div>
+          </div>
+          <div class="pc-foot">
+            <span class="pc-durum">Son durum: Faaliyet durduruldu, ekip diğer şantiyelere kaydırıldı.</span>
+            <a class="btn btn-ghost btn-sm" href="crm-santiye-detay.html?santiye=cskp" data-no-confirm>Detaya Git <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+        <div class="pasif-card" data-f="askida" hidden>
+          <div class="pc-head">
+            <div class="pc-mark" style="background:var(--warn-tint);color:var(--warn)">BT</div>
+            <div class="pc-id">
+              <div class="pc-name">Bahçelievler Toplu Konut</div>
+              <div class="pc-sub">Kod BTK · Bahçelievler, İstanbul</div>
+            </div>
+            <span class="gstat wait">Askıya Alınan</span>
+          </div>
+          <dl class="pc-meta">
+            <div><dt>Şantiye Şefi</dt><dd class="muted">Atanmadı</dd></div>
+            <div><dt>Başlangıç</dt><dd>5 Haziran 2024</dd></div>
+            <div><dt>Kapanış / Teslim</dt><dd class="muted">—</dd></div>
+            <div><dt>Son İşlem Tarihi</dt><dd>18 Mayıs 2026</dd></div>
+          </dl>
+          <div class="pc-note">
+            <i class="fa-solid fa-circle-info"></i>
+            <div><b>Askıya alınma nedeni</b><span>Belediye imar planı revizyonu nedeniyle inşaat ruhsatı yeniden değerlendiriliyor.</span></div>
+          </div>
+          <div class="pc-foot">
+            <span class="pc-durum">Son durum: Ruhsat sürecinde, saha kapalı.</span>
+            <a class="btn btn-ghost btn-sm" href="crm-santiye-detay.html?santiye=btk" data-no-confirm>Detaya Git <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+        <div class="pasif-card" data-f="arsiv" hidden>
+          <div class="pc-head">
+            <div class="pc-mark" style="background:var(--bg);color:var(--muted)">FM</div>
+            <div class="pc-id">
+              <div class="pc-name">Fatih Mahallesi Restorasyon</div>
+              <div class="pc-sub">Kod FMR · Fatih, İstanbul</div>
+            </div>
+            <span class="gstat off">Arşivlenen</span>
+          </div>
+          <dl class="pc-meta">
+            <div><dt>Şantiye Şefi</dt><dd class="muted">—</dd></div>
+            <div><dt>Başlangıç</dt><dd>2 Mart 2018</dd></div>
+            <div><dt>Kapanış / Teslim</dt><dd>14 Kasım 2019</dd></div>
+            <div><dt>Son İşlem Tarihi</dt><dd>14 Kasım 2024</dd></div>
+          </dl>
+          <div class="pc-note">
+            <i class="fa-solid fa-circle-info"></i>
+            <div><b>Arşivlenme nedeni</b><span>Proje 2019'da tamamlandı; 5 yıllık garanti süreci sona erdiği için arşive kaldırıldı.</span></div>
+          </div>
+          <div class="pc-foot">
+            <span class="pc-durum">Son durum: Tamamlandı, arşivde.</span>
+            <a class="btn btn-ghost btn-sm" href="crm-santiye-detay.html?santiye=fmr" data-no-confirm>Detaya Git <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+        <div class="pasif-card" data-f="iptal" hidden>
+          <div class="pc-head">
+            <div class="pc-mark" style="background:var(--danger-tint);color:var(--danger)">KS</div>
+            <div class="pc-id">
+              <div class="pc-name">Kartal Sahil Rezidans</div>
+              <div class="pc-sub">Kod KSR · Kartal, İstanbul</div>
+            </div>
+            <span class="gstat danger">İptal Edilen</span>
+          </div>
+          <dl class="pc-meta">
+            <div><dt>Şantiye Şefi</dt><dd class="muted">Atanmadı</dd></div>
+            <div><dt>Başlangıç</dt><dd>20 Eylül 2025 <span style="font-weight:600;color:var(--muted)">(ruhsat aşaması)</span></dd></div>
+            <div><dt>Kapanış / Teslim</dt><dd class="muted">—</dd></div>
+            <div><dt>Son İşlem Tarihi</dt><dd>12 Aralık 2025</dd></div>
+          </dl>
+          <div class="pc-note">
+            <i class="fa-solid fa-circle-info"></i>
+            <div><b>İptal nedeni</b><span>Yatırımcı finansman sağlayamadığı için proje ruhsat aşamasında iptal edildi.</span></div>
+          </div>
+          <div class="pc-foot">
+            <span class="pc-durum">Son durum: İptal edildi, saha faaliyeti hiç başlamadı.</span>
+            <a class="btn btn-ghost btn-sm" href="crm-santiye-detay.html?santiye=ksr" data-no-confirm>Detaya Git <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 </div>
 
 <script src="assets/js/shell.js"></script>
 <script src="assets/js/ui.js"></script>
 <script>
-/* rol daraltması: şef yalnız kendi şantiyesini görür; yönetim aksiyonları gizlenir */
+/* rol daraltması: şef yalnız kendi şantiyesini görür; yönetim aksiyonları gizlenir.
+   Sef için pasif şantiye kontrolleri (switch + 4 chip + kart alanı) TAMAMEN kaldırılır —
+   başka projelere ait kapalı kayıtları görmesi için hiçbir sebep yok (§4.1 "Görebilenler"). */
 (function(){
   if(!window.GV) return;
   if(GV.role === 'sef'){
     document.querySelectorAll('#tblSantiye tbody tr').forEach(function(tr){
       if(tr.getAttribute('data-site') !== 'vadi') tr.remove();
     });
-    document.querySelectorAll('.chip .ch-cnt').forEach(function(c){ c.textContent = c.textContent === '5' || c.textContent === '3' ? '1' : '0'; });
+    ['pasif','askida','arsiv','iptal'].forEach(function(f){
+      var ch = document.querySelector('.chip[data-filter="' + f + '"]');
+      if(ch) ch.remove();
+    });
+    var swEl = document.getElementById('swPasif'); if(swEl) swEl.remove();
+    var gridEl = document.getElementById('pasifGridWrap'); if(gridEl) gridEl.remove();
+    var CNT = { hepsi:'1', aktif:'1', planlama:'0', tamam:'0' };
+    Object.keys(CNT).forEach(function(f){
+      var cnt = document.querySelector('.chip[data-filter="' + f + '"] .ch-cnt');
+      if(cnt) cnt.textContent = CNT[f];
+    });
     var sub = document.querySelector('.ph-sub');
     if(sub) sub.innerHTML = 'Vadi Konakları · sorumlu olduğunuz şantiye';
   }
   if(GV.role !== 'superadmin' && GV.role !== 'sahip' && GV.role !== 'yonetim'){
     document.querySelectorAll('[data-admin-only]').forEach(function(el){ el.hidden = true; });
+  }
+
+  /* §4.1 H1 — bileşik filtre motoru (D18 _gvApply delegasyonu): 8 chip + arama + "Pasif
+     Şantiyeleri Göster" switch. Switch kapalıyken pasif-tipi 4 chip hiçbir zaman boş kalmaz —
+     tıklanınca switch'i kendisi açar (aşağıdaki chip-click handler'ı ui.js'in kendi chip
+     listener'ından ÖNCE, DOMContentLoaded beklemeden bağlanır). */
+  var tblSantiye = document.getElementById('tblSantiye');
+  var swPasif = document.getElementById('swPasif');
+  var gridWrap = document.getElementById('pasifGridWrap');
+  var PASIF_FILTERS = ['pasif', 'askida', 'arsiv', 'iptal'];
+
+  function setSwitch(on){
+    if(!swPasif) return;
+    swPasif.setAttribute('aria-checked', on ? 'true' : 'false');
+  }
+
+  if(swPasif){
+    swPasif.addEventListener('click', function(){
+      var on = swPasif.getAttribute('aria-checked') !== 'true';
+      setSwitch(on);
+      /* switch kapatılırken hâlâ pasif-tipi bir chip seçiliyse "Tümü"ne dön (boş sonuç kalmasın) */
+      if(!on){
+        var onChip = document.querySelector('.chip.is-on[data-filter]');
+        var f = onChip ? onChip.getAttribute('data-filter') : 'hepsi';
+        if(PASIF_FILTERS.indexOf(f) !== -1){
+          document.querySelectorAll('.chips .chip').forEach(function(c){ c.classList.remove('is-on'); });
+          var hepsi = document.querySelector('.chip[data-filter="hepsi"]');
+          if(hepsi) hepsi.classList.add('is-on');
+        }
+      }
+      if(window.gvApplyFilters && tblSantiye) gvApplyFilters(tblSantiye, true);
+    });
+    /* pasif-tipi chip'e tıklanınca switch otomatik açılır (hiçbir chip boş kalmaz kuralı) */
+    document.querySelectorAll('.chip[data-filter]').forEach(function(ch){
+      ch.addEventListener('click', function(){
+        var f = ch.getAttribute('data-filter');
+        if(PASIF_FILTERS.indexOf(f) !== -1) setSwitch(true);
+      });
+    });
+  }
+
+  if(tblSantiye){
+    tblSantiye._gvApply = function(){
+      var card = tblSantiye.closest('.gv-card');
+      var inp = card.querySelector('input[data-table-search]');
+      var term = inp ? inp.value.trim().toLocaleLowerCase('tr') : '';
+      var on = card.querySelector('.chip.is-on[data-filter]');
+      var f = on ? on.getAttribute('data-filter') : 'hepsi';
+      var showPasif = swPasif ? swPasif.getAttribute('aria-checked') === 'true' : false;
+
+      var shown = 0;
+      tblSantiye.querySelectorAll('tbody tr').forEach(function(tr){
+        var okF = f === 'hepsi' || tr.getAttribute('data-f') === f;
+        var okT = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
+        var show = okF && okT;
+        tr.hidden = !show;
+        if(show) shown++;
+      });
+      tblSantiye.hidden = shown === 0;
+
+      var cardShown = 0;
+      if(gridWrap){
+        document.querySelectorAll('#pasifGrid .pasif-card').forEach(function(pc){
+          var f2 = pc.getAttribute('data-f');
+          var okF = showPasif && (f === 'hepsi' || f === f2);
+          var okT = !term || pc.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
+          var show = okF && okT;
+          pc.hidden = !show;
+          if(show) cardShown++;
+        });
+        gridWrap.hidden = cardShown === 0;
+      }
+
+      var total = shown + cardShown;
+      var empty = card.querySelector('[data-table-empty]');
+      if(empty) empty.hidden = total !== 0;
+      var cnt = document.querySelector('[data-table-count]');
+      if(cnt) cnt.textContent = total;
+    };
   }
 })();
 </script>
