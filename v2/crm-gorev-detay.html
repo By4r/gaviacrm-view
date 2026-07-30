@@ -608,6 +608,20 @@
       due:{val:'12 Temmuz 2026', late:false}, created:'2 Temmuz 2026',
       desc:'Şantiyelerdeki araç takip çizelgesinin güncellenmesi bekleniyor.',
       comments:[{who:'Kemal Yapıcıoğlu', date:'2 Temmuz, 09:10', text:'Çizelgeyi güncel araç listesine göre yenileyelim.'}]}),
+    /* [Dalga 20 / T-GOREV-02] ik ve yonetim havuzları için eklenen 2 kanonik görev —
+       önceden bu iki departmanın havuzu tamamen boştu (K-22). */
+    '030': rec({title:'Merkez Şantiye personel özlük evrak eksik kontrolü', santiye:'merkez', pri:'med', st:ST.havuz, pool:true, poolWait:'1 gündür bekliyor',
+      departman:'ik',
+      poolHistory:[{tip:'birak', kisi:'Kemal Yapıcıoğlu', tarih:'1 Temmuz 2026', not:'İK Departmanı havuzuna bırakıldı'}],
+      due:{val:'11 Temmuz 2026', late:false}, created:'1 Temmuz 2026',
+      desc:'Merkez Şantiye personelinin özlük evrak eksiklerinin tespit edilip tamamlanması isteniyor.',
+      comments:[{who:'Kemal Yapıcıoğlu', date:'1 Temmuz, 14:15', text:'İK ekibinden uygun olan arkadaşımız üstlenebilir, aciliyeti yok.'}]}),
+    '031': rec({title:'Göl Evleri 2. Etap yatırım komitesi sunum hazırlığı', santiye:'gol', pri:'high', st:ST.havuz, pool:true, poolWait:'bugün bırakıldı',
+      departman:'yonetim',
+      poolHistory:[{tip:'birak', kisi:'Kemal Yapıcıoğlu', tarih:'2 Temmuz 2026', not:'Yönetim havuzuna bırakıldı'}],
+      due:{val:'7 Temmuz 2026', late:false}, created:'2 Temmuz 2026',
+      desc:'Göl Evleri 2. Etap için yatırım komitesine sunulacak lansman öncesi değerlendirme raporunun hazırlanması isteniyor.',
+      comments:[{who:'Kemal Yapıcıoğlu', date:'2 Temmuz, 10:40', text:'Komite toplantısından önce taslağı gözden geçirelim.'}]}),
     /* ---- D-Dalga4: 8 durumun tamamı gösterilsin diye eklenen 3 temsili kayıt
        (Onay Bekliyor / Revize İstendi / İptal Edildi) — crm-gorev.html listesine
        henüz satır olarak eklenmedi, lead'e bildirildi (liste sayfası başka sahipte). ---- */
