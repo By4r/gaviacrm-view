@@ -58,6 +58,36 @@
 .tip-opt[data-t="kisi"]::before{background:var(--acc-ink)}
 .tip-opt[data-t="havuz"]::before{background:var(--info)}
 .tip-opt.is-on{border-color:var(--acc-ink);color:var(--acc-ink);background:rgba(var(--acc-rgb),.09)}
+
+/* §11.1 kaynak rozeti — saha bildiriminden/revize talebinden ön-dolu açılış (T-BILDIRIM
+   ?kaynak=bildirim|revize&bil=NNN sözleşmesi); GÖRSEL KURAL: kare thumbnail img DEĞİL,
+   div + background-image (crm-gorev-detay.html .photo-vadi gradyan dili birebir) */
+.src-banner{display:flex;align-items:center;gap:14px;padding:13px 18px;margin-bottom:16px;border-radius:var(--r-md);background:var(--info-tint);border:1px solid color-mix(in srgb, var(--info) 30%, var(--line))}
+.src-thumb{width:42px;height:42px;flex:none;border-radius:9px;background-size:cover;background-position:center;display:grid;place-items:center;color:#fff;font-size:14px;background-image:linear-gradient(135deg, color-mix(in srgb, var(--acc) 55%, var(--gv-deep)) 0%, color-mix(in srgb, var(--acc) 18%, var(--gv-deep)) 100%)}
+.src-body{min-width:0;font-size:12.5px}
+.src-lbl{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--info);margin-bottom:2px}
+.src-txt{color:var(--ink-2);font-weight:600}
+.src-txt a{color:var(--acc-ink);font-weight:700}
+.src-txt a:hover{color:var(--acc-deep)}
+
+/* §11.1 departman havuzu seçimi — havuza bırak açılınca görünür alan */
+.dept-hint{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:var(--muted);line-height:1.5;margin-top:8px}
+.dept-hint i{margin-top:2px;color:var(--info)}
+.dept-hint b{color:var(--ink-2)}
+
+/* §11.3 görev ekleri — dosya listesi + ekleme çubuğu (crm-gorev-detay.html .file-row
+   diliyle tutarlı, sayfa-lokal tekrar çünkü o dosya ayrı bir HTML) */
+.file-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.file-row:last-child{border-bottom:none}
+.file-ico{width:36px;height:36px;flex:none;border-radius:9px;display:grid;place-items:center;font-size:14px;background:var(--info-tint);color:var(--info)}
+.file-ico.pdf{background:var(--danger-tint);color:var(--danger)}
+.file-info{flex:1;min-width:0;line-height:1.35}
+.file-info b{display:block;font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-info span{font-size:11.5px;color:var(--muted)}
+.file-row .ia-btn{cursor:pointer}
+.ek-add-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding-top:12px;margin-top:4px;border-top:1px solid var(--line)}
+.ek-add-row select{flex:1;min-width:150px}
+.ek-add-row input[type="text"]{flex:1;min-width:150px}
 </style>
 </head>
 <body data-sec="gorev" data-screen="form">
@@ -92,6 +122,17 @@
         <div class="ph-eyebrow">İş Takibi</div>
         <h1>Görev Oluştur</h1>
         <div class="ph-sub">Görev atanan kişiye bildirim olarak düşer; termin ve öncelik görev listesinde izlenir.</div>
+      </div>
+    </div>
+
+    <!-- §11.1 çapraz bağımlılık — T-BILDIRIM crm-gorev-form.html?kaynak=bildirim&bil=NNN /
+         ?kaynak=revize&bil=NNN linkiyle açtığında JS bu rozeti doldurur; paramsız açılışta
+         hidden kalır (regresyonsuz). -->
+    <div class="src-banner" id="srcBanner" hidden>
+      <div class="src-thumb" id="srcThumb"><i class="fa-solid fa-image"></i></div>
+      <div class="src-body">
+        <div class="src-lbl" id="srcLbl">Kaynak</div>
+        <div class="src-txt">Saha Bildirimi <a id="srcLink" href="#">—</a> — <span id="srcTitle">—</span></div>
       </div>
     </div>
 
@@ -150,6 +191,26 @@
                 <option>Nesrin Aydın — Muhasebe</option>
                 <option>Seda Karaca — İK Uzmanı</option>
               </select>
+            </div>
+            <!-- §11.1 — havuza bırakınca zorunlu hale gelen departman seçimi (K-22).
+                 11 seçenek de listelenir (ölü kalem yasağı); Faz 2 etiketi görünür kalır. -->
+            <div class="gfield full" id="gfHavuzDept" hidden>
+              <label for="fHavuzDept">Departman Havuzu <span class="gf-hint">(havuza bırakırken zorunlu)</span></label>
+              <select id="fHavuzDept">
+                <option value="">Departman seçin…</option>
+                <option value="muhasebe">Muhasebe</option>
+                <option value="ik">İK</option>
+                <option value="satinalma">Satın Alma</option>
+                <option value="teknik">Teknik Ofis</option>
+                <option value="sef">Şantiye Ekibi</option>
+                <option value="saha">Saha Ekibi (Faz 2)</option>
+                <option value="yonetim">Yönetim</option>
+                <option value="satis">Satış Ekibi</option>
+                <option value="isg">İSG Ekibi (Faz 2)</option>
+                <option value="depo">Depo / Lojistik (Faz 2)</option>
+                <option value="taseron">Taşeron Havuzu (Faz 2)</option>
+              </select>
+              <div class="dept-hint" id="havuzDeptHint" hidden></div>
             </div>
             <div class="gfield">
               <label for="fOlusturan">Oluşturan</label>
@@ -242,10 +303,33 @@
                 <div class="tsum-body"><div class="tsum-val">Tamamlama kanıtı gerekli</div><div class="tsum-lbl" style="text-transform:none;font-weight:600">Kapatmadan önce fotoğraf veya belge eki zorunlu tutulur</div></div>
               </div>
             </div>
+            <!-- §11.3 — görev ekleri: 11 tür + çoklu dosya + kategori + açıklama; yükleyen/
+                 yükleme tarihi otomatik (oturum açan kullanıcı/bugün). "Tamamlanırken ek
+                 zorunlu mu" alanı YUKARIDA "Tamamlama kanıtı gerekli" toggle'ıyla ZATEN
+                 karşılanıyor (aynı alan — tekrar icat edilmedi). -->
             <div class="gfield full">
-              <label for="fDosya">Dosya Eki <span class="gf-hint">(isteğe bağlı)</span></label>
-              <input type="file" id="fDosya">
-              <div class="file-drop"><i class="fa-regular fa-paperclip"></i> PDF, görsel veya belge ekleyebilirsiniz — bu prototipte yüklenmez.</div>
+              <label>Görev Ekleri <span class="gf-hint">(isteğe bağlı — birden fazla dosya eklenebilir)</span></label>
+              <div id="ekList"></div>
+              <div class="ek-add-row">
+                <select id="ekKategori" aria-label="Ek kategorisi">
+                  <option value="gorsel">Görsel</option>
+                  <option value="pdf">PDF</option>
+                  <option value="word">Word Belgesi</option>
+                  <option value="excel">Excel Belgesi</option>
+                  <option value="teknik_cizim">Teknik Çizim</option>
+                  <option value="video">Video</option>
+                  <option value="saha_foto">Saha Fotoğrafı</option>
+                  <option value="sozlesme">Sözleşme Eki</option>
+                  <option value="satinalma">Satın Alma Belgesi</option>
+                  <option value="hakedis">Hakediş Eki</option>
+                  <option value="isg">İSG Belgesi</option>
+                </select>
+                <input type="text" id="ekAciklama" placeholder="Açıklama (isteğe bağlı)">
+                <label class="btn btn-ghost btn-sm" for="fDosya"><i class="fa-regular fa-paperclip"></i> Dosya Seç</label>
+                <input type="file" id="fDosya" multiple hidden>
+                <button type="button" class="btn btn-acc btn-sm" id="ekEkleBtn" data-no-confirm><i class="fa-solid fa-plus"></i> Ekle</button>
+              </div>
+              <div class="file-drop" id="ekSeciliTxt"><i class="fa-regular fa-paperclip"></i> Henüz dosya seçilmedi — bu prototipte gerçekten yüklenmez, yalnız listeye eklenir.</div>
             </div>
           </form>
         </div>
@@ -292,6 +376,69 @@
   var olusturan = document.getElementById('fOlusturan');
   if(olusturan) olusturan.value = (GV.R && GV.R.name ? GV.R.name : 'Oturum açan kullanıcı') + (GV.R && GV.R.role ? ' — ' + GV.R.role : '');
 
+  /* ==== §11 ÇAPRAZ BAĞIMLILIK — T-BILDIRIM'in ürettiği ?kaynak=bildirim&bil=NNN /
+     ?kaynak=revize&bil=NNN linkiyle açılış. Param adları LEAD tarafından kilitli.
+     BIL_REF, crm-santiye-bildirim-detay.html:107 BIL kanonik haritasının (D18-T1)
+     bu formun ihtiyaç duyduğu alt kümesidir — o dosya T-BILDIRIM'de, buraya salt-okunur
+     kopyalanmıştır (aynı yaklaşım crm-gorev-detay.html'in kendi PEOPLE/SITE haritalarında
+     zaten var). Paramsız açılışta bu blok hiçbir alanı DEĞİŞTİRMEZ — regresyonsuz. ==== */
+  (function(){
+    var BIL_REF = {
+      '001':{no:'SBL-2026-001', kisi:'Hasan Demirci', site:'Vadi Konakları', tur:'Yapı İlerlemesi', baslik:'B Blok temel betonu bugün tamamlandı'},
+      '002':{no:'SBL-2026-002', kisi:'İbrahim Sönmez', site:'Vadi Konakları', tur:'Elektrik/Mekanik', baslik:'Zemin kat elektrik tesisatı döşemesi başladı'},
+      '003':{no:'SBL-2026-003', kisi:'Aylin Koç', site:'Liman Lojistik Merkezi', tur:'Yapı İlerlemesi', baslik:'Çelik konstrüksiyon montajı 3. modülde tamamlandı'},
+      '004':{no:'SBL-2026-004', kisi:'Şükrü Aslan', site:'Liman Lojistik Merkezi', tur:'İSG', baslik:'Haftalık İSG toplantısı yapıldı'},
+      '005':{no:'SBL-2026-005', kisi:'Ömer Taşkın', site:'Merkez Şantiye', tur:'Atölye/Depo', baslik:'Atölye çatı kaplama işi yaklaşık %80 seviyesinde'},
+      '006':{no:'SBL-2026-006', kisi:'Recep Yaman', site:'Merkez Şantiye', tur:'Malzeme Teslimatı', baslik:'Yeni gelen kalıp kerestesi sahaya indirildi'},
+      '007':{no:'SBL-2026-007', kisi:'Metin Çetin', site:'Liman Lojistik Merkezi', tur:'Kalite Kontrol', baslik:'Kaynak noktalarının kalite kontrolü tamamlandı'},
+      '008':{no:'SBL-2026-008', kisi:'Ramazan Kılıç', site:'Vadi Konakları', tur:'Yapı İlerlemesi', baslik:'3. kat perde kalıbı kuruldu'}
+    };
+    var TUR_TIP = {'Yapı İlerlemesi':'saha', 'Elektrik/Mekanik':'teknik', 'İSG':'isg',
+      'Atölye/Depo':'saha', 'Malzeme Teslimatı':'satinalma', 'Kalite Kontrol':'teknik'};
+
+    function normalize(raw){
+      if(!raw) return null;
+      var m = String(raw).toLowerCase().match(/(\d{1,3})\s*$/);
+      return m ? ('00' + m[1]).slice(-3) : null;
+    }
+
+    var q = new URLSearchParams(location.search);
+    var kaynak = q.get('kaynak');
+    var bilId = normalize(q.get('bil'));
+    if((kaynak !== 'bildirim' && kaynak !== 'revize') || !bilId || !BIL_REF[bilId]) return;
+    var d = BIL_REF[bilId];
+    var isRevize = kaynak === 'revize';
+
+    document.getElementById('fBaslik').value = (isRevize ? 'Revize: ' : '') + d.baslik;
+    document.getElementById('fAciklama').value = 'Kaynak: Saha Bildirimi ' + d.no + ' (' + d.kisi + ', ' + d.site + ')'
+      + (isRevize ? ' — bildirimde belirtilen kalemin revize edilmesi isteniyor.' : ' — bildirim üzerinden görevleştirildi.');
+    var tipSel = document.getElementById('fTip');
+    if(tipSel) tipSel.value = TUR_TIP[d.tur] || 'saha';
+    var santiyeSel = document.getElementById('fSantiye');
+    if(santiyeSel){ santiyeSel.value = d.site; santiyeSel.dispatchEvent(new Event('change')); }
+    if(isRevize){
+      var oncelikSel = document.getElementById('fOncelik'); if(oncelikSel){ oncelikSel.value = 'high'; oncelikSel.dispatchEvent(new Event('change')); }
+      var kategoriSel = document.getElementById('fKategori'); if(kategoriSel) kategoriSel.value = 'uyum';
+      var kanit = document.getElementById('fKanitGerekli'); if(kanit) kanit.checked = true;
+    }
+    var kaynakModulSel = document.getElementById('fKaynakModul');
+    if(kaynakModulSel) kaynakModulSel.value = 'bildirim';
+    var gfKaynakKayitEl = document.getElementById('gfKaynakKayit');
+    if(gfKaynakKayitEl) gfKaynakKayitEl.hidden = false;   /* kaynakModul change listener bu bloktan SONRA
+      bağlandığı için dispatchEvent yerine doğrudan senkronlanır */
+    var kaynakKayit = document.getElementById('fKaynakKayit');
+    if(kaynakKayit) kaynakKayit.value = d.no;
+
+    var banner = document.getElementById('srcBanner');
+    if(banner){
+      banner.hidden = false;
+      document.getElementById('srcLbl').textContent = isRevize ? 'Kaynak · Revize Talebi' : 'Kaynak';
+      document.getElementById('srcLink').textContent = d.no;
+      document.getElementById('srcLink').href = 'crm-santiye-bildirim-detay.html?bil=' + bilId;
+      document.getElementById('srcTitle').textContent = d.baslik;
+    }
+  })();
+
   /* ---- kaynak modül seçilince kaynak kayıt alanı açılır ---- */
   var fKaynakModul = document.getElementById('fKaynakModul');
   var gfKaynakKayit = document.getElementById('gfKaynakKayit');
@@ -320,19 +467,57 @@
     return parseInt(p[2],10) + ' ' + (MONTHS[p[1]]||p[1]) + ' ' + p[0];
   }
 
+  /* ---- §11.1 departman havuzu — 11 seçenek, K-22 hükmü (7'si gerçek rol filtresi,
+     4'ü Faz 2 — bkz tasks/kararlar.md K-22 / crm-gorev.html DEPT_ROLE_MAP) ---- */
+  var DEPT_LBL = {muhasebe:'Muhasebe', ik:'İK', satinalma:'Satın Alma', teknik:'Teknik Ofis',
+    sef:'Şantiye Ekibi', saha:'Saha Ekibi', yonetim:'Yönetim', satis:'Satış Ekibi',
+    isg:'İSG Ekibi', depo:'Depo / Lojistik', taseron:'Taşeron Havuzu'};
+  var DEPT_ROLE_TXT = {muhasebe:'Muhasebe rolündeki kullanıcılar', ik:'İK Uzmanı rolündeki kullanıcılar',
+    satinalma:'Satın Alma Sorumlusu rolündeki kullanıcılar', teknik:'Teknik Müdür rolündeki kullanıcılar',
+    sef:'Şantiye Şefi rolündeki kullanıcılar', yonetim:'yalnızca yönetim rolleri',
+    satis:'Satış Temsilcisi/Satış Müdürü rolündeki kullanıcılar'};
+  var FAZ2_DEPTS = ['saha','isg','depo','taseron'];
+  var fHavuzDept = document.getElementById('fHavuzDept');
+  var havuzDeptHint = document.getElementById('havuzDeptHint');
+
+  function syncDeptHint(){
+    var dept = fHavuzDept.value;
+    if(!dept){ havuzDeptHint.hidden = true; return; }
+    havuzDeptHint.hidden = false;
+    var santiye = document.getElementById('fSantiye').value;
+    if(FAZ2_DEPTS.indexOf(dept) !== -1){
+      havuzDeptHint.innerHTML = '<i class="fa-solid fa-circle-info"></i> <span>Bu havuz için Faz 1\'de rol bazlı ayrı bir görünürlük filtresi yok — yalnız <b>yönetim, teknik müdür ve şantiye şefi</b> rolleri görür. Departman bazlı ayrım Faz 2\'ye bırakıldı.</span>';
+    } else {
+      havuzDeptHint.innerHTML = '<i class="fa-solid fa-circle-info"></i> <span>Bu görevi yönetim rolleri ve <b>' + DEPT_ROLE_TXT[dept] + '</b> görebilir.' + (dept === 'sef' && santiye ? ' Seçili şantiyeye (' + santiye + ') yetkili şantiye şefi bu görevi görür.' : '') + '</span>';
+    }
+  }
+  if(fHavuzDept){
+    fHavuzDept.addEventListener('change', function(){ syncDeptHint(); syncSummary(); });
+  }
+  var fSantiyeForDept = document.getElementById('fSantiye');
+  if(fSantiyeForDept) fSantiyeForDept.addEventListener('change', syncDeptHint);
+
   /* ---- atama modu: kişiye ata / havuza bırak ---- */
   var atamaMode = 'kisi';
   var gfAtanan = document.getElementById('gfAtanan');
+  var gfHavuzDept = document.getElementById('gfHavuzDept');
   var sumFoot = document.getElementById('sumFoot');
   var submitBtn = document.getElementById('gorevSubmit');
 
   function syncAtamaMode(){
     if(atamaMode === 'havuz'){
       gfAtanan.hidden = true;
-      sumFoot.innerHTML = '<i class="fa-solid fa-layer-group"></i> Görev ortak havuza düşecek — ilk üstlenen kişi sorumluluğu alır.';
+      gfHavuzDept.hidden = false;
+      var dept = fHavuzDept.value;
+      sumFoot.innerHTML = dept
+        ? '<i class="fa-solid fa-layer-group"></i> Görev <b>' + DEPT_LBL[dept] + '</b> havuzuna düşecek — ilgili departman ve yönetim görebilir.'
+        : '<i class="fa-solid fa-layer-group"></i> Görev ortak havuza düşecek — önce departman seçin.';
       submitBtn.innerHTML = '<i class="fa-solid fa-layer-group"></i> Havuza Bırak';
+      syncDeptHint();
     } else {
       gfAtanan.hidden = false;
+      gfHavuzDept.hidden = true;
+      havuzDeptHint.hidden = true;
       sumFoot.innerHTML = '<i class="fa-solid fa-circle-info"></i> Görev oluşturulduğunda atanan kişiye bildirim gider.';
       submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Görevi Oluştur';
     }
@@ -351,7 +536,9 @@
   }
 
   function syncSummary(){
-    var atanan = atamaMode === 'havuz' ? 'Ortak Havuz' : document.getElementById('fAtanan').value.split(' — ')[0];
+    var atanan = atamaMode === 'havuz'
+      ? (fHavuzDept.value ? 'Ortak Havuz — ' + DEPT_LBL[fHavuzDept.value] : 'Ortak Havuz')
+      : document.getElementById('fAtanan').value.split(' — ')[0];
     var sumAtanan = document.getElementById('sumAtanan');
     sumAtanan.textContent = atanan;
     sumAtanan.classList.toggle('muted', atamaMode === 'havuz');
@@ -382,10 +569,76 @@
         document.getElementById('fBaslik').focus();
         return;
       }
-      gvToast(atamaMode === 'havuz'
-        ? 'Görev oluşturuldu ve ortak havuza bırakıldı.'
-        : 'Görev oluşturuldu ve atanan kişiye bildirim gönderildi.');
-      setTimeout(function(){ location.href = 'crm-gorev.html'; }, 900);
+      if(atamaMode === 'havuz' && !fHavuzDept.value){
+        gvToast('Havuza bırakılan görev için departman seçimi zorunludur.', {type:'danger'});
+        fHavuzDept.focus();
+        return;
+      }
+      if(atamaMode === 'havuz'){
+        gvToast('Görev ' + DEPT_LBL[fHavuzDept.value] + ' havuzuna bırakıldı.');
+        setTimeout(function(){ location.href = 'crm-gorev.html?f=havuz'; }, 900);
+      } else {
+        gvToast('Görev oluşturuldu ve atanan kişiye bildirim gönderildi.');
+        setTimeout(function(){ location.href = 'crm-gorev.html'; }, 900);
+      }
+    });
+  }
+
+  /* ---- §11.3 görev ekleri — çoklu dosya + kategori + açıklama; yükleyen/tarih otomatik.
+     [MOCK-SİM] gerçekten yüklenmez, yalnız listeye eklenir (D18-B2 idiyomu). ---- */
+  var EK_KATEGORI = {gorsel:'Görsel', pdf:'PDF', word:'Word Belgesi', excel:'Excel Belgesi',
+    teknik_cizim:'Teknik Çizim', video:'Video', saha_foto:'Saha Fotoğrafı', sozlesme:'Sözleşme Eki',
+    satinalma:'Satın Alma Belgesi', hakedis:'Hakediş Eki', isg:'İSG Belgesi'};
+  var EK_ICON = {gorsel:'fa-file-image', pdf:'fa-file-pdf', word:'fa-file-word', excel:'fa-file-excel',
+    teknik_cizim:'fa-drafting-compass', video:'fa-file-video', saha_foto:'fa-camera',
+    sozlesme:'fa-file-contract', satinalma:'fa-cart-shopping', hakedis:'fa-file-invoice-dollar', isg:'fa-helmet-safety'};
+  var ekler = [];
+  var ekList = document.getElementById('ekList');
+  var ekDosya = document.getElementById('fDosya');
+  var ekSeciliTxt = document.getElementById('ekSeciliTxt');
+  function renderEkler(){
+    if(!ekler.length){ ekList.innerHTML = ''; return; }
+    ekList.innerHTML = ekler.map(function(e, i){
+      return '<div class="file-row"><div class="file-ico'+(e.kategori==='pdf'?' pdf':'')+'"><i class="fa-solid '+(EK_ICON[e.kategori]||'fa-file')+'"></i></div>'
+        + '<div class="file-info"><b>'+e.name+'</b><span>'+EK_KATEGORI[e.kategori]+(e.aciklama ? ' · ' + e.aciklama : '')+' · '+e.yukleyen+'</span></div>'
+        + '<button type="button" class="ia-btn" data-ek-remove="'+i+'" aria-label="Eki kaldır"><i class="fa-solid fa-xmark"></i></button></div>';
+    }).join('');
+  }
+  if(ekDosya){
+    ekDosya.addEventListener('change', function(){
+      var n = ekDosya.files ? ekDosya.files.length : 0;
+      ekSeciliTxt.innerHTML = n
+        ? '<i class="fa-regular fa-paperclip"></i> ' + n + ' dosya seçildi — kategoriyi seçip "Ekle"ye basın.'
+        : '<i class="fa-regular fa-paperclip"></i> Henüz dosya seçilmedi — bu prototipte gerçekten yüklenmez, yalnız listeye eklenir.';
+    });
+  }
+  var ekEkleBtn = document.getElementById('ekEkleBtn');
+  if(ekEkleBtn){
+    ekEkleBtn.addEventListener('click', function(){
+      var files = ekDosya.files ? Array.prototype.slice.call(ekDosya.files) : [];
+      if(!files.length){ gvToast('Lütfen en az bir dosya seçin.', {type:'danger'}); return; }
+      if(ekler.length + files.length > 10){
+        gvToast('En fazla 10 dosya eklenebilir (demo kısıtı).', {type:'danger'});
+        return;
+      }
+      var kategori = document.getElementById('ekKategori').value;
+      var aciklama = document.getElementById('ekAciklama').value.trim();
+      var yukleyen = (GV.R && GV.R.name) ? GV.R.name : 'Siz';
+      files.forEach(function(f){
+        ekler.push({name:f.name, kategori:kategori, aciklama:aciklama, yukleyen:yukleyen + ' tarafından, bugün'});
+      });
+      renderEkler();
+      ekDosya.value = '';
+      document.getElementById('ekAciklama').value = '';
+      ekSeciliTxt.innerHTML = '<i class="fa-regular fa-paperclip"></i> Henüz dosya seçilmedi — bu prototipte gerçekten yüklenmez, yalnız listeye eklenir.';
+      gvToast(files.length + ' dosya eklendi (demo).');
+    });
+  }
+  if(ekList){
+    ekList.addEventListener('click', function(e){
+      var btnRemove = e.target.closest('[data-ek-remove]'); if(!btnRemove) return;
+      ekler.splice(parseInt(btnRemove.getAttribute('data-ek-remove'), 10), 1);
+      renderEkler();
     });
   }
 })();
