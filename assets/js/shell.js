@@ -1078,7 +1078,13 @@
     cari:{ ic:'fa-address-book', eyebrow:'Rehber & Hesap', title:'Cariler', menu:[
       {ic:'fa-building',       lbl:'Firma Rehberi',   href:'crm-cari.html',       screen:'rehber'},
       {ic:'fa-id-card',        lbl:'Kişiler',         href:'crm-cari-kisiler.html', screen:'kisiler'},
-      {ic:'fa-scale-balanced', lbl:'Cari Durum',      href:'crm-cari-durum.html', screen:'durum'}
+      {ic:'fa-scale-balanced', lbl:'Cari Durum',      href:'crm-cari-durum.html', screen:'durum'},
+      /* [Dalga 6A / K-17] doküman §25-7 Taşeronlar+Tedarikçileri Cari altına koyuyor;
+         dosyalar TAŞINMAZ (K-06), yalnız çapraz-link menü kalemi. reqSec/reqScreen ile
+         BUDANIR — yalnız hedef bölüme gerçekten erişimi olan rolde render edilir, aksi
+         halde ölü kalem doğardı (satinalma/satismudur rolünde finans/satinalma yok) */
+      {ic:'fa-people-arrows', lbl:'Taşeronlar',    href:'crm-finans-taseronlar.html',    reqSec:'finans',    reqScreen:'taseronlar'},
+      {ic:'fa-industry',      lbl:'Tedarikçiler',  href:'crm-satinalma-tedarikciler.html', reqSec:'satinalma', reqScreen:'tedarikciler'}
     ]},
     /* [D12] bütçe + maliyet + nakit + taşeron kartları — 6 dosya diskte, unlock dalga sonunda.
        Taşeron Kartları = KİMLİK/performans; Taşeron Hakedişleri İŞLEM listesi olarak kalır (K9) */
@@ -1277,7 +1283,15 @@
   if(menuEl){
     var mh = '<div class="gv-menu-head"><span class="gmh-eyebrow">'+S.eyebrow+'</span><span class="gmh-title">'+S.title+'</span></div><div class="gv-mnav">';
     /* scr budaması: gizlenen öğeler + altı boşalan bölüm başlıkları menüden düşer */
-    var mlist = S.menu.filter(function(m){ return m.seclbl || scrOk(sec, m); });
+    /* [K-17] reqSec/reqScreen: başka bölüme giden çapraz-link kalemi, yalnız rolün o
+       bölüme (ve varsa o ekrana) GERÇEKTEN erişimi varsa görünür — screen'siz kalemlerin
+       genel muafiyetinden bilinçli AYRIŞIR (bkz. Cari > Taşeronlar/Tedarikçiler) */
+    function reqOk(m){
+      if(!m.reqSec) return true;
+      if(R.secs.indexOf(m.reqSec) === -1) return false;
+      return !m.reqScreen || scrOk(m.reqSec, {screen:m.reqScreen});
+    }
+    var mlist = S.menu.filter(function(m){ return m.seclbl || (scrOk(sec, m) && reqOk(m)); });
     mlist = mlist.filter(function(m, i){ return !m.seclbl || (mlist[i+1] && !mlist[i+1].seclbl); });
     mlist.forEach(function(m){
       if(m.seclbl){ mh += '<div class="gv-msec">'+m.seclbl+(m.tag?' <span style="opacity:.7;text-transform:none;letter-spacing:0">· '+m.tag+'</span>':'')+'</div>'; return; }

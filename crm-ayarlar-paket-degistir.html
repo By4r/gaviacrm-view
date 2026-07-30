@@ -415,7 +415,25 @@
       ok: isDowngrade ? 'Düşürmeyi Onayla' : 'Yükseltmeyi Onayla',
       cancel: 'Vazgeç',
       onConfirm: function(){
-        location.href = 'crm-sistem-onay-durum.html?durum=surec-tamamlandi&islem=paket-degisikligi&kayit=' + encodeURIComponent(PKG[key].name) + '&donus=' + encodeURIComponent('crm-ayarlar-firma.html#paket');
+        /* [Dalga 6A eki] İki farklı olay: kart tahsilatının SONUCU (odeme-sonuc.html) ile
+           abonelik değişikliğinin SÜRECİ (onay-durum.html) ayrı şeyler. Karar: bugün
+           gerçekten para hareket ediyorsa (yükseltme, totalToday>0) tahsilat SONUCU asıl
+           terminal ekrandır — ödeme makbuzu zaten "paket değişti + sonraki tahsilat X"
+           bilgisini taşıyor, ayrıca "süreç tamamlandı" göstermek tekrar olurdu. Düşürme/
+           ücretsiz geçiş gibi bugün kart çekilmeyen durumlarda (totalToday<=0) kart
+           tahsilatı diye bir olay YOK — süreç-tamamlandı ekranı kalır. */
+        if(!isDowngrade && diff.totalToday > 0){
+          var qs = new URLSearchParams({
+            durum:'basarili',
+            tutar: trFmt(diff.totalToday),
+            kart: 'Kurumsal Kredi Kartı •••• 4412',
+            fatura: 'GVF-2026-011',
+            paket: PKG[key].name
+          }).toString();
+          location.href = 'crm-ayarlar-odeme-sonuc.html?' + qs;
+        } else {
+          location.href = 'crm-sistem-onay-durum.html?durum=surec-tamamlandi&islem=paket-degisikligi&kayit=' + encodeURIComponent(PKG[key].name) + '&donus=' + encodeURIComponent('crm-ayarlar-firma.html#paket');
+        }
       }
     });
   };
