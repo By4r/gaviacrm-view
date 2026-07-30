@@ -289,6 +289,35 @@
   var TUR_LBL = {musteri:'Müşteri', taseron:'Taşeron', tedarikci:'Tedarikçi'};
   var kayitTuru = 'kurum';
 
+  /* ============ ?mod=duzenle desteği — crm-operasyon-arac-form.html ?mod=
+     idiyomunun aynısı (mod/kayıt no query param → mevcut kayıt map'inden
+     prefill). Alanlar crm-cari.html + crm-cari-detay.html'deki kanonik
+     isim/ünvan/telefon değerleriyle BİREBİR — uydurma yeni alan yok;
+     yalnız Demir-Beton için crm-cari-detay.html'deki vergi/IBAN/adres de
+     eklendi (kaynağı var, diğerlerinde bu alanlar kaynaksız — boş bırakılır). ============ */
+  var CARI_EDIT = {
+    'korfez-gyo':          {kayit:'kurum', tur:'musteri',   ad:'Körfez GYO',                kisi:'Selin Aydemir',  unvan:'Proje Müdürü',       tel:'0532 240 18 55'},
+    'aliaga-liman':        {kayit:'kurum', tur:'musteri',   ad:'Aliağa Liman İşletmeleri',   kisi:'Erhan Kaya',     unvan:'Yatırım Müdürü',     tel:'0232 618 44 09'},
+    'sapanca-belediyesi':  {kayit:'kurum', tur:'musteri',   ad:'Sapanca Belediyesi',         kisi:'Zeynep Ulusoy',  unvan:'Fen İşleri Müdürü',  tel:'0264 582 11 30'},
+    'onaran':              {kayit:'kurum', tur:'musteri',   ad:'Selçuk Onaran',              kisi:'Kendisi',        unvan:'',                    tel:'0533 000 21 04'},
+    'toprak':              {kayit:'kurum', tur:'musteri',   ad:'Derya Toprak',               kisi:'Kendisi',        unvan:'',                    tel:'0532 000 47 82'},
+    'demir-beton':         {kayit:'kurum', tur:'taseron',   ad:'Demir-Beton İnş. Ltd.',      kisi:'Yusuf Ergin',    unvan:'',                    tel:'0532 411 27 63', vd:'Tuzla V.D.', vno:'726 034 8841', adres:'Tuzla Deri OSB', sehir:'İstanbul', iban:'TR76 0011 1000 0000 1234 5678 91'},
+    'yalitim-kardesler':   {kayit:'kurum', tur:'taseron',   ad:'Yalıtım Kardeşler',          kisi:'Cemal Boz',      unvan:'',                    tel:'0505 322 90 14'},
+    'elektromek':          {kayit:'kurum', tur:'taseron',   ad:'ElektroMek Taahhüt',         kisi:'Tolga Şener',    unvan:'',                    tel:'0533 765 42 08'},
+    'ege-hazir-beton':     {kayit:'kurum', tur:'tedarikci', ad:'Ege Hazır Beton',            kisi:'Kadir Solmaz',   unvan:'',                    tel:'0536 218 77 41'},
+    'marmara-demir-celik': {kayit:'kurum', tur:'tedarikci', ad:'Marmara Demir Çelik',        kisi:'Burcu İnan',     unvan:'',                    tel:'0212 466 90 23'},
+    'anadolu-hirdavat':    {kayit:'kurum', tur:'tedarikci', ad:'Anadolu Hırdavat',           kisi:'Fatih Coşkun',   unvan:'',                    tel:'0216 349 82 17'},
+    'bogazici-yapi-market':{kayit:'kurum', tur:'tedarikci', ad:'Boğaziçi Yapı Market',       kisi:'Cem Aydoğan',    unvan:'',                    tel:'0212 000 45 61'}
+  };
+  var qEdit = new URLSearchParams(location.search);
+  var editMod = qEdit.get('mod') === 'duzenle' ? 'duzenle' : 'ekle';
+  var editSlug = qEdit.get('cari');
+  var editRec = (editMod === 'duzenle' && editSlug && CARI_EDIT[editSlug]) ? CARI_EDIT[editSlug] : null;
+  if(editMod === 'duzenle' && editSlug && !editRec){
+    gvToast(editSlug + ' bulunamadı — yeni kayıt formu açıldı.', {type:'danger'});
+    editMod = 'ekle'; editSlug = null;
+  }
+
   function initials(name){
     var parts = name.trim().split(/\s+/).filter(Boolean);
     if(!parts.length) return kayitTuru === 'kisi' ? 'YK' : 'YF';
@@ -376,14 +405,47 @@
 
   /* K6: ?kayit=kisi ile açılışta form doğrudan Kişi moduna geçer (crm-cari-kisiler.html
      "Yeni Kişi" linki bu parametreyle gelir) — Kayıt Türü chip'i de senkron işaretlenir.
-     Param yoksa mevcut varsayılan (kurum) korunur. */
-  var initialKayit = (new URLSearchParams(location.search)).get('kayit') === 'kisi' ? 'kisi' : 'kurum';
+     Param yoksa mevcut varsayılan (kurum) korunur. ?mod=duzenle bu varsayılanı ezer. */
+  var initialKayit = editRec ? editRec.kayit
+    : ((new URLSearchParams(location.search)).get('kayit') === 'kisi' ? 'kisi' : 'kurum');
   document.querySelectorAll('#kayitGroup .tip-opt').forEach(function(o){
     var on = o.getAttribute('data-t') === initialKayit;
     o.classList.toggle('is-on', on);
     o.querySelector('input').checked = on;
   });
   applyKayit(initialKayit);
+
+  /* ============ ?mod=duzenle — prefill + sayfa kromu (başlık/crumb/kaydet
+     butonu) düzenleme diline döner; crm-operasyon-arac-form.html idiyomu ============ */
+  if(editRec){
+    document.querySelectorAll('#tipGroup .tip-opt').forEach(function(o){
+      var on = o.getAttribute('data-t') === editRec.tur;
+      o.classList.toggle('is-on', on);
+      o.querySelector('input').checked = on;
+    });
+    document.getElementById('fAd').value = editRec.ad || '';
+    document.getElementById('fKisi').value = editRec.kisi || '';
+    document.getElementById('fUnvan').value = editRec.unvan || '';
+    document.getElementById('fTel').value = editRec.tel || '';
+    if(editRec.vd) document.getElementById('fVD').value = editRec.vd;
+    if(editRec.vno) document.getElementById('fVNo').value = editRec.vno;
+    if(editRec.adres) document.getElementById('fAdres').value = editRec.adres;
+    if(editRec.sehir) document.getElementById('fSehir').value = editRec.sehir;
+    if(editRec.iban) document.getElementById('fIban').value = editRec.iban;
+
+    document.title = editRec.ad + ' Düzenle — Gavia CRM';
+    document.getElementById('crumbTxt').textContent = 'Cari Düzenle';
+    document.getElementById('pageH1').textContent = editRec.ad + ' — Cariyi Düzenle';
+    document.querySelector('.ph-sub').textContent = 'Firma/kişi bilgilerini güncelleyin; bakiye ve hareket geçmişi bu formdan ETKİLENMEZ.';
+    document.getElementById('ftxtTitle').textContent = 'Firma Bilgilerini Düzenle';
+    document.getElementById('ptxtTitle').textContent = 'Firma Önizleme';
+    document.getElementById('submitTxt').textContent = 'Değişiklikleri Kaydet';
+    var cariSubmitIco = document.querySelector('#cariSubmit i');
+    if(cariSubmitIco) cariSubmitIco.className = 'fa-solid fa-floppy-disk';
+    var vazgecLink = document.querySelector('.form-foot a[href="crm-cari.html"]');
+    if(vazgecLink) vazgecLink.href = 'crm-cari-detay.html?cari=' + editSlug;
+    syncPreview();
+  }
 
   /* çoğaltılabilir bloklar — Şube adresi (kurum-only) + Telefon + E-posta.
      cloneNode sayfa-lokal; Kurum→Kişi→Kurum round-trip'te klonlar yalnız
@@ -436,6 +498,11 @@
     if(this.disabled) return;
     var ad = document.getElementById('fAd').value.trim();
     if(!ad){ gvToast(kayitTuru === 'kisi' ? 'Ad Soyad girin.' : 'Firma adını girin.', {type:'danger'}); document.getElementById('fAd').focus(); return; }
+    if(editRec){
+      gvToast('"' + ad + '" cari kaydı güncellendi.');
+      setTimeout(function(){ location.href = 'crm-cari-detay.html?cari=' + editSlug; }, 900);
+      return;
+    }
     gvToast('"' + ad + '" ' + (kayitTuru === 'kisi' ? 'kişi' : 'firma') + ' cari kaydı oluşturuldu — Firma Rehberi listesine eklendi.');
     setTimeout(function(){ location.href = 'crm-cari.html'; }, 900);
   });

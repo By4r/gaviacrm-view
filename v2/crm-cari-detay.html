@@ -177,6 +177,26 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
 .mlk-list li i{color:var(--acc-ink);font-size:11px;margin-top:4px;flex:none}
 .mlk-cta{display:flex;flex-direction:column;gap:10px;padding:18px}
 .mlk-cta .btn{width:100%;justify-content:center}
+
+/* ============ §17 — aksiyon çubuğu / arşiv rozeti / dosya ekle ============ */
+.cari-arsiv-rozet{margin-left:0}
+#cdHareketDrWrap{display:flex;align-items:center;gap:10px;padding:0 22px 14px;flex-wrap:wrap}
+#cdHareketDrWrap .cd-dr-lbl{font-size:12px;font-weight:700;color:var(--muted)}
+@media print{
+  .gv-rail,.gv-menu,.gv-divider,.gv-overlay,.gv-top,.ph-actions,.gv-tabs,#cdHareketDrWrap{display:none !important}
+  .tab-panel{display:none !important}
+  .tab-panel[data-tab-panel="ozet"]{display:block !important}
+  .gv-main{margin:0 !important;padding:0 !important}
+  .gv-app{display:block !important}
+}
+/* ---- §17 aksiyon çubuğu genişlemesi (6-7 buton) — shell.css'in flex-wrap
+   eşiği yalnız ≤640px'te devreye giriyor, 641-980px aralığında taşma
+   oluşuyordu. shell.css KİLİTLİ ortak dosya (bu dalgada dokunulmadı) —
+   sayfa-lokal düzeltme. ---- */
+@media(max-width:980px){
+  .ph-actions{flex-wrap:wrap;width:100%}
+  .ph-actions .btn{flex:1 1 auto;justify-content:center}
+}
 </style>
 </head>
 <body data-sec="cari" data-screen="rehber">
@@ -209,7 +229,12 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
         <div class="ph-sub" id="cdSub">Vadi Konakları · kaba inşaat taşeronu · ilgili kişi Yusuf Ergin</div>
       </div>
       <div class="ph-actions" data-view="yonetim" hidden>
-        <a class="btn btn-ghost btn-sm" href="#" data-demo="Düzenleme ekranı bu prototipte simülasyondur (demo)."><i class="fa-solid fa-pen"></i> Düzenle</a>
+        <a class="btn btn-ghost btn-sm" href="crm-cari-form.html?mod=duzenle&amp;cari=demir-beton" id="cdBtnDuzenle"><i class="fa-solid fa-pen"></i> Düzenle</a>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="cdBtnPasif"><i class="fa-solid fa-power-off"></i> <span id="cdBtnPasifLbl">Pasife Al</span></button>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="cdBtnArsiv"><i class="fa-solid fa-box-archive"></i> Arşivle</button>
+        <a class="btn btn-ghost btn-sm" href="#" data-tab-goto="belge" id="cdBtnDosya"><i class="fa-solid fa-paperclip"></i> Dosya Ekle</a>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="cdBtnCikti"><i class="fa-solid fa-print"></i> Çıktı Al</button>
+        <a class="btn btn-ghost btn-sm" href="#" data-tab-goto="islem"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişini Gör</a>
         <a class="btn btn-acc btn-sm" href="crm-cari-durum.html?cari=demir-beton"><i class="fa-solid fa-scale-balanced"></i> Cari Durum</a>
       </div>
       <div class="ph-actions" data-view="satinalma" hidden>
@@ -344,6 +369,11 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
           <div class="gc-title"><i class="fa-solid fa-receipt"></i> Son Hareketler</div>
           <a class="gc-link" href="crm-cari-durum.html?cari=demir-beton">Tam ekstre — Cari Durum <i class="fa-solid fa-arrow-right"></i></a>
         </div>
+        <!-- ============ §13 — hareket ekstresi tarih aralığı (bağımsız gvDateRange) ============ -->
+        <div id="cdHareketDrWrap">
+          <span class="cd-dr-lbl">Tarih Aralığı</span>
+          <div id="cdHareketDr"></div>
+        </div>
         <div class="gc-body flush">
           <table class="gtable" id="tblHareket">
             <thead>
@@ -356,28 +386,28 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
               </tr>
             </thead>
             <tbody id="cdHareketBody">
-              <tr>
+              <tr data-tarih="2026-06-02">
                 <td class="muted">02 Haz 2026</td>
                 <td class="t-strong">Hakediş #1 tahakkuku</td>
                 <td class="num">—</td>
                 <td class="num">₺210.000</td>
                 <td class="num" style="font-weight:800;color:var(--danger)">₺210.000 Borç</td>
               </tr>
-              <tr>
+              <tr data-tarih="2026-06-10">
                 <td class="muted">10 Haz 2026</td>
                 <td class="t-strong">Ödeme (banka havalesi)</td>
                 <td class="num">₺90.000</td>
                 <td class="num">—</td>
                 <td class="num" style="font-weight:800;color:var(--danger)">₺120.000 Borç</td>
               </tr>
-              <tr>
+              <tr data-tarih="2026-06-22">
                 <td class="muted">22 Haz 2026</td>
                 <td class="t-strong">Malzeme yansıtma faturası</td>
                 <td class="num">—</td>
                 <td class="num">₺132.000</td>
                 <td class="num" style="font-weight:800;color:var(--danger)">₺252.000 Borç</td>
               </tr>
-              <tr>
+              <tr data-tarih="2026-06-28">
                 <td class="muted">28 Haz 2026</td>
                 <td class="t-strong">Hakediş #2 tahakkuku (onayda)</td>
                 <td class="num">—</td>
@@ -386,6 +416,11 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
               </tr>
             </tbody>
           </table>
+          <div class="gv-empty" data-table-empty hidden>
+            <div class="ge-ico"><i class="fa-solid fa-filter-circle-xmark"></i></div>
+            <h4>Eşleşen hareket yok</h4>
+            <p>Seçili tarih aralığını temizleyin veya genişletin.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -508,8 +543,11 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
     <!-- ============ BELGELER ============ -->
     <section class="tab-panel" data-tab-panel="belge" role="tabpanel" aria-label="Belgeler" id="cdBelgeTab" hidden>
       <div class="gv-card">
-        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-folder-open"></i> Belgeler</div></div>
-        <div>
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-folder-open"></i> Belgeler</div>
+          <button type="button" class="btn btn-acc btn-sm" data-no-confirm data-belge-add-trigger><i class="fa-solid fa-upload"></i> Dosya Ekle</button>
+          <input type="file" id="cdBelgeInput" multiple hidden accept=".pdf,.jpg,.jpeg,.png">
+        </div>
+        <div id="cdBelgeList">
           <div class="file-row"><div class="file-ico"><i class="fa-solid fa-file-pdf"></i></div><div class="file-info"><b>SZL-2025-T05 — Taşeron Sözleşmesi.pdf</b><span>İmzalı ana sözleşme</span></div><div class="file-meta">1.1 MB · 28 Mar 2026</div><div class="row-acts"><button class="ia-btn" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button></div></div>
           <div class="file-row"><div class="file-ico"><i class="fa-solid fa-file-pdf"></i></div><div class="file-info"><b>Kesin Teminat Mektubu.pdf</b><span>%5 teminat — banka mektubu</span></div><div class="file-meta">340 KB · 28 Mar 2026</div><div class="row-acts"><button class="ia-btn" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button></div></div>
           <div class="file-row"><div class="file-ico"><i class="fa-solid fa-file-pdf"></i></div><div class="file-info"><b>Vergi Levhası.pdf</b><span>Güncel yıl</span></div><div class="file-meta">210 KB · 5 Oca 2026</div><div class="row-acts"><button class="ia-btn" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button></div></div>
@@ -631,6 +669,16 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
   if(!window.GV) return;
 
   function esc(t){ var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
+
+  /* §13 — TR kısa tarih ("12 Nis 2026") → ISO ("2026-04-12"); hareket ekstresi
+     tarih aralığı filtresi için (ui.js DR_AY ile aynı kısaltmalar). */
+  var AY_IDX = {Oca:0,Şub:1,Mar:2,Nis:3,May:4,Haz:5,Tem:6,Ağu:7,Eyl:8,Eki:9,Kas:10,Ara:11};
+  function trTarihToIso(s){
+    var m = /(\d{1,2})\s+([A-Za-zÇĞİÖŞÜçğıöşü]+)\s+(\d{4})/.exec(s || '');
+    if(!m || AY_IDX[m[2]] === undefined) return '';
+    var d = new Date(parseInt(m[3],10), AY_IDX[m[2]], parseInt(m[1],10));
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
 
   /* Faz 2 CRM Bağlantıları — satış-dışı carilerde (taşeron/tedarikçi/kurum) gösterilen
      açıklayıcı upgrade kartı. crm-ayarlar-modul-kilitli.html?modul=satis-crm dilinin
@@ -1345,7 +1393,12 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
   var belgeRows = (BELGE[R.tip] || BELGE.taseron).map(function(f){
     return '<div class="file-row"><div class="file-ico"><i class="fa-solid '+f[0]+'"></i></div><div class="file-info"><b>'+f[1]+'</b><span>'+f[2]+'</span></div><div class="row-acts"><button class="ia-btn" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button></div></div>';
   }).join('');
-  document.getElementById('cdBelgeTab').innerHTML = '<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-folder-open"></i> Belgeler</div></div><div>' + belgeRows + '</div></div>';
+  /* §17 Dosya Ekle — .cdBelgeInput/#cdBelgeList her kayıtta yeniden basılır;
+     yükleme delegasyonu (üçüncü script) canlı DOM'u sorguladığı için kayıt
+     değişse de kesintisiz çalışır. */
+  document.getElementById('cdBelgeTab').innerHTML = '<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-folder-open"></i> Belgeler</div>'
+    + '<button type="button" class="btn btn-acc btn-sm" data-no-confirm data-belge-add-trigger><i class="fa-solid fa-upload"></i> Dosya Ekle</button>'
+    + '<input type="file" id="cdBelgeInput" multiple hidden accept=".pdf,.jpg,.jpeg,.png"></div><div id="cdBelgeList">' + belgeRows + '</div></div>';
 
   /* Notlar: GENEL boş durum + not ekleme formu (kayıt-özel not YOK, işlevsel boş durum) */
   document.getElementById('cdNotTab').innerHTML = '<div class="gv-card"><div class="gc-head"><div class="gc-title"><i class="fa-solid fa-note-sticky"></i> İç Notlar</div></div>'
@@ -1365,7 +1418,7 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
   R.hareket.forEach(function(h){
     var yon = h[5] || 'Alacak';
     var renk = yon === 'Borç' ? 'var(--danger)' : 'var(--ok)';
-    hb += '<tr><td class="muted">'+h[0]+'</td><td class="t-strong">'+h[1]+'</td>'
+    hb += '<tr data-tarih="'+trTarihToIso(h[0])+'"><td class="muted">'+h[0]+'</td><td class="t-strong">'+h[1]+'</td>'
         + '<td class="num">'+h[2]+'</td><td class="num">'+h[3]+'</td>'
         + '<td class="num" style="font-weight:800;color:'+renk+'">'+h[4]+' '+yon+'</td></tr>';
   });
@@ -1387,6 +1440,155 @@ a.hstat .hstat-lbl i{font-size:10px;margin-left:3px;color:var(--acc-ink)}
       if(btn) btn.click();
     });
   });
+})();
+</script>
+<script>
+/* =====================================================================
+   §17 (aksiyon çubuğu: Düzenle/Pasife Al/Arşivle/Dosya Ekle/Çıktı Al/İşlem
+   Geçmişini Gör) + §13 (Cari Hareketler sekmesi tarih aralığı) — kayıttan
+   BAĞIMSIZ, üçüncü ve ayrı bir script olarak eklendi; yukarıdaki iki büyük
+   IIFE'ye (sekme motoru + ?cari= REC render'ı) DOKUNULMADI. Bu blok yalnız
+   canlı DOM'u (o an render edilmiş kaydı) sorgular — hem statik varsayılan
+   (Demir-Beton) hem ?cari= ile gelen 12 kayıt için AYNI şekilde çalışır.
+
+   "Kopyala" ve "Revizyon Ekle" (§17 genel aksiyon listesi) BİLİNÇLİ OLARAK
+   EKLENMEDİ: bir cari kaydını "kopyalamak" (aynı vergi no/IBAN/bakiye
+   geçmişiyle ikinci bir firma) organik bir işlem değil — kayıt tekilliği
+   ilkesiyle çelişir. "Revizyon Ekle" de cari kartının kendi kavramı değil;
+   revizyon/ek protokol kavramı zaten Sözleşmeler sekmesinde (SZL revizyon
+   akışı) yaşıyor — burada tekrarlanması "ölü buton" üretir.
+   ===================================================================== */
+(function(){
+  if(!window.GV) return;
+
+  var key = new URLSearchParams(location.search).get('cari');
+  if(key === 'demir-beton') key = null;
+  var slug = key || 'demir-beton';
+
+  /* ---- Düzenle → gerçek forma yönlendir (eskiden data-demo simülasyon linkiydi) ---- */
+  var btnDuzenle = document.getElementById('cdBtnDuzenle');
+  if(btnDuzenle) btnDuzenle.href = 'crm-cari-form.html?mod=duzenle&cari=' + slug;
+
+  /* ---- Pasife Al / Arşivle — localStorage'da kayıt bazlı durum ekseni
+     (crm-finans-sozlesme-detay.html gv_sozlesme_durum deseninin BİREBİR
+     aynısı, cari için ayrı anahtar). Kalıcı silme YOK. ---- */
+  var ARSIV_KEY = 'gv_cari_durum';
+  function arsivMap(){ try{ return JSON.parse(localStorage.getItem(ARSIV_KEY)) || {}; }catch(e){ return {}; } }
+  function arsivSet(k, durum){ var m = arsivMap(); m[k] = durum; try{ localStorage.setItem(ARSIV_KEY, JSON.stringify(m)); }catch(e){} }
+  var curDurum = arsivMap()[slug] || 'aktif';
+  var ARSIV_ROZET = {pasif:{cls:'off', lbl:'Pasif'}, arsivlendi:{cls:'off', lbl:'Arşivlendi'}};
+  function paintArsivRozet(){
+    var tags = document.getElementById('cdTags'); if(!tags) return;
+    var old = tags.querySelector('.cari-arsiv-rozet'); if(old) old.remove();
+    if(curDurum !== 'aktif' && ARSIV_ROZET[curDurum]){
+      var r = ARSIV_ROZET[curDurum];
+      var span = document.createElement('span');
+      span.className = 'gstat ' + r.cls + ' cari-arsiv-rozet';
+      span.textContent = r.lbl;
+      tags.appendChild(span);
+    }
+    var lbl = document.getElementById('cdBtnPasifLbl');
+    if(lbl) lbl.textContent = curDurum === 'pasif' ? 'Aktif Et' : 'Pasife Al';
+  }
+  paintArsivRozet();
+
+  function cariAdi(){ var n = document.getElementById('cdName'); return n ? n.textContent.trim() : 'Cari'; }
+
+  var btnPasif = document.getElementById('cdBtnPasif');
+  if(btnPasif) btnPasif.addEventListener('click', function(){
+    var next = curDurum === 'pasif' ? 'aktif' : 'pasif';
+    gvConfirm({
+      icon: next === 'pasif' ? 'fa-power-off' : 'fa-rotate-left',
+      title: cariAdi() + (next === 'pasif' ? ' pasife alınsın mı?' : ' yeniden aktif edilsin mi?'),
+      message: next === 'pasif'
+        ? 'Cari Pasif duruma alınacak. Bakiye ve hareket geçmişi ETKİLENMEZ; yalnız yeni işlem girişinde uyarı gösterilir.'
+        : cariAdi() + ' yeniden Aktif duruma alınacak.',
+      ok: next === 'pasif' ? 'Pasife Al' : 'Aktif Et', cancel:'Vazgeç',
+      onConfirm:function(){
+        curDurum = next; arsivSet(slug, next); paintArsivRozet();
+        gvToast(cariAdi() + (next === 'pasif' ? ' pasife alındı.' : ' yeniden aktif.'), {type: next === 'aktif' ? 'ok' : 'danger'});
+      }
+    });
+  });
+
+  var btnArsiv = document.getElementById('cdBtnArsiv');
+  if(btnArsiv) btnArsiv.addEventListener('click', function(){
+    gvConfirm({
+      danger:true, icon:'fa-box-archive', title: cariAdi() + ' arşivlensin mi?',
+      message: 'Cari kaydı kalıcı olarak SİLİNMEZ. Arşivlendiğinde Firma Rehberi listesinde varsayılan görünümde gösterilmez, "Arşivlenenleri Göster" filtresiyle geri getirilebilir. Bakiye ve hareket geçmişi korunur.',
+      ok:'Onayla ve Arşivle', cancel:'Vazgeç',
+      onConfirm:function(){
+        curDurum = 'arsivlendi'; arsivSet(slug, 'arsivlendi'); paintArsivRozet();
+        gvToast(cariAdi() + ' arşivlendi.', {type:'danger'});
+      }
+    });
+  });
+
+  /* ---- Çıktı Al — cari mutabakat/hesap özeti (Özet sekmesi print CSS ile) ---- */
+  var btnCikti = document.getElementById('cdBtnCikti');
+  if(btnCikti) btnCikti.addEventListener('click', function(){
+    var ozetBtn = document.querySelector('.gv-tab[data-tab="ozet"]');
+    if(ozetBtn) ozetBtn.click();
+    setTimeout(function(){ window.print(); }, 60);
+  });
+
+  /* ---- Dosya Ekle — belge sekmesindeki gerçek dosya input'una delegasyon
+     (sekme her kayıt değişiminde innerHTML ile yeniden basıldığı için ID'ler
+     her seferinde yeniden oluşur; delegasyon canlı DOM'u sorgular). ---- */
+  function humanSize(bytes){
+    if(bytes > 1024*1024) return (bytes/1024/1024).toFixed(1) + ' MB';
+    return Math.max(1, Math.round(bytes/1024)) + ' KB';
+  }
+  document.addEventListener('click', function(e){
+    if(e.target.closest('[data-belge-add-trigger]')){
+      var inp = document.getElementById('cdBelgeInput');
+      if(inp) inp.click();
+    }
+  });
+  document.addEventListener('change', function(e){
+    if(!e.target || e.target.id !== 'cdBelgeInput') return;
+    var list = document.getElementById('cdBelgeList');
+    var files = Array.prototype.slice.call(e.target.files);
+    files.forEach(function(file){
+      if(!list) return;
+      var row = document.createElement('div');
+      row.className = 'file-row';
+      row.innerHTML = '<div class="file-ico"><i class="fa-solid fa-file-lines"></i></div>'
+        + '<div class="file-info"><b></b><span>Az önce eklendi</span></div>'
+        + '<div class="file-meta">' + humanSize(file.size) + '</div>'
+        + '<div class="row-acts"><button class="ia-btn" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button></div>';
+      row.querySelector('.file-info b').textContent = file.name;
+      list.prepend(row);
+    });
+    if(files.length) gvToast(files.length + ' dosya eklendi — ' + cariAdi() + ' kaydına işlendi.');
+    e.target.value = '';
+  });
+
+  /* ============ §13 — Cari Hareketler sekmesi tarih aralığı (bağımsız
+     gvDateRange, panel dışı imperatif kullanım — spec §4B) ============ */
+  var hareketTbl = document.getElementById('tblHareket');
+  var hareketEmptyBox = hareketTbl ? hareketTbl.closest('.gc-body').querySelector('[data-table-empty]') : null;
+  function syncHareketEmpty(){
+    if(!hareketTbl) return;
+    var anyShown = false;
+    hareketTbl.querySelectorAll('tbody tr').forEach(function(tr){
+      if(!tr.classList.contains('gv-fp-hide')) anyShown = true;
+    });
+    if(hareketEmptyBox) hareketEmptyBox.hidden = anyShown;
+  }
+  function applyHareketDateFilter(val){
+    if(!hareketTbl) return;
+    hareketTbl.querySelectorAll('tbody tr').forEach(function(tr){
+      var ds = tr.getAttribute('data-tarih');
+      if(!val || !ds){ tr.classList.remove('gv-fp-hide'); return; }
+      var d = new Date(ds + 'T00:00:00');
+      tr.classList.toggle('gv-fp-hide', d < val.from || d > val.to);
+    });
+    syncHareketEmpty();
+  }
+  if(document.getElementById('cdHareketDr')){
+    window.gvDateRange('#cdHareketDr', { emptyLabel:'Tüm zamanlar', onChange: applyHareketDateFilter });
+  }
 })();
 </script>
 </body>

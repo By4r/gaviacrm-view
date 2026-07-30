@@ -68,6 +68,9 @@
   padding:14px 22px;background:none;border:none;border-top:1px solid var(--line);
   font-family:inherit;cursor:pointer;transition:.18s var(--ease);position:relative;
 }
+/* ---- §13 — Hareket Ekstresi tarih aralığı + §9 hareket türü hızlı filtresi ---- */
+.ekstre-filter-bar{border-bottom:1px solid var(--line)}
+#tblEkstre tbody tr[hidden],#tblEkstre tbody tr.gv-fp-hide{display:none}
 .crit-row:first-child{border-top:none}
 .crit-row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:.18s var(--ease)}
 .crit-row:hover{background:var(--bg)}
@@ -217,6 +220,15 @@
           <div class="gc-title"><i class="fa-solid fa-receipt"></i> Hareket Ekstresi</div>
           <span class="gc-link" id="acctPeriod" style="color:var(--muted);cursor:default">Temmuz 2026</span>
         </div>
+        <!-- ============ §9 (hızlı filtre: hareket türü) + §13 (tarih aralığı) ============ -->
+        <div class="filter-bar ekstre-filter-bar">
+          <div class="chips" data-target="#tblEkstre" id="ekstreChips">
+            <button class="chip is-on" data-filter="hepsi">Tümü</button>
+            <button class="chip" data-filter="borc">Borç</button>
+            <button class="chip" data-filter="alacak">Alacak</button>
+          </div>
+          <div id="ekstreDr"></div>
+        </div>
         <div class="gc-body flush">
           <table class="gtable" id="tblEkstre">
             <thead>
@@ -228,8 +240,13 @@
                 <th class="num col-tutar">Yürüyen Bakiye</th>
               </tr>
             </thead>
-            <tbody id="ekstreBody"><tr><td class="muted">20 Şub 2026</td><td class="t-strong">SSZ-2026-004 paket satış tahakkuku (A-03 · A-09 · C-21)</td><td class="num">₺13.665.000</td><td class="num">—</td><td class="num" style="font-weight:800;color:var(--ok)">₺13.665.000 Alacak</td></tr><tr><td class="muted">20 Şub 2026</td><td class="t-strong">Peşin ödeme tahsilatı (%50)</td><td class="num">—</td><td class="num">₺6.825.000</td><td class="num" style="font-weight:800;color:var(--ok)">₺6.840.000 Alacak</td></tr><tr><td class="muted">20 May 2026</td><td class="t-strong">Taksit tahsilatları 1–4</td><td class="num">—</td><td class="num">₺2.280.000</td><td class="num" style="font-weight:800;color:var(--ok)">₺4.560.000 Alacak</td></tr></tbody>
+            <tbody id="ekstreBody"><tr data-f="alacak" data-tarih="2026-02-20"><td class="muted">20 Şub 2026</td><td class="t-strong">SSZ-2026-004 paket satış tahakkuku (A-03 · A-09 · C-21)</td><td class="num">₺13.665.000</td><td class="num">—</td><td class="num" style="font-weight:800;color:var(--ok)">₺13.665.000 Alacak</td></tr><tr data-f="alacak" data-tarih="2026-02-20"><td class="muted">20 Şub 2026</td><td class="t-strong">Peşin ödeme tahsilatı (%50)</td><td class="num">—</td><td class="num">₺6.825.000</td><td class="num" style="font-weight:800;color:var(--ok)">₺6.840.000 Alacak</td></tr><tr data-f="alacak" data-tarih="2026-05-20"><td class="muted">20 May 2026</td><td class="t-strong">Taksit tahsilatları 1–4</td><td class="num">—</td><td class="num">₺2.280.000</td><td class="num" style="font-weight:800;color:var(--ok)">₺4.560.000 Alacak</td></tr></tbody>
           </table>
+          <div class="gv-empty" data-table-empty hidden>
+            <div class="ge-ico"><i class="fa-solid fa-filter-circle-xmark"></i></div>
+            <h4>Eşleşen hareket yok</h4>
+            <p>Seçili tarih aralığı veya hareket türü filtresini temizleyin.</p>
+          </div>
           <div class="ekstre-empty" id="ekstreEmpty" hidden>
             <i class="fa-solid fa-inbox"></i>
             Bu cari için henüz hareket kaydı yok — proje planlama aşamasında.
@@ -358,6 +375,17 @@
 
   function fmt(n){ return '₺' + n.toLocaleString('tr-TR'); }
 
+  /* §13 — TR kısa tarih ("20 Şub 2026") → ISO ("2026-02-20"); gvDateRange
+     karşılaştırması ve data-tarih özniteliği için. Aylar ui.js DR_AY dizisiyle
+     BİREBİR (aynı kısaltmalar) — yeni bir sözlük icat edilmedi. */
+  var AY_IDX = {Oca:0,Şub:1,Mar:2,Nis:3,May:4,Haz:5,Tem:6,Ağu:7,Eyl:8,Eki:9,Kas:10,Ara:11};
+  function trTarihToIso(s){
+    var m = /(\d{1,2})\s+([A-Za-zÇĞİÖŞÜçğıöşü]+)\s+(\d{4})/.exec(s);
+    if(!m || AY_IDX[m[2]] === undefined) return '';
+    var d = new Date(parseInt(m[3],10), AY_IDX[m[2]], parseInt(m[1],10));
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
   /* Kanonik net bakiye — ekstredeki running mantığının BİREBİR aynısı
      (drift olmasın diye tek kaynak). Dönüş: {amount, dir}
      dir: 'alacak' = bize borçlu · 'borc' = biz borçluyuz · 'sifir' = kapalı */
@@ -417,7 +445,9 @@
       var yon = running > 0 ? (mTur ? 'alacak' : 'borc') : (running < 0 ? (mTur ? 'borc' : 'alacak') : 'sifir');
       var yonLbl = yon === 'borc' ? 'Borç' : (yon === 'alacak' ? 'Alacak' : '—');
       var yonColor = yon === 'borc' ? 'var(--danger)' : (yon === 'alacak' ? 'var(--ok)' : 'var(--muted)');
-      rows += '<tr>'
+      /* §9 hızlı filtre anahtarı: hangi sütun doluysa (borç girişi mi alacak girişi mi) — h.borc/h.alacak zaten birbirini dışlar (mock veri) */
+      var hf = h.borc ? 'borc' : (h.alacak ? 'alacak' : 'hepsi');
+      rows += '<tr data-f="' + hf + '" data-tarih="' + trTarihToIso(h.tarih) + '">'
         + '<td class="muted">' + h.tarih + '</td>'
         + '<td class="t-strong">' + h.aciklama + '</td>'
         + '<td class="num">' + (h.borc ? fmt(h.borc) : '—') + '</td>'
@@ -432,6 +462,10 @@
       tbl.hidden = false; ekEmpty.hidden = true;
       ekBody.innerHTML = rows;
     }
+
+    /* cari değişince §9/§13 filtreleri sıfırlanır — önceki carinin filtre
+       durumu yeni carinin farklı tutarlarıyla yanıltıcı olabilir */
+    resetEkstreFilters();
 
     var borcTotal = running > 0 && !mTur ? running : (running < 0 && mTur ? -running : 0);
     var alacakTotal = running > 0 && mTur ? running : (running < 0 && !mTur ? -running : 0);
@@ -494,6 +528,44 @@
   });
 
   sel.addEventListener('change', function(){ render(sel.value); });
+
+  /* ============ §13 — Hareket Ekstresi tarih aralığı (gvDateRange, imperatif
+     kullanım — bkz. tasks/spec-filtre-tarih.md §4B: panel dışı, bağımsız tarih
+     seçici). §9 — hızlı hareket türü çipleri (Tümü/Borç/Alacak) mevcut generic
+     .chip[data-filter] motorunu (ui.js) kullanır, yeni bileşen İCAT EDİLMEDİ. ============ */
+  var ekstreEmptyBox = document.querySelector('#tblEkstre').closest('.gc-body').querySelector('[data-table-empty]');
+  function syncEkstreEmpty(){
+    if(tbl.hidden){ if(ekstreEmptyBox) ekstreEmptyBox.hidden = true; return; }   /* hareket kaydı hiç yoksa ekstre-empty zaten devrede */
+    var anyShown = false;
+    tbl.querySelectorAll('tbody tr').forEach(function(tr){
+      if(!tr.hidden && !tr.classList.contains('gv-fp-hide')) anyShown = true;
+    });
+    if(ekstreEmptyBox) ekstreEmptyBox.hidden = anyShown;
+  }
+  function applyEkstreDateFilter(val){
+    tbl.querySelectorAll('tbody tr[data-tarih]').forEach(function(tr){
+      if(!val){ tr.classList.remove('gv-fp-hide'); return; }
+      var ds = tr.getAttribute('data-tarih');
+      var d = ds ? new Date(ds + 'T00:00:00') : null;
+      tr.classList.toggle('gv-fp-hide', !d || d < val.from || d > val.to);
+    });
+    syncEkstreEmpty();
+  }
+  var ekstreDr = window.gvDateRange('#ekstreDr', { emptyLabel:'Tüm zamanlar', onChange: applyEkstreDateFilter });
+  document.getElementById('ekstreChips').querySelectorAll('.chip[data-filter]').forEach(function(ch){
+    ch.addEventListener('click', function(){ syncEkstreEmpty(); });
+  });
+  function resetEkstreFilters(){
+    if(ekstreDr) ekstreDr.clear();
+    var chips = document.getElementById('ekstreChips');
+    if(chips){
+      chips.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('is-on'); });
+      var hepsi = chips.querySelector('.chip[data-filter="hepsi"]');
+      if(hepsi) hepsi.classList.add('is-on');
+    }
+    tbl.querySelectorAll('tbody tr').forEach(function(tr){ tr.hidden = false; tr.classList.remove('gv-fp-hide'); });
+    syncEkstreEmpty();
+  }
 
   /* Açılış: ekran boş açılmasın → en yüksek bakiyeli cari önseçili (Faz 2 satış
      carileri evrene girince bu kural doğal olarak Derya Toprak'ı seçer oldu —

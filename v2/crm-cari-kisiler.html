@@ -50,6 +50,10 @@
   .cross-link{flex-wrap:wrap;padding:14px 16px}
   .cross-link a{margin-left:0}
 }
+
+/* ---- §17 arşiv görünürlüğü — kalıcı silme YERİNE varsayılan listede gizleme ---- */
+#tblKisi tbody tr[data-arsiv="1"]{display:none}
+#tblKisi.gv-show-arsiv tbody tr[data-arsiv="1"]{display:table-row}
 </style>
 </head>
 <body data-sec="cari" data-screen="kisiler">
@@ -117,6 +121,20 @@
           <button class="chip" data-filter="taseron">Taşeron <span class="ch-cnt">3</span></button>
           <button class="chip" data-filter="tedarikci">Tedarikçi <span class="ch-cnt">4</span></button>
         </div>
+        <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpKisi">
+          <i class="fa-solid fa-sliders"></i> Gelişmiş Filtre
+        </button>
+      </div>
+      <div class="gv-achips-row" id="achipsKisi" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor.">
+            <i class="fa-solid fa-lock"></i> Filtreleri Kaydet
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all>
+            <i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle
+          </button>
+        </div>
       </div>
       <div class="gc-body flush">
         <table class="gtable" id="tblKisi">
@@ -130,7 +148,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr data-f="musteri">
+            <tr data-f="musteri" data-cari="korfez-gyo" data-rol="proje-muduru" data-durum="aktif">
               <td>
                 <div class="kisi-cell">
                   <div class="kisi-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">SA</div>
@@ -142,7 +160,7 @@
               <td class="email-cell">selin.aydemir@korfezgyo.example</td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-cari-detay.html" data-no-confirm aria-label="Cari kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="musteri">
+            <tr data-f="musteri" data-cari="aliaga-liman" data-rol="yatirim-muduru" data-durum="aktif">
               <td>
                 <div class="kisi-cell">
                   <div class="kisi-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">EK</div>
@@ -154,7 +172,7 @@
               <td class="email-cell">erhan.kaya@aliagaliman.example</td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-cari-detay.html" data-no-confirm aria-label="Cari kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="musteri">
+            <tr data-f="musteri" data-cari="sapanca-belediyesi" data-rol="fen-isleri-muduru" data-durum="aktif">
               <td>
                 <div class="kisi-cell">
                   <div class="kisi-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">ZU</div>
@@ -166,7 +184,7 @@
               <td class="email-cell">zeynep.ulusoy@sapancabelediyesi.example</td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-cari-detay.html" data-no-confirm aria-label="Cari kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="taseron">
+            <tr data-f="taseron" data-cari="demir-beton" data-rol="taseron-sorumlusu" data-durum="aktif">
               <td>
                 <div class="kisi-cell">
                   <div class="kisi-mark" style="background:var(--info-tint);color:var(--info)">YE</div>
@@ -178,7 +196,7 @@
               <td class="email-cell">yusuf.ergin@demirbeton.example</td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-cari-detay.html" data-no-confirm aria-label="Cari kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="taseron">
+            <tr data-f="taseron" data-cari="yalitim-kardesler" data-rol="taseron-sorumlusu" data-durum="aktif">
               <td>
                 <div class="kisi-cell">
                   <div class="kisi-mark" style="background:var(--info-tint);color:var(--info)">CB</div>
@@ -190,7 +208,7 @@
               <td class="email-cell">cemal.boz@yalitimkardesler.example</td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-cari-detay.html" data-no-confirm aria-label="Cari kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="taseron">
+            <tr data-f="taseron" data-cari="elektromek" data-rol="taseron-sorumlusu" data-durum="aktif">
               <td>
                 <div class="kisi-cell">
                   <div class="kisi-mark" style="background:var(--info-tint);color:var(--info)">TŞ</div>
@@ -202,7 +220,7 @@
               <td class="email-cell">tolga.sener@elektromek.example</td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-cari-detay.html" data-no-confirm aria-label="Cari kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="tedarikci">
+            <tr data-f="tedarikci" data-cari="ege-hazir-beton" data-rol="satis-sorumlusu" data-durum="aktif">
               <td>
                 <div class="kisi-cell">
                   <div class="kisi-mark" style="background:var(--warn-tint);color:var(--warn)">KS</div>
@@ -214,7 +232,7 @@
               <td class="email-cell">kadir.solmaz@egehazirbeton.example</td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-cari-detay.html" data-no-confirm aria-label="Cari kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="tedarikci">
+            <tr data-f="tedarikci" data-cari="marmara-demir-celik" data-rol="satis-sorumlusu" data-durum="aktif">
               <td>
                 <div class="kisi-cell">
                   <div class="kisi-mark" style="background:var(--warn-tint);color:var(--warn)">Bİ</div>
@@ -226,7 +244,7 @@
               <td class="email-cell">burcu.inan@marmarademir.example</td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-cari-detay.html" data-no-confirm aria-label="Cari kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="tedarikci">
+            <tr data-f="tedarikci" data-cari="anadolu-hirdavat" data-rol="satis-sorumlusu" data-durum="aktif">
               <td>
                 <div class="kisi-cell">
                   <div class="kisi-mark" style="background:var(--warn-tint);color:var(--warn)">FC</div>
@@ -238,7 +256,7 @@
               <td class="email-cell">fatih.coskun@anadoluhirdavat.example</td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-cari-detay.html" data-no-confirm aria-label="Cari kartı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="tedarikci">
+            <tr data-f="tedarikci" data-cari="bogazici-yapi-market" data-rol="satis-sorumlusu" data-durum="aktif">
               <td>
                 <div class="kisi-cell">
                   <div class="kisi-mark" style="background:var(--warn-tint);color:var(--warn)">CA</div>
@@ -265,6 +283,64 @@
       </div>
     </div>
   </main>
+
+  <!-- ============ §9 — sağ off-canvas gelişmiş filtre paneli (Cari, Rol/Unvan,
+       Durum — tasks/spec-filtre-tarih.md) ============ -->
+  <div class="gv-fpanel-ov" id="fpKisiOv">
+    <aside class="gv-fpanel" id="fpKisi" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+      <div class="gv-fpanel-head">
+        <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+        <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="gv-fpanel-body">
+        <div class="gfield">
+          <label>Cari</label>
+          <select data-fp-key="cari" data-fp-label="Cari">
+            <option value="">Tümü</option>
+            <option value="korfez-gyo">Körfez GYO</option>
+            <option value="aliaga-liman">Aliağa Liman İşletmeleri</option>
+            <option value="sapanca-belediyesi">Sapanca Belediyesi</option>
+            <option value="demir-beton">Demir-Beton İnş. Ltd.</option>
+            <option value="yalitim-kardesler">Yalıtım Kardeşler</option>
+            <option value="elektromek">ElektroMek Taahhüt</option>
+            <option value="ege-hazir-beton">Ege Hazır Beton</option>
+            <option value="marmara-demir-celik">Marmara Demir Çelik</option>
+            <option value="anadolu-hirdavat">Anadolu Hırdavat</option>
+            <option value="bogazici-yapi-market">Boğaziçi Yapı Market</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>Rol / Unvan</label>
+          <select data-fp-key="rol" data-fp-label="Rol / Unvan">
+            <option value="">Tümü</option>
+            <option value="proje-muduru">Proje Müdürü</option>
+            <option value="yatirim-muduru">Yatırım Müdürü</option>
+            <option value="fen-isleri-muduru">Fen İşleri Müdürü</option>
+            <option value="taseron-sorumlusu">Taşeron Sorumlusu</option>
+            <option value="satis-sorumlusu">Satış Sorumlusu</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>Durum</label>
+          <select data-fp-key="durum" data-fp-label="Durum">
+            <option value="">Tümü</option>
+            <option value="aktif">Aktif</option>
+            <option value="arsivlendi">Arşivlendi</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:600">
+            <input type="checkbox" data-fp-key="arsivgoster" data-fp-label="Arşivlenenleri Göster">
+            Arşivlenenleri Göster
+          </label>
+        </div>
+      </div>
+      <div class="gv-fpanel-foot">
+        <button type="button" class="btn btn-ghost" data-fp-clear>Temizle</button>
+        <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+      </div>
+    </aside>
+  </div>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -276,6 +352,54 @@
   if(GV.role !== 'superadmin' && GV.role !== 'sahip' && GV.role !== 'yonetim') {
     document.querySelectorAll('[data-admin-only]').forEach(function(el){ el.hidden = true; });
   }
+})();
+
+/* ============ §9/§17 — Gelişmiş Filtre paneli + kişi arşivleme ============
+   Kişi kalıcı silinmez — "firma değiştirdiğinde" gibi durumlarda arşive alınır
+   (görev talimatı örneği); Firma Rehberi liste modeliyle aynı satır-bazlı desen. */
+(function(){
+  if(window.gvFilterPanel){
+    window.gvFilterPanel.init('#fpKisi', {
+      table: '#tblKisi',
+      activeRow: '#achipsKisi',
+      onApply: function(state){
+        var tbl = document.getElementById('tblKisi');
+        if(tbl) tbl.classList.toggle('gv-show-arsiv', !!(state.arsivgoster));
+      }
+    });
+  }
+
+  /* ---- satır arşivleme aksiyonu — kalıcı silme YERİNE (§17) ---- */
+  function gvWireRowArchive(rowSel){
+    document.querySelectorAll(rowSel).forEach(function(row){
+      var acts = row.querySelector('.row-acts');
+      if(!acts || acts.querySelector('[data-arsiv-btn]')) return;
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'ia-btn'; btn.setAttribute('data-no-confirm', '');
+      btn.setAttribute('data-arsiv-btn', ''); btn.setAttribute('data-tip', 'Arşivle'); btn.setAttribute('aria-label', 'Arşivle');
+      btn.innerHTML = '<i class="fa-solid fa-box-archive"></i>';
+      acts.appendChild(btn);
+    });
+  }
+  gvWireRowArchive('#tblKisi tbody tr');
+
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-arsiv-btn]'); if(!btn) return;
+    var row = btn.closest('tr'); if(!row) return;
+    if(row.getAttribute('data-arsiv') === '1'){ gvToast('Bu kişi zaten arşivde.', {type:'info'}); return; }
+    var labelEl = row.querySelector('.kisi-info b');
+    var label = labelEl ? labelEl.textContent.trim() : 'Kişi';
+    gvConfirm({
+      danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+      title: label + ' arşivlensin mi?',
+      message: 'Kişi kaydı kalıcı olarak silinmez; arşive alınır ve varsayılan listede görünmez olur (örn. firma değiştirdiğinde). "Arşivlenenleri Göster" filtresiyle yine erişilebilir.',
+      onConfirm:function(){
+        row.setAttribute('data-arsiv', '1');
+        row.setAttribute('data-durum', 'arsivlendi');
+        gvToast(label + ' arşivlendi — varsayılan listede artık görünmeyecek.', {type:'danger'});
+      }
+    });
+  });
 })();
 </script>
 </body>
