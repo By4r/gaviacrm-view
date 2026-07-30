@@ -50,6 +50,10 @@
 @media(max-width:640px){
   .sp-desc{max-width:130px}
 }
+
+/* ---- §17 arşiv görünürlüğü — kalıcı silme YERİNE varsayılan listede gizleme ---- */
+#tblSiparis tbody tr[data-arsiv="1"]{display:none}
+#tblSiparis.gv-show-arsiv tbody tr[data-arsiv="1"]{display:table-row}
 </style>
 </head>
 <body data-sec="satinalma" data-screen="siparisler">
@@ -122,6 +126,20 @@
           <button class="chip" data-filter="taslak">Taslak <span class="ch-cnt">1</span></button>
           <button class="chip" data-filter="teslim">Teslim Edildi <span class="ch-cnt">1</span></button>
           <button class="chip" data-filter="kapandi">Kapandı <span class="ch-cnt">2</span></button>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpSiparisler">
+          <i class="fa-solid fa-sliders"></i> Gelişmiş Filtre
+        </button>
+      </div>
+      <div class="gv-achips-row" id="achipsSiparisler" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor.">
+            <i class="fa-solid fa-lock"></i> Filtreleri Kaydet
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all>
+            <i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle
+          </button>
         </div>
       </div>
       <div class="gc-body flush">
@@ -229,6 +247,40 @@
       </div>
     </div>
   </main>
+
+  <div class="gv-fpanel-ov" id="fpSiparislerOv">
+    <aside class="gv-fpanel" id="fpSiparisler" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+      <div class="gv-fpanel-head">
+        <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+        <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="gv-fpanel-body">
+        <div class="gfield">
+          <label>Durum</label>
+          <select data-fp-key="durum" data-fp-label="Durum">
+            <option value="">Tümü</option>
+            <option value="gecikme">Termin Gecikmesi</option>
+            <option value="kismi">Kısmi Teslim</option>
+            <option value="tedarikcide">Tedarikçide</option>
+            <option value="onaylandi">Onaylandı</option>
+            <option value="taslak">Taslak</option>
+            <option value="teslim">Teslim Edildi</option>
+            <option value="kapandi">Kapandı</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:600">
+            <input type="checkbox" data-fp-key="arsivgoster" data-fp-label="Arşivlenenleri Göster">
+            Arşivlenenleri Göster
+          </label>
+        </div>
+      </div>
+      <div class="gv-fpanel-foot">
+        <button type="button" class="btn btn-ghost" data-fp-clear>Temizle</button>
+        <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+      </div>
+    </aside>
+  </div>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -304,6 +356,52 @@
       a.replaceWith(span);
     });
   }
+
+  /* ============ §17 — Gelişmiş Filtre paneli + Arşivlenenleri Göster ============ */
+  document.querySelectorAll('#tblSiparis tbody tr[data-f]').forEach(function(tr){
+    tr.setAttribute('data-durum', (tr.getAttribute('data-f') || '').split(' ')[0]);
+  });
+
+  if(window.gvFilterPanel){
+    window.gvFilterPanel.init('#fpSiparisler', {
+      table: '#tblSiparis',
+      onApply: function(state){
+        var tbl = document.getElementById('tblSiparis');
+        if(tbl) tbl.classList.toggle('gv-show-arsiv', !!(state.arsivgoster));
+      }
+    });
+  }
+
+  /* ---- satır arşivleme aksiyonu — kalıcı silme YERİNE (§17) ---- */
+  function gvWireRowArchive(rowSel){
+    document.querySelectorAll(rowSel).forEach(function(row){
+      var acts = row.querySelector('.row-acts');
+      if(!acts || acts.querySelector('[data-arsiv-btn]')) return;
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'ia-btn'; btn.setAttribute('data-no-confirm', '');
+      btn.setAttribute('data-arsiv-btn', ''); btn.setAttribute('data-tip', 'Arşivle'); btn.setAttribute('aria-label', 'Arşivle');
+      btn.innerHTML = '<i class="fa-solid fa-box-archive"></i>';
+      acts.appendChild(btn);
+    });
+  }
+  gvWireRowArchive('#tblSiparis tbody tr');
+
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-arsiv-btn]'); if(!btn) return;
+    var row = btn.closest('tr'); if(!row) return;
+    if(row.getAttribute('data-arsiv') === '1'){ gvToast('Bu kayıt zaten arşivde.', {type:'info'}); return; }
+    var labelEl = row.querySelector('.sp-info b, b');
+    var label = labelEl ? labelEl.textContent.trim() : 'Sipariş';
+    gvConfirm({
+      danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+      title: label + ' arşivlensin mi?',
+      message: 'Kayıt kalıcı olarak silinmez; arşive alınır ve varsayılan listede görünmez olur. İşlem kaydına yazılır (İşlem Kayıtları\'ndan izlenebilir) ve "Arşivlenenleri Göster" filtresiyle ya da Ayarlar > Arşiv Merkezi\'nden tekrar görüntülenebilir.',
+      onConfirm:function(){
+        row.setAttribute('data-arsiv', '1');
+        gvToast(label + ' arşivlendi — varsayılan listede artık görünmeyecek.', {type:'danger'});
+      }
+    });
+  });
 })();
 </script>
 </body>
