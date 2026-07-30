@@ -73,7 +73,7 @@
       <div>
         <div class="ph-eyebrow">Satış</div>
         <h1>Satış Sonrası Talepler</h1>
-        <div class="ph-sub"><span data-table-count>11</span> talep · 4 tür kırılımı</div>
+        <div class="ph-sub"><span data-table-count>12</span> talep · 6 tür kırılımı</div>
       </div>
       <div class="ph-actions">
         <a class="btn btn-ghost btn-sm" href="#" data-export="Satış sonrası talep listesi"><i class="fa-solid fa-download"></i> Dışa Aktar</a>
@@ -83,12 +83,12 @@
     <div class="kpi-grid">
       <div class="kpi-card warn">
         <div class="kpi-ico"><i class="fa-solid fa-headset"></i></div>
-        <div><div class="kpi-num num">6</div><div class="kpi-lbl">Açık + işlemde</div>
-        <div class="kpi-delta flat"><i class="fa-solid fa-list-check"></i> 3 açık · 3 işlemde</div></div>
+        <div><div class="kpi-num num">7</div><div class="kpi-lbl">Açık + işlemde</div>
+        <div class="kpi-delta flat"><i class="fa-solid fa-list-check"></i> 3 açık · 4 işlemde</div></div>
       </div>
       <div class="kpi-card" style="--kpi-info:1">
         <div class="kpi-ico" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-globe"></i></div>
-        <div><div class="kpi-num num">2</div><div class="kpi-lbl">Portal kaynaklı</div>
+        <div><div class="kpi-num num">3</div><div class="kpi-lbl">Portal kaynaklı</div>
         <div class="kpi-delta flat"><i class="fa-solid fa-arrow-up-right-from-square"></i> Müşteri portalı — D13</div></div>
       </div>
       <div class="kpi-card" style="--kpi-ok:1">
@@ -114,8 +114,8 @@
         <div class="filter-row">
           <span class="fr-lbl">Tür</span>
           <div class="chips" id="chipsTur">
-            <button class="chip is-on" data-tur="hepsi">Tümü <span class="ch-cnt">11</span></button>
-            <button class="chip" data-tur="eksik">Eksik İş <span class="ch-cnt">4</span></button>
+            <button class="chip is-on" data-tur="hepsi">Tümü <span class="ch-cnt">12</span></button>
+            <button class="chip" data-tur="eksik">Eksik İş <span class="ch-cnt">5</span></button>
             <button class="chip" data-tur="garanti">Garanti <span class="ch-cnt">2</span></button>
             <button class="chip" data-tur="bakim">Bakım <span class="ch-cnt">2</span></button>
             <button class="chip" data-tur="sikayet">Şikayet <span class="ch-cnt">1</span></button>
@@ -126,9 +126,9 @@
         <div class="filter-row">
           <span class="fr-lbl">Durum</span>
           <div class="chips" id="chipsDurum">
-            <button class="chip is-on" data-durum="hepsi">Tümü <span class="ch-cnt">11</span></button>
+            <button class="chip is-on" data-durum="hepsi">Tümü <span class="ch-cnt">12</span></button>
             <button class="chip" data-durum="acik">Açık <span class="ch-cnt">3</span></button>
-            <button class="chip" data-durum="islemde">İşlemde <span class="ch-cnt">3</span></button>
+            <button class="chip" data-durum="islemde">İşlemde <span class="ch-cnt">4</span></button>
             <button class="chip" data-durum="tamam">Tamamlandı <span class="ch-cnt">4</span></button>
             <button class="chip" data-durum="red">Reddedildi <span class="ch-cnt">1</span></button>
           </div>
@@ -246,6 +246,15 @@
               <td><span class="gstat info">Açık</span></td>
               <td>Elif Sarıkaya</td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-satis-talep-detay.html?sst=011" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+            </tr>
+            <tr data-tur="eksik" data-durum="islemde" data-href="crm-satis-talep-detay.html?sst=012">
+              <td><div class="gcell"><div class="gcell-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)">SO</div><div class="gcell-info"><div class="gcell-name">SST-2026-012 · Mutfak dolap kapağı hizası</div><span class="sub">Selçuk Onaran · VK-C-18</span></div></div></td>
+              <td><span class="gtag tur-eksik">Eksik İş</span></td>
+              <td><span class="gstat info kanal-portal">Portal</span></td>
+              <td>20 Tem 2026</td>
+              <td><span class="gstat warn">İşlemde</span></td>
+              <td>Elif Sarıkaya</td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-satis-talep-detay.html?sst=012" data-no-confirm aria-label="Talep detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
           </tbody>
         </table>
