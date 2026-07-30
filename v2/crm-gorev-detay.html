@@ -273,7 +273,7 @@
             <div class="cmt-compose">
               <div class="cmt-ava" id="icNotMeAva">·</div>
               <div class="cmt-compose-field">
-                <input type="text" placeholder="İç not yazın — yalnız yönetim görür…" id="icNotInput">
+                <input type="text" placeholder="İç not yazın…" id="icNotInput">
                 <button class="btn btn-sm" data-no-confirm id="icNotSend" style="background:color-mix(in srgb, var(--warn) 85%, black);color:#fff"><i class="fa-solid fa-lock"></i> Not Ekle</button>
               </div>
             </div>
@@ -803,8 +803,11 @@
     if(!wrap) return;
     wrap.innerHTML = poolHistory.map(function(h){
       var cls = h.tip === 'al' ? 'ok' : (h.tip === 'dondur' ? 'warn' : 'info');
+      var metaTxt = h.kisi + ' · ' + h.tarih;
+      /* T-KIRPMA bulgusu: .act-info span shared ui.css'te nowrap+ellipsis — ortak CSS'e
+         dokunulmadı, yalnız native title tooltip ile tam metin erişimi eklendi */
       return '<div class="act-row"><div class="act-ico ' + cls + '"><i class="fa-solid ' + (POOL_HIST_ICO[h.tip] || 'fa-circle') + '"></i></div>'
-        + '<div class="act-info"><b>' + h.not + '</b><span>' + h.kisi + ' · ' + h.tarih + '</span></div></div>';
+        + '<div class="act-info"><b title="' + h.not + '">' + h.not + '</b><span title="' + metaTxt + '">' + metaTxt + '</span></div></div>';
     }).join('');
   }
   function openDeptChangeModal(){
@@ -919,8 +922,11 @@
     historyWrap.innerHTML = history.map(function(h){
       var lbl = h.durum === 'olusturdu' ? 'Oluşturuldu' : (ST[h.durum] ? ST[h.durum].txt : h.durum);
       var actCls = h.durum === 'olusturdu' ? 'info' : (HIST_ACT_ICO[(ST[h.durum]||{}).cls] || '');
+      var metaTxt = h.kisi + ' · ' + h.tarih + (h.not ? ' — ' + h.not : '');
+      /* T-KIRPMA bulgusu: .act-info span shared ui.css'te nowrap+ellipsis — ortak CSS'e
+         dokunulmadı, yalnız native title tooltip ile tam metin erişimi eklendi */
       return '<div class="act-row"><div class="act-ico' + (actCls ? ' ' + actCls : '') + '"><i class="fa-solid ' + (HIST_ICO[h.durum] || 'fa-circle') + '"></i></div>'
-        + '<div class="act-info"><b>' + lbl + '</b><span>' + h.kisi + ' · ' + h.tarih + (h.not ? ' — ' + h.not : '') + '</span></div></div>';
+        + '<div class="act-info"><b>' + lbl + '</b><span title="' + metaTxt + '">' + metaTxt + '</span></div></div>';
     }).join('');
   }
   renderHistory();
