@@ -196,6 +196,26 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
 .lyr input:focus-visible + .lyr-box{outline:2px solid var(--acc);outline-offset:2px}
 .lyr-div{height:1px;background:var(--line);margin:6px 2px}
 
+/* ---- Dalga 20 — "İş Programı Katmanları" salt-görüntüleme mini liste + Yönet linki
+   (gv_katmanlar, H4). DALGA 4A'nın 6'lı kişisel ajanda tür setinden (yukarıdaki .lyr
+   filtresi) AYRI bir kavramdır — shell.js yorum bloğu bunu açıkça ayırıyor; bu yüzden
+   BİRLEŞTİRİLMEZ, ayrı, salt-okunur bir kart olarak eklenir. Her satır
+   crm-santiye-ajanda.html?katman=<key>'e gerçek bir çapraz filtre linkidir. */
+.lyr-view-list{padding:9px 12px 12px;display:flex;flex-direction:column;gap:1px}
+.lyr-view{position:relative;display:flex;align-items:center;gap:10px;padding:7px 9px;border-radius:var(--r-sm);font-size:12.5px;font-weight:600;color:var(--ink-2);text-decoration:none;transition:.15s var(--ease)}
+.lyr-view:hover{background:var(--bg);color:var(--acc-ink)}
+.lyr-view-dot{width:10px;height:10px;border-radius:50%;background:var(--dot,var(--acc-ink));flex:none}
+.lyr-view i.chev{margin-left:auto;font-size:9px;color:var(--line-2);opacity:0;transition:.15s var(--ease)}
+.lyr-view:hover i.chev{opacity:1;color:var(--acc-ink)}
+.lyr-manage{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--line);font-size:12px;font-weight:700;color:var(--acc-ink);text-decoration:none;transition:.15s var(--ease)}
+.lyr-manage:hover{background:var(--bg)}
+.lyr-manage i:last-child{margin-left:auto;font-size:10px;transition:.2s var(--ease)}
+.lyr-manage:hover i:last-child{transform:translateX(3px)}
+@media(max-width:640px){
+  .lyr-view-list{display:none}
+  .ajd-layers.is-open .lyr-view-list{display:flex}
+}
+
 /* ---- responsive ---- */
 @media(max-width:1100px){
   .ajd-layout{flex-direction:column;align-items:stretch}
@@ -226,14 +246,24 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
 /* ---- CRUD modal form alanları (6D'den korunan idiyom) ---- */
 .gv-field{margin-bottom:14px}
 .gv-field label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
-.gv-field input[type="text"],.gv-field input[type="time"],.gv-field select{
+.gv-field input[type="text"],.gv-field input[type="time"],.gv-field input[type="date"],.gv-field input[type="file"],.gv-field select,.gv-field textarea{
   width:100%;font-family:inherit;font-size:13.5px;font-weight:500;color:var(--ink);
   background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);
-  padding:9px 12px;outline:none;transition:.2s var(--ease);
+  padding:9px 12px;outline:none;transition:.2s var(--ease);box-sizing:border-box;
 }
-.gv-field input:focus,.gv-field select:focus{border-color:var(--acc);background:var(--paper);box-shadow:0 0 0 3px rgba(var(--acc-rgb),.12)}
+.gv-field textarea{resize:vertical;min-height:56px;font-family:inherit}
+.gv-field input:focus,.gv-field select:focus,.gv-field textarea:focus{border-color:var(--acc);background:var(--paper);box-shadow:0 0 0 3px rgba(var(--acc-rgb),.12)}
 .gv-field-row{display:flex;gap:12px}
 .gv-field-row .gv-field{flex:1;min-width:0}
+.gv-field-sub{margin-top:16px;padding-top:14px;border-top:1px dashed var(--line-2);font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+/* katman seçilince otomatik gelen renk önizlemesi (§10.3 — "çalışan bir davranış") */
+.ktm-pick-row{display:flex;align-items:center;gap:10px}
+.ktm-pick-row select{flex:1}
+.ktm-color-dot{width:26px;height:26px;border-radius:50%;flex:none;background:var(--dot,var(--line-2));box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);transition:.2s var(--ease)}
+/* tamamlanma durumu → gecikme nedeni koşullu alan */
+#fEtkGecikmeWrap{display:none}
+#fEtkGecikmeWrap.show{display:block}
+.ajd-demo-durum{font-size:9.5px;font-weight:800;padding:1px 7px;border-radius:var(--r-pill);white-space:nowrap}
 
 /* ============ JS'siz Gün-Listesi Fallback (D18-B1, Beyar kararı) ============
    JS-off ortamda haftalık zaman ızgarası yerine BUGÜNÜN (2 Temmuz) olay listesi
@@ -347,13 +377,26 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
             <label class="lyr" style="--evc:var(--danger)"><input type="checkbox" data-lyr="termin" checked><span class="lyr-box"><i class="fa-solid fa-check"></i></span>Malzeme Teslim</label>
           </div>
         </div>
+
+        <!-- ---- Dalga 20 — "İş Programı Katmanları" (gv_katmanlar, H4) — DALGA 4A'nın
+             yukarıdaki 6'lı KİŞİSEL ajanda tür setinden AYRI bir kavramdır (shell.js
+             yorum bloğu), bu yüzden yukarıdaki filtreyle BİRLEŞTİRİLMEZ. Salt-görüntüleme:
+             bu sayfa gv_katmanlar'ı yalnız OKUR, CRUD sahibi crm-santiye-ajanda-katman.html'dir.
+             Her satır crm-santiye-ajanda.html?katman=<key>'e GERÇEK bir çapraz filtre linkidir. -->
+        <div class="gv-card ajd-layers" id="ktmMiniCard">
+          <button type="button" class="ajd-sidehead" id="ktmMiniToggle" data-no-confirm aria-expanded="false">
+            <i class="fa-solid fa-diagram-project"></i> İş Programı Katmanları <i class="fa-solid fa-chevron-down lyr-chev"></i>
+          </button>
+          <div class="lyr-view-list" id="ktmMiniList"><a class="lyr-view" href="crm-santiye-ajanda.html?katman=beton"><span class="lyr-view-dot" style="--dot:var(--acc-deep)"></span>Beton Dökümü<i class="fa-solid fa-arrow-right chev"></i></a><a class="lyr-view" href="crm-santiye-ajanda.html?katman=kalip"><span class="lyr-view-dot" style="--dot:var(--ink-2)"></span>Kalıp İşleri<i class="fa-solid fa-arrow-right chev"></i></a><a class="lyr-view" href="crm-santiye-ajanda.html?katman=demir"><span class="lyr-view-dot" style="--dot:var(--muted)"></span>Demir İşleri<i class="fa-solid fa-arrow-right chev"></i></a><a class="lyr-view" href="crm-santiye-ajanda.html?katman=mekanik"><span class="lyr-view-dot" style="--dot:var(--info)"></span>Mekanik<i class="fa-solid fa-arrow-right chev"></i></a><a class="lyr-view" href="crm-santiye-ajanda.html?katman=elektrik"><span class="lyr-view-dot" style="--dot:color-mix(in srgb, var(--info) 55%, var(--acc) 45%)"></span>Elektrik<i class="fa-solid fa-arrow-right chev"></i></a><a class="lyr-view" href="crm-santiye-ajanda.html?katman=isg"><span class="lyr-view-dot" style="--dot:var(--danger)"></span>İSG<i class="fa-solid fa-arrow-right chev"></i></a><a class="lyr-view" href="crm-santiye-ajanda.html?katman=denetim"><span class="lyr-view-dot" style="--dot:color-mix(in srgb, var(--ink-2) 60%, var(--muted) 40%)"></span>Denetim<i class="fa-solid fa-arrow-right chev"></i></a><a class="lyr-view" href="crm-santiye-ajanda.html?katman=malzeme"><span class="lyr-view-dot" style="--dot:var(--ok)"></span>Malzeme Teslimatı<i class="fa-solid fa-arrow-right chev"></i></a><a class="lyr-view" href="crm-santiye-ajanda.html?katman=hakedis"><span class="lyr-view-dot" style="--dot:var(--acc-ink)"></span>Hakediş<i class="fa-solid fa-arrow-right chev"></i></a><a class="lyr-view" href="crm-santiye-ajanda.html?katman=toplanti"><span class="lyr-view-dot" style="--dot:color-mix(in srgb, var(--info) 70%, var(--ink) 30%)"></span>Toplantı<i class="fa-solid fa-arrow-right chev"></i></a><a class="lyr-view" href="crm-santiye-ajanda.html?katman=musteri"><span class="lyr-view-dot" style="--dot:color-mix(in srgb, var(--acc) 60%, var(--ink-2) 40%)"></span>Müşteri Ziyareti<i class="fa-solid fa-arrow-right chev"></i></a><a class="lyr-view" href="crm-santiye-ajanda.html?katman=taseronmob"><span class="lyr-view-dot" style="--dot:color-mix(in srgb, var(--muted) 70%, var(--danger) 30%)"></span>Taşeron Mobilizasyonu<i class="fa-solid fa-arrow-right chev"></i></a><a class="lyr-view" href="crm-santiye-ajanda.html?katman=kritik"><span class="lyr-view-dot" style="--dot:color-mix(in srgb, var(--danger) 70%, var(--ink) 30%)"></span>Kritik İş<i class="fa-solid fa-arrow-right chev"></i></a><a class="lyr-view" href="crm-santiye-ajanda.html?katman=resmi"><span class="lyr-view-dot" style="--dot:var(--ink)"></span>Resmi İşlem<i class="fa-solid fa-arrow-right chev"></i></a></div>
+          <a class="lyr-manage" href="crm-santiye-ajanda-katman.html"><i class="fa-solid fa-sliders"></i> Katmanları Yönet <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
       </aside>
     </div>
   </main>
 
   <!-- ---- Dalga 6D — sayfa-lokal CRUD modalı (gv-modal idiyomu, ui.js'e dokunulmadı) ---- -->
   <div class="gv-modal-ov" id="gvAjdModalOv">
-    <div class="gv-modal" style="width:min(460px,100%)" role="dialog" aria-modal="true" aria-labelledby="gvAjdModalTitle">
+    <div class="gv-modal" style="width:min(560px,100%);max-height:88vh;overflow-y:auto" role="dialog" aria-modal="true" aria-labelledby="gvAjdModalTitle">
       <h3 id="gvAjdModalTitle">Etkinlik Ekle</h3>
       <div class="gv-field">
         <label for="gvAjdBaslik">Başlık</label>
@@ -361,26 +404,119 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
       </div>
       <div class="gv-field-row">
         <div class="gv-field">
-          <label for="gvAjdGun">Gün</label>
-          <select id="gvAjdGun"></select>
+          <label for="gvAjdTip">Tür</label>
+          <select id="gvAjdTip"></select>
         </div>
         <div class="gv-field">
-          <label for="gvAjdSaat">Saat</label>
-          <input type="time" id="gvAjdSaat" value="09:00">
+          <!-- §10.3 — Katman seçimi + rengin forma otomatik gelmesi (ÇALIŞAN davranış,
+               statik değil): fEtkKatman değişince fEtkKatmanDot'un arka planı ve etkinlik
+               kartının rengi katmanın CSS renk değerine göre güncellenir. -->
+          <label for="fEtkKatman">Katman (opsiyonel)</label>
+          <div class="ktm-pick-row">
+            <select id="fEtkKatman"><option value="">Yok</option></select>
+            <span class="ktm-color-dot" id="fEtkKatmanDot"></span>
+          </div>
         </div>
-      </div>
-      <div class="gv-field">
-        <label for="gvAjdTip">Tür</label>
-        <select id="gvAjdTip"></select>
       </div>
       <div class="gv-field">
         <label for="gvAjdSantiye">Şantiye (opsiyonel)</label>
         <input type="text" id="gvAjdSantiye" placeholder="Örn. Vadi Konakları">
       </div>
-      <div class="gv-field">
-        <label for="gvAjdKisi">Not / Kişi (opsiyonel)</label>
-        <input type="text" id="gvAjdKisi" placeholder="Kısa not">
+
+      <div class="gv-field-row">
+        <div class="gv-field">
+          <label for="gvAjdGun">Başlangıç Tarihi</label>
+          <select id="gvAjdGun"></select>
+        </div>
+        <div class="gv-field">
+          <label for="fEtkBitisGun">Bitiş Tarihi</label>
+          <select id="fEtkBitisGun"></select>
+        </div>
       </div>
+      <div class="gv-field-row">
+        <div class="gv-field">
+          <label for="gvAjdSaat">Başlangıç Saati</label>
+          <input type="time" id="gvAjdSaat" value="09:00">
+        </div>
+        <div class="gv-field">
+          <label for="fEtkBitisSaat">Bitiş Saati</label>
+          <input type="time" id="fEtkBitisSaat" value="10:00">
+        </div>
+      </div>
+
+      <div class="gv-field-row">
+        <div class="gv-field">
+          <label for="gvAjdKisi">Sorumlu Kişi (opsiyonel)</label>
+          <input type="text" id="gvAjdKisi" placeholder="Örn. Hasan Demirci">
+        </div>
+        <div class="gv-field">
+          <label for="fEtkDepartman">Departman</label>
+          <select id="fEtkDepartman"><option value="">Tüm Departmanlar</option></select>
+        </div>
+      </div>
+
+      <div class="gv-field-sub">Bağlantılar</div>
+      <div class="gv-field-row">
+        <div class="gv-field">
+          <label for="fEtkTaseron">Taşeron Bağlantısı</label>
+          <select id="fEtkTaseron"><option value="">Yok</option></select>
+        </div>
+        <div class="gv-field">
+          <label for="fEtkMalzeme">Malzeme Talebi No (opsiyonel)</label>
+          <input type="text" id="fEtkMalzeme" placeholder="Örn. MLZ-2026-046">
+        </div>
+      </div>
+      <div class="gv-field">
+        <label for="fEtkGorev">Görev No (opsiyonel)</label>
+        <input type="text" id="fEtkGorev" placeholder="Örn. 008 — kaydedince Göreve Git linki oluşur">
+      </div>
+
+      <div class="gv-field-sub">Hatırlatma, Tekrar ve Durum</div>
+      <div class="gv-field-row">
+        <div class="gv-field">
+          <label for="fEtkHatirlatma">Hatırlatma</label>
+          <select id="fEtkHatirlatma">
+            <option value="">Yok</option>
+            <option value="15dk">15 dakika önce</option>
+            <option value="1saat">1 saat önce</option>
+            <option value="1gun">1 gün önce</option>
+          </select>
+        </div>
+        <div class="gv-field">
+          <label for="fEtkTekrar">Tekrarlama</label>
+          <select id="fEtkTekrar">
+            <option value="yok">Tekrarlanmıyor</option>
+            <option value="gun">Her Gün</option>
+            <option value="hafta">Her Hafta</option>
+            <option value="ay">Her Ay</option>
+          </select>
+        </div>
+      </div>
+      <div class="gv-field-row">
+        <div class="gv-field">
+          <label for="fEtkDurum">Tamamlanma Durumu</label>
+          <select id="fEtkDurum">
+            <option value="planlandi">Planlandı</option>
+            <option value="devam">Devam Ediyor</option>
+            <option value="tamam">Tamamlandı</option>
+            <option value="ertelendi">Ertelendi</option>
+          </select>
+        </div>
+        <div class="gv-field">
+          <label for="fEtkDosya">Dosya / Görsel Eki</label>
+          <input type="file" id="fEtkDosya" data-demo="Dosya yükleme bu prototipte simülasyondur.">
+        </div>
+      </div>
+      <div class="gv-field" id="fEtkGecikmeWrap">
+        <label for="fEtkGecikme">Gecikme Nedeni</label>
+        <input type="text" id="fEtkGecikme" placeholder="Örn. Malzeme teslimi gecikti">
+      </div>
+
+      <div class="gv-field">
+        <label for="fEtkNot">Not</label>
+        <textarea id="fEtkNot" rows="2" placeholder="Etkinlikle ilgili kısa not"></textarea>
+      </div>
+
       <div class="gv-modal-acts" style="margin-top:18px">
         <button type="button" class="btn btn-ghost btn-sm" id="gvAjdModalCancel">Vazgeç</button>
         <button type="button" class="btn btn-acc btn-sm" id="gvAjdModalSave">Kaydet</button>
@@ -536,6 +672,59 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
   function toMin(s){ if(!s || s === 'Tüm gün') return null; var p = String(s).split(':'); return (+p[0])*60 + (+p[1] || 0); }
   function fmtMin(m){ var h = Math.floor(m/60), mm = m%60; return (h<10?'0':'')+h+':'+(mm<10?'0':'')+mm; }
 
+  /* ============ Dalga 20 — paylaşılan katman deposu (gv_katmanlar, H4) ============
+     BU SAYFA YALNIZ OKUR — CRUD sahibi crm-santiye-ajanda-katman.html'dir. DALGA 4A'nın
+     yukarıdaki 6'lı KİŞİSEL ajanda tür setinden (TIP/TIPC) AYRI, ek bir kavramdır — §10.3
+     etkinlik formuna "Katman" alanı olarak eklenir (opsiyonel); seçilince rengin forma
+     otomatik gelmesi bu bloktan türetilir. Depo boşsa bu sayfa da 14 kanonik katmanla
+     bootstrap eder (sıra bağımsız — santiye-ajanda.html ile birebir aynı tohum). */
+  var KATMAN_KEY = 'gv_katmanlar';
+  var KATMAN_SEED = [
+    {id:'ktm-01', key:'beton',      ad:'Beton Dökümü',          renk:'var(--acc-deep)', ikon:'fa-trowel-bricks',        departman:'Şantiye Ekibi', gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], durum:'aktif'},
+    {id:'ktm-02', key:'kalip',      ad:'Kalıp İşleri',          renk:'var(--ink-2)', ikon:'fa-cubes-stacked',           departman:'Şantiye Ekibi', gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], durum:'aktif'},
+    {id:'ktm-03', key:'demir',      ad:'Demir İşleri',          renk:'var(--muted)', ikon:'fa-grip-lines',              departman:'Şantiye Ekibi', gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], durum:'aktif'},
+    {id:'ktm-04', key:'mekanik',    ad:'Mekanik',               renk:'var(--info)', ikon:'fa-gears',                    departman:'Şantiye Ekibi', gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], durum:'aktif'},
+    {id:'ktm-05', key:'elektrik',   ad:'Elektrik',              renk:'color-mix(in srgb, var(--info) 55%, var(--acc) 45%)', ikon:'fa-bolt', departman:'Şantiye Ekibi', gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], durum:'aktif'},
+    {id:'ktm-06', key:'isg',        ad:'İSG',                   renk:'var(--danger)', ikon:'fa-shield-halved',           departman:'İSG Ekibi',     gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], durum:'aktif'},
+    {id:'ktm-07', key:'denetim',    ad:'Denetim',               renk:'color-mix(in srgb, var(--ink-2) 60%, var(--muted) 40%)', ikon:'fa-clipboard-check', departman:'Teknik Ofis', gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], durum:'aktif'},
+    {id:'ktm-08', key:'malzeme',    ad:'Malzeme Teslimatı',     renk:'var(--ok)', ikon:'fa-truck-ramp-box',              departman:'Depo/Lojistik', gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], durum:'aktif'},
+    {id:'ktm-09', key:'hakedis',    ad:'Hakediş',               renk:'var(--acc-ink)', ikon:'fa-file-invoice-dollar',    departman:'Muhasebe Departmanı', gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], durum:'aktif'},
+    {id:'ktm-10', key:'toplanti',   ad:'Toplantı',              renk:'color-mix(in srgb, var(--info) 70%, var(--ink) 30%)', ikon:'fa-people-arrows', departman:null, gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], durum:'aktif'},
+    {id:'ktm-11', key:'musteri',    ad:'Müşteri Ziyareti',      renk:'color-mix(in srgb, var(--acc) 60%, var(--ink-2) 40%)', ikon:'fa-handshake', departman:'Yönetim', gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], durum:'aktif'},
+    {id:'ktm-12', key:'taseronmob', ad:'Taşeron Mobilizasyonu', renk:'color-mix(in srgb, var(--muted) 70%, var(--danger) 30%)', ikon:'fa-people-group', departman:'Taşeron Havuzu', gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], durum:'aktif'},
+    {id:'ktm-13', key:'kritik',     ad:'Kritik İş',             renk:'color-mix(in srgb, var(--danger) 70%, var(--ink) 30%)', ikon:'fa-triangle-exclamation', departman:'Yönetim', gorunurluk:'yetkili', roller:['superadmin','sahip','yonetim','teknik'], durum:'aktif'},
+    {id:'ktm-14', key:'resmi',      ad:'Resmi İşlem',           renk:'var(--ink)', ikon:'fa-file-signature',              departman:'Yönetim', gorunurluk:'yetkili', roller:['superadmin','sahip','yonetim'], durum:'aktif'}
+  ];
+  function loadKatmanlar(){
+    try{
+      var raw = JSON.parse(localStorage.getItem(KATMAN_KEY));
+      if(Array.isArray(raw) && raw.length) return raw;
+    }catch(e){}
+    localStorage.setItem(KATMAN_KEY, JSON.stringify(KATMAN_SEED));
+    return KATMAN_SEED.slice();
+  }
+  var KATMANLAR = loadKatmanlar().filter(function(k){
+    if(k.durum !== 'aktif') return false;
+    return k.gorunurluk !== 'yetkili' || k.roller.indexOf(GV.role) !== -1;
+  });
+  var KATMAN_MAP = {}; KATMANLAR.forEach(function(k){ KATMAN_MAP[k.key] = k; });
+
+  /* ---- İş Programı Katmanları mini liste (salt-görüntüleme) — santiye secs'i olmayan
+     roller (muhasebe/ik/satinalma/personel) için de anlamlıdır (görüntüleme amaçlı),
+     "Yönet" linki tıklanırsa hedef sayfanın kendi 403 guard'ı (santiye secs) devreye girer */
+  (function renderKatmanMini(){
+    var el = document.getElementById('ktmMiniList');
+    if(!el) return;
+    el.innerHTML = KATMANLAR.map(function(k){
+      return '<a class="lyr-view" href="crm-santiye-ajanda.html?katman='+encodeURIComponent(k.key)+'"><span class="lyr-view-dot" style="--dot:'+k.renk+'"></span>'+esc(k.ad)+'<i class="fa-solid fa-arrow-right chev"></i></a>';
+    }).join('');
+  })();
+  document.getElementById('ktmMiniToggle') && document.getElementById('ktmMiniToggle').addEventListener('click', function(){
+    var card = document.getElementById('ktmMiniCard');
+    var open = card.classList.toggle('is-open');
+    this.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
   /* ---- R3+R4 — sayfa-lokal CRUD deposu (localStorage, TEK yeni key) ----
      Kayıt ŞEMASI AYNEN: {id, gun(0-6, GUNLER_0 index'i), saat, tip, baslik, santiye?, kisi?}.
      Yalnız kanonik haftada (weekIdx 0) eklenir/render edilir/taşınır. */
@@ -625,6 +814,19 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
       + '</div>';
   }
   function tipStyle(tip){ var c = TIPC[tip] || TIPC.gorev; return '--evc:'+c[0]+';--evt:'+c[1]; }
+  /* ---- §10.3 — katman seçiliyse (yalnız demo kayıtlarda mümkün) renk/ikon KATMANLAR'dan
+     gelir; katman yoksa DALGA 4A'nın kanonik TIP/TIPC'sine (davranışı AYNEN) düşer ---- */
+  var DURUM_LBL = {planlandi:'Planlandı', devam:'Devam Ediyor', tamam:'Tamamlandı', ertelendi:'Ertelendi'};
+  var DURUM_GSTAT = {planlandi:'off', devam:'info', tamam:'ok', ertelendi:'warn'};
+  function evColor(o){
+    var k = o.katman && KATMAN_MAP[o.katman];
+    if(k) return '--evc:'+k.renk+';--evt:color-mix(in srgb, '+k.renk+' 12%, var(--paper))';
+    return tipStyle(o.tip);
+  }
+  function evIcon(o){
+    var k = o.katman && KATMAN_MAP[o.katman];
+    return k ? k.ikon : (TIP[o.tip] || TIP.gorev).ic;
+  }
 
   function timedBlockHTML(it, showMeta){
     var o = it.o, T = TIP[o.tip] || TIP.gorev;
@@ -634,14 +836,16 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
     var l = (it.col/it.cols*100), w = (100/it.cols);
     var pos = 'top:'+top.toFixed(1)+'px;height:'+h+'px;left:calc('+l.toFixed(3)+'% + 2px);width:calc('+w.toFixed(3)+'% - 4px);';
     var tag = (!it.demo && o.href) ? 'a' : 'div';
-    var tt = esc(o.saat + ' · ' + T.lbl + ' — ' + o.baslik + (o.santiye ? ' — ' + o.santiye : '') + (o.kisi ? ' — ' + o.kisi : ''));
+    var kAd = (it.demo && o.katman && KATMAN_MAP[o.katman]) ? KATMAN_MAP[o.katman].ad : '';
+    var tt = esc(o.saat + ' · ' + T.lbl + (kAd ? ' · Katman: ' + kAd : '') + ' — ' + o.baslik + (o.santiye ? ' — ' + o.santiye : '') + (o.kisi ? ' — ' + o.kisi : ''));
     var meta = showMeta ? ((o.santiye ? o.santiye : '') + (o.santiye && o.kisi ? ' · ' : '') + (o.kisi ? o.kisi : '')) : '';
+    var durumBadge = (it.demo && showMeta && o.durum) ? ' <span class="ajd-demo-durum gstat '+(DURUM_GSTAT[o.durum]||'off')+'">'+esc(DURUM_LBL[o.durum]||o.durum)+'</span>' : '';
     return '<div class="evw'+(it.demo?' is-demo':'')+'" style="'+pos+'"'+(it.demo?' data-demo-id="'+o.id+'"':'')+'>'
-      + '<'+tag+' class="tg-ev" style="'+tipStyle(o.tip)+'"'+(tag==='a'?' href="'+o.href+'"':'')+' title="'+tt+'">'
-      +   '<span class="tg-evtop"><i class="fa-solid '+T.ic+' tg-ico"></i><span class="tg-time">'+esc(o.saat)+'</span>'
+      + '<'+tag+' class="tg-ev" style="'+evColor(o)+'"'+(tag==='a'?' href="'+o.href+'"':'')+' title="'+tt+'">'
+      +   '<span class="tg-evtop"><i class="fa-solid '+evIcon(o)+' tg-ico"></i><span class="tg-time">'+esc(o.saat)+'</span>'
       +   (it.demo ? '<span class="ajd-demo-tag">demo</span>' : '') + '</span>'
       +   '<span class="tg-ttl">'+esc(o.baslik)+'</span>'
-      +   (meta ? '<span class="tg-meta">'+esc(meta)+'</span>' : '')
+      +   (meta ? '<span class="tg-meta">'+esc(meta)+durumBadge+'</span>' : '')
       + '</'+tag+'>'
       + kebabHTML()
       + '</div>';
@@ -650,8 +854,8 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
     var o = it.o, T = TIP[o.tip] || TIP.izin;
     var tag = o.href ? 'a' : 'div';
     return '<div class="adw">'
-      + '<'+tag+' class="adp" style="'+tipStyle(o.tip)+'"'+(o.href?' href="'+o.href+'"':'')+' title="'+esc('Tüm gün · '+T.lbl+' — '+o.baslik)+'">'
-      +   '<i class="fa-solid '+T.ic+'"></i><span class="tg-ttl">'+esc(o.baslik)+'</span>'
+      + '<'+tag+' class="adp" style="'+evColor(o)+'"'+(o.href?' href="'+o.href+'"':'')+' title="'+esc('Tüm gün · '+T.lbl+' — '+o.baslik)+'">'
+      +   '<i class="fa-solid '+evIcon(o)+'"></i><span class="tg-ttl">'+esc(o.baslik)+'</span>'
       + '</'+tag+'>'
       + kebabHTML()
       + '</div>';
@@ -729,7 +933,7 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
     var o = it.o;
     var tag = (!it.demo && o.href) ? 'a' : 'div';
     var time = toMin(o.saat) === null ? '' : '<span class="mn-time">'+esc(o.saat)+'</span>';
-    return '<'+tag+' class="mn-bar" style="'+tipStyle(o.tip)+'"'+(tag==='a'?' href="'+o.href+'"':'')
+    return '<'+tag+' class="mn-bar" style="'+evColor(o)+'"'+(tag==='a'?' href="'+o.href+'"':'')
       + ' title="'+esc(o.saat+' · '+(TIP[o.tip]||TIP.gorev).lbl+' — '+o.baslik)+'">'
       + time + '<span class="mn-btl">'+esc(o.baslik)+'</span></'+tag+'>';
   }
@@ -887,21 +1091,39 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
     if(cell){ setWeek(+cell.getAttribute('data-wk')); dayIdx = +cell.getAttribute('data-gi'); view = 'gun'; renderAll(); }
   });
 
-  /* ---- R3+R4 — CRUD modalı (ekle/düzenle) — 6D akışı AYNEN ---- */
+  /* ---- R3+R4 — CRUD modalı (ekle/düzenle) — 6D akışı AYNEN. §10.3 genişlemesi
+     (K-23/Bölüm C madde 22 — LEAD kararı): 6 alan → 19 alan, YALNIZ bu modalda
+     (crm-santiye-ajanda.html'in etkinlik CRUD'u AYNEN kapalı kalır). ---- */
   var ADD_TYPE_MAP = { program:'gorev', isprogrami:'ziyaret', not:'gorev', toplanti:'toplanti' };
   var ADD_TITLE_MAP = { program:'Program Ekle', isprogrami:'İş Programı Ekle', not:'Ajandaya Not Ekle', toplanti:'Toplantı Ekle' };
+  var DEPARTMANLAR = ['Muhasebe Departmanı','İK Departmanı','Satın Alma Departmanı','Teknik Ofis','Şantiye Ekibi','Yönetim','Satış Ekibi','İSG Ekibi','Depo/Lojistik','Saha Ekibi (genel)','Taşeron Havuzu'];
+  var TASERONLAR = [ {v:'TAS-01', lbl:'Demir-Beton İnş. Ltd.'}, {v:'TAS-02', lbl:'ElektroMek Taahhüt'}, {v:'TAS-03', lbl:'Yalıtım Kardeşler'} ];
   var modalOv = document.getElementById('gvAjdModalOv');
   var modalTitleEl = document.getElementById('gvAjdModalTitle');
   var baslikInp = document.getElementById('gvAjdBaslik');
   var gunSel = document.getElementById('gvAjdGun');
+  var bitisGunSel = document.getElementById('fEtkBitisGun');
   var saatInp = document.getElementById('gvAjdSaat');
+  var bitisSaatInp = document.getElementById('fEtkBitisSaat');
   var tipSel = document.getElementById('gvAjdTip');
+  var katmanSel = document.getElementById('fEtkKatman');
+  var katmanDot = document.getElementById('fEtkKatmanDot');
   var santiyeInp = document.getElementById('gvAjdSantiye');
   var kisiInp = document.getElementById('gvAjdKisi');
+  var departmanSel = document.getElementById('fEtkDepartman');
+  var taseronSel = document.getElementById('fEtkTaseron');
+  var malzemeInp = document.getElementById('fEtkMalzeme');
+  var gorevInp = document.getElementById('fEtkGorev');
+  var hatirlatmaSel = document.getElementById('fEtkHatirlatma');
+  var tekrarSel = document.getElementById('fEtkTekrar');
+  var durumSel = document.getElementById('fEtkDurum');
+  var gecikmeWrap = document.getElementById('fEtkGecikmeWrap');
+  var gecikmeInp = document.getElementById('fEtkGecikme');
+  var notInp = document.getElementById('fEtkNot');
   var editingId = null;
 
-  function fillGunSelect(selectedIdx){
-    gunSel.innerHTML = GUNLER_0.map(function(g, i){
+  function fillGunSelect(sel, selectedIdx){
+    sel.innerHTML = GUNLER_0.map(function(g, i){
       return '<option value="'+i+'"'+(i === selectedIdx ? ' selected' : '')+'>'+g.g+' ('+g.d+' '+g.ay+')</option>';
     }).join('');
   }
@@ -910,6 +1132,32 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
       return '<option value="'+k+'"'+(k === selectedTip ? ' selected' : '')+'>'+TIP[k].lbl+'</option>';
     }).join('');
   }
+  function fillKatmanSelect(selectedKey){
+    katmanSel.innerHTML = '<option value="">Yok</option>' + KATMANLAR.map(function(k){
+      return '<option value="'+k.key+'"'+(k.key === selectedKey ? ' selected' : '')+'>'+esc(k.ad)+'</option>';
+    }).join('');
+    syncKatmanDot();
+  }
+  function syncKatmanDot(){
+    var k = KATMAN_MAP[katmanSel.value];
+    katmanDot.style.setProperty('--dot', k ? k.renk : 'var(--line-2)');
+  }
+  katmanSel.addEventListener('change', syncKatmanDot);
+  function fillDepartmanSelect(selectedVal){
+    departmanSel.innerHTML = '<option value="">Tüm Departmanlar</option>' + DEPARTMANLAR.map(function(d){
+      return '<option value="'+esc(d)+'"'+(d === selectedVal ? ' selected' : '')+'>'+esc(d)+'</option>';
+    }).join('');
+  }
+  function fillTaseronSelect(selectedVal){
+    taseronSel.innerHTML = '<option value="">Yok</option>' + TASERONLAR.map(function(t){
+      return '<option value="'+t.v+'"'+(t.v === selectedVal ? ' selected' : '')+'>'+esc(t.lbl)+'</option>';
+    }).join('');
+  }
+  function syncGecikmeVisible(){
+    gecikmeWrap.classList.toggle('show', durumSel.value === 'ertelendi');
+  }
+  durumSel.addEventListener('change', syncGecikmeVisible);
+
   function openModal(){
     modalOv.classList.add('open');
     document.addEventListener('keydown', onModalEsc);
@@ -927,11 +1175,24 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
     editingId = null;
     modalTitleEl.textContent = ADD_TITLE_MAP[kind] || 'Etkinlik Ekle';
     baslikInp.value = ''; baslikInp.style.borderColor = '';
-    fillGunSelect(TODAY_IDX);
+    fillGunSelect(gunSel, TODAY_IDX);
+    fillGunSelect(bitisGunSel, TODAY_IDX);
     saatInp.value = '09:00';
+    bitisSaatInp.value = '10:00';
     fillTipSelect(ADD_TYPE_MAP[kind] || 'gorev');
+    fillKatmanSelect('');
     santiyeInp.value = '';
     kisiInp.value = '';
+    fillDepartmanSelect('');
+    fillTaseronSelect('');
+    malzemeInp.value = '';
+    gorevInp.value = '';
+    hatirlatmaSel.value = '';
+    tekrarSel.value = 'yok';
+    durumSel.value = 'planlandi';
+    gecikmeInp.value = '';
+    notInp.value = '';
+    syncGecikmeVisible();
     openModal();
   }
   function openEditModal(id){
@@ -940,26 +1201,54 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
     editingId = id;
     modalTitleEl.textContent = 'Etkinliği Düzenle';
     baslikInp.value = rec.baslik; baslikInp.style.borderColor = '';
-    fillGunSelect(rec.gun);
+    fillGunSelect(gunSel, rec.gun);
+    fillGunSelect(bitisGunSel, rec.bitisGun != null ? rec.bitisGun : rec.gun);
     saatInp.value = rec.saat || '09:00';
+    bitisSaatInp.value = rec.bitisSaat || '10:00';
     fillTipSelect(rec.tip);
+    fillKatmanSelect(rec.katman || '');
     santiyeInp.value = rec.santiye || '';
     kisiInp.value = rec.kisi || '';
+    fillDepartmanSelect(rec.departman || '');
+    fillTaseronSelect(rec.taseron || '');
+    malzemeInp.value = rec.malzeme || '';
+    gorevInp.value = rec.gorev || '';
+    hatirlatmaSel.value = rec.hatirlatma || '';
+    tekrarSel.value = rec.tekrar || 'yok';
+    durumSel.value = rec.durum || 'planlandi';
+    gecikmeInp.value = rec.gecikme || '';
+    notInp.value = rec.not || '';
+    syncGecikmeVisible();
     openModal();
   }
   document.getElementById('gvAjdModalSave').addEventListener('click', function(){
     var baslik = baslikInp.value.trim();
-    if(!baslik){ baslikInp.style.borderColor = 'var(--danger)'; baslikInp.focus(); return; }
-    var gun = parseInt(gunSel.value, 10);
-    var saat = saatInp.value || '09:00';
-    var tip = tipSel.value;
-    var santiye = santiyeInp.value.trim();
-    var kisi = kisiInp.value.trim();
+    if(!baslik){ baslikInp.style.borderColor = 'var(--danger)'; baslikInp.focus(); gvToast('Başlık zorunludur.', {type:'danger'}); return; }
+    var payload = {
+      baslik: baslik,
+      gun: parseInt(gunSel.value, 10),
+      bitisGun: parseInt(bitisGunSel.value, 10),
+      saat: saatInp.value || '09:00',
+      bitisSaat: bitisSaatInp.value || '10:00',
+      tip: tipSel.value,
+      katman: katmanSel.value || '',
+      santiye: santiyeInp.value.trim(),
+      kisi: kisiInp.value.trim(),
+      departman: departmanSel.value || '',
+      taseron: taseronSel.value || '',
+      malzeme: malzemeInp.value.trim(),
+      gorev: gorevInp.value.trim(),
+      hatirlatma: hatirlatmaSel.value || '',
+      tekrar: tekrarSel.value,
+      durum: durumSel.value,
+      gecikme: durumSel.value === 'ertelendi' ? gecikmeInp.value.trim() : '',
+      not: notInp.value.trim()
+    };
     if(editingId){
       var rec = demoStore.filter(function(r){ return r.id === editingId; })[0];
-      if(rec){ rec.baslik = baslik; rec.gun = gun; rec.saat = saat; rec.tip = tip; rec.santiye = santiye; rec.kisi = kisi; }
+      if(rec) Object.assign(rec, payload);
     } else {
-      demoStore.push({id:genId(), gun:gun, saat:saat, tip:tip, baslik:baslik, santiye:santiye, kisi:kisi});
+      demoStore.push(Object.assign({id:genId()}, payload));
     }
     saveStore();
     closeModal();
@@ -1071,9 +1360,20 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
     pop.setAttribute('role','menu');
     pop.dataset.title = title;
     if(isDemo){
+      /* §10.3 bağlantı alanları — taşeron/malzeme/görev doluysa GERÇEK href'li çapraz
+         link satırları eklenir (v2/ altında dosyaların var olduğu doğrulandı) */
+      var rec = demoStore.filter(function(r){ return r.id === demoId; })[0];
+      var crossLinks = '';
+      if(rec && rec.taseron){
+        var tas = TASERONLAR.filter(function(t){ return t.v === rec.taseron; })[0];
+        crossLinks += '<a href="crm-finans-taseron-detay.html?tas='+rec.taseron+'"><i class="fa-solid fa-people-arrows"></i> '+(tas ? esc(tas.lbl) : 'Taşerona')+' Git</a>';
+      }
+      if(rec && rec.malzeme) crossLinks += '<a href="crm-satinalma-talep-detay.html?mlz='+encodeURIComponent(rec.malzeme)+'"><i class="fa-solid fa-truck-ramp-box"></i> Malzeme Talebine Git</a>';
+      if(rec && rec.gorev) crossLinks += '<a href="crm-gorev-detay.html?gorev='+encodeURIComponent(rec.gorev)+'"><i class="fa-solid fa-list-check"></i> Göreve Git</a>';
       pop.innerHTML =
         '<button type="button" data-cact="duzenle" data-demo-id="'+demoId+'"><i class="fa-solid fa-pen"></i> Düzenle</button>'
       + '<button type="button" data-cact="tasi" data-demo-id="'+demoId+'"><i class="fa-solid fa-arrows-up-down-left-right"></i> Taşı</button>'
+      + (crossLinks ? '<div class="gp-div"></div>' + crossLinks : '')
       + '<div class="gp-div"></div>'
       + '<button type="button" class="danger" data-cact="sil" data-demo-id="'+demoId+'" data-no-confirm><i class="fa-solid fa-trash"></i> Sil</button>';
     } else {
