@@ -1059,6 +1059,10 @@
       {ic:'fa-credit-card',    lbl:'Pluxee Kart',      href:'crm-operasyon-pluxee.html',  screen:'pluxee'},
       {ic:'fa-building-columns',lbl:'Kredi Kartı',     href:'crm-operasyon-kredikarti.html', screen:'kredikarti'},
       {ic:'fa-user-clock',     lbl:'Puantaj',          href:'crm-operasyon-puantaj.html', screen:'puantaj'},
+      /* [Dalga 20 / D revizyonu madde 8] §7 "ayrı ve net bir alan" hükmü — Puantaj'ın
+         hemen altına gerçek menü satırı. -detay ekranı (?tp=) izin-detay/avans-detay
+         emsaliyle menüsüz kalır, yalnız data-screen ile rol matrisinde tanınır (bkz G). */
+      {ic:'fa-people-arrows',  lbl:'Taşeron Puantajı', href:'crm-operasyon-taseron-puantaj.html', screen:'taseron-puantaj'},
       {ic:'fa-truck-pickup',   lbl:'Makine Puantajı',  href:'crm-operasyon-makine.html',    screen:'makine'},
       {ic:'fa-utensils',       lbl:'Yemekhane',        href:'crm-operasyon-yemekhane.html', screen:'yemekhane'},
       {ic:'fa-toolbox',        lbl:'Demirbaş',         href:'crm-operasyon-demirbas.html',  screen:'demirbas'},
