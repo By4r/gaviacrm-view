@@ -387,9 +387,13 @@
               <td><div class="row-acts"><a class="ia-btn" href="crm-gorev-detay.html?gorev=020" data-no-confirm aria-label="Görev detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
 
-            <!-- ===== HAVUZ (6) — atanmadan bırakılan, Kemal Yapıcıoğlu bıraktı ===== -->
-            <tr data-f="havuz" data-actor="all" data-santiye="liman">
-              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?gorev=021">Liman Lojistik çevre aydınlatma keşfi</a><span class="gcell-sub">GRV-2026-021</span></td>
+            <!-- ===== HAVUZ (6) — atanmadan bırakılan, Kemal Yapıcıoğlu bıraktı.
+                 §11.1/§11.2 departman havuzu (K-22): her satır artık data-departman taşır.
+                 muhasebe/satinalma/teknik/sef/satis/depo 1'er görevle temsil edilir; ik/
+                 yonetim/isg/taseron/saha boş kalır (bkz gorev-form.html'in 11 seçeneği) —
+                 bu, "Bu departmanın havuzunda görev yok" boş-durumunu da doğal gösterir. -->
+            <tr data-f="havuz" data-actor="all" data-santiye="liman" data-departman="satinalma">
+              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?gorev=021">Liman Lojistik çevre aydınlatma keşfi</a><span class="gcell-sub">GRV-2026-021 · Satın Alma havuzu</span></td>
               <td>Liman Lojistik Merkezi</td>
               <td><div class="assign-chain"><span class="ac-from">Kemal Yapıcıoğlu</span><i class="fa-solid fa-arrow-right-long"></i><span class="gstat info">Havuzda</span></div></td>
               <td><span class="due-cell"><i class="fa-regular fa-calendar"></i> 8 Tem</span></td>
@@ -397,8 +401,8 @@
               <td><span class="gstat info">Havuzda</span></td>
               <td><div class="row-acts"><button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-claim="liman-cevre-aydinlatma-kesfi"><i class="fa-solid fa-hand"></i> Üzerime Al</button><a class="ia-btn" href="crm-gorev-detay.html?gorev=021" data-no-confirm aria-label="Görev detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="havuz" data-actor="all">
-              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?gorev=022">Kule Ofis kesin hesap dosyası kontrolü</a><span class="gcell-sub">GRV-2026-022</span></td>
+            <tr data-f="havuz" data-actor="all" data-departman="muhasebe">
+              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?gorev=022">Kule Ofis kesin hesap dosyası kontrolü</a><span class="gcell-sub">GRV-2026-022 · Muhasebe havuzu</span></td>
               <td>Kule Ofis B Blok</td>
               <td><div class="assign-chain"><span class="ac-from">Kemal Yapıcıoğlu</span><i class="fa-solid fa-arrow-right-long"></i><span class="gstat info">Havuzda</span></div></td>
               <td><span class="due-cell"><i class="fa-regular fa-calendar"></i> 6 Tem</span></td>
@@ -406,8 +410,8 @@
               <td><span class="gstat info">Havuzda</span></td>
               <td><div class="row-acts"><button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-claim="kule-kesin-hesap-kontrolu"><i class="fa-solid fa-hand"></i> Üzerime Al</button><a class="ia-btn" href="crm-gorev-detay.html?gorev=022" data-no-confirm aria-label="Görev detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="havuz" data-actor="personel" data-santiye="vadi">
-              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?gorev=023">Vadi Konakları numune daire fotoğraf çekimi</a><span class="gcell-sub">GRV-2026-023</span></td>
+            <tr data-f="havuz" data-actor="personel" data-santiye="vadi" data-departman="satis">
+              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?gorev=023">Vadi Konakları numune daire fotoğraf çekimi</a><span class="gcell-sub">GRV-2026-023 · Satış Ekibi havuzu</span></td>
               <td>Vadi Konakları</td>
               <td><div class="assign-chain"><span class="ac-from">Kemal Yapıcıoğlu</span><i class="fa-solid fa-arrow-right-long"></i><span class="gstat info">Havuzda</span></div></td>
               <td><span class="due-cell"><i class="fa-regular fa-calendar"></i> 10 Tem</span></td>
@@ -415,8 +419,8 @@
               <td><span class="gstat info">Havuzda</span></td>
               <td><div class="row-acts"><button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-claim="vadi-numune-daire-fotograf"><i class="fa-solid fa-hand"></i> Üzerime Al</button><a class="ia-btn" href="crm-gorev-detay.html?gorev=023" data-no-confirm aria-label="Görev detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="havuz" data-actor="all" data-santiye="merkez">
-              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?gorev=024">Merkez depo yıl ortası sayım planı</a><span class="gcell-sub">GRV-2026-024</span></td>
+            <tr data-f="havuz" data-actor="all" data-santiye="merkez" data-departman="depo">
+              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?gorev=024">Merkez depo yıl ortası sayım planı</a><span class="gcell-sub">GRV-2026-024 · Depo / Lojistik havuzu</span></td>
               <td>Merkez Şantiye</td>
               <td><div class="assign-chain"><span class="ac-from">Kemal Yapıcıoğlu</span><i class="fa-solid fa-arrow-right-long"></i><span class="gstat info">Havuzda</span></div></td>
               <td><span class="due-cell"><i class="fa-regular fa-calendar"></i> 9 Tem</span></td>
@@ -424,8 +428,8 @@
               <td><span class="gstat info">Havuzda</span></td>
               <td><div class="row-acts"><button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-claim="merkez-yil-ortasi-sayim"><i class="fa-solid fa-hand"></i> Üzerime Al</button><a class="ia-btn" href="crm-gorev-detay.html?gorev=024" data-no-confirm aria-label="Görev detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="havuz" data-actor="all">
-              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?gorev=025">Göl Evleri 2. Etap ruhsat evrak listesi</a><span class="gcell-sub">GRV-2026-025</span></td>
+            <tr data-f="havuz" data-actor="all" data-departman="teknik">
+              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?gorev=025">Göl Evleri 2. Etap ruhsat evrak listesi</a><span class="gcell-sub">GRV-2026-025 · Teknik Ofis havuzu</span></td>
               <td>Göl Evleri 2. Etap</td>
               <td><div class="assign-chain"><span class="ac-from">Kemal Yapıcıoğlu</span><i class="fa-solid fa-arrow-right-long"></i><span class="gstat info">Havuzda</span></div></td>
               <td><span class="due-cell late"><i class="fa-solid fa-triangle-exclamation"></i> 1 Tem</span></td>
@@ -433,8 +437,8 @@
               <td><span class="gstat danger">Gecikti</span></td>
               <td><div class="row-acts"><button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-claim="gol-evleri-ruhsat-evrak"><i class="fa-solid fa-hand"></i> Üzerime Al</button><a class="ia-btn" href="crm-gorev-detay.html?gorev=025" data-no-confirm aria-label="Görev detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="havuz" data-actor="all" data-santiye="merkez">
-              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?gorev=026">Şantiye araç takip çizelgesi güncelleme</a><span class="gcell-sub">GRV-2026-026</span></td>
+            <tr data-f="havuz" data-actor="all" data-santiye="merkez" data-departman="sef">
+              <td class="gv-title-cell"><a class="task-link" href="crm-gorev-detay.html?gorev=026">Şantiye araç takip çizelgesi güncelleme</a><span class="gcell-sub">GRV-2026-026 · Şantiye Ekibi havuzu</span></td>
               <td>Merkez Şantiye</td>
               <td><div class="assign-chain"><span class="ac-from">Kemal Yapıcıoğlu</span><i class="fa-solid fa-arrow-right-long"></i><span class="gstat info">Havuzda</span></div></td>
               <td><span class="due-cell"><i class="fa-regular fa-calendar"></i> 12 Tem</span></td>
@@ -485,7 +489,10 @@
      birincil görünümü) için; diğer görünümlerde genel filtre-boşluğu metni kalır.
      ui.js'in kendi boş-durum motoruna DOKUNULMADI, yalnız metin senkron edildi. */
   var EMPTY_TXT = {
-    bana: {h4:'Henüz size atanmış görev bulunmuyor.', p:'Yeni bir görev oluşturulduğunda bu alanda görüntülenecek.'}
+    bana: {h4:'Henüz size atanmış görev bulunmuyor.', p:'Yeni bir görev oluşturulduğunda bu alanda görüntülenecek.'},
+    /* §11.2 — departman havuzu boş durumu (ör. bu turda İK/Yönetim havuzunda kanonik
+       görev yok, veya rolün gördüğü havuz arama/şantiye filtresiyle boşaldı) */
+    havuz: {h4:'Bu departmanın havuzunda görev yok.', p:'Farklı bir departmandan görev bekleniyor olabilir veya arama/şantiye filtresini temizleyin.'}
   };
   var EMPTY_DEFAULT = {h4:'Bu görünümde görev yok', p:'Aramayı temizleyin veya farklı bir görünüm seçin.'};
   function syncEmptyText(f){
@@ -713,6 +720,38 @@
       var sub = document.querySelector('.ph-sub');
       if(sub){ sub.textContent = 'Yalnızca size verilen ve sizin tamamladığınız görevler görünür.'; sub.dataset.locked = '1'; }
     }
+
+    /* ==== §11.2 — Havuz görevleri departman bazlı görünürlük (K-22 hükmü) ====
+       Yönetim rolleri (superadmin/sahip/yonetim) tüm havuzu görür. personel D8 budamasıyla
+       zaten YUKARIDA ayrıca ele alındı (tek satırlık kendi evreni var) — bu blok ona
+       DOKUNMAZ. Diğer roller (muhasebe/ik/satinalma/teknik/sef/satistemsilci/satismudur)
+       yalnız kendi departman havuzunu görür; ROLES karşılığı olmayan 4 havuz (saha/isg/
+       depo/taseron) Faz 1'de yönetim + teknik + şef'e açık kalır (K-22/H3). Şantiye
+       bağlantısı yalnız 'sef' departmanında gerçek bir kısıtlamaya dönüşür — bu demoda
+       sef persona'sı yalnız Vadi Konakları'nı temsil ettiği için (bkz shell.js sef.role). */
+    var MGMT_ROLES = ['superadmin','sahip','yonetim'];
+    var DEPT_ROLE_MAP = { muhasebe:['muhasebe'], ik:['ik'], satinalma:['satinalma'], teknik:['teknik'],
+      sef:['sef'], satis:['satistemsilci','satismudur'], yonetim:[] };
+    var NOFILTER_DEPTS = ['saha','isg','depo','taseron'];
+    var SITE_SCOPED_ROLES = { sef:'vadi' };   /* Faz 1'de yalnız Vadi şefi persona'sı var */
+    function canSeeHavuzRow(tr){
+      var dept = tr.getAttribute('data-departman');
+      if(!dept) return true;   /* departmansız satır olmamalı — geriye dönük güvenlik */
+      if(MGMT_ROLES.indexOf(GV.role) !== -1) return true;
+      if(NOFILTER_DEPTS.indexOf(dept) !== -1) return GV.role === 'teknik' || GV.role === 'sef';
+      var allowed = DEPT_ROLE_MAP[dept] || [];
+      if(allowed.indexOf(GV.role) === -1) return false;
+      var siteReq = tr.getAttribute('data-santiye');
+      var scoped = SITE_SCOPED_ROLES[GV.role];
+      if(siteReq && scoped && scoped !== siteReq) return false;
+      return true;
+    }
+    if(GV.role !== 'personel' && MGMT_ROLES.indexOf(GV.role) === -1){
+      document.querySelectorAll('#tblGorev tbody tr[data-f="havuz"]').forEach(function(tr){
+        if(!canSeeHavuzRow(tr)) tr.remove();
+      });
+    }
+
     buildCards();   /* rol budaması (tr.remove) SONRASI — kalan tr kümesinden kart üretilir */
     recomputeCounts();
 
