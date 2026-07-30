@@ -492,7 +492,10 @@
     }
   }
   if(fHavuzDept){
-    fHavuzDept.addEventListener('change', function(){ syncDeptHint(); syncSummary(); });
+    /* syncAtamaMode() çağrılır (yalnız syncDeptHint/syncSummary değil) çünkü sumFoot
+       (özet altındaki bilgi metni) departman adını da içeriyor — departman SONRADAN
+       değişirse bu metin de tazelenmeli, yoksa "önce departman seçin" ile takılı kalıyordu */
+    fHavuzDept.addEventListener('change', syncAtamaMode);
   }
   var fSantiyeForDept = document.getElementById('fSantiye');
   if(fSantiyeForDept) fSantiyeForDept.addEventListener('change', syncDeptHint);
