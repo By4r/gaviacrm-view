@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Yeni Araç Ekle — Gavia CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+<link rel="stylesheet" href="assets/css/ui.css">
+<style>
+/* ============ SAYFAYA ÖZEL — Araç Ekle/Düzenle Formu (§12)
+   Kaynak-transfer: crm-operasyon-demirbas-form.html (form iskeleti) + crm-ayarlar-imza-form.html
+   (gerçek File API doc-drop yükleme deseni, birebir dil). ============ */
+.gv-crumb{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:14px}
+.gv-crumb a{color:var(--acc-ink);font-weight:700}
+.gv-crumb a:hover{color:var(--acc-deep)}
+.gv-crumb i{font-size:9px;color:var(--line-2)}
+
+.form-grid{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+@media(max-width:980px){.form-grid{grid-template-columns:minmax(0,1fr)}}
+.left-stack{display:flex;flex-direction:column;gap:16px}
+
+.form-foot{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:18px 22px;border-top:1px solid var(--line);flex-wrap:wrap}
+.form-foot .foot-left{margin-right:auto;display:flex;gap:10px;flex-wrap:wrap}
+
+.role-note{display:flex;align-items:flex-start;gap:13px;background:var(--bg);border:1px dashed var(--line-2);border-radius:var(--r-md);padding:14px 16px;margin-bottom:18px}
+.role-note.warn{background:var(--warn-tint);border-color:rgba(var(--warn-rgb,245,158,11),.4)}
+.role-note .rn-ico{width:36px;height:36px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;background:var(--paper);border:1px solid var(--line);color:var(--acc-ink);font-size:14px}
+.role-note.warn .rn-ico{color:var(--warn)}
+.role-note .rn-b{min-width:0;line-height:1.5}
+.role-note .rn-b b{font-size:13px;color:var(--ink-2);font-weight:700}
+.role-note .rn-b p{font-size:12.5px;color:var(--muted);margin-top:3px}
+
+.stat-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-top:1px solid var(--line);margin-top:4px}
+.stat-row b{font-size:13px;font-weight:700;color:var(--ink)}
+.stat-row span{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
+
+/* dosya yükleme — imza-form.html ile birebir dil */
+.doc-drop{border:1.5px dashed var(--line-2);border-radius:var(--r-md);padding:16px;text-align:center;transition:.18s var(--ease)}
+.doc-drop.is-drag{border-color:var(--acc-ink);background:rgba(var(--acc-rgb),.06)}
+.doc-drop-btn{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:700;color:var(--acc-ink);cursor:pointer}
+.doc-drop-btn i{font-size:16px}
+.doc-hint{display:block;margin-top:7px;font-size:11.5px;color:var(--muted);font-weight:500}
+.doc-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.doc-item{display:flex;gap:12px;padding:12px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--bg)}
+.doc-item[data-state="hata"]{border-color:color-mix(in srgb, var(--danger) 30%, var(--line));background:var(--danger-tint)}
+.doc-thumb{width:42px;height:42px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:15px;color:#fff;background:var(--gv-night)}
+.doc-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;justify-content:center}
+.doc-info b{font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-meta{font-size:11.5px;color:var(--muted)}
+.doc-status{font-size:11.5px;font-weight:700;display:flex;align-items:center;gap:6px}
+.doc-status.st-yukleniyor{color:var(--info)}
+.doc-status.st-hazir{color:var(--ok)}
+.doc-status.st-hata{color:var(--danger)}
+.doc-acts{display:flex;align-items:center;justify-content:center;flex:none}
+.doc-type-sel{margin-bottom:10px}
+.doc-type-sel select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:var(--r-sm);font-family:inherit;font-size:12.5px;background:var(--paper);color:var(--ink)}
+
+.side-tip{display:flex;gap:10px;padding:13px 0;border-bottom:1px solid var(--line)}
+.side-tip:last-child{border-bottom:none}
+.side-tip i{color:var(--acc-ink);font-size:13px;width:16px;text-align:center;flex:none;margin-top:1px}
+.side-tip span{font-size:12.5px;color:var(--muted);line-height:1.5}
+
+.ctx-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;font-size:13px}
+.ctx-row:not(:last-child){border-bottom:1px solid var(--line)}
+.ctx-row .ctx-lbl{color:var(--muted)}
+.ctx-row .ctx-val{color:var(--ink);font-weight:700;text-align:right}
+</style>
+</head>
+<body data-sec="operasyon" data-screen="arac-form">
+<div class="gv-app">
+  <aside class="gv-rail" id="gvRail"></aside>
+  <nav class="gv-menu" id="gvMenu"></nav>
+  <div class="gv-divider" id="gvDivider" role="separator" aria-label="Menüyü daralt/genişlet"><span class="gv-grip"></span></div>
+  <div class="gv-overlay" id="gvOverlay"></div>
+
+  <header class="gv-top">
+    <button class="gv-burger" id="gvBurger" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+    <div class="gv-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Ara"></div>
+    <div class="gv-top-tools">
+      <button class="gv-iconbtn" data-tip="Bildirimler" aria-label="Bildirimler"><i class="fa-regular fa-bell"></i><span class="gb-dot"></span></button>
+      <div class="gv-me">
+        <div class="me-ava" id="gvAva">·</div>
+        <div class="me-id"><div class="me-name" id="gvName">—</div><div class="me-role" id="gvRole">—</div></div>
+        <i class="fa-solid fa-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="gv-main">
+    <div class="gv-crumb">
+      <a href="crm-operasyon-arac.html">Araçlar</a>
+      <i class="fa-solid fa-chevron-right"></i>
+      <span id="crumbLbl">Yeni Araç Ekle</span>
+    </div>
+
+    <div class="gv-page-head">
+      <div>
+        <div class="ph-eyebrow">Günlük Kayıt</div>
+        <h1 id="pageTitle">Yeni Araç Ekle</h1>
+        <div class="ph-sub" id="pageSub">Filoya yeni bir araç kaydedin; muayene/sigorta/bakım tarihleri girildikten sonra otomatik uyarı takibine alınır.</div>
+      </div>
+      <div class="ph-actions" id="editActsTop" hidden>
+        <a class="btn btn-ghost btn-sm" id="lnkDetayaDon" href="crm-operasyon-arac-detay.html"><i class="fa-solid fa-arrow-left"></i> Araç Dosyasına Dön</a>
+      </div>
+    </div>
+
+    <div class="role-note warn" id="arsivUyari" hidden>
+      <div class="rn-ico"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <div class="rn-b">
+        <b>Bu araç arşivlenmiş görünüyor</b>
+        <p>Bilgileri yine de düzenleyebilirsiniz; durumu yeniden "Aktif" yapmak için Araç Dosyası'ndaki <b>"Aktife Al"</b> akışını kullanın (crm-operasyon-arac-arsiv.html).</p>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <!-- ============ SOL: form ============ -->
+      <div class="left-stack">
+        <div class="gv-card">
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-car-side"></i> Araç Bilgileri</div></div>
+          <div class="gc-body">
+            <form class="gform" id="aracForm" onsubmit="return false">
+              <div class="gfield">
+                <label for="fPlaka">Plaka</label>
+                <input type="text" id="fPlaka" placeholder="ör. 34 ABC 123">
+              </div>
+              <div class="gfield">
+                <label for="fAracTipi">Araç Tipi</label>
+                <select id="fAracTipi">
+                  <option value="binek">Binek Araç</option>
+                  <option value="kamyonet" selected>Kamyonet</option>
+                  <option value="kamyon">Kamyon</option>
+                  <option value="ismakinesi">İş Makinesi</option>
+                  <option value="servis">Servis Aracı</option>
+                  <option value="forklift">Forklift</option>
+                  <option value="vinc">Vinç</option>
+                  <option value="diger">Diğer</option>
+                </select>
+                <span class="gf-hint" id="ismakinesiHint" hidden>İş makinesi zaten Makine Parkı'nda kayıtlıysa burada tekrar OLUŞTURMAYIN — <a href="crm-operasyon-makine.html" style="color:var(--acc-ink);font-weight:700">Makine Parkı'na</a> gidip mevcut kaydı kullanın.</span>
+              </div>
+              <div class="gfield">
+                <label for="fMarka">Marka</label>
+                <input type="text" id="fMarka" placeholder="ör. Ford">
+              </div>
+              <div class="gfield">
+                <label for="fModel">Model</label>
+                <input type="text" id="fModel" placeholder="ör. Ranger 4x4 Pikap">
+              </div>
+              <div class="gfield">
+                <label for="fModelYili">Model Yılı</label>
+                <input type="number" id="fModelYili" min="1990" max="2027" placeholder="ör. 2023">
+              </div>
+              <div class="gfield">
+                <label for="fYakit">Yakıt Tipi</label>
+                <select id="fYakit">
+                  <option value="benzin">Benzin</option>
+                  <option value="dizel" selected>Dizel</option>
+                  <option value="lpg">LPG</option>
+                  <option value="elektrik">Elektrik</option>
+                  <option value="hibrit">Hibrit</option>
+                  <option value="diger">Diğer</option>
+                </select>
+              </div>
+              <div class="gfield full">
+                <label for="fRuhsat">Ruhsat Sahibi</label>
+                <input type="text" id="fRuhsat" placeholder="ör. Yapıtaş İnşaat A.Ş." value="Yapıtaş İnşaat A.Ş.">
+              </div>
+              <div class="gfield">
+                <label for="fSantiye">Şantiye / Birim</label>
+                <select id="fSantiye">
+                  <option value="vadi">Vadi Konakları</option>
+                  <option value="liman">Liman Lojistik Merkezi</option>
+                  <option value="merkez" selected>Merkez Şantiye</option>
+                  <option value="genelmerkez">Genel Merkez</option>
+                </select>
+              </div>
+              <div class="gfield">
+                <label for="fZimmet">Kullanıcı / Zimmetli Kişi</label>
+                <select id="fZimmet">
+                  <option value="">Zimmetsiz — depo havuz aracı</option>
+                  <optgroup label="Şantiye Şefleri">
+                    <option>Hasan Demirci</option>
+                    <option>Aylin Koç</option>
+                    <option>Ömer Taşkın</option>
+                  </optgroup>
+                  <optgroup label="Yönetim">
+                    <option>Murat Denizli</option>
+                    <option>Elif Sarıkaya</option>
+                    <option>Baran Yıldız</option>
+                    <option>Seda Karaca</option>
+                    <option>Nesrin Aydın</option>
+                  </optgroup>
+                  <optgroup label="Vadi Ekibi">
+                    <option>Ali Vural</option>
+                    <option>İbrahim Sönmez</option>
+                    <option>Ramazan Kılıç</option>
+                    <option>Selim Doğan</option>
+                    <option>Musa Erdem</option>
+                    <option>Veli Şimşek</option>
+                  </optgroup>
+                  <optgroup label="Liman Ekibi">
+                    <option>Şükrü Aslan</option>
+                    <option>Halil Güneş</option>
+                    <option>Metin Çetin</option>
+                    <option>Osman Polat</option>
+                  </optgroup>
+                  <optgroup label="Merkez Ekibi">
+                    <option>Recep Yaman</option>
+                    <option>İlyas Kurt</option>
+                    <option>Sadık Öz</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="gfield">
+                <label for="fKm">Kilometre</label>
+                <input type="number" id="fKm" min="0" placeholder="ör. 42300">
+              </div>
+              <div class="gfield">
+                <label for="fSigorta">Sigorta (Trafik) Tarihi</label>
+                <input type="date" id="fSigorta">
+              </div>
+              <div class="gfield">
+                <label for="fKasko">Kasko Tarihi</label>
+                <input type="date" id="fKasko">
+              </div>
+              <div class="gfield">
+                <label for="fMuayene">Muayene Tarihi</label>
+                <input type="date" id="fMuayene">
+              </div>
+              <div class="gfield">
+                <label for="fBakim">Sonraki Bakım Tarihi <span class="gf-hint">(isteğe bağlı)</span></label>
+                <input type="date" id="fBakim">
+              </div>
+              <div class="gfield full">
+                <label for="fAciklama">Açıklama <span class="gf-hint">(isteğe bağlı)</span></label>
+                <textarea id="fAciklama" rows="2" placeholder="Araçla ilgili not…"></textarea>
+              </div>
+            </form>
+            <div class="stat-row">
+              <div><b>Aktif</b><span>Kapatırsanız araç "Pasif" durumuna alınır — kayıt silinmez, listede filtreyle görünür kalır.</span></div>
+              <label class="gv-toggle"><input type="checkbox" id="fAktif" checked><span class="tg-track"></span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="gv-card">
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-paperclip"></i> Evrak Dosyaları</div></div>
+          <div class="gc-body">
+            <div class="doc-type-sel">
+              <select id="fEvrakTuru" aria-label="Evrak türü">
+                <option value="Ruhsat">Ruhsat</option>
+                <option value="Sigorta Poliçesi">Sigorta Poliçesi</option>
+                <option value="Kasko Poliçesi">Kasko Poliçesi</option>
+                <option value="Muayene Raporu">Muayene Raporu</option>
+                <option value="Bakım Fişi">Bakım Fişi</option>
+                <option value="Kiralama Sözleşmesi">Kiralama Sözleşmesi</option>
+                <option value="Hasar Tutanağı">Hasar Tutanağı</option>
+              </select>
+            </div>
+            <div class="doc-drop" id="docDrop">
+              <input type="file" id="fBelgeDosya" accept=".pdf,.jpg,.jpeg,.png" multiple hidden>
+              <label for="fBelgeDosya" class="doc-drop-btn"><i class="fa-solid fa-cloud-arrow-up"></i> Evrak dosyası seç veya sürükleyip bırakın</label>
+              <span class="doc-hint">Seçili evrak türüyle ilişkilendirilir — PDF/JPG/PNG ≤10 MB (demo sınırı)</span>
+            </div>
+            <div class="doc-list" id="docList"></div>
+          </div>
+        </div>
+
+        <div class="gv-card">
+          <div class="form-foot">
+            <div class="foot-left" id="editActs" hidden>
+              <a class="btn btn-ghost btn-sm" id="lnkBakim" href="crm-operasyon-arac-bakim.html"><i class="fa-solid fa-screwdriver-wrench"></i> Bakım Geçmişi</a>
+              <a class="btn btn-ghost btn-sm" id="lnkArsivleFoot" href="crm-operasyon-arac-arsiv.html"><i class="fa-solid fa-box-archive"></i> Arşivle</a>
+            </div>
+            <a class="btn btn-ghost btn-sm" href="crm-operasyon-arac.html">Vazgeç</a>
+            <button type="button" class="btn btn-acc btn-sm" data-no-confirm id="aracSubmit"><i class="fa-solid fa-floppy-disk"></i> Aracı Kaydet</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SAĞ: bilgi notları ============ -->
+      <div class="gv-side-stack" style="display:flex;flex-direction:column;gap:16px">
+        <div class="gv-card">
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-hashtag"></i> Kayıt Özeti</div></div>
+          <div class="gc-body" id="ozetBody"></div>
+        </div>
+        <div class="gv-card">
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-circle-info"></i> Kayıt Notları</div></div>
+          <div class="gc-body">
+            <div class="side-tip"><i class="fa-solid fa-hashtag"></i><span>ARC takip numarası kayıt onaylandığında otomatik üretilir (ör. ARC-11).</span></div>
+            <div class="side-tip"><i class="fa-solid fa-ban"></i><span>Silme butonu yoktur — araç yalnız "arşivlenir" (satıldı/hurdaya ayrıldı/kiralama bitti/pasif), geçmiş kayıtlarda görünür kalır.</span></div>
+            <div class="side-tip"><i class="fa-solid fa-triangle-exclamation"></i><span>Muayene/sigorta/kasko/bakım tarihine 30 gün veya daha az kaldığında liste ve detayda otomatik uyarı rozeti oluşur.</span></div>
+            <div class="side-tip"><i class="fa-solid fa-flask"></i><span>Bu form simülasyondur; kayıt tarayıcı oturumunda tutulur, kalıcı veritabanına yazılmaz.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/shell.js"></script>
+<script src="assets/js/ui.js"></script>
+<script>
+(function(){
+  if(!window.GV) return;
+
+  /* ============ KANONİK ARAÇ FİLOSU MİNİ KOPYASI — crm-operasyon-arac.html ile
+     SENKRON (düzenleme modunda prefill için). ARC-01..06 plaka/zimmet/tarih BİREBİR;
+     ARC-07..10 bu paketle eklenen satıldı/kiralama-bitti/hurda örnekleri. ============ */
+  var ARAC = {
+    'ARC-01':{plaka:'34 ABC 123', tip:'kamyonet', marka:'Ford', model:'Ranger 4x4 Pikap', yil:2023, yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'vadi', zimmet:'Hasan Demirci', zimmetNo:'ZMT-2026-044', km:42300, sigorta:'2027-01-15', kasko:'2027-01-15', muayene:'2026-07-29', bakim:'2026-08-15', durum:'aktif', aciklama:''},
+    'ARC-02':{plaka:'34 SRV 641', tip:'servis', marka:'Mercedes', model:'Sprinter 316 Servis', yil:2022, yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'vadi', zimmet:'İbrahim Sönmez', km:61200, sigorta:'2027-03-22', kasko:'2027-03-22', muayene:'2027-02-14', bakim:'2026-08-20', durum:'aktif', aciklama:''},
+    'ARC-03':{plaka:'35 KLT 208', tip:'kamyonet', marka:'Toyota', model:'Hilux Pikap', yil:2021, yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'liman', zimmet:'Aylin Koç', km:78450, sigorta:'2027-06-05', kasko:'2027-06-05', muayene:'2026-11-03', bakim:'2026-09-01', durum:'aktif', aciklama:''},
+    'ARC-04':{plaka:'41 DBL 457', tip:'kamyonet', marka:'Fiat', model:'Doblo Cargo Panelvan', yil:2020, yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'merkez', zimmet:'Recep Yaman', km:87400, sigorta:'2026-11-11', kasko:'2026-11-11', muayene:'2026-09-22', bakim:'2026-06-30', durum:'aktif', aciklama:'30 Haziran\'dan beri bakımda.'},
+    'ARC-05':{plaka:'34 GNL 310', tip:'binek', marka:'Renault', model:'Megane Sedan', yil:2024, yakit:'benzin', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'genelmerkez', zimmet:'Elif Sarıkaya', km:18900, sigorta:'2027-02-19', kasko:'2027-02-19', muayene:'2027-04-08', bakim:'2026-11-01', durum:'aktif', aciklama:''},
+    'ARC-06':{plaka:'41 FTR 118', tip:'kamyonet', marka:'Ford', model:'Transit 350L Kamyonet', yil:2019, yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'merkez', zimmet:'', km:132600, sigorta:'2026-08-30', kasko:'2026-08-30', muayene:'2026-08-30', bakim:'2026-09-15', durum:'aktif', aciklama:''},
+    'ARC-07':{plaka:'34 ESK 771', tip:'kamyonet', marka:'Renault', model:'Kangoo Van', yil:2015, yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'merkez', zimmet:'', km:168400, sigorta:'2026-04-10', kasko:'2026-04-10', muayene:'2026-03-15', bakim:'', durum:'satildi', aciklama:'Satıldı — SF-2026-0512.'},
+    'ARC-08':{plaka:'34 PLK 552', tip:'servis', marka:'Volkswagen', model:'Transporter T6', yil:2021, yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'genelmerkez', zimmet:'Baran Yıldız', km:54200, sigorta:'2026-07-10', kasko:'2027-01-05', muayene:'2027-01-20', bakim:'2026-08-05', durum:'aktif', aciklama:''},
+    'ARC-09':{plaka:'34 KRL 090', tip:'binek', marka:'Fiat', model:'Egea Sedan', yil:2023, yakit:'benzin', ruhsat:'Aktif Kiralama A.Ş. (kiralık)', santiye:'liman', zimmet:'Osman Polat', km:32100, sigorta:'2026-06-01', kasko:'2026-06-01', muayene:'2026-05-10', bakim:'', durum:'kiralamaBitti', aciklama:'Kiralama sözleşmesi bitti — iade edildi.'},
+    'ARC-10':{plaka:'41 HRD 233', tip:'kamyon', marka:'Ford', model:'Cargo 1826 Kamyon', yil:2010, yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'merkez', zimmet:'', km:310500, sigorta:'2026-01-20', kasko:'2026-01-20', muayene:'2026-02-01', bakim:'', durum:'hurda', aciklama:'Hurdaya ayrıldı — ağır kaza.'}
+  };
+  var ARCHIVE_STATES = ['arsivlendi', 'satildi', 'hurda', 'kiralamaBitti'];
+
+  function nextAracNo(){
+    var max = 0;
+    Object.keys(ARAC).forEach(function(k){ var n = parseInt(k.split('-')[1], 10); if(n > max) max = n; });
+    return 'ARC-' + String(max + 1).padStart(2, '0');
+  }
+
+  var q = new URLSearchParams(location.search);
+  var mod = q.get('mod') === 'duzenle' ? 'duzenle' : 'ekle';
+  var aracNo = q.get('arac');
+  var rec = (mod === 'duzenle' && aracNo && ARAC[aracNo]) ? ARAC[aracNo] : null;
+  if(mod === 'duzenle' && aracNo && !rec){
+    gvToast(aracNo + ' bulunamadı — yeni kayıt formu açıldı.', {type:'danger'});
+    mod = 'ekle'; aracNo = null;
+  }
+
+  if(rec){
+    document.title = aracNo + ' Düzenle — Gavia CRM';
+    document.getElementById('crumbLbl').textContent = 'Araç Düzenle';
+    document.getElementById('pageTitle').textContent = aracNo + ' — Aracı Düzenle';
+    document.getElementById('pageSub').textContent = rec.plaka + ' — ' + rec.marka + ' ' + rec.model + ' bilgilerini güncelleyin.';
+    document.getElementById('editActsTop').hidden = false;
+    document.getElementById('lnkDetayaDon').href = 'crm-operasyon-arac-detay.html?arac=' + aracNo;
+    document.getElementById('editActs').hidden = false;
+    document.getElementById('lnkBakim').href = 'crm-operasyon-arac-bakim.html?arac=' + aracNo;
+    document.getElementById('lnkArsivleFoot').href = 'crm-operasyon-arac-arsiv.html?arac=' + aracNo;
+    document.getElementById('aracSubmit').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Değişiklikleri Kaydet';
+    if(ARCHIVE_STATES.indexOf(rec.durum) !== -1){
+      document.getElementById('arsivUyari').hidden = false;
+      document.getElementById('lnkArsivleFoot').innerHTML = '<i class="fa-solid fa-rotate-left"></i> Aktife Al';
+    }
+    var ib = document.getElementById('fAracTipi'); var im = document.getElementById('ismakinesiHint');
+    ib.addEventListener('change', function(){ im.hidden = ib.value !== 'ismakinesi'; });
+  } else {
+    var ib2 = document.getElementById('fAracTipi'); var im2 = document.getElementById('ismakinesiHint');
+    ib2.addEventListener('change', function(){ im2.hidden = ib2.value !== 'ismakinesi'; });
+  }
+
+  function fill(){
+    document.getElementById('fPlaka').value = rec ? rec.plaka : '';
+    document.getElementById('fAracTipi').value = rec ? rec.tip : 'kamyonet';
+    document.getElementById('fMarka').value = rec ? rec.marka : '';
+    document.getElementById('fModel').value = rec ? rec.model : '';
+    document.getElementById('fModelYili').value = rec ? rec.yil : '';
+    document.getElementById('fYakit').value = rec ? rec.yakit : 'dizel';
+    document.getElementById('fRuhsat').value = rec ? rec.ruhsat : 'Yapıtaş İnşaat A.Ş.';
+    document.getElementById('fSantiye').value = rec ? rec.santiye : 'merkez';
+    if(rec && rec.zimmet){
+      var zSel = document.getElementById('fZimmet');
+      if([].slice.call(zSel.options).some(function(o){ return o.value === rec.zimmet; })) zSel.value = rec.zimmet;
+    }
+    document.getElementById('fKm').value = rec ? rec.km : '';
+    document.getElementById('fSigorta').value = rec ? rec.sigorta : '';
+    document.getElementById('fKasko').value = rec ? rec.kasko : '';
+    document.getElementById('fMuayene').value = rec ? rec.muayene : '';
+    document.getElementById('fBakim').value = rec ? rec.bakim : '';
+    document.getElementById('fAciklama').value = rec ? rec.aciklama : '';
+    document.getElementById('fAktif').checked = rec ? (rec.durum === 'aktif') : true;
+    document.getElementById('fAracTipi').dispatchEvent(new Event('change'));
+    renderOzet();
+  }
+
+  /* şef ise şantiye seçici kendi sahasına sabitlenir — crm-operasyon-kasa-form.html
+     ile aynı idiyom */
+  if(GV.role === 'sef' && !rec){ document.getElementById('fSantiye').value = 'vadi'; document.getElementById('fSantiye').disabled = true; }
+
+  function renderOzet(){
+    var no = rec ? aracNo : nextAracNo();
+    var html = '';
+    html += '<div class="ctx-row"><span class="ctx-lbl">Araç No</span><span class="ctx-val">' + no + '</span></div>';
+    html += '<div class="ctx-row"><span class="ctx-lbl">Kayıt Türü</span><span class="ctx-val">' + (rec ? 'Güncelleme' : 'Yeni Kayıt') + '</span></div>';
+    html += '<div class="ctx-row"><span class="ctx-lbl">Zimmet Kaydı</span><span class="ctx-val">' + (rec && rec.zimmetNo ? rec.zimmetNo : (rec ? 'Yok' : 'Kayıt sonrası oluşturulur')) + '</span></div>';
+    document.getElementById('ozetBody').innerHTML = html;
+  }
+  fill();
+
+  /* ============ EVRAK DOSYALARI — gerçek File API akışı (imza-form.html ile birebir dil) ============ */
+  var docList = document.getElementById('docList');
+  var fBelgeDosya = document.getElementById('fBelgeDosya');
+  var docDrop = document.getElementById('docDrop');
+  var fEvrakTuru = document.getElementById('fEvrakTuru');
+  var docSeq = 0;
+  var DOC_LIMIT = 10 * 1024 * 1024;
+  var ACCEPT_RE = /\.(pdf|jpe?g|png)$/i;
+
+  function humanSize(bytes){
+    if(bytes > 1024*1024) return (bytes/1024/1024).toFixed(1) + ' MB';
+    return Math.max(1, Math.round(bytes/1024)) + ' KB';
+  }
+  function docIcon(name){
+    if(/\.pdf$/i.test(name)) return 'fa-file-pdf';
+    if(/\.(jpg|jpeg|png)$/i.test(name)) return 'fa-file-image';
+    return 'fa-file-lines';
+  }
+  function renderDoc(item){
+    var statusHtml = '';
+    if(item.state === 'yukleniyor'){
+      statusHtml = '<div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:' + item.progress + '%"></div></div><span class="gbar-val">%' + item.progress + '</span></div>';
+    } else if(item.state === 'hazir'){
+      statusHtml = '<span class="doc-status st-hazir"><i class="fa-solid fa-circle-check"></i> Yüklendi — ' + item.tur + '</span>';
+    } else if(item.state === 'hata'){
+      statusHtml = '<span class="doc-status st-hata"><i class="fa-solid fa-triangle-exclamation"></i> ' + item.errMsg + '</span>';
+    }
+    var acts = item.state === 'hata'
+      ? '<button type="button" class="ia-btn" data-act="retry" data-tip="Yeniden dene" aria-label="Yeniden dene"><i class="fa-solid fa-rotate-right"></i></button>'
+      : '<button type="button" class="ia-btn danger" data-act="kaldir" data-no-confirm data-tip="Kaldır" aria-label="Kaldır"><i class="fa-solid fa-trash"></i></button>';
+    item.el.setAttribute('data-state', item.state);
+    item.el.innerHTML = '<div class="doc-thumb"><i class="fa-solid ' + docIcon(item.name) + '"></i></div>'
+      + '<div class="doc-info"><b>' + item.name + '</b><span class="doc-meta">' + humanSize(item.size) + '</span>' + statusHtml + '</div>'
+      + '<div class="doc-acts">' + acts + '</div>';
+  }
+  function addDocChip(name, size, tur){
+    docSeq++;
+    var item = {id:'d'+docSeq, name:name, size:size, tur:tur, state:'yukleniyor', progress:0, attempt:0};
+    var el = document.createElement('div'); el.className = 'doc-item'; el.dataset.id = item.id;
+    item.el = el; docList.appendChild(el); renderDoc(item);
+    return item;
+  }
+  function startUpload(item){
+    item.progress = 0; item.state = 'yukleniyor'; renderDoc(item);
+    var forceError = /hata|error|fail/i.test(item.name) && (item.attempt || 0) === 0;
+    var tick = setInterval(function(){
+      item.progress = Math.min(100, item.progress + Math.round(10 + Math.random()*18));
+      renderDoc(item);
+      if(item.progress >= 100){
+        clearInterval(tick);
+        item.attempt = (item.attempt || 0) + 1;
+        setTimeout(function(){
+          if(forceError){ item.state = 'hata'; item.errMsg = 'Yükleme başarısız oldu (demo).'; renderDoc(item); gvToast(item.name + ' yüklenemedi.', {type:'danger'}); }
+          else { item.state = 'hazir'; renderDoc(item); gvToast(item.tur + ' — ' + item.name + ' yüklendi.'); }
+        }, 180);
+      }
+    }, 130);
+  }
+  function addFile(file){
+    if(!ACCEPT_RE.test(file.name)){ gvToast(file.name + ' — desteklenmeyen dosya türü (yalnız PDF/JPG/PNG).', {type:'danger'}); return; }
+    if(file.size > DOC_LIMIT){ gvToast(file.name + ' — 10 MB sınırını aşıyor (demo kısıtı).', {type:'danger'}); return; }
+    startUpload(addDocChip(file.name, file.size, fEvrakTuru.value));
+  }
+  fBelgeDosya.addEventListener('change', function(){ Array.prototype.slice.call(fBelgeDosya.files).forEach(addFile); fBelgeDosya.value = ''; });
+  ['dragenter','dragover'].forEach(function(evt){ docDrop.addEventListener(evt, function(e){ e.preventDefault(); docDrop.classList.add('is-drag'); }); });
+  ['dragleave','drop'].forEach(function(evt){ docDrop.addEventListener(evt, function(e){ e.preventDefault(); docDrop.classList.remove('is-drag'); }); });
+  docDrop.addEventListener('drop', function(e){ var files = e.dataTransfer && e.dataTransfer.files; if(files && files.length) Array.prototype.forEach.call(files, addFile); });
+  docList.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-act]'); if(!btn) return;
+    var itemEl = btn.closest('.doc-item');
+    if(btn.getAttribute('data-act') === 'kaldir'){ itemEl.remove(); return; }
+    if(btn.getAttribute('data-act') === 'retry'){ itemEl.remove(); }
+  });
+
+  /* ---- kaydet ---- */
+  document.getElementById('aracSubmit').addEventListener('click', function(){
+    var plaka = document.getElementById('fPlaka').value.trim();
+    if(!plaka){ gvToast('Plaka girin.', {type:'danger'}); return; }
+    var marka = document.getElementById('fMarka').value.trim();
+    var model = document.getElementById('fModel').value.trim();
+    if(!marka || !model){ gvToast('Marka ve model girin.', {type:'danger'}); return; }
+    if(!document.getElementById('fMuayene').value){ gvToast('Muayene tarihini girin.', {type:'danger'}); return; }
+    var no = rec ? aracNo : nextAracNo();
+    gvToast(mod === 'duzenle' ? no + ' — ' + plaka + ' güncellendi.' : no + ' — ' + plaka + ' filoya eklendi.');
+    setTimeout(function(){ location.href = rec ? 'crm-operasyon-arac-detay.html?arac=' + no : 'crm-operasyon-arac.html'; }, 900);
+  });
+})();
+</script>
+</body>
+</html>
