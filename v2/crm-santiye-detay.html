@@ -337,13 +337,16 @@ td.col-sp-gun.is-today{background:rgba(var(--acc-rgb),.05)}
         <div class="ph-sub" id="phSub">Çekmeköy, İstanbul · Körfez GYO</div>
       </div>
       <div class="ph-actions" data-view="yonetim" hidden>
-        <a class="btn btn-ghost btn-sm" href="#" data-demo="Düzenleme ekranı bu prototipte simülasyondur (demo)."><i class="fa-solid fa-pen"></i> Düzenle</a>
+        <a class="btn btn-ghost btn-sm" id="actDuzenleY" href="crm-santiye-form.html?mod=duzenle&amp;santiye=vadi"><i class="fa-solid fa-pen"></i> Düzenle</a>
         <a class="btn btn-ghost btn-sm" id="actTalepY" href="crm-satinalma-talep-form.html?s=vadi"><i class="fa-solid fa-boxes-stacked"></i> Talep Oluştur</a>
         <a class="btn btn-acc btn-sm" href="crm-santiye-bildirim-form.html"><i class="fa-solid fa-camera"></i> Saha Bildirimi Ekle</a>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="actArsivBtn"><i class="fa-solid fa-box-archive"></i> Arşivle</button>
+        <a class="btn btn-ghost btn-sm" href="crm-ayarlar-log.html" data-no-confirm><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişi</a>
       </div>
       <div class="ph-actions" data-view="sef" hidden>
         <a class="btn btn-ghost btn-sm" id="actTalepS" href="crm-satinalma-talep-form.html?s=vadi"><i class="fa-solid fa-boxes-stacked"></i> Talep Oluştur</a>
         <a class="btn btn-acc btn-sm" href="crm-santiye-bildirim-form.html"><i class="fa-solid fa-camera"></i> Saha Bildirimi Gönder</a>
+        <a class="btn btn-ghost btn-sm" href="crm-ayarlar-log.html" data-no-confirm><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişi</a>
       </div>
     </div>
 
@@ -966,6 +969,7 @@ td.col-sp-gun.is-today{background:rgba(var(--acc-rgb),.05)}
   }
 
   var CURRENT_SITE_NAME = '';
+  var CURRENT_SITE_KEY = '';
 
   var SITES = {
     vadi:{
@@ -1562,6 +1566,21 @@ td.col-sp-gun.is-today{background:rgba(var(--acc-rgb),.05)}
     document.getElementById('phSub').textContent = site.konum + ' · ' + site.musteri;
     document.getElementById('actTalepY').href = 'crm-satinalma-talep-form.html?s=' + site.key;
     document.getElementById('actTalepS').href = 'crm-satinalma-talep-form.html?s=' + site.key;
+    document.getElementById('actDuzenleY').href = 'crm-santiye-form.html?mod=duzenle&santiye=' + site.key;
+
+    /* §17 — Arşivle / Aktife Al aksiyon butonu; kapalı 4 şantiye (CSKP/BTK/FMR/KSR) zaten
+       kendi durumunda başlar → buton "Aktife Al" gösterir. Şantiye resmi bir kayıttır,
+       kalıcı silme butonu YOK. */
+    CURRENT_SITE_KEY = site.key;
+    var CLOSED_KEYS = ['cskp','btk','fmr','ksr'];
+    var isClosedSite = CLOSED_KEYS.indexOf(site.key) !== -1;
+    var arsivBtn = document.getElementById('actArsivBtn');
+    if(arsivBtn){
+      arsivBtn.innerHTML = isClosedSite
+        ? '<i class="fa-solid fa-rotate-left"></i> Aktife Al'
+        : '<i class="fa-solid fa-box-archive"></i> Arşivle';
+      arsivBtn.className = 'btn btn-sm ' + (isClosedSite ? 'btn-acc' : 'btn-ghost');
+    }
 
     var isAdminRole = ['superadmin','sahip','yonetim'].indexOf(GV.role) !== -1;
     var TAB_ORDER = TAB_ORDER_BASE.filter(function(t){ return !t.adminOnly || isAdminRole; });
@@ -1769,7 +1788,15 @@ td.col-sp-gun.is-today{background:rgba(var(--acc-rgb),.05)}
              ok:'Onayla', ph:'Not ekle (isteğe bağlı)', need:false, durum:'onaylandi', toastType:'ok'},
     reddet:{ico:'fa-xmark', tone:'danger', btn:'btn-danger', title:'Süre uzatım talebi reddedilsin mi?',
              fut:'reddedilecek; gerekçe talep sahibine iletilir.',
-             ok:'Reddet', ph:'Red gerekçesi — zorunlu', need:true, durum:'reddedildi', toastType:'danger'}
+             ok:'Reddet', ph:'Red gerekçesi — zorunlu', need:true, durum:'reddedildi', toastType:'danger'},
+    /* §17 — aynı .gv-modal-ov guard kısıtı burada da geçerli; suzConfirm() aynen
+       yeniden kullanılır (T-H'nin çözümü, kararlar.md'de belgeli). */
+    arsivSantiye:{ico:'fa-box-archive', tone:'danger', btn:'btn-danger', title:'Şantiye arşivlensin mi?',
+             fut:'arşivlenecek; şantiye listesinde varsayılan görünümde görünmeyecek, kayıt SİLİNMEZ ve "Pasif Şantiyeleri Göster" ile her zaman erişilebilir kalır.',
+             ok:'Arşivle', ph:'Arşivleme gerekçesi (isteğe bağlı)', need:false, durum:'arsivlendi', toastType:'danger'},
+    aktifSantiye:{ico:'fa-rotate-left', tone:'', btn:'btn-acc', title:'Şantiye yeniden aktif edilsin mi?',
+             fut:'yeniden "Aktif" durumuna alınacak.',
+             ok:'Aktif Et', ph:'Not (isteğe bağlı)', need:false, durum:'aktif', toastType:'ok'}
   };
   function suzConfirm(kind, name, onDone){
     if(document.querySelector('.suz-modal-ov')) return;
@@ -1828,6 +1855,27 @@ td.col-sp-gun.is-today{background:rgba(var(--acc-rgb),.05)}
         }
       }
       gvToast('"' + name + '" ' + (newDurum === 'onaylandi' ? 'onaylandı' : 'reddedildi') + '.', {type: toastType});
+    });
+  });
+
+  /* §17 — Arşivle / Aktife Al aksiyon çubuğu butonu (yalnız yönetim görünümünde).
+     Kapalı 4 şantiye (CSKP/BTK/FMR/KSR) için "Aktife Al" gösterir. suzConfirm() aynen
+     yeniden kullanılır — bu sayfada kalıcı statik .gv-modal-ov (Dosya Ekle) olduğu için
+     gvConfirm/gvChainAction guard'ı sessizce no-op kalır (bkz. üstteki yorum bloğu). */
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('#actArsivBtn'); if(!btn) return;
+    var CLOSED_KEYS = ['cskp','btk','fmr','ksr'];
+    var isClosedSite = CLOSED_KEYS.indexOf(CURRENT_SITE_KEY) !== -1;
+    var kind = isClosedSite ? 'aktifSantiye' : 'arsivSantiye';
+    suzConfirm(kind, CURRENT_SITE_NAME, function(note, newDurum, toastType){
+      if(newDurum === 'arsivlendi'){
+        btn.innerHTML = '<i class="fa-solid fa-rotate-left"></i> Aktife Al';
+        btn.className = 'btn btn-sm btn-acc';
+      } else {
+        btn.innerHTML = '<i class="fa-solid fa-box-archive"></i> Arşivle';
+        btn.className = 'btn btn-sm btn-ghost';
+      }
+      gvToast('"' + CURRENT_SITE_NAME + '" ' + (newDurum === 'arsivlendi' ? 'arşivlendi — işlem kaydına eklendi.' : 'yeniden aktif.'), {type: toastType});
     });
   });
 

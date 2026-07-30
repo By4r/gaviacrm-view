@@ -82,14 +82,14 @@
     <div class="gv-crumb">
       <a href="crm-santiye.html">Şantiyeler</a>
       <i class="fa-solid fa-chevron-right"></i>
-      <span>Yeni Şantiye</span>
+      <span id="crumbNow">Yeni Şantiye</span>
     </div>
 
     <div class="gv-page-head">
       <div>
         <div class="ph-eyebrow">Saha</div>
-        <h1>Yeni Şantiye</h1>
-        <div class="ph-sub">Şantiye kaydını açın; ekip ataması ve iş programı sonraki adımda tamamlanır.</div>
+        <h1 id="pageTitle">Yeni Şantiye</h1>
+        <div class="ph-sub" id="pageSub">Şantiye kaydını açın; ekip ataması ve iş programı sonraki adımda tamamlanır.</div>
       </div>
     </div>
 
@@ -220,6 +220,53 @@
     document.getElementById('santiyeSubmit').disabled = true;
   }
 
+  /* ============ §17 — Düzenle / Kopyala modu (?mod=duzenle|kopya&santiye=<key>).
+     Kaynak veri crm-santiye.html liste satırlarıyla + crm-santiye-detay.html SITES
+     hero'suyla BİREBİR (kanonik 9 şantiye — 5 aktif/planlama/tamamlanan + 4 kapalı).
+     Kanonik sayılar (51/30/12, %68/%41/%86) bu formda DEĞİŞTİRİLMEZ; yalnız mevcut
+     kaydın alanları düzenleme/kopyalama için forma taşınır. ============ */
+  var SITE_EDIT_DATA = {
+    vadi:  {ad:'Vadi Konakları',              tip:'konut',  tur:'yapsat',  il:'İstanbul', ilce:'Çekmeköy', sef:'Hasan Demirci', musteri:'Körfez GYO',              hedef:'2026-09-30'},
+    liman: {ad:'Liman Lojistik Merkezi',      tip:'ticari', tur:'taahhut', il:'İzmir',    ilce:'Aliağa',    sef:'Aylin Koç',     musteri:'Aliağa Liman İşletmeleri', hedef:'2026-06-30'},
+    merkez:{ad:'Merkez Şantiye',              tip:'depo',   tur:'yapsat',  il:'Kocaeli',  ilce:'Gebze',     sef:'Ömer Taşkın',   musteri:'',                        hedef:'2026-08-31'},
+    gol:   {ad:'Göl Evleri 2. Etap',          tip:'konut',  tur:'yapsat',  il:'Sakarya',  ilce:'Sapanca',   sef:'',              musteri:'Sapanca Belediyesi',      hedef:''},
+    kule:  {ad:'Kule Ofis B Blok',            tip:'ofis',   tur:'taahhut', il:'İstanbul', ilce:'Ataşehir',  sef:'Ömer Taşkın',   musteri:'Körfez GYO',              hedef:''},
+    cskp:  {ad:'Çınar Sokak Karma Proje',     tip:'ticari', tur:'yapsat',  il:'İstanbul', ilce:'Ümraniye',  sef:'',              musteri:'',                        hedef:'', baslangic:'2023-01-10'},
+    btk:   {ad:'Bahçelievler Toplu Konut',    tip:'konut',  tur:'kamu',    il:'İstanbul', ilce:'Bahçelievler', sef:'',           musteri:'',                        hedef:'', baslangic:'2024-06-05'},
+    fmr:   {ad:'Fatih Mahallesi Restorasyon', tip:'ticari', tur:'kamu',    il:'İstanbul', ilce:'Fatih',     sef:'',              musteri:'',                        hedef:'2019-11-14', baslangic:'2018-03-02'},
+    ksr:   {ad:'Kartal Sahil Rezidans',       tip:'konut',  tur:'taahhut', il:'İstanbul', ilce:'Kartal',    sef:'',              musteri:'',                        hedef:'', baslangic:'2025-09-20'}
+  };
+  var q = new URLSearchParams(location.search);
+  var mod = q.get('mod');
+  var siteKey = q.get('santiye');
+  var isEdit = mod === 'duzenle' && siteKey && SITE_EDIT_DATA[siteKey];
+  var isCopy = mod === 'kopya' && siteKey && SITE_EDIT_DATA[siteKey];
+  if(isEdit || isCopy){
+    var sd = SITE_EDIT_DATA[siteKey];
+    document.getElementById('fAd').value = isCopy ? (sd.ad + ' (Kopya)') : sd.ad;
+    document.querySelectorAll('.tip-opt').forEach(function(o){ o.classList.toggle('is-on', o.getAttribute('data-t') === sd.tip); o.querySelector('input').checked = o.getAttribute('data-t') === sd.tip; });
+    document.getElementById('fTur').value = sd.tur;
+    document.getElementById('fIl').value = sd.il;
+    document.getElementById('fIlce').value = sd.ilce;
+    var fSefSel = document.getElementById('fSef');
+    if(sd.sef){ Array.prototype.forEach.call(fSefSel.options, function(o){ if(o.textContent === sd.sef) fSefSel.value = o.value; }); }
+    var fMusteriSel = document.getElementById('fMusteri');
+    if(sd.musteri){ Array.prototype.forEach.call(fMusteriSel.options, function(o){ if(o.textContent === sd.musteri) fMusteriSel.value = o.value; }); }
+    if(sd.baslangic) document.getElementById('fBasla').value = sd.baslangic;
+    if(sd.hedef) document.getElementById('fHedef').value = sd.hedef;
+    if(isEdit){
+      document.getElementById('crumbNow').textContent = sd.ad + ' — Düzenle';
+      document.getElementById('pageTitle').textContent = 'Şantiyeyi Düzenle — ' + sd.ad;
+      document.getElementById('pageSub').textContent = 'Mevcut şantiye kaydı üzerinde değişiklik yapın; değişiklikler işlem kayıtlarına yazılır. Kanonik personel/ilerleme verisi bu formdan etkilenmez.';
+      document.getElementById('santiyeSubmit').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Değişiklikleri Kaydet';
+    } else {
+      document.getElementById('crumbNow').textContent = sd.ad + ' — Kopyala';
+      document.getElementById('pageTitle').textContent = 'Şantiyeyi Kopyala — ' + sd.ad;
+      document.getElementById('pageSub').textContent = 'Seçili şantiyenin bilgilerinden yeni bir taslak şantiye kaydı oluşturun; personel/ilerleme sıfırdan başlar, yeni bir ad girin.';
+      document.getElementById('santiyeSubmit').innerHTML = '<i class="fa-solid fa-copy"></i> Kopyala ve Oluştur';
+    }
+  }
+
   document.getElementById('tipGroup').addEventListener('click', function(e){
     var opt = e.target.closest('.tip-opt'); if(!opt) return;
     document.querySelectorAll('.tip-opt').forEach(function(o){ o.classList.remove('is-on'); });
@@ -243,6 +290,16 @@
     if(!ad){ gvToast('Şantiye adını girin.', {type:'danger'}); return; }
     if(turIsRequired() && !fTur.value){ gvToast('Şantiye türünü seçin.', {type:'danger'}); fTur.focus(); return; }
     var turLbl = fTur.options[fTur.selectedIndex].textContent;
+    if(isEdit){
+      gvToast('"' + ad + '" güncellendi (' + turLbl + ') — işlem kaydına eklendi.');
+      setTimeout(function(){ location.href = 'crm-santiye-detay.html?santiye=' + siteKey; }, 900);
+      return;
+    }
+    if(isCopy){
+      gvToast('"' + ad + '" yeni taslak şantiye olarak oluşturuldu (' + turLbl + ') — personel/ilerleme sıfırdan başlar.');
+      setTimeout(function(){ location.href = 'crm-santiye.html'; }, 900);
+      return;
+    }
     gvToast('"' + ad + '" şantiye kaydı oluşturuldu (' + turLbl + ') — Planlama durumunda listeye eklendi.');
     setTimeout(function(){ location.href = 'crm-santiye.html'; }, 900);
   });

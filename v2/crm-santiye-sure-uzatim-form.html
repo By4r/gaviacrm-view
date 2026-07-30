@@ -188,6 +188,7 @@
         <div class="gv-card">
           <div class="form-foot">
             <a class="btn btn-ghost btn-sm" id="lnkVazgec" href="crm-santiye-detay.html">Vazgeç</a>
+            <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="suzDraft"><i class="fa-solid fa-file-pen"></i> Taslak Kaydet</button>
             <button type="button" class="btn btn-acc btn-sm" data-no-confirm id="suzSubmit"><i class="fa-solid fa-floppy-disk"></i> Talebi Kaydet</button>
           </div>
         </div>
@@ -201,7 +202,10 @@
         </div>
 
         <div class="gv-card">
-          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> Mevcut Kayıtlar</div></div>
+          <div class="gc-head">
+            <div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> Mevcut Kayıtlar</div>
+            <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="suzRevizyonEkle" data-tip="Mevcut talebe yeni bir revizyon satırı ekler"><i class="fa-solid fa-code-branch"></i> Revizyon Ekle</button>
+          </div>
           <div id="gecmisBody"></div>
         </div>
 
@@ -239,12 +243,13 @@
   };
   var SUZ_DURUM_LBL = {
     yok:'Yok', talep_edildi:'Talep Edildi', onay_bekliyor:'Onay Bekliyor',
-    onaylandi:'Onaylandı', reddedildi:'Reddedildi', revize_edildi:'Revize Edildi'
+    onaylandi:'Onaylandı', reddedildi:'Reddedildi', revize_edildi:'Revize Edildi', taslak:'Taslak'
   };
   var SUZ_DURUM_CLS = {
     yok:'off', talep_edildi:'info', onay_bekliyor:'wait',
-    onaylandi:'ok', reddedildi:'danger', revize_edildi:'warn'
+    onaylandi:'ok', reddedildi:'danger', revize_edildi:'warn', taslak:'off'
   };
+  var suzSeq = 2;
   function durumBadge(d){ return '<span class="gstat ' + (SUZ_DURUM_CLS[d]||'off') + '" style="font-size:10.5px;padding:3px 8px">' + (SUZ_DURUM_LBL[d]||d) + '</span>'; }
 
   var qs = new URLSearchParams(location.search);
@@ -392,6 +397,46 @@
     if(btn.getAttribute('data-act') === 'retry'){ itemEl.remove(); }
   });
 
+  /* ---- ortak kayıt oluşturma — Taslak Kaydet / Talebi Kaydet / Revizyon Ekle
+     üçü de aynı SANTIYE_DATA[key].gecmis dizisine gerçek bir satır ekler (§17: her
+     kayıt düzenlenebilir/izlenebilir olmalı — bu form artık kendi geçmişini GERÇEKTEN
+     günceller, önceden yalnız toast gösterip veri mutasyonu yapmıyordu). ---- */
+  function buildRecord(durumOverride){
+    var cur = SANTIYE_DATA[fSantiye.value];
+    var sayi = parseInt(fEkSureSayi.value, 10) || 0;
+    var birimLbl = fEkSureBirim.value === 'ay' ? 'ay' : 'gün';
+    suzSeq++;
+    return {
+      no: 'SUZ-2026-' + ('0' + suzSeq).slice(-2),
+      tarih: new Date(document.getElementById('fTalepTarih').value + 'T00:00:00').toLocaleDateString('tr-TR', {day:'numeric', month:'long', year:'numeric'}),
+      sure: sayi + ' ' + birimLbl,
+      durum: durumOverride || fOnayDurum.value,
+      onaylayan: document.getElementById('fOnaylayan').value.trim() || undefined
+    };
+  }
+
+  document.getElementById('suzDraft').addEventListener('click', function(){
+    var cur = SANTIYE_DATA[fSantiye.value];
+    var rec = buildRecord('taslak');
+    cur.gecmis.push(rec);
+    renderCtx();
+    gvToast('"' + cur.ad + '" için süre uzatım talebi taslak olarak kaydedildi — ' + rec.no + '.', {type:'info'});
+  });
+
+  document.getElementById('suzRevizyonEkle').addEventListener('click', function(){
+    var cur = SANTIYE_DATA[fSantiye.value];
+    if(!cur.gecmis.length){
+      gvToast('Bu şantiye için revizyon eklenecek bir talep bulunmuyor — önce "Talebi Kaydet" ile ilk talebi oluşturun.', {type:'danger'});
+      return;
+    }
+    var neden = document.getElementById('fNeden').value.trim();
+    if(!neden){ gvToast('Revizyon için süre uzatım nedenini girin.', {type:'danger'}); document.getElementById('fNeden').focus(); return; }
+    var rec = buildRecord('revize_edildi');
+    cur.gecmis.push(rec);
+    renderCtx();
+    gvToast('"' + cur.ad + '" talebine yeni bir revizyon eklendi — ' + rec.no + '. Onay durumu akışı etkilenmez.', {type:'ok'});
+  });
+
   /* ---- kaydet ---- */
   document.getElementById('suzSubmit').addEventListener('click', function(){
     var neden = document.getElementById('fNeden').value.trim();
@@ -405,6 +450,7 @@
     var uploading = docList.querySelector('.doc-item[data-state="yukleniyor"]');
     if(uploading){ gvToast('Belge yüklemesi tamamlanana kadar bekleyin.', {type:'danger'}); return; }
     var durumTxt = SUZ_DURUM_LBL[fOnayDurum.value];
+    cur.gecmis.push(buildRecord());
     gvToast('"' + cur.ad + '" için süre uzatım talebi kaydedildi (' + durumTxt + ') — yeni hedef teslim ' + new Date(fYeniHedef.value + 'T00:00:00').toLocaleDateString('tr-TR', {day:'numeric', month:'long', year:'numeric'}) + '.');
     setTimeout(function(){ location.href = 'crm-santiye-detay.html?santiye=' + fSantiye.value + '#program'; }, 1000);
   });
