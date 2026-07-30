@@ -74,6 +74,16 @@
 /* ============ §6/§7/§8.4 revizyonu — 5→14 sekmeye dönüşüm (Dalga 20 / T-TASERON) ============
    crm-santiye-detay.html'deki gv-tabs/tab-panel DOM iskeleti + sekme motoru BİREBİR
    devralındı (o dosya READ-ONLY referans, kopyalanmadı — aynı sınıf adları). ============ */
+/* T-GORSEL denetimi: 14 sekme 768/390px'te kaydırma gerektiriyor ama görsel ipucu yoktu —
+   sağ kenara opsiyonel bir soluklaşma + ok eklendi (yalnız bu sayfaya, ortak dosyaya dokunmadan). */
+.gv-tabs-wrap{position:relative}
+.gv-tabs-wrap::after{content:'';position:absolute;top:0;right:0;bottom:1px;width:40px;
+  background:linear-gradient(to right, transparent, var(--paper) 65%);
+  pointer-events:none;opacity:0;transition:opacity .2s var(--ease)}
+.gv-tabs-wrap.has-more::after{opacity:1}
+.gv-tabs-wrap .tabs-more-ico{position:absolute;right:2px;top:9px;font-size:11px;color:var(--muted);
+  opacity:0;transition:opacity .2s var(--ease);pointer-events:none}
+.gv-tabs-wrap.has-more .tabs-more-ico{opacity:1}
 .gv-tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:22px;overflow-x:auto;scrollbar-width:none}
 .gv-tabs::-webkit-scrollbar{display:none}
 .gv-tab{display:inline-flex;align-items:center;gap:8px;padding:13px 4px;margin-right:24px;flex:none;
@@ -171,7 +181,10 @@
     </div>
 
     <!-- ============ 14 SEKME (§6/§7/§8.4 revizyonu — Dalga 20) ============
-         crm-santiye-detay.html gv-tabs/tab-panel deseni BİREBİR devralındı. ============ -->
+         crm-santiye-detay.html gv-tabs/tab-panel deseni BİREBİR devralındı. Sarmalayıcı
+         .gv-tabs-wrap + kaydırma ipucu T-GORSEL denetiminde eklendi (yalnız bu sayfa,
+         paylaşılan gv-tabs sınıfı/deseni DEĞİŞMEDİ — bkz. tasks/denetim-gorsel-dalga20.md). -->
+    <div class="gv-tabs-wrap">
     <div class="gv-tabs" role="tablist" aria-label="Taşeron kartı">
       <button class="gv-tab is-active" data-tab="genel" role="tab" aria-selected="true"><i class="fa-solid fa-id-card"></i> Genel Bilgiler</button>
       <button class="gv-tab" data-tab="kapsam" role="tab" aria-selected="false"><i class="fa-solid fa-list-check"></i> İş Kapsamı</button>
@@ -187,6 +200,8 @@
       <button class="gv-tab" data-tab="performans" role="tab" aria-selected="false"><i class="fa-solid fa-star"></i> Performans</button>
       <button class="gv-tab" data-tab="uyarilar" role="tab" aria-selected="false"><i class="fa-solid fa-triangle-exclamation"></i> Uyarılar</button>
       <button class="gv-tab" data-tab="gecmis" role="tab" aria-selected="false"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişi</button>
+    </div>
+    <i class="fa-solid fa-chevron-right tabs-more-ico" aria-hidden="true"></i>
     </div>
 
     <section class="tab-panel" data-tab-panel="genel" role="tabpanel" aria-label="Genel Bilgiler">
@@ -798,6 +813,22 @@
   var initialTab = (location.hash || '').replace('#', '');
   var validTab = tabs.some(function(t){ return t.getAttribute('data-tab') === initialTab; });
   activate(validTab ? initialTab : 'genel');
+
+  /* ---- T-GORSEL denetimi: 14 sekme 768/390px'te kaydırma gerektiriyor, ipucu yoktu.
+     Sağ kenar soluklaşma + ok yalnız daha kaydırılacak içerik VARKEN görünür. ---- */
+  var tabsWrap = document.querySelector('.gv-tabs-wrap');
+  var tabsBar = document.querySelector('.gv-tabs');
+  function updateTabsScrollHint(){
+    if(!tabsWrap || !tabsBar) return;
+    var hasMore = tabsBar.scrollWidth - tabsBar.scrollLeft - tabsBar.clientWidth > 2;
+    tabsWrap.classList.toggle('has-more', hasMore);
+  }
+  if(tabsBar){
+    tabsBar.addEventListener('scroll', updateTabsScrollHint);
+    window.addEventListener('resize', updateTabsScrollHint);
+    updateTabsScrollHint();
+    tabs.forEach(function(t){ t.addEventListener('click', function(){ setTimeout(updateTabsScrollHint, 260); }); });
+  }
 
   /* ---- Personel Ekle modalı (§6.3 — [MOCK-SİM], kanonik kadroya kalıcı eklemez) ---- */
   var pModalOv = document.getElementById('personelModalOv');
