@@ -296,10 +296,19 @@ tr.is-iptal .fr-info b{color:var(--ink-2);text-decoration:line-through;text-deco
   }
 
   /* D15 — GERÇEK DIŞA AKTARMA: görünen form/icmal listesi (rol budaması + aktif
-     filtre/aramaya saygılı) gerçek .xlsx/.csv olur (ui.js GV_EXPORTERS sözleşmesi). */
+     filtre/aramaya saygılı) gerçek .xlsx/.csv olur (ui.js GV_EXPORTERS sözleşmesi).
+     §17 düzeltmesi: `tr:not([hidden])` yalnız ui.js'in chip/arama motorunun kullandığı
+     `hidden` özniteliğine bakıyordu — arşivlenen satırlar `hidden` DEĞİL, CSS'te
+     `tr[data-arsiv="1"]{display:none}` ile gizleniyor (bkz. yukarıdaki <style>).
+     Bu yüzden ekranda görünmeyen arşivli kayıtlar sessizce çıktıya giriyordu.
+     Düzeltme: gerçek render edilmiş görünürlüğe (computed display) bakılır — ekran
+     ne gösteriyorsa çıktı da onu verir; "Arşivlenenleri Göster" açıkken arşivli
+     satırlar da (tekrar `display:table-row` olduklarından) çıktıya dahil olur. */
   window.GV_EXPORTERS = window.GV_EXPORTERS || {};
   GV_EXPORTERS['Satın alma formları'] = function(){
-    var rows = document.querySelectorAll('#tblForm tbody tr:not([hidden])');
+    var rows = Array.prototype.filter.call(document.querySelectorAll('#tblForm tbody tr'), function(tr){
+      return !tr.hidden && getComputedStyle(tr).display !== 'none';
+    });
     var aoa = [
       ['YAPITAŞ İNŞAAT A.Ş. — SATIN ALMA FORMLARI (İCMAL LİSTESİ)'],
       [rows.length + ' form · onaylanan taleplerden oluşturulan sipariş süreci · 2 Temmuz 2026'],
