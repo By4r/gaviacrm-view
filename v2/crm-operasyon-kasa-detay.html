@@ -127,9 +127,20 @@
         <div class="gd-badges" id="gdBadge"><span class="gstat wait">Onay bekliyor</span><span class="gtag">Ödeme</span></div>
       </div>
       <div class="ph-actions">
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="btnKasaCopy"><i class="fa-solid fa-copy"></i> Kopyala</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="btnKasaToggle"><i class="fa-solid fa-power-off"></i> <span id="btnKasaToggleLbl">Pasife Al</span></button>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="btnKasaArch"><i class="fa-solid fa-box-archive"></i> Arşivle</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="btnKasaFile"><i class="fa-solid fa-paperclip"></i> Dosya Ekle</button>
+        <a class="btn btn-ghost btn-sm" id="btnKasaCikti" href="crm-operasyon-kasa-cikti.html?santiye=vadi"><i class="fa-solid fa-print"></i> Çıktı Al</a>
+        <a class="btn btn-ghost btn-sm" id="btnKasaLog" href="crm-ayarlar-log.html"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişini Gör</a>
         <a class="btn btn-ghost btn-sm" href="crm-operasyon-kasa.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>
       </div>
     </div>
+    <div class="gv-card" id="gdQuickFiles" hidden style="margin-bottom:18px">
+      <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-paperclip"></i> Bu Oturumda Eklenen Dosyalar</div></div>
+      <div class="gc-body" id="gdQuickFilesBody" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+    <input type="file" id="kasaFileInput" hidden multiple accept=".pdf,.jpg,.jpeg,.png,.xlsx">
 
     <div class="gd-grid">
       <!-- ============ SOL: içerik ============ -->
@@ -582,6 +593,8 @@
     return;
   }
 
+  var slug = ksParam || 'ksa-018';
+  var recExists = true;
   if(!ksParam || ksParam === 'ksa-018'){
     renderDefault();
   } else if(KSA[ksParam]){
@@ -589,10 +602,128 @@
   } else if(KSG[ksParam]){
     renderKsg(KSG[ksParam]);
   } else {
+    recExists = false;
     gvNotFound({
       code: ksParam, tur:'kasa raporu',
       listHref:'crm-operasyon-kasa.html', listLbl:'Kasa listesine dön',
       defHref:'crm-operasyon-kasa-detay.html', defLbl:"KSA-2026-018'i aç"
+    });
+  }
+
+  /* ============ §17 — Görüntüle · Düzenle · Kopyala · Pasife Al · Arşivle ·
+     İşlem Geçmişini Gör · Dosya Ekle · Çıktı Al (Revizyon Ekle = Düzenle,
+     kasa'da onay-zinciri "revize" durumuyla zaten örtüşüyor — bkz kararlar.md).
+     Kritik kasa kaydı KALICI SİLİNMEZ; durum kasa.html ile AYNI localStorage
+     anahtarında (gv_kasa_arsiv_durum) SENKRON tutulur. gvChain'e DOKUNULMAZ. ============ */
+  if(recExists){
+    var santiyeKey = slugSantiye(slug) || 'vadi';
+    var kod = slug.split('-')[0].toUpperCase() + '-2026-' + slug.split('-')[1];
+
+    var ARSIV_KEY = 'gv_kasa_arsiv_durum';
+    function arsivMap(){ try{ return JSON.parse(localStorage.getItem(ARSIV_KEY)) || {}; }catch(e){ return {}; } }
+    function arsivSet(k, durum){ var m = arsivMap(); m[k] = durum; try{ localStorage.setItem(ARSIV_KEY, JSON.stringify(m)); }catch(e){} }
+    var curArsiv = arsivMap()[slug] || 'aktif';
+
+    var ARSIV_ROZET = {pasif:{cls:'off', lbl:'Pasif'}, arsivlendi:{cls:'off', lbl:'Arşivlendi'}, iptal:{cls:'danger', lbl:'İptal edildi'}};
+    function paintArsivBadge(){
+      var gb = document.getElementById('gdBadge'); if(!gb) return;
+      var old = gb.querySelector('.arsiv-rozet'); if(old) old.remove();
+      if(curArsiv !== 'aktif' && ARSIV_ROZET[curArsiv]){
+        var r = ARSIV_ROZET[curArsiv];
+        var span = document.createElement('span');
+        span.className = 'gstat ' + r.cls + ' arsiv-rozet';
+        span.textContent = r.lbl;
+        gb.appendChild(span);
+      }
+      var toggleLbl = document.getElementById('btnKasaToggleLbl');
+      if(toggleLbl) toggleLbl.textContent = curArsiv === 'pasif' ? 'Aktif Et' : 'Pasife Al';
+    }
+    paintArsivBadge();
+
+    var btnCikti = document.getElementById('btnKasaCikti');
+    if(btnCikti) btnCikti.href = 'crm-operasyon-kasa-cikti.html?santiye=' + santiyeKey;
+    var btnLog = document.getElementById('btnKasaLog');
+    if(btnLog) btnLog.href = 'crm-ayarlar-log.html?kayit=' + encodeURIComponent(kod);
+
+    /* dönem kilidi — crm-operasyon-kasa-donem-kapat.html ile AYNI kural */
+    function turkceTarihToIso(t){
+      var AY = {Ocak:1,Şubat:2,Mart:3,Nisan:4,Mayıs:5,Haziran:6,Temmuz:7,Ağustos:8,Eylül:9,Ekim:10,Kasım:11,Aralık:12};
+      var p = (t || '').trim().split(/\s+/); var ay = AY[p[1]];
+      if(!ay || !p[0] || !p[2]) return null;
+      return p[2] + '-' + String(ay).padStart(2,'0') + '-' + String(parseInt(p[0],10)).padStart(2,'0');
+    }
+    var recTarih = slug === 'ksa-018' ? '29 Haziran 2026' : (KSA[slug] ? KSA[slug].tarih : (KSG[slug] ? KSG[slug].tarih : null));
+    var isoTarih = turkceTarihToIso(recTarih);
+    function donemKilitliMi(){
+      if(!isoTarih) return false;
+      var p = isoTarih.split('-'); var ay = parseInt(p[1],10), gun = parseInt(p[2],10);
+      if(ay < 7) return true;
+      if(ay === 7 && gun <= 15){
+        try{ var L = JSON.parse(localStorage.getItem('gv_kasa_donem_kilit') || '{}'); return !!L[santiyeKey]; }catch(e){ return false; }
+      }
+      return false;
+    }
+
+    document.getElementById('btnKasaCopy').addEventListener('click', function(){
+      gvConfirm({
+        icon:'fa-copy', title: kod + ' kopyalansın mı?',
+        message:'Bu kayıttan yeni bir taslak oluşturulacak; kaynak kayıt DEĞİŞMEZ, yeni kayıt yeni bir numara alır.',
+        ok:'Kopyala ve Taslak Oluştur', cancel:'Vazgeç',
+        onConfirm:function(){
+          gvToast(kod + ' kopyalandı — yeni taslak açılıyor.');
+          setTimeout(function(){ location.href = 'crm-operasyon-kasa-form.html?mod=kopya&ks=' + slug; }, 700);
+        }
+      });
+    });
+
+    document.getElementById('btnKasaToggle').addEventListener('click', function(){
+      var next = curArsiv === 'pasif' ? 'aktif' : 'pasif';
+      gvConfirm({
+        icon: next === 'pasif' ? 'fa-power-off' : 'fa-rotate-left',
+        title: kod + (next === 'pasif' ? ' pasife alınsın mı?' : ' yeniden aktif edilsin mi?'),
+        message: next === 'pasif'
+          ? 'Kayıt Pasif duruma alınacak. Onay zincirini ve kasa defterindeki işlenmiş tutarı ETKİLEMEZ.'
+          : kod + ' yeniden Aktif duruma alınacak.',
+        ok: next === 'pasif' ? 'Pasife Al' : 'Aktif Et', cancel:'Vazgeç',
+        onConfirm:function(){
+          curArsiv = next; arsivSet(slug, next); paintArsivBadge();
+          gvToast(kod + (next === 'pasif' ? ' pasife alındı.' : ' yeniden aktif.'), {type: next === 'aktif' ? 'ok' : 'danger'});
+        }
+      });
+    });
+
+    document.getElementById('btnKasaArch').addEventListener('click', function(){
+      if(donemKilitliMi()){
+        gvToast(kod + ' arşivlenemedi — bu kayıt kilitlenmiş bir kasa dönemine ait. Arşivlemek için önce Dönem Kapatma ekranından ilgili dönemi açmanız gerekir.', {type:'danger', ms:4200});
+        return;
+      }
+      gvConfirm({
+        danger:true, icon:'fa-box-archive', title: kod + ' arşivlensin mi?',
+        message:'Bu kasa kaydı mali bir belgedir; kalıcı SİLİNMEZ. Arşivlendiğinde kasa listesinde görünmez, "Arşivlenenleri Göster" filtresiyle geri getirilebilir. Değişiklik işlem kayıtlarına yazılır.',
+        ok:'Onayla ve Arşivle', cancel:'Vazgeç',
+        onConfirm:function(){
+          curArsiv = 'arsivlendi'; arsivSet(slug, 'arsivlendi'); paintArsivBadge();
+          gvToast(kod + ' arşivlendi — kasa listesinde artık görünmeyecek.', {type:'danger'});
+        }
+      });
+    });
+
+    var quickFiles = document.getElementById('gdQuickFiles');
+    var quickFilesBody = document.getElementById('gdQuickFilesBody');
+    document.getElementById('btnKasaFile').addEventListener('click', function(){
+      document.getElementById('kasaFileInput').click();
+    });
+    document.getElementById('kasaFileInput').addEventListener('change', function(){
+      Array.prototype.forEach.call(this.files, function(file){
+        quickFiles.hidden = false;
+        var row = document.createElement('div');
+        row.className = 'file-row';
+        row.innerHTML = '<div class="file-ico"><i class="fa-solid fa-file-lines"></i></div>'
+          + '<div class="file-info"><b>' + file.name + '</b><span>' + Math.max(1, Math.round(file.size/1024)) + ' KB · şimdi eklendi</span></div>';
+        quickFilesBody.appendChild(row);
+        gvToast(file.name + ' eklendi — ' + kod + ' kaydına işlendi.');
+      });
+      this.value = '';
     });
   }
 })();

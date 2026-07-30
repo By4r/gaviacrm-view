@@ -265,7 +265,12 @@
   var dkHistSantiye = document.getElementById('dkHistSantiye');
   var lockBtn = document.getElementById('btnDonemKilitle');
   var lockedBadge = document.getElementById('dkLockedBadge');
-  var lockedSet = {};   /* [MOCK] oturum-lokal — sayfa yenilenince sıfırlanır */
+  /* [MOCK] localStorage'a yazılır — §17 gereği kasa.html/kasa-detay.html'deki arşivleme
+     kilidi bu değeri okur (Dönem Kapatma ile Kasa modülü arasındaki tek bağ, gvChain'e
+     dokunmaz). Sayfa yenilenince kaybolmaz (kararlı mock), sekmeler arası SENKRON kalır. */
+  var LOCK_KEY = 'gv_kasa_donem_kilit';
+  function readLockedSet(){ try{ return JSON.parse(localStorage.getItem(LOCK_KEY)) || {}; }catch(e){ return {}; } }
+  var lockedSet = readLockedSet();
 
   function render(ks){
     var d = DONEM[ks]; if(!d) return;
@@ -321,8 +326,9 @@
       ok:'Dönemi Kilitle', cancel:'Vazgeç',
       onConfirm:function(){
         lockedSet[ks] = true;
+        try{ localStorage.setItem(LOCK_KEY, JSON.stringify(lockedSet)); }catch(e){}
         render(ks);
-        gvToast(d.ad + ' — 01-15 Temmuz dönemi kilitlendi.', {type:'ok', icon:'fa-lock'});
+        gvToast(d.ad + ' — 01-15 Temmuz dönemi kilitlendi. Bu döneme ait kasa kayıtları artık arşivlenemez.', {type:'ok', icon:'fa-lock'});
       }
     });
   });

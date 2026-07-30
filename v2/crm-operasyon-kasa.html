@@ -125,6 +125,10 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
   #tblDefter{display:none}
   .df-mobile-list{display:block}
 }
+
+/* ============ §17 — Gelişmiş Filtre paneli sade checkbox alanı ============ */
+.gv-fp-check{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);cursor:pointer;font-weight:600}
+.gv-fp-check input{width:15px;height:15px;accent-color:var(--acc-ink);cursor:pointer}
 </style>
 </head>
 <body data-sec="operasyon" data-screen="kasa">
@@ -358,6 +362,14 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
             <button class="chip" data-tur="odeme">Ödeme <span class="ch-cnt">9</span></button>
             <button class="chip" data-tur="avans">Avans Ödemesi <span class="ch-cnt">1</span></button>
           </div>
+          <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpKasa" style="margin-left:auto"><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</button>
+        </div>
+      </div>
+      <div class="gv-achips-row" id="achipsKasa" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor."><i class="fa-solid fa-lock"></i> Filtreleri Kaydet</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all><i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle</button>
         </div>
       </div>
       <div class="gc-body flush">
@@ -375,7 +387,7 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
             </tr>
           </thead>
           <tbody>
-            <tr data-f="bekliyor" data-tur="odeme" data-santiye="vadi">
+            <tr data-f="bekliyor" data-tur="odeme" data-santiye="vadi" data-arsiv="aktif" data-tarih="2026-07-02">
               <td><div class="rp-cell"><div class="rp-mark"><i class="fa-solid fa-cash-register"></i></div><div class="rp-info"><b>KSA-2026-021</b><span>2 Temmuz 2026</span></div></div></td>
               <td>Vadi Konakları</td>
               <td><span class="gtag">Ödeme</span></td>
@@ -383,10 +395,10 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺18.400</td>
               <td>Hasan Demirci</td>
               <td data-badge="bekliyor"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-021" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-021" data-no-confirm aria-label="Rapor detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksa-021" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-kasa-toggle="ksa-021" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-kasa-arch="ksa-021" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
             <!-- KSG-2026-006 — kanonik (shell.js DALGA 5C bloğu): 1 Tem 2026, Giriş, Genel merkez → Merkez Şantiye, ₺60.000 -->
-            <tr data-f="kayitli" data-tur="giris" data-santiye="merkez">
+            <tr data-f="kayitli" data-tur="giris" data-santiye="merkez" data-arsiv="aktif" data-tarih="2026-07-01">
               <td><div class="rp-cell"><div class="rp-mark" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-coins"></i></div><div class="rp-info"><b>KSG-2026-006</b><span>1 Temmuz 2026</span></div></div></td>
               <td>Merkez Şantiye</td>
               <td><span class="gtag" style="background:var(--info-tint);color:var(--info);border-color:transparent">Giriş</span></td>
@@ -394,9 +406,9 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺60.000</td>
               <td>Nesrin Aydın</td>
               <td><span class="gstat ok">Kayıtlı</span></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksg-006" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksg-006" data-no-confirm aria-label="Rapor detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksg-006" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-kasa-toggle="ksg-006" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-kasa-arch="ksg-006" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
-            <tr data-f="onaylandi" data-tur="odeme" data-santiye="liman">
+            <tr data-f="onaylandi" data-tur="odeme" data-santiye="liman" data-arsiv="aktif" data-tarih="2026-07-01">
               <td><div class="rp-cell"><div class="rp-mark"><i class="fa-solid fa-cash-register"></i></div><div class="rp-info"><b>KSA-2026-020</b><span>1 Temmuz 2026</span></div></div></td>
               <td>Liman Lojistik Merkezi</td>
               <td><span class="gtag">Ödeme</span></td>
@@ -404,9 +416,9 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺9.750</td>
               <td>Aylin Koç</td>
               <td data-badge="onaylandi"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-020" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-020" data-no-confirm aria-label="Rapor detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksa-020" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-kasa-toggle="ksa-020" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-kasa-arch="ksa-020" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
-            <tr data-f="onaylandi" data-tur="odeme" data-santiye="merkez">
+            <tr data-f="onaylandi" data-tur="odeme" data-santiye="merkez" data-arsiv="aktif" data-tarih="2026-06-30">
               <td><div class="rp-cell"><div class="rp-mark"><i class="fa-solid fa-cash-register"></i></div><div class="rp-info"><b>KSA-2026-019</b><span>30 Haziran 2026</span></div></div></td>
               <td>Merkez Şantiye</td>
               <td><span class="gtag">Ödeme</span></td>
@@ -414,9 +426,9 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺6.200</td>
               <td>Ömer Taşkın</td>
               <td data-badge="onaylandi"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-019" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-019" data-no-confirm aria-label="Rapor detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksa-019" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-kasa-toggle="ksa-019" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-kasa-arch="ksa-019" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
-            <tr data-f="bekliyor" data-tur="odeme" data-santiye="vadi">
+            <tr data-f="bekliyor" data-tur="odeme" data-santiye="vadi" data-arsiv="aktif" data-tarih="2026-06-29">
               <td><div class="rp-cell"><div class="rp-mark"><i class="fa-solid fa-cash-register"></i></div><div class="rp-info"><b>KSA-2026-018</b><span>29 Haziran 2026</span></div></div></td>
               <td>Vadi Konakları</td>
               <td><span class="gtag">Ödeme</span></td>
@@ -424,10 +436,10 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺24.900</td>
               <td>Hasan Demirci</td>
               <td data-badge="bekliyor"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-018" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-018" data-no-confirm aria-label="Rapor detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksa-018" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-kasa-toggle="ksa-018" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-kasa-arch="ksa-018" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
             <!-- KSG-2026-005 — kanonik: 29 Haz 2026, Tahsilat, Marmara Demir Çelik — hurda karkas demir satışı, ₺46.500, Merkez -->
-            <tr data-f="kayitli" data-tur="tahsilat" data-santiye="merkez">
+            <tr data-f="kayitli" data-tur="tahsilat" data-santiye="merkez" data-arsiv="aktif" data-tarih="2026-06-29">
               <td><div class="rp-cell"><div class="rp-mark" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-sack-dollar"></i></div><div class="rp-info"><b>KSG-2026-005</b><span>29 Haziran 2026</span></div></div></td>
               <td>Merkez Şantiye</td>
               <td><span class="gtag mint">Tahsilat</span></td>
@@ -435,9 +447,9 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺46.500</td>
               <td>Nesrin Aydın</td>
               <td><span class="gstat ok">Kayıtlı</span></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksg-005" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksg-005" data-no-confirm aria-label="Rapor detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksg-005" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-kasa-toggle="ksg-005" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-kasa-arch="ksg-005" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
-            <tr data-f="reddedildi" data-tur="odeme" data-santiye="liman">
+            <tr data-f="reddedildi" data-tur="odeme" data-santiye="liman" data-arsiv="aktif" data-tarih="2026-06-27">
               <td><div class="rp-cell"><div class="rp-mark"><i class="fa-solid fa-cash-register"></i></div><div class="rp-info"><b>KSA-2026-017</b><span>27 Haziran 2026</span></div></div></td>
               <td>Liman Lojistik Merkezi</td>
               <td><span class="gtag">Ödeme</span></td>
@@ -445,9 +457,9 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺4.500</td>
               <td>Aylin Koç</td>
               <td data-badge="reddedildi"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-017" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-017" data-no-confirm aria-label="Rapor detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksa-017" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-kasa-toggle="ksa-017" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-kasa-arch="ksa-017" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
-            <tr data-f="revize" data-tur="odeme" data-santiye="vadi">
+            <tr data-f="revize" data-tur="odeme" data-santiye="vadi" data-arsiv="aktif" data-tarih="2026-06-25">
               <td><div class="rp-cell"><div class="rp-mark"><i class="fa-solid fa-cash-register"></i></div><div class="rp-info"><b>KSA-2026-016</b><span>25 Haziran 2026</span></div></div></td>
               <td>Vadi Konakları</td>
               <td><span class="gtag">Ödeme</span></td>
@@ -455,10 +467,10 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺3.150</td>
               <td>Hasan Demirci</td>
               <td data-badge="revize"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-016" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-016" data-no-confirm aria-label="Rapor detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksa-016" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-kasa-toggle="ksa-016" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-kasa-arch="ksa-016" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
             <!-- KSG-2026-004 — kanonik: 24 Haz 2026, Tahsilat, Körfez GYO — HKD-2026-005 hakediş ödemesi, ₺620.000, Vadi -->
-            <tr data-f="kayitli" data-tur="tahsilat" data-santiye="vadi">
+            <tr data-f="kayitli" data-tur="tahsilat" data-santiye="vadi" data-arsiv="aktif" data-tarih="2026-06-24">
               <td><div class="rp-cell"><div class="rp-mark" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-sack-dollar"></i></div><div class="rp-info"><b>KSG-2026-004</b><span>24 Haziran 2026</span></div></div></td>
               <td>Vadi Konakları</td>
               <td><span class="gtag mint">Tahsilat</span></td>
@@ -466,9 +478,9 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺620.000</td>
               <td>Nesrin Aydın</td>
               <td><span class="gstat ok">Kayıtlı</span></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksg-004" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksg-004" data-no-confirm aria-label="Rapor detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksg-004" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-kasa-toggle="ksg-004" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-kasa-arch="ksg-004" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
-            <tr data-f="onaylandi" data-tur="odeme" data-santiye="merkez">
+            <tr data-f="onaylandi" data-tur="odeme" data-santiye="merkez" data-arsiv="aktif" data-tarih="2026-06-22">
               <td><div class="rp-cell"><div class="rp-mark"><i class="fa-solid fa-cash-register"></i></div><div class="rp-info"><b>KSA-2026-015</b><span>22 Haziran 2026</span></div></div></td>
               <td>Merkez Şantiye</td>
               <td><span class="gtag">Ödeme</span></td>
@@ -476,10 +488,10 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺2.680</td>
               <td>Ömer Taşkın</td>
               <td data-badge="onaylandi"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-015" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-015" data-no-confirm aria-label="Rapor detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksa-015" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-kasa-toggle="ksa-015" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-kasa-arch="ksa-015" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
             <!-- KSG-2026-003 — kanonik: 20 Haz 2026, Giriş, Genel merkez → Liman Lojistik, ₺85.000 -->
-            <tr data-f="kayitli" data-tur="giris" data-santiye="liman">
+            <tr data-f="kayitli" data-tur="giris" data-santiye="liman" data-arsiv="aktif" data-tarih="2026-06-20">
               <td><div class="rp-cell"><div class="rp-mark" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-coins"></i></div><div class="rp-info"><b>KSG-2026-003</b><span>20 Haziran 2026</span></div></div></td>
               <td>Liman Lojistik Merkezi</td>
               <td><span class="gtag" style="background:var(--info-tint);color:var(--info);border-color:transparent">Giriş</span></td>
@@ -487,9 +499,9 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺85.000</td>
               <td>Nesrin Aydın</td>
               <td><span class="gstat ok">Kayıtlı</span></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksg-003" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksg-003" data-no-confirm aria-label="Rapor detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksg-003" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-kasa-toggle="ksg-003" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-kasa-arch="ksg-003" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
-            <tr data-f="onaylandi" data-tur="avans" data-santiye="vadi">
+            <tr data-f="onaylandi" data-tur="avans" data-santiye="vadi" data-arsiv="aktif" data-tarih="2026-06-18">
               <td><div class="rp-cell"><div class="rp-mark"><i class="fa-solid fa-cash-register"></i></div><div class="rp-info"><b>KSA-2026-014</b><span>18 Haziran 2026</span></div></div></td>
               <td>Vadi Konakları</td>
               <td><span class="gtag" style="background:var(--warn-tint);color:var(--warn);border-color:transparent">Avans Ödemesi</span></td>
@@ -497,10 +509,10 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺15.000</td>
               <td>Hasan Demirci</td>
               <td data-badge="onaylandi"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-014" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-014" data-no-confirm aria-label="Rapor detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksa-014" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-kasa-toggle="ksa-014" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-kasa-arch="ksa-014" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
             <!-- KSG-2026-002 — kanonik: 15 Haz 2026, Tahsilat, Körfez GYO — HKD-2026-004 hakediş ödemesi, ₺540.000, Vadi -->
-            <tr data-f="kayitli" data-tur="tahsilat" data-santiye="vadi">
+            <tr data-f="kayitli" data-tur="tahsilat" data-santiye="vadi" data-arsiv="aktif" data-tarih="2026-06-15">
               <td><div class="rp-cell"><div class="rp-mark" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-sack-dollar"></i></div><div class="rp-info"><b>KSG-2026-002</b><span>15 Haziran 2026</span></div></div></td>
               <td>Vadi Konakları</td>
               <td><span class="gtag mint">Tahsilat</span></td>
@@ -508,9 +520,9 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺540.000</td>
               <td>Nesrin Aydın</td>
               <td><span class="gstat ok">Kayıtlı</span></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksg-002" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksg-002" data-no-confirm aria-label="Rapor detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksg-002" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-kasa-toggle="ksg-002" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-kasa-arch="ksg-002" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
-            <tr data-f="onaylandi" data-tur="odeme" data-santiye="liman">
+            <tr data-f="onaylandi" data-tur="odeme" data-santiye="liman" data-arsiv="aktif" data-tarih="2026-06-12">
               <td><div class="rp-cell"><div class="rp-mark"><i class="fa-solid fa-cash-register"></i></div><div class="rp-info"><b>KSA-2026-013</b><span>12 Haziran 2026</span></div></div></td>
               <td>Liman Lojistik Merkezi</td>
               <td><span class="gtag">Ödeme</span></td>
@@ -518,10 +530,10 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺7.300</td>
               <td>Aylin Koç</td>
               <td data-badge="onaylandi"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-013" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksa-013" data-no-confirm aria-label="Rapor detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksa-013" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-kasa-toggle="ksa-013" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-kasa-arch="ksa-013" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
             <!-- KSG-2026-001 — kanonik: 9 Haz 2026, Giriş, Genel merkez → Vadi Konakları, ₺100.000, (iç transfer, cari yok) -->
-            <tr data-f="kayitli" data-tur="giris" data-santiye="vadi">
+            <tr data-f="kayitli" data-tur="giris" data-santiye="vadi" data-arsiv="aktif" data-tarih="2026-06-09">
               <td><div class="rp-cell"><div class="rp-mark" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-coins"></i></div><div class="rp-info"><b>KSG-2026-001</b><span>9 Haziran 2026</span></div></div></td>
               <td>Vadi Konakları</td>
               <td><span class="gtag" style="background:var(--info-tint);color:var(--info);border-color:transparent">Giriş</span></td>
@@ -529,9 +541,9 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺100.000</td>
               <td>Nesrin Aydın</td>
               <td><span class="gstat ok">Kayıtlı</span></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksg-001" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-detay.html?ks=ksg-001" data-no-confirm aria-label="Rapor detayı" data-tip="Detay"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksg-001" data-no-confirm aria-label="Düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn" data-no-confirm data-kasa-toggle="ksg-001" aria-label="Pasife al veya aktif et" data-tip="Pasife Al / Aktif Et"><i class="fa-solid fa-power-off"></i></button><button type="button" class="ia-btn danger" data-no-confirm data-kasa-arch="ksg-001" aria-label="Arşivle" data-tip="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>
             </tr>
-            <tr class="is-taslak" data-f="taslak" data-tur="odeme" data-santiye="vadi">
+            <tr class="is-taslak" data-f="taslak" data-tur="odeme" data-santiye="vadi" data-arsiv="aktif" data-tarih="2026-07-02">
               <td><div class="rp-cell"><div class="rp-mark" style="background:var(--bg);color:var(--muted)"><i class="fa-solid fa-cash-register"></i></div><div class="rp-info"><b>KSA-2026-022</b><span>2 Temmuz 2026 · gönderilmedi</span></div></div></td>
               <td>Vadi Konakları</td>
               <td><span class="gtag">Ödeme</span></td>
@@ -539,7 +551,7 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
               <td class="num t-strong">₺—</td>
               <td>Hasan Demirci</td>
               <td data-badge="taslak"></td>
-              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-form.html" data-no-confirm aria-label="Taslağı düzenle"><i class="fa-solid fa-pen"></i></a></div></td>
+              <td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-kasa-form.html?mod=duzenle&amp;ks=ksa-022" data-no-confirm aria-label="Taslağı düzenle" data-tip="Düzenle"><i class="fa-solid fa-pen"></i></a><button type="button" class="ia-btn danger" data-no-confirm data-kasa-cancel="ksa-022" aria-label="Taslağı iptal et" data-tip="İptal Et"><i class="fa-solid fa-xmark"></i></button></div></td>
             </tr>
           </tbody>
         </table>
@@ -551,6 +563,40 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
       </div>
     </div>
   </main>
+
+  <!-- ============ §17 — Gelişmiş Filtre paneli (spec-filtre-tarih.md) ============ -->
+  <div class="gv-fpanel-ov" id="fpKasaOv">
+    <aside class="gv-fpanel" id="fpKasa" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+      <div class="gv-fpanel-head">
+        <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+        <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="gv-fpanel-body">
+        <div class="gfield">
+          <label>Kayıt Durumu</label>
+          <select data-fp-key="kdurum" data-fp-label="Kayıt Durumu">
+            <option value="">Tümü</option>
+            <option value="aktif">Aktif</option>
+            <option value="pasif">Pasif</option>
+            <option value="arsivlendi">Arşivlendi</option>
+            <option value="iptal">İptal edildi</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>Tarih Aralığı</label>
+          <div data-gvdaterange data-fp-key="tarih" data-fp-label="Tarih"></div>
+        </div>
+        <div class="gfield">
+          <label class="gv-fp-check"><input type="checkbox" data-fp-key="arsiv"> Arşivlenenleri Göster</label>
+          <span class="gf-hint">İşaretlenmezse arşivlenmiş ve iptal edilmiş kayıtlar listede gizli kalır.</span>
+        </div>
+      </div>
+      <div class="gv-fpanel-foot">
+        <button type="button" class="btn btn-ghost" data-fp-clear>Temizle</button>
+        <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+      </div>
+    </aside>
+  </div>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -698,18 +744,66 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
   var durumChipsWrap = document.querySelector('.chips[data-target="#tblKasa"]');
   var kasaSearch = document.querySelector('[data-table-search="#tblKasa"]');
 
+  /* ============ §17 — arşiv/durum ekseni, onay zincirinden AYRI ============
+     data-arsiv (aktif|pasif|arsivlendi|iptal) satırda yaşar; oturumlar arası
+     kasa-detay.html ile SENKRON kalması için localStorage'a da yazılır (mock). */
+  var KASA_ARSIV_KEY = 'gv_kasa_arsiv_durum';
+  function kasaArsivMap(){ try{ return JSON.parse(localStorage.getItem(KASA_ARSIV_KEY)) || {}; }catch(e){ return {}; } }
+  function kasaArsivSet(kod, durum){
+    var m = kasaArsivMap(); m[kod] = durum;
+    try{ localStorage.setItem(KASA_ARSIV_KEY, JSON.stringify(m)); }catch(e){}
+  }
+  (function syncArsivFromStorage(){
+    var m = kasaArsivMap();
+    tblKasa.querySelectorAll('tbody tr[data-f]').forEach(function(tr){
+      var kod = tr.querySelector('.rp-info b'); if(!kod) return;
+      var slug = (kod.textContent || '').trim().toLowerCase().replace('ksa-2026-','ksa-').replace('ksg-2026-','ksg-');
+      if(m[slug]) tr.setAttribute('data-arsiv', m[slug]);
+    });
+  })();
+
+  /* dönem kilidi — kasa-donem-kapat.html ile AYNI kural: Haziran ve öncesi hep kapalı,
+     1-15 Temmuz yalnız kullanıcı o sayfada kilitlerse (localStorage gv_kasa_donem_kilit). */
+  var AY_NO_KASA = {Ocak:1,Şubat:2,Mart:3,Nisan:4,Mayıs:5,Haziran:6,Temmuz:7,Ağustos:8,Eylül:9,Ekim:10,Kasım:11,Aralık:12};
+  function kasaDonemKilitliMi(iso, santiyeKey){
+    if(!iso) return false;
+    var p = iso.split('-'); var ay = parseInt(p[1],10), gun = parseInt(p[2],10);
+    if(ay < 7) return true;
+    if(ay === 7 && gun <= 15){
+      try{
+        var L = JSON.parse(localStorage.getItem('gv_kasa_donem_kilit') || '{}');
+        return !!L[santiyeKey];
+      }catch(e){ return false; }
+    }
+    return false;
+  }
+
   function applyKasaCombinedFilter(){
     var durumOn = durumChipsWrap.querySelector('.chip.is-on[data-filter]');
     var f = durumOn ? durumOn.getAttribute('data-filter') : 'hepsi';
     var turOn = turChipsWrap.querySelector('.chip.is-on[data-tur]');
     var t = turOn ? turOn.getAttribute('data-tur') : 'hepsi';
     var term = kasaSearch ? kasaSearch.value.trim().toLocaleLowerCase('tr') : '';
+    var kd = kasaFpState.kdurum ? kasaFpState.kdurum.value : '';
+    var showArsiv = !!kasaFpState.arsiv;
+    var dr = kasaFpState.tarih ? kasaFpState.tarih.raw : null;
     var shown = 0;
     tblKasa.querySelectorAll('tbody tr').forEach(function(tr){
       var okF = (f === 'hepsi') || (tr.getAttribute('data-f') === f);
       var okT = (t === 'hepsi') || (tr.getAttribute('data-tur') === t);
       var okTerm = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
-      var show = okF && okT && okTerm;
+      var arsivDurum = tr.getAttribute('data-arsiv') || 'aktif';
+      var isArsivli = (arsivDurum === 'arsivlendi' || arsivDurum === 'iptal');
+      /* varsayılan: arşivlenen/iptal edilen kayıt GİZLİ — panelden Kayıt Durumu seçilirse
+         veya "Arşivlenenleri Göster" işaretlenirse görünür olur */
+      var okArsivVisible = kd ? true : (isArsivli ? showArsiv : true);
+      var okKd = !kd || arsivDurum === kd;
+      var okDr = true;
+      if(dr && dr.from){
+        var iso = tr.getAttribute('data-tarih');
+        if(iso){ var d = new Date(iso + 'T00:00:00'); okDr = (d >= dr.from && d <= dr.to); }
+      }
+      var show = okF && okT && okTerm && okArsivVisible && okKd && okDr;
       tr.hidden = !show;
       if(show) shown++;
     });
@@ -720,6 +814,12 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
   }
   /* URL-state + pager refresh delegasyon sahibinde (ui.js applyFilters) */
   tblKasa._gvApply = applyKasaCombinedFilter;
+  var kasaFpState = {};
+  window.gvFilterPanel.init('#fpKasa', {
+    activeRow: '#achipsKasa',
+    onApply: function(state){ kasaFpState = state; applyKasaCombinedFilter(); },
+    onClear: function(){ kasaFpState = {}; }
+  });
   turChipsWrap.addEventListener('click', function(e){
     var ch = e.target.closest('.chip[data-tur]'); if(!ch) return;
     turChipsWrap.querySelectorAll('.chip').forEach(function(x){ x.classList.remove('is-on'); });
@@ -820,6 +920,93 @@ tr.df-mevcut .df-bak{color:var(--acc-deep)}
     kpiGirisSub.innerHTML = '<i class="fa-solid fa-calendar"></i> ' + d.girisSub;
     kpiCikisNum.textContent = d.cikisNum;
     kpiCikisSub.innerHTML = '<i class="fa-solid fa-calendar"></i> ' + d.cikisSub;
+  });
+
+  /* ============ §17 — kayıt durumu rozeti (arşiv ekseni, onay zincirinden AYRI) ============ */
+  var ARSIV_ROZET = {
+    pasif:{cls:'off', lbl:'Pasif'}, arsivlendi:{cls:'off', lbl:'Arşivlendi'}, iptal:{cls:'danger', lbl:'İptal edildi'}
+  };
+  function renderArsivBadges(){
+    tblKasa.querySelectorAll('tbody tr[data-arsiv]').forEach(function(tr){
+      var durum = tr.getAttribute('data-arsiv');
+      var cell = tr.querySelector('td[data-badge], td:nth-last-child(2)');
+      if(!cell) return;
+      var old = cell.querySelector('.arsiv-rozet'); if(old) old.remove();
+      if(durum === 'aktif' || !ARSIV_ROZET[durum]) return;
+      var r = ARSIV_ROZET[durum];
+      var span = document.createElement('span');
+      span.className = 'gstat ' + r.cls + ' arsiv-rozet';
+      span.style.marginLeft = '6px';
+      span.textContent = r.lbl;
+      cell.appendChild(span);
+    });
+  }
+  renderArsivBadges();
+
+  /* ============ §17 — kayıt aksiyonları: Pasife Al/Aktif Et · Arşivle · Taslağı İptal Et ============
+     Kritik kasa kaydı KALICI SİLİNMEZ — yalnız durum değişir. Durum gv_kasa_arsiv_durum
+     localStorage'ında tutulur (kasa-detay.html ile SENKRON, tarayıcı-oturumu mock).
+     Dönem kilidi: kasa-donem-kapat.html'de kilitlenmiş bir döneme ait kayıt arşivlenemez —
+     gerekçeli uyarı gösterilir (sessizce yutulmaz). gvChain onay zincirine DOKUNULMAZ. */
+  document.getElementById('tblKasa').addEventListener('click', function(e){
+    var toggleBtn = e.target.closest('[data-kasa-toggle]');
+    var archBtn = e.target.closest('[data-kasa-arch]');
+    var cancelBtn = e.target.closest('[data-kasa-cancel]');
+    if(!toggleBtn && !archBtn && !cancelBtn) return;
+    var btn = toggleBtn || archBtn || cancelBtn;
+    var slug = btn.getAttribute('data-kasa-toggle') || btn.getAttribute('data-kasa-arch') || btn.getAttribute('data-kasa-cancel');
+    var tr = btn.closest('tr');
+    var kod = tr.querySelector('.rp-info b').textContent.trim();
+    var santiyeKey = tr.getAttribute('data-santiye');
+    var iso = tr.getAttribute('data-tarih');
+    var cur = tr.getAttribute('data-arsiv') || 'aktif';
+
+    function commit(next, toastMsg){
+      tr.setAttribute('data-arsiv', next);
+      kasaArsivSet(slug, next);
+      renderArsivBadges();
+      applyKasaCombinedFilter();
+      gvToast(toastMsg, {type: next === 'aktif' ? 'ok' : 'danger'});
+    }
+
+    if(toggleBtn){
+      var next = cur === 'pasif' ? 'aktif' : 'pasif';
+      gvConfirm({
+        icon: next === 'pasif' ? 'fa-power-off' : 'fa-rotate-left',
+        title: kod + (next === 'pasif' ? ' pasife alınsın mı?' : ' yeniden aktif edilsin mi?'),
+        message: next === 'pasif'
+          ? 'Kayıt Pasif duruma alınacak. Onay zincirini ve kasa defterindeki işlenmiş tutarı ETKİLEMEZ — yalnız listede soluk görünür ve raporlamada ayrıca işaretlenir.'
+          : kod + ' yeniden Aktif duruma alınacak ve listede normal görünecek.',
+        ok: next === 'pasif' ? 'Pasife Al' : 'Aktif Et', cancel:'Vazgeç',
+        onConfirm:function(){ commit(next, kod + (next === 'pasif' ? ' pasife alındı.' : ' yeniden aktif.')); }
+      });
+      return;
+    }
+
+    if(archBtn){
+      if(kasaDonemKilitliMi(iso, santiyeKey)){
+        gvToast(kod + ' arşivlenemedi — bu kayıt kilitlenmiş bir kasa dönemine ait. Arşivlemek için önce Dönem Kapatma ekranından ilgili dönemi açmanız gerekir.', {type:'danger', ms:4200});
+        return;
+      }
+      gvConfirm({
+        danger:true, icon:'fa-box-archive',
+        title: kod + ' arşivlensin mi?',
+        message: 'Bu kasa kaydı mali bir belgedir; kalıcı SİLİNMEZ. Arşivlendiğinde varsayılan listede görünmez, "Arşivlenenleri Göster" filtresiyle geri getirilebilir. Değişiklik işlem kayıtlarına yazılır.',
+        ok:'Onayla ve Arşivle', cancel:'Vazgeç',
+        onConfirm:function(){ commit('arsivlendi', kod + ' arşivlendi — listede artık görünmeyecek.'); }
+      });
+      return;
+    }
+
+    if(cancelBtn){
+      gvConfirm({
+        danger:true, icon:'fa-xmark',
+        title: kod + ' taslağı iptal edilsin mi?',
+        message: 'Gönderilmemiş taslak iptal edilecek; onay akışına hiç girmeyecek. Kayıt kalıcı SİLİNMEZ, "İptal edildi" durumunda arşivde saklanır.',
+        ok:'Taslağı İptal Et', cancel:'Vazgeç',
+        onConfirm:function(){ commit('iptal', kod + ' iptal edildi.'); }
+      });
+    }
   });
 })();
 </script>

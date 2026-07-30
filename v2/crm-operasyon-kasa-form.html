@@ -105,14 +105,22 @@
     <div class="gv-crumb">
       <a href="crm-operasyon-kasa.html">Kasa Raporu</a>
       <i class="fa-solid fa-chevron-right"></i>
-      <span>Yeni Rapor</span>
+      <span id="crumbLbl">Yeni Rapor</span>
     </div>
 
     <div class="gv-page-head">
       <div>
         <div class="ph-eyebrow">Günlük Kayıt</div>
-        <h1>Yeni Kasa Raporu</h1>
-        <div class="ph-sub">Şantiyenizin nakit harcamalarını kalem kalem girin, onaya gönderin.</div>
+        <h1 id="pageTitle">Yeni Kasa Raporu</h1>
+        <div class="ph-sub" id="pageSub">Şantiyenizin nakit harcamalarını kalem kalem girin, onaya gönderin.</div>
+      </div>
+    </div>
+
+    <!-- ============ §17 — Düzenle/Kopyala/Revizyon banner (mod=duzenle|kopya|revizyon) ============ -->
+    <div class="gv-card" id="modBanner" hidden style="margin-bottom:18px;border-color:rgba(var(--acc-rgb),.35);background:rgba(var(--acc-rgb),.05)">
+      <div class="gc-body" style="display:flex;align-items:center;gap:12px;padding:16px 20px">
+        <i class="fa-solid fa-circle-info" style="color:var(--acc-ink);font-size:16px"></i>
+        <span id="modBannerTxt" style="font-size:12.5px;color:var(--ink-2);line-height:1.6"></span>
       </div>
     </div>
 
@@ -486,6 +494,86 @@
     gvToast('Belge eklendi (mock).', {type:'ok'});
   });
 
+  /* ============ §17 — Düzenle / Kopyala / Revizyon Ekle modları ============
+     Kasa listesi (crm-operasyon-kasa.html) ve detay sayfasındaki "Düzenle"/"Kopyala"
+     aksiyonları buraya ?mod=duzenle|kopya&ks=<slug> ile yönlendirir. Tam alan seti
+     her kayıt için kaynakta yok (kalem/kesinti dökümü yalnız birkaç kayıtta zengin) —
+     temsili-derinlik kuralınca santiye/tarih/açıklama/tutar alanları PREFILL edilir,
+     numara/onay geçmişi İCAT EDİLMEZ. Bilinmeyen slug'da form yine açılır, yalnız
+     banner "kayıt bulunamadı, boş form" der (sessiz hata YOK). */
+  var KASA_PREFILL = {
+    'ksa-018':{santiye:'Vadi Konakları', tur:'odeme', tarih:'2026-06-29', desc:'Hafriyat nakliye bedeli nakit ödemesi', tutar:24900, kime:'Öz-Kaya Hafriyat Nakliyat'},
+    'ksa-021':{santiye:'Vadi Konakları', tur:'odeme', tarih:'2026-07-02', desc:'Nakliye + işçilik avansı', tutar:18400, kime:'Öz-Kaya Hafriyat Nakliyat'},
+    'ksa-020':{santiye:'Liman Lojistik Merkezi', tur:'odeme', tarih:'2026-07-01', desc:'Malzeme nakit alımı', tutar:9750, kime:'Aliağa Yapı Malzemeleri'},
+    'ksa-019':{santiye:'Merkez Şantiye', tur:'odeme', tarih:'2026-06-30', desc:'Yakıt + sarf malzeme', tutar:6200, kime:'Anadolu Hırdavat'},
+    'ksa-017':{santiye:'Liman Lojistik Merkezi', tur:'odeme', tarih:'2026-06-27', desc:'Vinç operatörü nakit ödeme', tutar:4500, kime:'Vinç operatörü'},
+    'ksa-016':{santiye:'Vadi Konakları', tur:'odeme', tarih:'2026-06-25', desc:'İşçi yol / yemek nakit', tutar:3150, kime:'Saha işçileri'},
+    'ksa-015':{santiye:'Merkez Şantiye', tur:'odeme', tarih:'2026-06-22', desc:'Elektrik malzeme nakit alım', tutar:2680, kime:'Anadolu Hırdavat'},
+    'ksa-014':{santiye:'Vadi Konakları', tur:'avans', tarih:'2026-06-18', desc:'Taşeron nakit avans', tutar:15000, kime:'Demir-Beton İnş. Ltd.'},
+    'ksa-013':{santiye:'Liman Lojistik Merkezi', tur:'odeme', tarih:'2026-06-12', desc:'Forklift kiralama nakit', tutar:7300, kime:'Forklift kiralama'},
+    'ksa-022':{santiye:'Vadi Konakları', tur:'odeme', tarih:'2026-07-02', desc:'Sarf malzeme nakit — düzenleniyor', tutar:0, kime:''},
+    'ksg-006':{santiye:'Merkez Şantiye', tur:'giris', tarih:'2026-07-01', desc:'Genel merkez kasa beslemesi', tutar:60000},
+    'ksg-005':{santiye:'Merkez Şantiye', tur:'tahsilat', tarih:'2026-06-29', desc:'Hurda karkas demir satışı', tutar:46500, cari:'Marmara Demir Çelik'},
+    'ksg-004':{santiye:'Vadi Konakları', tur:'tahsilat', tarih:'2026-06-24', desc:'HKD-2026-005 hakediş ödemesi', tutar:620000, cari:'Körfez GYO'},
+    'ksg-003':{santiye:'Liman Lojistik Merkezi', tur:'giris', tarih:'2026-06-20', desc:'Genel merkez kasa beslemesi', tutar:85000},
+    'ksg-002':{santiye:'Vadi Konakları', tur:'tahsilat', tarih:'2026-06-15', desc:'HKD-2026-004 hakediş ödemesi', tutar:540000, cari:'Körfez GYO'},
+    'ksg-001':{santiye:'Vadi Konakları', tur:'giris', tarih:'2026-06-09', desc:'Genel merkez kasa beslemesi', tutar:100000}
+  };
+  /* wireModBanner() applyTur('odeme') varsayılan çağrısından SONRA (dosya sonu) tetiklenir
+     — aksi halde varsayılan çağrı buradaki tür seçimini/"Değişiklikleri Kaydet" etiketini
+     ezerdi (bkz. kararlar.md). Fonksiyon burada TANIMLANIR, çağrısı dosya sonuna taşınmıştır. */
+  function wireModBanner(){
+    var q = new URLSearchParams(location.search);
+    var mod = q.get('mod');
+    var ks = q.get('ks');
+    if(!mod || (mod !== 'duzenle' && mod !== 'kopya')) return;
+    var rec = ks ? KASA_PREFILL[ks] : null;
+    var banner = document.getElementById('modBanner');
+    var bannerTxt = document.getElementById('modBannerTxt');
+    var crumbLbl = document.getElementById('crumbLbl');
+    var pageTitle = document.getElementById('pageTitle');
+    var pageSub = document.getElementById('pageSub');
+    banner.hidden = false;
+    if(!rec){
+      bannerTxt.textContent = 'Kayıt bulunamadı — boş bir form açıldı, dilerseniz yeni kayıt olarak doldurup gönderebilirsiniz.';
+      return;
+    }
+    if(mod === 'duzenle'){
+      crumbLbl.textContent = 'Raporu Düzenle';
+      /* okunabilir başlık: slug (ör. "ksa-018") → kanonik kod (KSA-2026-018) */
+      pageTitle.textContent = ks.split('-')[0].toUpperCase() + '-2026-' + ks.split('-')[1] + ' Düzenle';
+      pageSub.textContent = 'Bu kaydı düzenliyorsunuz. Rapor "revize" veya "taslak" durumundaysa güncelleyip yeniden gönderebilirsiniz.';
+      bannerTxt.innerHTML = '<b>Düzenleme modu</b> — ' + pageTitle.textContent.replace(' Düzenle','') + ' kaydı üzerinde çalışıyorsunuz. Onaylanmış/kayıtlı bir raporu düzenlemek, onu yeniden onaya gönderir ve önceki hâli işlem kayıtlarında saklanır.';
+    } else {
+      crumbLbl.textContent = 'Kaydı Kopyala';
+      pageTitle.textContent = 'Yeni Kasa Raporu (Kopya)';
+      pageSub.textContent = 'Seçtiğiniz kayıttan kopyalanan bilgilerle yeni bir taslak oluşturuluyor — kaynak kayıt DEĞİŞMEZ.';
+      bannerTxt.innerHTML = '<b>Kopyalama modu</b> — alanlar seçtiğiniz kayıttan dolduruldu; bu tamamen yeni ve bağımsız bir rapor olarak oluşturulacak, yeni bir numara alacaktır.';
+    }
+    /* alan doldurma — yalnız türe uygun bloklar (applyTur zaten çağrıldı, chip tetikle) */
+    var turChip = document.querySelector('#turSecim .chip[data-tur="' + rec.tur + '"]');
+    if(turChip) turChip.click();
+    if(rec.santiye){ santiyeSel.value = rec.santiye; }
+    if(rec.tarih){ document.getElementById('fTarih').value = rec.tarih; }
+    if(rec.tur === 'giris' || rec.tur === 'tahsilat'){
+      if(rec.tutar) tekTutarInp.value = fmtTL(rec.tutar);
+      if(rec.desc) tekAciklamaInp.value = rec.desc;
+      if(rec.cari) fCari.value = rec.cari;
+    } else {
+      if(rec.desc || rec.tutar){
+        var firstRow = wrap.querySelector('.kal-row');
+        firstRow.querySelector('input[type="text"]').value = rec.desc || '';
+        var tutarInp = firstRow.querySelector('.kal-tutar-inp');
+        if(tutarInp) tutarInp.value = rec.tutar ? fmtTL(rec.tutar) : '';
+      }
+      if(rec.kime) fKime.value = rec.kime;
+    }
+    recalc();
+    if(mod === 'duzenle'){
+      btnSendLbl.textContent = 'Değişiklikleri Kaydet';
+    }
+  }
+
   document.getElementById('btnDraft').addEventListener('click', function(){
     gvToast('Rapor taslak olarak kaydedildi.', {type:'info'});
   });
@@ -514,6 +602,7 @@
   });
 
   applyTur('odeme');
+  wireModBanner();
 })();
 </script>
 </body>
