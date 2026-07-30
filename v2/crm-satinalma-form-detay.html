@@ -118,6 +118,32 @@ table.icmal-tbl{width:100%;min-width:1300px;border-collapse:collapse;font-size:1
 
 .eskik-note{font-size:12.5px;color:var(--warn);background:var(--warn-tint);border-radius:var(--r-sm);padding:12px 14px;line-height:1.6;display:flex;align-items:flex-start;gap:9px;margin:0 22px 22px}
 .eskik-note i{margin-top:2px}
+
+/* §17 aksiyon çubuğu — .gd-head burada .gv-page-head DEĞİL, sayfa-lokal eşleniği */
+.gd-head .ph-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+/* belge ekleme — crm-operasyon-arac-arsiv.html deseni BİREBİR (§17 Dosya Ekle) */
+.doc-drop{border:1.5px dashed var(--line-2);border-radius:var(--r-md);padding:16px;text-align:center;transition:.18s var(--ease);margin-top:14px}
+.doc-drop.is-drag{border-color:var(--acc-ink);background:rgba(var(--acc-rgb),.06)}
+.doc-drop-btn{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:700;color:var(--acc-ink);cursor:pointer}
+.doc-drop-btn i{font-size:16px}
+.doc-hint{display:block;margin-top:7px;font-size:11.5px;color:var(--muted);font-weight:500}
+.doc-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.doc-item{display:flex;gap:12px;padding:12px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--bg)}
+.doc-thumb{width:42px;height:42px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:15px;color:#fff;background:var(--gv-night)}
+.doc-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;justify-content:center}
+.doc-info b{font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-meta{font-size:11.5px;color:var(--muted)}
+.doc-status{font-size:11.5px;font-weight:700;display:flex;align-items:center;gap:6px}
+.doc-status.st-hazir{color:var(--ok)}
+.doc-acts{display:flex;align-items:center;justify-content:center;flex:none}
+
+/* İşlem Geçmişi satırı */
+.ig-row{padding:11px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+.ig-row:last-child{border-bottom:none}
+
+/* Çıktı Al — dedike sayfası olmayan generic kayıtlarda gerçek yazdırma */
+@media print{ .gv-rail,.gv-menu,.gv-divider,.gv-top,.ph-actions,.gv-fpanel-ov{display:none!important} }
 </style>
 </head>
 <body data-sec="satinalma" data-screen="formlar">
@@ -150,7 +176,12 @@ table.icmal-tbl{width:100%;min-width:1300px;border-collapse:collapse;font-size:1
         <div class="gd-badges" id="gdBadge"><span class="gstat wait">Onay bekliyor</span><span class="gtag mint">GM onayı — ₺100.000 eşik üstü</span></div>
       </div>
       <div class="ph-actions">
+        <button type="button" class="btn btn-ghost btn-sm" data-demo="Kayıt kopyalanarak yeni taslak oluşturuldu (demo)."><i class="fa-solid fa-copy"></i> Kopyala</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-demo="Bu prototipte düzenleme simülasyondur."><i class="fa-solid fa-pen"></i> Düzenle</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-arsivle-detay><i class="fa-solid fa-box-archive"></i> Arşivle</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-revizyon-detay><i class="fa-solid fa-code-branch"></i> Revizyon Ekle</button>
         <a class="btn btn-ghost btn-sm" href="crm-satinalma-icmal-cikti.html?form=SAT-2026-018"><i class="fa-solid fa-file-export"></i> İcmal Çıktısı Al</a>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm onclick="document.getElementById('islemGecmisi').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişi</button>
         <a class="btn btn-ghost btn-sm" href="crm-satinalma-formlar.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>
       </div>
     </div>
@@ -364,11 +395,12 @@ table.icmal-tbl{width:100%;min-width:1300px;border-collapse:collapse;font-size:1
               <div class="file-info"><b>teklif-karsilastirma-5-tedarikci.pdf</b><span>210 KB · Baran Yıldız tarafından eklendi</span></div>
               <button class="ia-btn" data-demo="İndirme hazırlanıyor (demo)" data-no-confirm aria-label="İndir"><i class="fa-solid fa-download"></i></button>
             </div>
-            <div class="attach-zone" role="button" tabindex="0">
-              <i class="fa-solid fa-cloud-arrow-up"></i>
-              <b>Dosya ekle</b>
-              <span>PDF, JPG, PNG — sürükle bırak veya tıkla (demo)</span>
+            <div class="doc-drop" id="docDrop018">
+              <input type="file" id="fBelgeDosya018" accept=".pdf,.jpg,.jpeg,.png,.xlsx,.xls" multiple hidden>
+              <label for="fBelgeDosya018" class="doc-drop-btn"><i class="fa-solid fa-cloud-arrow-up"></i> Dosya ekle</label>
+              <span class="doc-hint">PDF/JPG/PNG/XLSX ≤10 MB (demo sınırı) — sürükle bırak veya tıkla</span>
             </div>
+            <div class="doc-list" id="docList018"></div>
           </div>
         </div>
 
@@ -412,6 +444,11 @@ table.icmal-tbl{width:100%;min-width:1300px;border-collapse:collapse;font-size:1
             <button class="btn btn-sm btn-ghost" id="btnGmRevize"><i class="fa-solid fa-rotate-left"></i> Revize İste</button>
           </div>
           <p class="no-action" style="padding:0 22px 20px;font-size:12.5px;color:var(--muted)" data-view="gm-onaycisi-degil" hidden>Bu form Genel Müdür onayında; onaylama yetkisi sizde değil, sonuç bildirimle iletilecek.</p>
+        </div>
+        <div class="gv-card" id="islemGecmisi">
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişi</div></div>
+          <div class="gc-body" id="islemGecmisiBody" style="display:flex;flex-direction:column;gap:0"></div>
+          <div style="padding:0 22px 18px"><a href="crm-ayarlar-log.html" style="font-size:12.5px;font-weight:700;color:var(--acc-ink)"><i class="fa-solid fa-arrow-up-right-from-square"></i> Tüm İşlem Kayıtları'nda gör</a></div>
         </div>
       </div>
     </div>
@@ -495,9 +532,17 @@ table.icmal-tbl{width:100%;min-width:1300px;border-collapse:collapse;font-size:1
       +   '<div>'
       +     '<div class="gd-eyebrow">' + rec.santiye + ' · Satın Alma Formu #' + rec.no + '</div>'
       +     '<h1>' + rec.tedarikci + ' — ' + rec.kalem + '</h1>'
-      +     '<div class="gd-badges"><span class="gstat ' + d.cls + '">' + d.lbl + '</span></div>'
+      +     '<div class="gd-badges" id="gdBadgeG"><span class="gstat ' + d.cls + '">' + d.lbl + '</span></div>'
       +   '</div>'
-      +   '<div class="ph-actions"><a class="btn btn-ghost btn-sm" href="crm-satinalma-formlar.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a></div>'
+      +   '<div class="ph-actions">'
+      +     '<button type="button" class="btn btn-ghost btn-sm" data-demo="Kayıt kopyalanarak yeni taslak oluşturuldu (demo)."><i class="fa-solid fa-copy"></i> Kopyala</button>'
+      +     '<button type="button" class="btn btn-ghost btn-sm" data-demo="Bu prototipte düzenleme simülasyondur."><i class="fa-solid fa-pen"></i> Düzenle</button>'
+      +     '<button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-arsivle-detay><i class="fa-solid fa-box-archive"></i> Arşivle</button>'
+      +     '<button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-revizyon-detay><i class="fa-solid fa-code-branch"></i> Revizyon Ekle</button>'
+      +     '<button type="button" class="btn btn-ghost btn-sm" data-no-confirm onclick="window.print()"><i class="fa-solid fa-print"></i> Çıktı Al</button>'
+      +     '<button type="button" class="btn btn-ghost btn-sm" data-no-confirm onclick="document.getElementById(\'islemGecmisiG\').scrollIntoView({behavior:\'smooth\'})"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişi</button>'
+      +     '<a class="btn btn-ghost btn-sm" href="crm-satinalma-formlar.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>'
+      +   '</div>'
       + '</div>'
       + '<div class="gd-grid">'
       +   '<div class="gv-side-stack">'
@@ -511,6 +556,12 @@ table.icmal-tbl{width:100%;min-width:1300px;border-collapse:collapse;font-size:1
       +         '<div class="ctx-row"><span class="ctx-lbl">Şantiye</span><span class="ctx-val">' + santiyeHtml + '</span></div>'
       +       '</div>'
       +       '<div class="gd-block"><p class="gd-desc"><i class="fa-solid fa-circle-info" style="color:var(--acc-ink);margin-right:6px"></i>' + rec.not + '</p></div>'
+      +       '<div class="gd-block"><div class="gd-label">Belgeler</div>'
+      +         '<div class="doc-drop" id="docDropG"><input type="file" id="fBelgeDosyaG" accept=".pdf,.jpg,.jpeg,.png,.xlsx,.xls" multiple hidden>'
+      +         '<label for="fBelgeDosyaG" class="doc-drop-btn"><i class="fa-solid fa-cloud-arrow-up"></i> Dosya ekle</label>'
+      +         '<span class="doc-hint">PDF/JPG/PNG/XLSX ≤10 MB (demo sınırı) — sürükle bırak veya tıkla</span></div>'
+      +         '<div class="doc-list" id="docListG"></div>'
+      +       '</div>'
       +     '</div>'
       +     siparisHtml
       +   '</div>'
@@ -522,8 +573,86 @@ table.icmal-tbl{width:100%;min-width:1300px;border-collapse:collapse;font-size:1
       +         '<div><a href="' + rec.mlzHref + '">' + rec.mlz + '</a><span>' + rec.santiye + ' malzeme talebi</span></div></div>'
       +       '</div>'
       +     '</div>'
+      +     '<div class="gv-card" id="islemGecmisiG">'
+      +       '<div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişi</div></div>'
+      +       '<div class="gc-body" id="islemGecmisiBodyG" style="display:flex;flex-direction:column;gap:0"></div>'
+      +       '<div style="padding:0 22px 18px"><a href="crm-ayarlar-log.html" style="font-size:12.5px;font-weight:700;color:var(--acc-ink)"><i class="fa-solid fa-arrow-up-right-from-square"></i> Tüm İşlem Kayıtları\'nda gör</a></div>'
+      +     '</div>'
       +   '</div>'
       + '</div>';
+
+    /* ---- §17 İŞLEM GEÇMİŞİ — kaydın kendi alanlarından (oluşturan yok burada, ama
+       tarih/not var) türetilen tek GERÇEK kilometre taşı seed edilir ---- */
+    var ISLEM_GECMISI = [
+      {kim:'Baran Yıldız', ne:'Formu oluşturdu', tarih:rec.tarih, detay:rec.not}
+    ];
+    (function(){
+      function gvRenderHistory(){
+        var body = document.getElementById('islemGecmisiBodyG'); if(!body) return;
+        body.innerHTML = ISLEM_GECMISI.map(function(h){
+          return '<div class="ig-row"><b style="color:var(--ink)">' + h.kim + '</b> <span style="color:var(--ink-2)">' + h.ne + '</span>'
+            + (h.detay ? '<div style="color:var(--muted);margin-top:3px">' + h.detay + '</div>' : '')
+            + '<div style="color:var(--muted);margin-top:3px;font-size:11.5px">' + h.tarih + '</div></div>';
+        }).join('');
+      }
+      window.gvAddHistoryFormG = function(ne, detay){
+        var me = (document.getElementById('gvName') || {}).textContent || 'Siz';
+        ISLEM_GECMISI.push({kim: me, ne: ne, tarih: 'şimdi', detay: detay});
+        gvRenderHistory();
+      };
+      gvRenderHistory();
+
+      var arsivBtnG = genericEl.querySelector('[data-arsivle-detay]');
+      if(arsivBtnG) arsivBtnG.addEventListener('click', function(){
+        gvConfirm({
+          danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+          title: rec.no + ' arşivlensin mi?',
+          message:'Kayıt kalıcı silinmez; arşivlenir, ilgili liste sayfasında varsayılan görünümde artık yer almaz. Onay-zinciri durumu (mevcut rozet) DEĞİŞMEZ — arşiv ayrı bir bayraktır. İşlem kaydına yazılır.',
+          onConfirm:function(){
+            document.getElementById('gdBadgeG').insertAdjacentHTML('beforeend', '<span class="gtag"><i class="fa-solid fa-box-archive"></i> Arşivlendi</span>');
+            gvAddHistoryFormG('Arşivlendi', 'Kayıt arşive alındı — listede varsayılan görünümde artık yer almıyor.');
+            gvToast('Kayıt arşivlendi.', {type:'danger'});
+          }
+        });
+      });
+      var revizyonBtnG = genericEl.querySelector('[data-revizyon-detay]');
+      if(revizyonBtnG) revizyonBtnG.addEventListener('click', function(){
+        gvConfirm({
+          icon:'fa-code-branch', ok:'Revizyon Ekle', cancel:'Vazgeç',
+          title:'Yeni revizyon eklensin mi?',
+          message:'Mevcut kayıt korunur, üzerine yeni bir revizyon (v2) eklenir. Önceki hali İşlem Geçmişi\'nde saklanır.',
+          onConfirm:function(){
+            gvAddHistoryFormG('Revizyon eklendi (v2)', 'Kayıt revize edilerek yeni bir sürüm oluşturuldu; önceki sürüm işlem geçmişinde saklanır.');
+            document.getElementById('gdBadgeG').insertAdjacentHTML('beforeend', '<span class="gtag">v2</span>');
+            gvToast('Yeni revizyon eklendi (v2).');
+          }
+        });
+      });
+
+      var docListG = document.getElementById('docListG');
+      var fBelgeDosyaG = document.getElementById('fBelgeDosyaG');
+      var docDropG = document.getElementById('docDropG');
+      function humanSizeG(bytes){ if(bytes > 1024*1024) return (bytes/1024/1024).toFixed(1) + ' MB'; return Math.max(1, Math.round(bytes/1024)) + ' KB'; }
+      function docIconG(name){ if(/\.pdf$/i.test(name)) return 'fa-file-pdf'; if(/\.(jpg|jpeg|png)$/i.test(name)) return 'fa-file-image'; if(/\.(xlsx|xls)$/i.test(name)) return 'fa-file-excel'; return 'fa-file-lines'; }
+      function addFileG(file){
+        if(!/\.(pdf|jpe?g|png|xlsx|xls)$/i.test(file.name)){ gvToast(file.name + ' — desteklenmeyen dosya türü.', {type:'danger'}); return; }
+        if(file.size > 10*1024*1024){ gvToast(file.name + ' — 10 MB sınırını aşıyor (demo kısıtı).', {type:'danger'}); return; }
+        var el = document.createElement('div'); el.className = 'doc-item';
+        el.innerHTML = '<div class="doc-thumb"><i class="fa-solid ' + docIconG(file.name) + '"></i></div>'
+          + '<div class="doc-info"><b>' + file.name + '</b><span class="doc-meta">' + humanSizeG(file.size) + '</span><span class="doc-status st-hazir"><i class="fa-solid fa-circle-check"></i> Yüklendi</span></div>'
+          + '<div class="doc-acts"><button type="button" class="ia-btn danger" data-no-confirm data-tip="Kaldır" aria-label="Kaldır"><i class="fa-solid fa-trash"></i></button></div>';
+        docListG.appendChild(el);
+        el.querySelector('[data-tip="Kaldır"]').addEventListener('click', function(){ el.remove(); });
+        gvAddHistoryFormG('Belge eklendi', file.name + ' yüklendi.');
+        gvToast(file.name + ' yüklendi.');
+      }
+      if(fBelgeDosyaG){
+        fBelgeDosyaG.addEventListener('change', function(){ Array.prototype.slice.call(fBelgeDosyaG.files).forEach(addFileG); fBelgeDosyaG.value = ''; });
+        ['dragenter','dragover'].forEach(function(evt){ docDropG.addEventListener(evt, function(e){ e.preventDefault(); docDropG.classList.add('is-drag'); }); });
+        ['dragleave','drop'].forEach(function(evt){ docDropG.addEventListener(evt, function(e){ e.preventDefault(); docDropG.classList.remove('is-drag'); }); });
+        docDropG.addEventListener('drop', function(e){ var files = e.dataTransfer && e.dataTransfer.files; if(files && files.length) Array.prototype.forEach.call(files, addFileG); });
+      }
+    })();
   } else {
     staticEl.hidden = true;
     genericEl.hidden = false;
@@ -541,7 +670,8 @@ table.icmal-tbl{width:100%;min-width:1300px;border-collapse:collapse;font-size:1
 <script>
 (function(){
   if(!window.GV) return;
-  if(document.getElementById('form018Static').hidden) return;
+  var staticRoot = document.getElementById('form018Static');
+  if(staticRoot.hidden) return;
 
   /* SAT-2026-018 zaten GM onayında — onaylama yetkisi yalnız GM/üst yönetimde;
      Satın Alma dahil diğer roller sadece durumu izler (talep-detay.html ONAYCI_SIMDI ile aynı idiyom) */
@@ -563,14 +693,82 @@ table.icmal-tbl{width:100%;min-width:1300px;border-collapse:collapse;font-size:1
     document.querySelectorAll('[data-view="gm-onaycisi"]').forEach(function(el){ el.hidden = true; });
   });
 
-  /* belge ekleme alanı (madde 13.2) — prototipte simüle edilir, dosya yüklenmez */
-  document.querySelectorAll('.attach-zone').forEach(function(zone){
-    function trigger(){ gvToast('Dosya yükleme prototip kapsamında simüledir', {type:'info'}); }
-    zone.addEventListener('click', trigger);
-    zone.addEventListener('keydown', function(e){
-      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); trigger(); }
+  /* ---- §17 İŞLEM GEÇMİŞİ — SAT-2026-018 statik bloğunda gerçek chain verisi yok;
+     sayfadaki ctx-row alanlarından (Oluşturan/Oluşturma tarihi/Teklif toplama tamamlandı)
+     türetilen 2 GERÇEK kilometre taşı seed edilir, isim UYDURULMADI ---- */
+  var ISLEM_GECMISI = [
+    {kim:'Baran Yıldız', ne:'İcmali oluşturdu', tarih:'20 Haziran 2026', detay:'9 kalem için 5 tedarikçiden teklif toplama süreci başlatıldı.'},
+    {kim:'Baran Yıldız', ne:'Teklif toplamayı tamamladı, Deta Demir Çelik\'i seçti', tarih:'28 Haziran 2026', detay:'Tutar ₺100.000 eşiğini aştığından 1 Temmuz 2026\'da Genel Müdür onayına gönderildi.'}
+  ];
+  function gvRenderHistory(){
+    var body = document.getElementById('islemGecmisiBody'); if(!body) return;
+    body.innerHTML = ISLEM_GECMISI.map(function(h){
+      return '<div class="ig-row"><b style="color:var(--ink)">' + h.kim + '</b> <span style="color:var(--ink-2)">' + h.ne + '</span>'
+        + (h.detay ? '<div style="color:var(--muted);margin-top:3px">' + h.detay + '</div>' : '')
+        + '<div style="color:var(--muted);margin-top:3px;font-size:11.5px">' + h.tarih + '</div></div>';
+    }).join('');
+  }
+  function gvAddHistory(ne, detay){
+    var me = (document.getElementById('gvName') || {}).textContent || 'Siz';
+    ISLEM_GECMISI.push({kim: me, ne: ne, tarih: 'şimdi', detay: detay});
+    gvRenderHistory();
+  }
+  gvRenderHistory();
+
+  /* ---- §17 ARŞİVLE / REVİZYON EKLE — data-no-confirm ZORUNLU (ui.js delege
+     yıkıcı-aksiyon interceptor'ı bypass edilir, kararlar.md madde 18) ---- */
+  var arsivBtn018 = staticRoot.querySelector('[data-arsivle-detay]');
+  if(arsivBtn018) arsivBtn018.addEventListener('click', function(){
+    gvConfirm({
+      danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+      title:'SAT-2026-018 arşivlensin mi?',
+      message:'Kayıt kalıcı silinmez; arşivlenir, ilgili liste sayfasında varsayılan görünümde artık yer almaz. Onay-zinciri durumu (mevcut rozet) DEĞİŞMEZ — arşiv ayrı bir bayraktır. İşlem kaydına yazılır.',
+      onConfirm:function(){
+        document.getElementById('gdBadge').insertAdjacentHTML('beforeend', '<span class="gtag"><i class="fa-solid fa-box-archive"></i> Arşivlendi</span>');
+        gvAddHistory('Arşivlendi', 'Kayıt arşive alındı — listede varsayılan görünümde artık yer almıyor.');
+        gvToast('Kayıt arşivlendi.', {type:'danger'});
+      }
     });
   });
+  var revizyonBtn018 = staticRoot.querySelector('[data-revizyon-detay]');
+  if(revizyonBtn018) revizyonBtn018.addEventListener('click', function(){
+    gvConfirm({
+      icon:'fa-code-branch', ok:'Revizyon Ekle', cancel:'Vazgeç',
+      title:'Yeni revizyon eklensin mi?',
+      message:'Mevcut kayıt korunur, üzerine yeni bir revizyon (v2) eklenir. Önceki hali İşlem Geçmişi\'nde saklanır.',
+      onConfirm:function(){
+        gvAddHistory('Revizyon eklendi (v2)', 'Kayıt revize edilerek yeni bir sürüm oluşturuldu; önceki sürüm işlem geçmişinde saklanır.');
+        document.getElementById('gdBadge').insertAdjacentHTML('beforeend', '<span class="gtag">v2</span>');
+        gvToast('Yeni revizyon eklendi (v2).');
+      }
+    });
+  });
+
+  /* ---- §17 DOSYA EKLE — gerçek File API akışı, crm-operasyon-arac-arsiv.html'in
+     addFile()/docDrop deseni BİREBİR uyarlandı (eski data-demo attach-zone genişletildi) ---- */
+  var docList018 = document.getElementById('docList018');
+  var fBelgeDosya018 = document.getElementById('fBelgeDosya018');
+  var docDrop018 = document.getElementById('docDrop018');
+  function humanSize018(bytes){ if(bytes > 1024*1024) return (bytes/1024/1024).toFixed(1) + ' MB'; return Math.max(1, Math.round(bytes/1024)) + ' KB'; }
+  function docIcon018(name){ if(/\.pdf$/i.test(name)) return 'fa-file-pdf'; if(/\.(jpg|jpeg|png)$/i.test(name)) return 'fa-file-image'; if(/\.(xlsx|xls)$/i.test(name)) return 'fa-file-excel'; return 'fa-file-lines'; }
+  function addFile018(file){
+    if(!/\.(pdf|jpe?g|png|xlsx|xls)$/i.test(file.name)){ gvToast(file.name + ' — desteklenmeyen dosya türü.', {type:'danger'}); return; }
+    if(file.size > 10*1024*1024){ gvToast(file.name + ' — 10 MB sınırını aşıyor (demo kısıtı).', {type:'danger'}); return; }
+    var el = document.createElement('div'); el.className = 'doc-item';
+    el.innerHTML = '<div class="doc-thumb"><i class="fa-solid ' + docIcon018(file.name) + '"></i></div>'
+      + '<div class="doc-info"><b>' + file.name + '</b><span class="doc-meta">' + humanSize018(file.size) + '</span><span class="doc-status st-hazir"><i class="fa-solid fa-circle-check"></i> Yüklendi</span></div>'
+      + '<div class="doc-acts"><button type="button" class="ia-btn danger" data-no-confirm data-tip="Kaldır" aria-label="Kaldır"><i class="fa-solid fa-trash"></i></button></div>';
+    docList018.appendChild(el);
+    el.querySelector('[data-tip="Kaldır"]').addEventListener('click', function(){ el.remove(); });
+    gvAddHistory('Belge eklendi', file.name + ' yüklendi.');
+    gvToast(file.name + ' yüklendi.');
+  }
+  if(fBelgeDosya018){
+    fBelgeDosya018.addEventListener('change', function(){ Array.prototype.slice.call(fBelgeDosya018.files).forEach(addFile018); fBelgeDosya018.value = ''; });
+    ['dragenter','dragover'].forEach(function(evt){ docDrop018.addEventListener(evt, function(e){ e.preventDefault(); docDrop018.classList.add('is-drag'); }); });
+    ['dragleave','drop'].forEach(function(evt){ docDrop018.addEventListener(evt, function(e){ e.preventDefault(); docDrop018.classList.remove('is-drag'); }); });
+    docDrop018.addEventListener('drop', function(e){ var files = e.dataTransfer && e.dataTransfer.files; if(files && files.length) Array.prototype.forEach.call(files, addFile018); });
+  }
 })();
 </script>
 </body>

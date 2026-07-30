@@ -39,6 +39,10 @@ tr.is-iptal .fr-info b{color:var(--ink-2);text-decoration:line-through;text-deco
 @media(max-width:640px){
   .fr-desc{max-width:140px}
 }
+
+/* ---- §17 arşiv görünürlüğü — kalıcı silme YERİNE varsayılan listede gizleme ---- */
+#tblForm tbody tr[data-arsiv="1"]{display:none}
+#tblForm.gv-show-arsiv tbody tr[data-arsiv="1"]{display:table-row}
 </style>
 </head>
 <body data-sec="satinalma" data-screen="formlar">
@@ -109,6 +113,20 @@ tr.is-iptal .fr-info b{color:var(--ink-2);text-decoration:line-through;text-deco
           <button class="chip" data-filter="siparis">Sipariş Verildi <span class="ch-cnt">3</span></button>
           <button class="chip" data-filter="tamamlandi">Tamamlandı <span class="ch-cnt">3</span></button>
           <button class="chip" data-filter="iptal">İptal <span class="ch-cnt">1</span></button>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpFormlar">
+          <i class="fa-solid fa-sliders"></i> Gelişmiş Filtre
+        </button>
+      </div>
+      <div class="gv-achips-row" id="achipsFormlar" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor.">
+            <i class="fa-solid fa-lock"></i> Filtreleri Kaydet
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all>
+            <i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle
+          </button>
         </div>
       </div>
       <div class="gc-body flush">
@@ -216,6 +234,38 @@ tr.is-iptal .fr-info b{color:var(--ink-2);text-decoration:line-through;text-deco
       </div>
     </div>
   </main>
+
+  <div class="gv-fpanel-ov" id="fpFormlarOv">
+    <aside class="gv-fpanel" id="fpFormlar" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+      <div class="gv-fpanel-head">
+        <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+        <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="gv-fpanel-body">
+        <div class="gfield">
+          <label>Durum</label>
+          <select data-fp-key="durum" data-fp-label="Durum">
+            <option value="">Tümü</option>
+            <option value="taslak">Taslak</option>
+            <option value="onayda">Onayda</option>
+            <option value="siparis">Sipariş Verildi</option>
+            <option value="tamamlandi">Tamamlandı</option>
+            <option value="iptal">İptal</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:600">
+            <input type="checkbox" data-fp-key="arsivgoster" data-fp-label="Arşivlenenleri Göster">
+            Arşivlenenleri Göster
+          </label>
+        </div>
+      </div>
+      <div class="gv-fpanel-foot">
+        <button type="button" class="btn btn-ghost" data-fp-clear>Temizle</button>
+        <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+      </div>
+    </aside>
+  </div>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -277,6 +327,52 @@ tr.is-iptal .fr-info b{color:var(--ink-2);text-decoration:line-through;text-deco
     return { file:'satinalma-formlari-icmal-temmuz-2026', sheet:'SA Formları',
              cols:[14, 16, 22, 22, 26, 14, 12, 16], aoa:aoa };
   };
+
+  /* ============ §17 — Gelişmiş Filtre paneli + Arşivlenenleri Göster ============ */
+  document.querySelectorAll('#tblForm tbody tr[data-f]').forEach(function(tr){
+    tr.setAttribute('data-durum', (tr.getAttribute('data-f') || '').split(' ')[0]);
+  });
+
+  if(window.gvFilterPanel){
+    window.gvFilterPanel.init('#fpFormlar', {
+      table: '#tblForm',
+      onApply: function(state){
+        var tbl = document.getElementById('tblForm');
+        if(tbl) tbl.classList.toggle('gv-show-arsiv', !!(state.arsivgoster));
+      }
+    });
+  }
+
+  /* ---- satır arşivleme aksiyonu — kalıcı silme YERİNE (§17) ---- */
+  function gvWireRowArchive(rowSel){
+    document.querySelectorAll(rowSel).forEach(function(row){
+      var acts = row.querySelector('.row-acts');
+      if(!acts || acts.querySelector('[data-arsiv-btn]')) return;
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'ia-btn'; btn.setAttribute('data-no-confirm', '');
+      btn.setAttribute('data-arsiv-btn', ''); btn.setAttribute('data-tip', 'Arşivle'); btn.setAttribute('aria-label', 'Arşivle');
+      btn.innerHTML = '<i class="fa-solid fa-box-archive"></i>';
+      acts.appendChild(btn);
+    });
+  }
+  gvWireRowArchive('#tblForm tbody tr');
+
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-arsiv-btn]'); if(!btn) return;
+    var row = btn.closest('tr'); if(!row) return;
+    if(row.getAttribute('data-arsiv') === '1'){ gvToast('Bu kayıt zaten arşivde.', {type:'info'}); return; }
+    var labelEl = row.querySelector('.fr-info b, b');
+    var label = labelEl ? labelEl.textContent.trim() : 'Form';
+    gvConfirm({
+      danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+      title: label + ' arşivlensin mi?',
+      message: 'Kayıt kalıcı olarak silinmez; arşive alınır ve varsayılan listede görünmez olur. İşlem kaydına yazılır (İşlem Kayıtları\'ndan izlenebilir) ve "Arşivlenenleri Göster" filtresiyle ya da Ayarlar > Arşiv Merkezi\'nden tekrar görüntülenebilir.',
+      onConfirm:function(){
+        row.setAttribute('data-arsiv', '1');
+        gvToast(label + ' arşivlendi — varsayılan listede artık görünmeyecek.', {type:'danger'});
+      }
+    });
+  });
 })();
 </script>
 </body>

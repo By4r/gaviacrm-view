@@ -90,6 +90,11 @@
         <h1>Tedarikçi Teklifleri</h1>
         <div class="ph-sub" id="tkSub">3 satın alma formu · teklif toplama süreci</div>
       </div>
+      <div class="ph-actions">
+        <label class="chip" style="cursor:pointer;display:inline-flex;align-items:center;gap:7px">
+          <input type="checkbox" id="chkArsivTeklif" style="margin:0"> Arşivlenenleri Göster
+        </label>
+      </div>
     </div>
 
     <div class="kpi-grid">
@@ -175,7 +180,7 @@
       mlz:'MLZ-2026-030', mlzHref:'crm-satinalma-talep-detay.html?mlz=030',
       formHref:'crm-satinalma-form-detay.html?form=018',
       karsilastirHref:'crm-satinalma-teklif-karsilastir.html?form=018',
-      sonTarih:'28 Haziran 2026 (tamamlandı)', closed:true,
+      sonTarih:'28 Haziran 2026 (tamamlandı)', closed:true, arsiv:false,
       suppliers:[
         {key:'ege', durum:'yanitladi', fiyat:699100},
         {key:'trakya', durum:'yanitladi', fiyat:727900},
@@ -200,12 +205,23 @@
   var SUP_ICO = {yanitladi:'fa-check', bekliyor:'fa-clock', vermedi:'fa-xmark'};
   var SUP_LBL = {yanitladi:'Teklif alındı', bekliyor:'Teklif bekleniyor', vermedi:'Teklif vermedi'};
 
+  /* ============ §17 — süreç bazlı arşivleme ============
+     Bu sayfa kart-tabanlı (her kart = bir SAT formunun teklif toplama süreci),
+     satır/tablo yapısı YOK — bu yüzden standart gvFilterPanel/off-canvas paneli
+     yerine tek bir "Arşivlenenleri Göster" çipiyle basitleştirilmiş mekanizma
+     kullanıldı (bkz. tasks/kararlar.md Dalga 3/T-M madde 46 emsali). Yalnız
+     KAPANMIŞ (F.closed) süreçler arşivlenebilir — devam eden bir teklif toplama
+     sürecini arşivlemek iş mantığı olarak anlamsız olurdu. ---- */
+  var showArsiv = false;
+  document.getElementById('chkArsivTeklif').addEventListener('change', function(){ showArsiv = this.checked; render(); });
+
   function render(){
     var listEl = document.getElementById('tkList');
     var html = '';
     var aktif = 0, tamam = 0, gelenToplam = 0;
 
     FORMS.forEach(function(F){
+      if(F.arsiv && !showArsiv) return;
       if(F.closed) tamam++; else aktif++;
       var yanitlayan = F.suppliers.filter(function(s){ return s.durum === 'yanitladi'; }).length;
       gelenToplam += yanitlayan;
@@ -219,6 +235,7 @@
         +   '</div>'
         +   '<div class="tk-head-r">'
         +     '<span class="gstat ' + (F.closed ? 'off' : 'wait') + '">' + (F.closed ? 'Tamamlandı' : 'Teklif Toplanıyor') + '</span>'
+        +     (F.arsiv ? ' <span class="gtag"><i class="fa-solid fa-box-archive"></i> Arşivlendi</span>' : '')
         +     '<div class="tk-deadline' + (F.closed ? '' : '') + '">Son tarih: <b>' + F.sonTarih + '</b></div>'
         +   '</div>'
         + '</div>';
@@ -252,6 +269,11 @@
             ? '<span class="inv-note"><i class="fa-solid fa-circle-info"></i> Bu süreç kapandı, yeni teklif eklenemez.</span>'
             : '<button type="button" class="btn btn-ghost btn-sm" data-tk-davet="' + F.key + '" data-no-confirm><i class="fa-regular fa-paper-plane"></i> Yanıt Vermeyenlere Hatırlatma Gönder</button>')
         + (F.closed ? '' : '<a class="btn btn-acc btn-sm' + (yanitlayan < 2 ? ' is-disabled' : '') + '" href="crm-satinalma-teklif-karsilastir.html?form=' + F.key + '"' + (yanitlayan < 2 ? ' aria-disabled="true" tabindex="-1" onclick="return false;" title="Karşılaştırmak için en az 2 teklif gerekir"' : '') + '><i class="fa-solid fa-scale-balanced"></i> Teklifleri Karşılaştır</a>')
+        + (F.closed
+            ? (F.arsiv
+                ? '<button type="button" class="btn btn-ghost btn-sm" data-tk-aktif="' + F.key + '" data-no-confirm><i class="fa-solid fa-rotate-left"></i> Aktife Al</button>'
+                : '<button type="button" class="btn btn-ghost btn-sm" data-tk-arsivle="' + F.key + '" data-no-confirm><i class="fa-solid fa-box-archive"></i> Arşivle</button>')
+            : '')
         + '</div>';
 
       html += '</div>';
@@ -282,6 +304,36 @@
     var davetBtn = e.target.closest('[data-tk-davet]');
     if(davetBtn){
       gvToast('Yanıt vermeyen tedarikçilere hatırlatma gönderildi.', {icon:'fa-paper-plane', type:'info'});
+      return;
+    }
+    var arsivBtn = e.target.closest('[data-tk-arsivle]');
+    if(arsivBtn){
+      var F1 = FORMS.filter(function(f){ return f.key === arsivBtn.getAttribute('data-tk-arsivle'); })[0];
+      gvConfirm({
+        danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+        title: F1.no + ' teklif süreci arşivlensin mi?',
+        message: 'Süreç kalıcı silinmez; arşive alınır ve varsayılan listede görünmez olur. İşlem kaydına yazılır ve "Arşivlenenleri Göster" ile ya da Ayarlar > Arşiv Merkezi\'nden tekrar görüntülenebilir.',
+        onConfirm:function(){
+          F1.arsiv = true;
+          render();
+          gvToast(F1.no + ' arşivlendi — varsayılan listede artık görünmeyecek.', {type:'danger'});
+        }
+      });
+      return;
+    }
+    var aktifBtn = e.target.closest('[data-tk-aktif]');
+    if(aktifBtn){
+      var F2 = FORMS.filter(function(f){ return f.key === aktifBtn.getAttribute('data-tk-aktif'); })[0];
+      gvConfirm({
+        icon:'fa-rotate-left', ok:'Aktife Al', cancel:'Vazgeç',
+        title: F2.no + ' yeniden aktif edilsin mi?',
+        message: 'Süreç arşivden çıkarılır, varsayılan listede yeniden görünür.',
+        onConfirm:function(){
+          F2.arsiv = false;
+          render();
+          gvToast(F2.no + ' yeniden aktif — varsayılan listede görünüyor.');
+        }
+      });
     }
   });
   document.getElementById('tkModalCancel').addEventListener('click', function(){ tkOv.classList.remove('open'); });
