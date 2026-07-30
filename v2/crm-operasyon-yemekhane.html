@@ -29,6 +29,16 @@
 .yk-info{min-width:0;line-height:1.35}
 .yk-info b{display:block;font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .yk-info span{font-size:11.5px;color:var(--muted)}
+.yk-tp-link{color:var(--acc-ink);font-weight:700;display:inline-flex;align-items:center;gap:4px}
+.yk-tp-link i{font-size:9px;transition:.2s var(--ease)}
+.yk-tp-link:hover i{transform:translateX(2px)}
+
+/* §7.3/§13.2 — öz kadro / taşeron kırılım şeridi (T-YEMEKHANE) */
+#ozTasBar{flex-wrap:wrap}
+#ozTasBar b{color:var(--ink)}
+@media(max-width:640px){
+  #ozTasBar{flex-direction:column;align-items:flex-start;gap:8px}
+}
 tr.is-tas td{background:color-mix(in srgb, var(--bg) 55%, transparent)}
 tr.is-tas:hover td{background:var(--bg)}
 
@@ -147,6 +157,12 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
           <button class="chip" type="button" data-yfilter="yalitim" data-tas="1"><i class="fa-solid fa-people-group"></i> Yalıtım Kardeşler</button>
         </div>
       </div>
+      <!-- §7.3/§13.2 — taşeron puantajı ↔ yemekhane kişi sayısı bağlantısı (T-YEMEKHANE).
+           Kırılım DOM'a JS'te yazılır (aşağıdaki script, id="ozTasBar") — kanonik toplamları
+           (69 öz + 24 taşeron = 93 öğle) YERLER dizisinden TÜRETİR, yeni sayı üretmez. -->
+      <!-- statik bake — DEFAULT (rol-agnostik) kırılım; JS yüklenince aynı mount innerHTML
+           ile ezilir (kaynak: bu dosyanın YERLER dizisi, renderOzTasBar) — D18-B2 -->
+      <div class="gc-foot" id="ozTasBar" style="border-top:1px dashed var(--line-2)"><span><i class="fa-solid fa-circle-info"></i> En yoğun öğün (öğle) <b>93 kişi</b> = <b>69 öz kadro</b> + <b>24 taşeron</b> (Demir-Beton 10 · ElektroMek 6 · Yalıtım Kardeşler 8)</span><a class="gc-link" href="crm-operasyon-taseron-puantaj.html"><i class="fa-solid fa-people-arrows"></i> Taşeron Puantajı <i class="fa-solid fa-arrow-right"></i></a></div>
       <div class="gc-body flush">
         <table class="gtable" id="tblYemek">
           <thead>
@@ -160,7 +176,7 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
               <th class="col-tutar num">Tutar</th>
             </tr>
           </thead>
-          <tbody id="ykBody"><tr class="" data-firma="yapitas" data-kahvalti="32" data-ogle="35" data-aksam="18"><td><div class="yk-cell"><div class="yk-mark"><i class="fa-solid fa-helmet-safety"></i></div><div class="yk-info"><b>Vadi Konakları</b><span>Öz kadro</span></div></div></td><td><span class="gstat yk-tur-badge off">Yapıtaş</span></td><td class="num yk-num">32</td><td class="num yk-num">35</td><td class="num yk-num">18</td><td class="num"><span class="yk-total">85</span></td><td class="num yk-tutar">₺6.100</td></tr><tr class="is-tas" data-firma="demir-beton" data-kahvalti="9" data-ogle="10" data-aksam="6"><td><div class="yk-cell"><div class="yk-mark tas"><i class="fa-solid fa-people-group"></i></div><div class="yk-info"><b>Demir-Beton İnş. Ltd.</b><span>Taşeron ekibi · Vadi Konakları</span></div></div></td><td><span class="gstat yk-tur-badge info">Taşeron</span></td><td class="num yk-num">9</td><td class="num yk-num">10</td><td class="num yk-num">6</td><td class="num"><span class="yk-total">25</span></td><td class="num yk-tutar">₺1.800</td></tr><tr class="is-tas" data-firma="elektromek" data-kahvalti="5" data-ogle="6" data-aksam="3"><td><div class="yk-cell"><div class="yk-mark tas"><i class="fa-solid fa-people-group"></i></div><div class="yk-info"><b>ElektroMek Taahhüt</b><span>Taşeron ekibi · Vadi Konakları</span></div></div></td><td><span class="gstat yk-tur-badge info">Taşeron</span></td><td class="num yk-num">5</td><td class="num yk-num">6</td><td class="num yk-num">3</td><td class="num"><span class="yk-total">14</span></td><td class="num yk-tutar">₺1.015</td></tr><tr class="" data-firma="yapitas" data-kahvalti="20" data-ogle="22" data-aksam="10"><td><div class="yk-cell"><div class="yk-mark"><i class="fa-solid fa-helmet-safety"></i></div><div class="yk-info"><b>Liman Lojistik Merkezi</b><span>Öz kadro</span></div></div></td><td><span class="gstat yk-tur-badge off">Yapıtaş</span></td><td class="num yk-num">20</td><td class="num yk-num">22</td><td class="num yk-num">10</td><td class="num"><span class="yk-total">52</span></td><td class="num yk-tutar">₺3.730</td></tr><tr class="is-tas" data-firma="yalitim" data-kahvalti="7" data-ogle="8" data-aksam="4"><td><div class="yk-cell"><div class="yk-mark tas"><i class="fa-solid fa-people-group"></i></div><div class="yk-info"><b>Yalıtım Kardeşler</b><span>Taşeron ekibi · Liman Lojistik Merkezi</span></div></div></td><td><span class="gstat yk-tur-badge info">Taşeron</span></td><td class="num yk-num">7</td><td class="num yk-num">8</td><td class="num yk-num">4</td><td class="num"><span class="yk-total">19</span></td><td class="num yk-tutar">₺1.370</td></tr><tr class="" data-firma="yapitas" data-kahvalti="11" data-ogle="12" data-aksam="5"><td><div class="yk-cell"><div class="yk-mark"><i class="fa-solid fa-helmet-safety"></i></div><div class="yk-info"><b>Merkez Şantiye</b><span>Öz kadro</span></div></div></td><td><span class="gstat yk-tur-badge off">Yapıtaş</span></td><td class="num yk-num">11</td><td class="num yk-num">12</td><td class="num yk-num">5</td><td class="num"><span class="yk-total">28</span></td><td class="num yk-tutar">₺2.005</td></tr></tbody>
+          <tbody id="ykBody"><tr class="" data-firma="yapitas" data-kahvalti="32" data-ogle="35" data-aksam="18"><td><div class="yk-cell"><div class="yk-mark"><i class="fa-solid fa-helmet-safety"></i></div><div class="yk-info"><b>Vadi Konakları</b><span>Öz kadro</span></div></div></td><td><span class="gstat yk-tur-badge off">Yapıtaş</span></td><td class="num yk-num">32</td><td class="num yk-num">35</td><td class="num yk-num">18</td><td class="num"><span class="yk-total">85</span></td><td class="num yk-tutar">₺6.100</td></tr><tr class="is-tas" data-firma="demir-beton" data-kahvalti="9" data-ogle="10" data-aksam="6"><td><div class="yk-cell"><div class="yk-mark tas"><i class="fa-solid fa-people-group"></i></div><div class="yk-info"><b>Demir-Beton İnş. Ltd.</b><span>Taşeron ekibi · Vadi Konakları · <a href="crm-operasyon-taseron-puantaj.html" class="yk-tp-link">Puantaj <i class="fa-solid fa-arrow-right"></i></a></span></div></div></td><td><span class="gstat yk-tur-badge info">Taşeron</span></td><td class="num yk-num">9</td><td class="num yk-num">10</td><td class="num yk-num">6</td><td class="num"><span class="yk-total">25</span></td><td class="num yk-tutar">₺1.800</td></tr><tr class="is-tas" data-firma="elektromek" data-kahvalti="5" data-ogle="6" data-aksam="3"><td><div class="yk-cell"><div class="yk-mark tas"><i class="fa-solid fa-people-group"></i></div><div class="yk-info"><b>ElektroMek Taahhüt</b><span>Taşeron ekibi · Vadi Konakları · <a href="crm-operasyon-taseron-puantaj.html" class="yk-tp-link">Puantaj <i class="fa-solid fa-arrow-right"></i></a></span></div></div></td><td><span class="gstat yk-tur-badge info">Taşeron</span></td><td class="num yk-num">5</td><td class="num yk-num">6</td><td class="num yk-num">3</td><td class="num"><span class="yk-total">14</span></td><td class="num yk-tutar">₺1.015</td></tr><tr class="" data-firma="yapitas" data-kahvalti="20" data-ogle="22" data-aksam="10"><td><div class="yk-cell"><div class="yk-mark"><i class="fa-solid fa-helmet-safety"></i></div><div class="yk-info"><b>Liman Lojistik Merkezi</b><span>Öz kadro</span></div></div></td><td><span class="gstat yk-tur-badge off">Yapıtaş</span></td><td class="num yk-num">20</td><td class="num yk-num">22</td><td class="num yk-num">10</td><td class="num"><span class="yk-total">52</span></td><td class="num yk-tutar">₺3.730</td></tr><tr class="is-tas" data-firma="yalitim" data-kahvalti="7" data-ogle="8" data-aksam="4"><td><div class="yk-cell"><div class="yk-mark tas"><i class="fa-solid fa-people-group"></i></div><div class="yk-info"><b>Yalıtım Kardeşler</b><span>Taşeron ekibi · Liman Lojistik Merkezi · <a href="crm-operasyon-taseron-puantaj.html" class="yk-tp-link">Puantaj <i class="fa-solid fa-arrow-right"></i></a></span></div></div></td><td><span class="gstat yk-tur-badge info">Taşeron</span></td><td class="num yk-num">7</td><td class="num yk-num">8</td><td class="num yk-num">4</td><td class="num"><span class="yk-total">19</span></td><td class="num yk-tutar">₺1.370</td></tr><tr class="" data-firma="yapitas" data-kahvalti="11" data-ogle="12" data-aksam="5"><td><div class="yk-cell"><div class="yk-mark"><i class="fa-solid fa-helmet-safety"></i></div><div class="yk-info"><b>Merkez Şantiye</b><span>Öz kadro</span></div></div></td><td><span class="gstat yk-tur-badge off">Yapıtaş</span></td><td class="num yk-num">11</td><td class="num yk-num">12</td><td class="num yk-num">5</td><td class="num"><span class="yk-total">28</span></td><td class="num yk-tutar">₺2.005</td></tr></tbody>
           <tfoot>
             <tr>
               <td class="t-strong" id="ftLabel" colspan="2">Genel Toplam</td>
@@ -253,7 +269,7 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
     html += '<tr class="'+(y.tip === 'tas' ? 'is-tas' : '')+'" data-firma="'+y.firma+'" data-kahvalti="'+y.kahvalti+'" data-ogle="'+y.ogle+'" data-aksam="'+y.aksam+'">';
     html += '<td><div class="yk-cell"><div class="yk-mark'+(y.tip==='tas'?' tas':'')+'"><i class="fa-solid '+y.ic+'"></i></div>'
           + '<div class="yk-info"><b>'+y.ad+'</b>'
-          + (y.tip==='tas' ? '<span>Taşeron ekibi · '+y.santiye+'</span>' : '<span>Öz kadro</span>')
+          + (y.tip==='tas' ? '<span>Taşeron ekibi · '+y.santiye+' · <a href="crm-operasyon-taseron-puantaj.html" class="yk-tp-link">Puantaj <i class="fa-solid fa-arrow-right"></i></a></span>' : '<span>Öz kadro</span>')
           + '</div></div></td>';
     html += '<td><span class="gstat yk-tur-badge '+(y.tip==='tas'?'info':'off')+'">'+(y.tip==='tas'?'Taşeron':'Yapıtaş')+'</span></td>';
     html += '<td class="num yk-num">'+y.kahvalti+'</td>';
@@ -327,6 +343,26 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
   }
   renderMaliyet(maliyetToplam, maliyetOz, maliyetTas, tasToplam, t);
 
+  /* ---- §7.3/§13.2 — öğle öğününün öz kadro / taşeron kırılımı + taşeron puantajına
+     çapraz link. YERLER'deki ogle alanlarından TÜRETİLİR (kanonik 69 öz + 24 taşeron =
+     93 öğle DEĞİŞMEZ) — liste parametre olarak alınır ki şef budaması da aynı fonksiyonu
+     kendi daralmış kümesiyle çağırabilsin. ---- */
+  function renderOzTasBar(list){
+    var ozOgle = 0, tasOgle = 0, firmaParts = [];
+    list.forEach(function(y){
+      if(y.tip === 'oz') ozOgle += y.ogle;
+      else { tasOgle += y.ogle; firmaParts.push(FIRMA_LBL[y.firma] + ' ' + y.ogle); }
+    });
+    var bar = document.getElementById('ozTasBar');
+    if(!bar) return;
+    bar.innerHTML =
+        '<span><i class="fa-solid fa-circle-info"></i> En yoğun öğün (öğle) <b>' + (ozOgle + tasOgle) + ' kişi</b> = '
+      + '<b>' + ozOgle + ' öz kadro</b> + <b>' + tasOgle + ' taşeron</b>'
+      + (firmaParts.length ? ' (' + firmaParts.join(' · ') + ')' : '') + '</span>'
+      + '<a class="gc-link" href="crm-operasyon-taseron-puantaj.html"><i class="fa-solid fa-people-arrows"></i> Taşeron Puantajı <i class="fa-solid fa-arrow-right"></i></a>';
+  }
+  renderOzTasBar(YERLER);
+
   /* ---- haftalık özet — bugüne kadar (Pzt–Per) işlenmiş, kalanı henüz kaydedilmedi ---- */
   var HAFTA = [
     {g:'Pzt', d:29, ay:'Haz', num:218},
@@ -399,6 +435,7 @@ tfoot .yk-tutar-total{font-weight:800;color:var(--ink);font-variant-numeric:tabu
     var sMaliyetTas = sTasKalan.kahvalti*BIRIM.kahvalti + sTasKalan.ogle*BIRIM.ogle + sTasKalan.aksam*BIRIM.aksam;
     document.getElementById('ftTutar').textContent = trTl(sMaliyet);
     renderMaliyet(sMaliyet, sMaliyet - sMaliyetTas, sMaliyetTas, sTas, st);
+    renderOzTasBar(kalan);
 
     /* şefin sahasında Yalıtım Kardeşler yok — o taşeron chip'i gizlenir, kalan
        chip filtresi (Tümü/Yapıtaş/Demir-Beton/ElektroMek) Vadi satırlarında tutarlı çalışır */
