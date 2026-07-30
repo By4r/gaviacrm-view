@@ -322,6 +322,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
         <button class="btn btn-ghost btn-sm" id="btnHaftalikCikti" type="button" data-no-confirm><i class="fa-solid fa-print"></i> Puantaj Çıktısı Al</button>
         <button class="btn btn-ghost btn-sm" id="btnGetirToggle" type="button" data-no-confirm aria-expanded="false" aria-controls="getirCard"><i class="fa-solid fa-people-arrows"></i> Personel Getir</button>
         <button class="btn btn-acc btn-sm" id="btnGunlukToggle" type="button" data-no-confirm aria-expanded="false" aria-controls="gunlukCard"><i class="fa-solid fa-list-check"></i> Günlük Giriş</button>
+        <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpPuantaj"><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</button>
       </div>
     </div>
 
@@ -329,6 +330,21 @@ th.is-today .dh-d{color:var(--acc-ink)}
     <div class="gv-tabs" role="tablist" aria-label="Puantaj görünümü">
       <button class="gv-tab is-active" data-tab="bireysel" role="tab" aria-selected="true"><i class="fa-solid fa-user-clock"></i> Bireysel</button>
       <button class="gv-tab" data-tab="taseron" role="tab" aria-selected="false"><i class="fa-solid fa-people-group"></i> Taşeron</button>
+    </div>
+
+    <!-- ============ §9 — aktif gelişmiş-filtre çip satırı (Bireysel/Taşeron ORTAK,
+         sekme geçişinden BAĞIMSIZ konumda — panel her iki sekmede de gv-fp-open
+         tetikleyicisiyle aynı #fpPuantaj'ı açar, tasks/spec-filtre-tarih.md) ============ -->
+    <div class="gv-achips-row" id="achipsPuantaj" hidden>
+      <div class="gv-achips"></div>
+      <div class="gv-achips-acts">
+        <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor.">
+          <i class="fa-solid fa-lock"></i> Filtreleri Kaydet
+        </button>
+        <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all>
+          <i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle
+        </button>
+      </div>
     </div>
 
     <section class="tab-panel" data-tab-panel="bireysel" role="tabpanel" aria-label="Bireysel">
@@ -485,7 +501,10 @@ th.is-today .dh-d{color:var(--acc-ink)}
       <div class="gv-card" style="margin-bottom:20px">
         <div class="gc-head">
           <div class="gc-title"><i class="fa-solid fa-people-group"></i> Taşeron Puantajı</div>
-          <span class="ph-sub" style="margin:0" id="tgSub">24 kişi bugün sahada · 3 firma · haftalık 90 adam-gün</span>
+          <div style="display:flex;align-items:center;gap:12px">
+            <span class="ph-sub" style="margin:0" id="tgSub">24 kişi bugün sahada · 3 firma · haftalık 90 adam-gün</span>
+            <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpPuantaj"><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</button>
+          </div>
         </div>
         <div class="gc-body flush">
           <table class="gtable" id="tblTaseron">
@@ -536,6 +555,77 @@ th.is-today .dh-d{color:var(--acc-ink)}
       </div>
     </section>
   </main>
+</div>
+
+<!-- ============ §9 + §13 — sağ off-canvas gelişmiş filtre paneli (LEAD talimatı,
+     Dalga 6 Denetim-B geri bildirimi — doküman §9'un 18 modül listesinde "puantaj
+     listesi"ni açıkça sayması ve "tüm liste sayfalarında filtre yapısı aynı mantıkla
+     çalışmalı" kabul kriteri gereği; bespoke şantiye seçici + hafta navigasyonu
+     KORUNUR, panel bunları onApply ile GENİŞLETİR, yerlerini almaz). Şantiye alanı
+     Bireysel'de mevcut #ptSantiye seçiciyi tetikler (aynı motor); Personel Tipi
+     ilgili sekmeye geçer; Çalışma Durumu/Departman görünen sekmedeki satırları
+     data-durum-bugun/data-departman özniteliğine göre süzer; Tarih Aralığı satırları
+     DEĞİŞTİRMEZ (hafta gezinme onun işi) — yalnız §11.2 Çıktı Al modalının varsayılan
+     kapsamına taşınır (openCiktiModal/syncCiktiAralikWidget). ============ -->
+<div class="gv-fpanel-ov" id="fpPuantajOv">
+  <aside class="gv-fpanel" id="fpPuantaj" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+    <div class="gv-fpanel-head">
+      <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+      <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="gv-fpanel-body">
+      <div class="gfield">
+        <label>Şantiye</label>
+        <select data-fp-key="fpsantiye" data-fp-label="Şantiye">
+          <option value="">Tümü</option>
+          <option value="vadi">Vadi Konakları</option>
+          <option value="liman">Liman Lojistik Merkezi</option>
+          <option value="merkez">Merkez Şantiye</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label>Personel Tipi</label>
+        <select data-fp-key="fptip" data-fp-label="Personel Tipi">
+          <option value="">Tümü</option>
+          <option value="oz">Öz Kadro</option>
+          <option value="taseron">Taşeron</option>
+          <option value="tedarikci">Tedarikçi</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label>Çalışma Durumu</label>
+        <select data-fp-key="fpdurum" data-fp-label="Çalışma Durumu">
+          <option value="">Tümü</option>
+          <option value="tam">Tam gün</option>
+          <option value="yarim">Yarım gün</option>
+          <option value="yok">Devamsız</option>
+          <option value="izin">İzinli</option>
+          <option value="rapor">Raporlu</option>
+          <option value="fm">Fazla mesai (FM)</option>
+          <option value="em">Eksik mesai (EM)</option>
+          <option value="rt">Resmî tatil (RT)</option>
+          <option value="ht">Hafta tatili (HT)</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label>Departman</label>
+        <select data-fp-key="fpdep" data-fp-label="Departman">
+          <option value="">Tümü</option>
+          <option value="sef">Şantiye Yönetimi</option>
+          <option value="saha">Saha Ekibi</option>
+        </select>
+      </div>
+      <div class="gfield">
+        <label>Tarih Aralığı</label>
+        <div data-gvdaterange data-fp-key="fptarih" data-fp-label="Tarih Aralığı"></div>
+        <p style="margin-top:7px;font-size:11.5px;color:var(--muted)">Haftalık ızgarayı değiştirmez — yalnız "Çıktı Al" ekranının varsayılan kapsamını belirler.</p>
+      </div>
+    </div>
+    <div class="gv-fpanel-foot">
+      <button type="button" class="btn btn-ghost" data-fp-clear>Temizle</button>
+      <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+    </div>
+  </aside>
 </div>
 
 <!-- ============ §11.2 — Puantaj Çıktısı Al modalı [MOCK-SİM]. Kapsam (tüm/tek/seçili/
@@ -790,6 +880,67 @@ th.is-today .dh-d{color:var(--acc-ink)}
   };
   var LOCK_MSG = 'Geçmiş güne revize yapılamaz — puantaj yalnız aynı gün içinde düzeltilebilir.';
 
+  /* ============ §9 — Gelişmiş Filtre state'i (LEAD talimatı, Dalga 6 Denetim-B).
+     Mevcut motor (şantiye select + hafta nav + sekme) BOZULMAZ — bu 5 değişken yalnız
+     ONApply ile o motoru sürer (şantiye/tip) veya render() sonrası ikinci bir süzme
+     katmanı (durum/departman) uygular. Tarih aralığı grid'i hiç değiştirmez — yalnız
+     §11.2 Çıktı Al modaline taşınır (bkz. openCiktiModal). ---- */
+  var fpSantiye = '', fpTip = '', fpDurum = '', fpDep = '', fpTarihAraligi = null;
+  function ptDepartmanOf(poz){ return poz === 'Şantiye Şefi' ? 'sef' : 'saha'; }
+  function ptFilterDayIdx(){ return WEEK === -1 ? 6 : TODAY_IDX; }
+  function ptToggleFpEmpty(tbodyEl, colspan, shown, total){
+    var existing = tbodyEl.querySelector('tr.pt-fp-empty');
+    if(existing) existing.remove();
+    if(total > 0 && shown === 0){
+      var tr = document.createElement('tr');
+      tr.className = 'pt-fp-empty';
+      var td = document.createElement('td');
+      td.colSpan = colspan;
+      td.style.cssText = 'text-align:center;color:var(--muted);padding:32px';
+      td.textContent = fpTip === 'tedarikci'
+        ? 'Bu şantiyede kayıtlı tedarikçi personeli yok.'
+        : 'Seçili filtrelerle eşleşen personel yok.';
+      tr.appendChild(td);
+      tbodyEl.appendChild(tr);
+    }
+  }
+  /* Bireysel (#ptBody) ve Taşeron (#tgBody) sekmelerindeki satırları, açık olsun
+     olmasın (görünmeyen sekmede de tutarlı kalsın diye) HER render()/renderTaseron()
+     sonrası yeniden süzer — data-durum-bugun/data-departman/data-santiye özniteliği
+     satır üretilirken (aşağıda) eklenir. */
+  function applyPtFpFilters(){
+    /* document.getElementById ile DOĞRUDAN erişilir — bu fonksiyon render()'ın İÇİNDEN,
+       yani #tgBody/tgBody değişkeni henüz atanmadan (sayfa ilk yüklenirken render()
+       renderTaseron()'dan ÖNCE çağrılıyor) da çalışabilmeli; dış kapsam değişkenlerine
+       (body/tgBody) değil, doğrudan DOM sorgusuna güvenilir. */
+    var ptBodyEl = document.getElementById('ptBody');
+    var biRows = Array.prototype.slice.call(document.querySelectorAll('#tblPuantaj tbody tr[data-per]'));
+    var biShown = 0;
+    biRows.forEach(function(tr){
+      var show = !(fpTip === 'taseron' || fpTip === 'tedarikci');
+      if(show && fpDurum && tr.getAttribute('data-durum-bugun') !== fpDurum) show = false;
+      if(show && fpDep && tr.getAttribute('data-departman') !== fpDep) show = false;
+      tr.style.display = show ? '' : 'none';
+      if(show) biShown++;
+    });
+    if(ptBodyEl) ptToggleFpEmpty(ptBodyEl, 12, biShown, biRows.length);
+
+    var tgBodyEl = document.getElementById('tgBody');
+    if(WEEK !== -1 && tgBodyEl){
+      var tRows = Array.prototype.slice.call(document.querySelectorAll('#tblTaseron tbody tr[data-per-t]'));
+      var tShown = 0;
+      tRows.forEach(function(tr){
+        var show = !(fpTip === 'oz' || fpTip === 'tedarikci');
+        if(show && fpSantiye && tr.getAttribute('data-santiye') !== fpSantiye) show = false;
+        if(show && fpDurum && tr.getAttribute('data-durum-bugun') !== fpDurum) show = false;
+        if(show && fpDep && tr.getAttribute('data-departman') !== fpDep) show = false;
+        tr.style.display = show ? '' : 'none';
+        if(show) tShown++;
+      });
+      ptToggleFpEmpty(tgBodyEl, 10, tShown, tRows.length);
+    }
+  }
+
   function render(){
     var santiye = sel.value;
     var rows = PERSONEL.filter(function(p){ return p.santiye === santiye; });
@@ -803,7 +954,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
     rows.forEach(function(p){
       var uy = EVRAK_UYARI[p.ad];
       var uyariHtml = uy ? '<a class="pp-evrak-warn" href="crm-personel-detay.html?per='+uy.per+'" data-tip="'+uy.not+'"><i class="fa-solid fa-triangle-exclamation"></i> Zorunlu evrak</a>' : '';
-      html += '<tr data-per="'+p.ad+'">';
+      html += '<tr data-per="'+p.ad+'" data-durum-bugun="'+statusOf(p, ptFilterDayIdx())+'" data-departman="'+ptDepartmanOf(p.poz)+'">';
       html += '<td class="col-chk"><label class="row-chk"><input type="checkbox" class="pt-chk" aria-label="'+p.ad+' seç"><span class="chk-box"><i class="fa-solid fa-check"></i></span></label></td>';
       html += '<td><div class="pp-cell"><div class="pp-mark" style="background:'+tint.bg+';color:'+tint.fg+'">'+initials(p.ad)+'</div>'
             + '<div class="pp-info"><b>'+p.ad+'</b><span>'+SANTIYE_ADI[santiye]+'</span>'+uyariHtml+'</div></div></td>';
@@ -827,6 +978,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
     });
     body.innerHTML = html || '<tr><td colspan="12" style="text-align:center;color:var(--muted);padding:32px">Bu şantiyede kayıtlı personel yok.</td></tr>';
     syncRowChecks();
+    applyPtFpFilters();
 
     /* KPI özetleri — seçili şantiye, görünen haftanın işlenen günleri */
     var c = {tam:0, yarim:0, yok:0, izin:0, rapor:0};
@@ -1354,6 +1506,13 @@ th.is-today .dh-d{color:var(--acc-ink)}
     for(var i = 0; i <= RECORDED_UPTO; i++){ if(p.gunler[i] === 'tam') n++; }
     return n;
   }
+  /* §9 Şantiye ekseni — taşeron kişisinin firmasından TASERON_FIRMA'daki şantiyeyi okur
+     (yeni veri İCAT EDİLMEZ, mevcut TASERON_FIRMA.santiye TÜKETİLİR). Taşeron kadrosunda
+     "Şantiye Şefi" rolü hiç yok — Departman ekseni bu yüzden HER ZAMAN 'saha' döner. */
+  function taseronSantiyeOf(p){
+    var f = TASERON_FIRMA.filter(function(x){ return x.ad === p.firma; })[0];
+    return f ? f.santiye : '';
+  }
 
   function renderTaseron(){
     var firmalar = taseronFirmalar();
@@ -1389,7 +1548,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
        budamasına göre değişir: şef yalnız Vadi'nin 16'sını görür) — sabit 24 YAZILMAZ. */
     if(kisiler.length) html += '<tr class="pgrp-row" data-grp="taseron"><td colspan="10"><span class="pgrp-lbl">Taşeron Personeli</span><span class="pgrp-badge">'+kisiler.length+' kişi</span></td></tr>';
     kisiler.forEach(function(p){
-      html += '<tr>';
+      html += '<tr data-per-t="'+p.ad+'" data-santiye="'+taseronSantiyeOf(p)+'" data-durum-bugun="'+taseronStatusOf(p, TODAY_IDX)+'" data-departman="saha">';
       html += '<td><div class="pp-cell"><div class="pp-mark" style="background:var(--bg);color:var(--ink-2)">'+initials(p.ad)+'</div>'
             + '<div class="pp-info"><b>'+p.ad+'</b><span>'+p.firma+'</span></div></div></td>';
       html += '<td>'+p.poz+(p.kalfa ? ' <span class="gtag mint">Kalfa</span>' : '')+'</td>';
@@ -1406,6 +1565,7 @@ th.is-today .dh-d{color:var(--acc-ink)}
       html += '</tr>';
     });
     tgBody.innerHTML = html || '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:32px">Bu görünümde kayıtlı taşeron personeli yok.</td></tr>';
+    applyPtFpFilters();
 
     var bugunToplam = 0, haftaToplamGenel = 0;
     kisiler.forEach(function(p){
@@ -1547,13 +1707,38 @@ th.is-today .dh-d{color:var(--acc-ink)}
       + (ciktiFormat === 'pdf' ? 'yazdırmaya hazır PDF görünümü' : 'CSV/Excel dosyası') + ' olarak üretilecek.';
   }
 
+  /* ============ §9/§13 — Gelişmiş Filtre panelinde seçilen tarih aralığı, açıldığında
+     Çıktı Al modalının varsayılan kapsamına TAŞINIR (LEAD talimatı). Modal kendi
+     gvDateRange widget'ını renderCiktiModal()'da ZATEN kuruyor (dd.innerHTML +
+     window.gvDateRange çağrısı) — burada yalnız o widget'ın görünür durumunu
+     (buton etiketi/aktif preset/iç değeri) fpanel'in seçtiği değere göre EŞİTLERİZ;
+     ui.js'e dokunmadan, DOM'u kendi ürettiği sınıf adlarıyla (.dr-lbl/.gv-drange-trigger)
+     güncelleriz. ---- */
+  function syncCiktiAralikWidget(){
+    var drEl = document.getElementById('ciktiTarihAralik');
+    if(!drEl || !drEl._gvDr || !ciktiAralik) return;
+    drEl._gvValue = ciktiAralik;
+    var lbl = drEl.querySelector('.dr-lbl'); if(lbl) lbl.textContent = ciktiAralik.label;
+    var trig = drEl.querySelector('.gv-drange-trigger'); if(trig) trig.classList.add('is-set');
+    if(ciktiAralik.key){
+      var onBtn = drEl.querySelector('[data-dr="' + ciktiAralik.key + '"]');
+      if(onBtn) onBtn.classList.add('is-on');
+    }
+  }
   function openCiktiModal(defaultKapsam){
     ciktiKapsam = defaultKapsam || (selCount() > 0 ? 'secili' : 'santiye');
-    ciktiDonem = 'haftalik';
     ciktiFormat = 'pdf';
     ciktiSantiyeSecili = sel.value;
-    ciktiAralik = null;
+    if(fpTarihAraligi){
+      /* Gelişmiş Filtre'de bir tarih aralığı seçiliyse çıktı ONU varsayılan kapsam alır */
+      ciktiDonem = 'aralik';
+      ciktiAralik = fpTarihAraligi;
+    } else {
+      ciktiDonem = 'haftalik';
+      ciktiAralik = null;
+    }
     renderCiktiModal();
+    if(ciktiDonem === 'aralik' && ciktiAralik) syncCiktiAralikWidget();
     ciktiOv.classList.add('open');
   }
   function closeCiktiModal(){ ciktiOv.classList.remove('open'); }
@@ -1618,6 +1803,34 @@ th.is-today .dh-d{color:var(--acc-ink)}
     }
   });
   document.getElementById('ptBulkCikti').addEventListener('click', function(){ openCiktiModal('secili'); });
+
+  /* ============ §9/§13 — Gelişmiş Filtre paneli kurulumu (LEAD talimatı, Dalga 6
+     Denetim-B). opts.table VERİLMEZ (spec-filtre-tarih.md §3) — sayfanın kendi çok
+     eksenli motoru (şantiye select + hafta nav + sekme + §11.2 seçim) onApply
+     içinde genişletilir; satır eşleşmesi applyPtFpFilters()'ta yapılır. ---- */
+  if(window.gvFilterPanel){
+    window.gvFilterPanel.init('#fpPuantaj', {
+      activeRow: '#achipsPuantaj',
+      onApply: function(state){
+        fpSantiye = (state.fpsantiye && state.fpsantiye.value) || '';
+        fpTip = (state.fptip && state.fptip.value) || '';
+        fpDurum = (state.fpdurum && state.fpdurum.value) || '';
+        fpDep = (state.fpdep && state.fpdep.value) || '';
+        fpTarihAraligi = (state.fptarih && state.fptarih.raw) ? state.fptarih.raw : null;
+        if(fpSantiye && sel.value !== fpSantiye){
+          sel.value = fpSantiye;
+          sel.dispatchEvent(new Event('change'));
+        }
+        if(fpTip === 'oz') activateTab('bireysel');
+        else if(fpTip === 'taseron') activateTab('taseron');
+        applyPtFpFilters();
+      },
+      onClear: function(){
+        fpSantiye = ''; fpTip = ''; fpDurum = ''; fpDep = ''; fpTarihAraligi = null;
+        applyPtFpFilters();
+      }
+    });
+  }
 })();
 </script>
 </body>
