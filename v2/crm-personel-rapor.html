@@ -23,6 +23,10 @@
 .col-gun{width:70px}
 .col-durum{width:180px}
 .rapor-kurum{font-size:12px;color:var(--muted)}
+
+/* ---- §17 arşiv görünürlüğü — kalıcı silme YERİNE varsayılan listede gizleme ---- */
+#tblRapor tbody tr[data-arsiv="1"]{display:none}
+#tblRapor.gv-show-arsiv tbody tr[data-arsiv="1"]{display:table-row}
 </style>
 </head>
 <body data-sec="personel" data-screen="rapor">
@@ -92,7 +96,23 @@
           <button class="chip" data-filter="bildirildi">Bildirildi <span class="ch-cnt">1</span></button>
           <button class="chip" data-filter="tamam">Tamamlandı <span class="ch-cnt">2</span></button>
         </div>
+        <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpRapor">
+          <i class="fa-solid fa-sliders"></i> Gelişmiş Filtre
+        </button>
       </div>
+
+      <div class="gv-achips-row" id="achipsRapor" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor.">
+            <i class="fa-solid fa-lock"></i> Filtreleri Kaydet
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all>
+            <i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle
+          </button>
+        </div>
+      </div>
+
       <div class="gc-body flush">
         <table class="gtable" id="tblRapor">
           <thead>
@@ -107,7 +127,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr data-f="bildirildi" data-santiye="vadi-konaklari">
+            <tr data-f="bildirildi" data-santiye="vadi-konaklari" data-tur="istirahat" data-tarih="2026-06-28">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">AV</div>
@@ -121,7 +141,7 @@
               <td><span class="gstat info">SGK'ya bildirildi</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-personel-rapor-detay.html?rpr=001" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="tamam" data-santiye="vadi-konaklari">
+            <tr data-f="tamam" data-santiye="vadi-konaklari" data-tur="istirahat" data-tarih="2026-06-10">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--line)">SD</div>
@@ -135,7 +155,7 @@
               <td><span class="gstat ok">Tamamlandı</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-personel-rapor-detay.html?rpr=002" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="tamam" data-santiye="merkez-santiye">
+            <tr data-f="tamam" data-santiye="merkez-santiye" data-tur="kurul" data-tarih="2026-06-15">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--info-tint);color:var(--info)">ÖT</div>
@@ -149,7 +169,7 @@
               <td><span class="gstat ok">Tamamlandı</span></td>
               <td><div class="row-acts"><a class="ia-btn" href="crm-personel-rapor-detay.html?rpr=003" data-no-confirm aria-label="Rapor detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>
             </tr>
-            <tr data-f="bekliyor" data-santiye="merkez">
+            <tr data-f="bekliyor" data-santiye="merkez-ofis" data-tur="istirahat" data-tarih="2026-06-22">
               <td>
                 <div class="gcell">
                   <div class="gcell-mark" style="background:var(--warn-tint);color:var(--warn)">NA</div>
@@ -173,6 +193,59 @@
       </div>
     </div>
   </main>
+
+  <!-- ============ §9/§13 — sağ off-canvas gelişmiş filtre paneli (belge durumu/rapor
+       türü/şantiye/tarih aralığı — tasks/spec-filtre-tarih.md) ============ -->
+  <div class="gv-fpanel-ov" id="fpRaporOv">
+    <aside class="gv-fpanel" id="fpRapor" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+      <div class="gv-fpanel-head">
+        <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+        <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="gv-fpanel-body">
+        <div class="gfield">
+          <label>Belge Durumu</label>
+          <select data-fp-key="durum" data-fp-label="Belge Durumu">
+            <option value="">Tümü</option>
+            <option value="bekliyor">SGK Bildirimi Bekliyor</option>
+            <option value="bildirildi">Bildirildi</option>
+            <option value="tamam">Tamamlandı</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>Rapor Türü</label>
+          <select data-fp-key="tur" data-fp-label="Rapor Türü">
+            <option value="">Tümü</option>
+            <option value="istirahat">İstirahat Raporu</option>
+            <option value="kurul">Sağlık Kurulu Raporu</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>Şantiye</label>
+          <select data-fp-key="santiye" data-fp-label="Şantiye">
+            <option value="">Tümü</option>
+            <option value="vadi-konaklari">Vadi Konakları</option>
+            <option value="merkez-santiye">Merkez Şantiye</option>
+            <option value="merkez-ofis">Merkez Ofis</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>Rapor Başlangıç Tarihi Aralığı</label>
+          <div data-gvdaterange data-fp-key="tarih" data-fp-label="Rapor Başlangıç Tarihi Aralığı"></div>
+        </div>
+        <div class="gfield">
+          <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:600">
+            <input type="checkbox" data-fp-key="arsivgoster" data-fp-label="Arşivlenenleri Göster">
+            Arşivlenenleri Göster
+          </label>
+        </div>
+      </div>
+      <div class="gv-fpanel-foot">
+        <button type="button" class="btn btn-ghost" data-fp-clear>Temizle</button>
+        <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+      </div>
+    </aside>
+  </div>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -210,6 +283,49 @@
     var tmN = document.getElementById('kpiTamamNum'), tmD = document.getElementById('kpiTamamDelta');
     if(tmN){ tmN.textContent = counts.tamam; tmD.innerHTML = '<i class="fa-solid fa-check"></i> Selim Doğan'; }
   }
+
+  /* ============ §9/§13/§17 — Gelişmiş Filtre paneli + tarih aralığı + Arşivlenenleri
+     Göster. opts.table verildi (basit eşitlik + kanonik "tarih" aralık motoru yeterli —
+     spec-filtre-tarih.md §3, crm-satinalma-siparisler.html emsali). ============ */
+  document.querySelectorAll('#tblRapor tbody tr[data-f]').forEach(function(tr){
+    tr.setAttribute('data-durum', (tr.getAttribute('data-f') || '').split(' ')[0]);
+  });
+
+  if(window.gvFilterPanel){
+    window.gvFilterPanel.init('#fpRapor', {
+      table: '#tblRapor',
+      activeRow: '#achipsRapor',
+      onApply: function(state){
+        var tbl = document.getElementById('tblRapor');
+        if(tbl) tbl.classList.toggle('gv-show-arsiv', !!(state.arsivgoster));
+      }
+    });
+  }
+
+  /* ---- satır arşivleme aksiyonu — kalıcı silme YERİNE (§17) ---- */
+  document.querySelectorAll('#tblRapor tbody tr').forEach(function(row){
+    var acts = row.querySelector('.row-acts');
+    if(!acts || acts.querySelector('[data-arsiv-btn]')) return;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'ia-btn'; btn.setAttribute('data-no-confirm', '');
+    btn.setAttribute('data-arsiv-btn', ''); btn.setAttribute('data-tip', 'Arşivle'); btn.setAttribute('aria-label', 'Arşivle');
+    btn.innerHTML = '<i class="fa-solid fa-box-archive"></i>';
+    btn.addEventListener('click', function(){
+      if(row.getAttribute('data-arsiv') === '1'){ gvToast('Bu kayıt zaten arşivde.', {type:'info'}); return; }
+      var nameEl = row.querySelector('.gcell-name');
+      var label = nameEl ? (nameEl.textContent.trim() + ' rapor kaydı') : 'Rapor kaydı';
+      gvConfirm({
+        danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+        title: label + ' arşivlensin mi?',
+        message: 'Kayıt kalıcı olarak silinmez; arşive alınır ve varsayılan listede görünmez olur. "Arşivlenenleri Göster" filtresiyle tekrar görüntülenebilir. İşlem kaydına yazılır.',
+        onConfirm:function(){
+          row.setAttribute('data-arsiv', '1');
+          gvToast(label + ' arşivlendi — varsayılan listede artık görünmeyecek.', {type:'danger'});
+        }
+      });
+    });
+    acts.appendChild(btn);
+  });
 })();
 </script>
 </body>

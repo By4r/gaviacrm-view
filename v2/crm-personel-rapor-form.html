@@ -178,6 +178,59 @@
   bitis.addEventListener('change', gunFarki);
   gunFarki();
 
+  /* ============ §17 — Düzenle/Kopyala destek: ?mod=duzenle|kopya & ?rpr= ============
+     Kayıt kaynağı: crm-personel-rapor.html / -detay.html RAPOR{} map'lerinden BİREBİR
+     alınan minimal alt küme (personel/tür/tarih/kurum/açıklama). Yeni veri UYDURULMAZ. */
+  var RAPOR_FORM_DATA = {
+    '001':{ personelLbl:'Ali Vural — Saha Personeli', tur:'İstirahat Raporu', basla:'2026-06-28', bitis:'2026-07-01', kurum:'Kartal Devlet Hastanesi', belgeAd:'ali-vural-istirahat-raporu.pdf',
+      aciklama:'Personel kısa süreli istirahat raporuyla işe ara verdi; iş göremezlik belgesi ekte. Tanı detayı özlük gizliliği kapsamında paylaşılmadı.' },
+    '002':{ personelLbl:'Selim Doğan — Demir Ustası', tur:'İstirahat Raporu', basla:'2026-06-10', bitis:'2026-06-11', kurum:'Kartal Devlet Hastanesi', belgeAd:'selim-dogan-istirahat-raporu.pdf',
+      aciklama:'Personel kısa süreli istirahat raporuyla işe ara verdi; iş göremezlik belgesi ekte. Tanı detayı özlük gizliliği kapsamında paylaşılmadı.' },
+    '003':{ personelLbl:'Ömer Taşkın — Şantiye Şefi', tur:'Sağlık Kurulu Raporu', basla:'2026-06-15', bitis:'2026-06-16', kurum:'Gebze Devlet Hastanesi', belgeAd:'omer-taskin-saglik-kurulu-raporu.pdf',
+      aciklama:'Personel periyodik sağlık kurulu değerlendirmesi için rapor süresince işe ara verdi; kurul raporu ekte. Tanı detayı özlük gizliliği kapsamında paylaşılmadı.' },
+    '004':{ personelLbl:'Nesrin Aydın — Muhasebe', tur:'İstirahat Raporu', basla:'2026-06-22', bitis:'2026-06-23', kurum:'Özel İzmir Hastanesi', belgeAd:'nesrin-aydin-istirahat-raporu.pdf',
+      aciklama:'Personel kısa süreli istirahat raporuyla işe ara verdi; iş göremezlik belgesi ekte. Tanı detayı özlük gizliliği kapsamında paylaşılmadı.' }
+  };
+  var fq = new URLSearchParams(location.search);
+  var fMod = fq.get('mod'), fRpr = fq.get('rpr');
+  var fRec = fRpr ? RAPOR_FORM_DATA[fRpr] : null;
+  var fNo = fRpr ? 'RPR-2026-' + fRpr : null;
+
+  if(fMod && fRec){
+    var fPersonelSel = document.getElementById('fPersonel'), fTurSel = document.getElementById('fTur'),
+        fKurumInp = document.getElementById('fKurum'), fAciklamaInp = document.getElementById('fAciklama');
+    if(fPersonelSel) fPersonelSel.value = fRec.personelLbl;
+    if(fTurSel) fTurSel.value = fRec.tur;
+    basla.value = fRec.basla;
+    bitis.value = fRec.bitis;
+    gunFarki();
+    if(fKurumInp) fKurumInp.value = fRec.kurum;
+    if(fAciklamaInp) fAciklamaInp.value = fRec.aciklama;
+    var fAttachList = document.getElementById('attachList');
+    if(fRec.belgeAd && fAttachList){
+      var existRow = document.createElement('div');
+      existRow.className = 'attach-row';
+      existRow.innerHTML = '<i class="fa-solid fa-file-pdf"></i><b>' + fRec.belgeAd + '</b><span>Kayıtlı</span>';
+      fAttachList.appendChild(existRow);
+    }
+
+    var fCrumbSpan = document.querySelector('.gv-crumb span');
+    var fH1 = document.querySelector('.gv-page-head h1');
+    var fSub = document.querySelector('.gv-page-head .ph-sub');
+    var fBtn = document.getElementById('raporSubmit');
+    if(fMod === 'duzenle'){
+      document.title = fNo + ' Düzenle — Gavia CRM';
+      if(fCrumbSpan) fCrumbSpan.textContent = fNo + ' — Düzenle';
+      if(fH1) fH1.textContent = 'Rapor Kaydını Düzenle';
+      if(fSub) fSub.textContent = fNo + ' kaydı düzenleniyor; değişiklikler puantaj ve SGK bildirim durumuna yeniden yansıyabilir.';
+      if(fBtn) fBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Değişiklikleri Kaydet';
+    } else if(fMod === 'kopya'){
+      document.title = 'Rapor Kaydı Ekle (Kopya) — Gavia CRM';
+      if(fCrumbSpan) fCrumbSpan.textContent = fNo + ' kopyasından yeni kayıt';
+      if(fSub) fSub.textContent = fNo + ' kaydından kopyalandı; tarihleri güncelleyip ekleyebilirsiniz.';
+    }
+  }
+
   var zone = document.getElementById('attachZone'), list = document.getElementById('attachList');
   var MOCK_FILES = ['Hastane Raporu — İstirahat.pdf'];
   var i = 0;
@@ -198,8 +251,13 @@
   var btn = document.getElementById('raporSubmit');
   if(btn){
     btn.addEventListener('click', function(){
-      gvToast('Rapor kaydı oluşturuldu ve İK sürecine düştü.');
-      setTimeout(function(){ location.href = 'crm-personel-rapor.html'; }, 900);
+      if(fMod === 'duzenle' && fRec){
+        gvToast(fNo + ' güncellendi.');
+        setTimeout(function(){ location.href = 'crm-personel-rapor-detay.html?rpr=' + fRpr; }, 900);
+      } else {
+        gvToast('Rapor kaydı oluşturuldu ve İK sürecine düştü.');
+        setTimeout(function(){ location.href = 'crm-personel-rapor.html'; }, 900);
+      }
     });
   }
 })();
