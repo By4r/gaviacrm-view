@@ -31,12 +31,21 @@
     setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); }, 260); }, opts.ms || 2600);
   };
 
-  /* ---- gvConfirm — onay modalı ---- */
+  /* ---- gvConfirm — onay modalı ----
+     Dalga 1b düzeltme: guard ÖNCEDEN "DOM'da herhangi bir .gv-modal-ov var mı"
+     diye bakıyordu — birçok sayfada KALICI/statik .gv-modal-ov elemanları var
+     (ör. crm-personel.html #ataModalOv, crm-santiye-detay.html dosya-ekle modalı,
+     gizli dursalar bile DOM'da duruyorlar) → gvConfirm o sayfalarda SESSİZCE
+     no-op oluyordu (üç ayrı track bağımsız buldu). Guard artık yalnız gvConfirm'in
+     KENDİ ürettiği, `data-gv-confirm` işaretli modalı arıyor — sayfa-lokal statik
+     overlay'ler artık guard'ı tetiklemiyor; D15'in orijinal amacı (çift/hızlı tık
+     üst üste modal açmasın) korunuyor çünkü işaretli modal DOM'dan kaldırılana
+     kadar (close() → 220ms sonra .remove()) guard true kalır. ---- */
   window.gvConfirm = function(opts){
-    if(document.querySelector('.gv-modal-ov')) return;   /* çift/hızlı tık → modal üst üste binmez (D15) */
+    if(document.querySelector('.gv-modal-ov[data-gv-confirm]')) return;
     opts = opts || {};
     var danger = !!opts.danger;
-    var ov = document.createElement('div'); ov.className = 'gv-modal-ov';
+    var ov = document.createElement('div'); ov.className = 'gv-modal-ov'; ov.setAttribute('data-gv-confirm', '');
     var m = document.createElement('div');
     m.className = 'gv-modal' + (danger ? ' danger' : '');
     m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
@@ -63,7 +72,22 @@
 
   /* ---- delege YIKICI-AKSİYON onayı — sil/iptal/reddet/kaldır/arşivle
      tetikleyicilerini CAPTURE fazında yakalar; onay SONRASI orijinal aksiyon.
-     data-no-confirm ile devre dışı. ---- */
+     data-no-confirm ile devre dışı.
+     Dalga 1b düzeltme: ÖNCEDEN onay sonrası yalnız `el.getAttribute('onclick')`
+     stringi yeniden `eval` ediliyordu (`new Function(oc)).call(el)`) — sayfa
+     aksiyonunu `addEventListener` ile bağladıysa (inline onclick YOKSA) bu dal
+     hiç çalışmıyordu, çünkü ilk tıklama zaten CAPTURE fazında `stopImmediatePropagation`
+     ile durduruluyor ve gerçek `addEventListener` handler'ına HİÇ ulaşmıyordu; kullanıcı
+     "silindi" toast'ı görüyordu ama gerçek aksiyon SESSİZCE hiç çalışmıyordu (T-B bulgusu).
+     Çözüm: onay sonrası orijinal elemanın native `.click()`'i BYPASS işaretiyle yeniden
+     tetiklenir — bu, inline onclick'i DE, addEventListener ile bağlı handler'ları DA,
+     elemanın varsayılan aksiyonunu (href navigasyonu/form submit) DA aynı native
+     event akışıyla çalıştırır; interceptor bu ikinci (replay) tıklamayı BYPASS setinden
+     tanıyıp müdahale etmeden bırakır (sonsuz döngü YOK). Inline onclick'i YOKSA (yalnız
+     bu durumda — eski davranışla aynı sezgi) jenerik "silindi" toast'ı hâlâ gösterilir;
+     addEventListener-only sayfalarda kendi geri bildirimini veren nadir durumlarda çift
+     toast riski olabilir — kritikse sayfa `data-no-confirm` ile kendi akışını yazar
+     (mevcut kaçış kapısı, DEĞİŞMEDİ). ---- */
   var DESTR = {
     sil:    {ico:'fa-trash',        ok:'Sil',      q:'Silinsin mi?',      fut:'kalıcı olarak silinecek. Bu işlem geri alınamaz.', done:'silindi'},
     iptal:  {ico:'fa-xmark',        ok:'İptal Et', q:'İptal edilsin mi?', fut:'iptal edilecek.',  done:'iptal edildi'},
@@ -80,8 +104,10 @@
     if(/(^|\s)Sil(\s|$)/.test(txt))      return 'sil';
     return null;
   }
+  var DESTR_BYPASS_ATTR = 'data-gv-destr-bypass';
   document.addEventListener('click', function(e){
     var el = e.target.closest('button,a'); if(!el) return;
+    if(el.hasAttribute(DESTR_BYPASS_ATTR)){ el.removeAttribute(DESTR_BYPASS_ATTR); return; }   /* onay SONRASI replay — tekrar yakalama */
     if(el.closest('.gv-modal')) return;
     if(el.hasAttribute('data-no-confirm')) return;
     if(el.hasAttribute('data-chain-act')) return;   /* onay zinciri kendi modalını açar */
@@ -93,14 +119,17 @@
     var nameEl = row && row.querySelector('.gcell-name,strong,b,h4,td');
     var name = nameEl ? nameEl.textContent.trim().split('\n')[0].trim() : '';
     if(name.length > 48 || name.length < 2 || /^[\d.,₺%]+$/.test(name)) name = '';
+    var hadInlineOnclick = !!el.getAttribute('onclick');
     gvConfirm({
       danger:true, icon:V.ico, ok:V.ok, cancel:'Vazgeç',
       title:V.q,
       message: name ? ('“' + name + '” ' + V.fut) : ('Bu kayıt ' + V.fut),
       onConfirm:function(){
-        var oc = el.getAttribute('onclick');
-        if(oc){ try{ (new Function(oc)).call(el); }catch(_){} }
-        else { gvToast(name ? (name + ' ' + V.done) : ('Kayıt ' + V.done), {type:'danger'}); }
+        /* native replay: inline onclick + addEventListener + varsayılan aksiyon
+           (href navigasyonu/form submit) hepsi AYNI native click akışıyla çalışır */
+        el.setAttribute(DESTR_BYPASS_ATTR, '');
+        el.click();
+        if(!hadInlineOnclick) gvToast(name ? (name + ' ' + V.done) : ('Kayıt ' + V.done), {type:'danger'});
       }
     });
   }, true);
@@ -362,10 +391,11 @@
             ok:'Revize İste', ph:'Revize açıklaması — zorunlu',  need:true,  done:'için revize istendi',  type:'info'}
   };
   window.gvChainAction = function(opts){
-    if(document.querySelector('.gv-modal-ov')) return;   /* çift/hızlı tık → modal üst üste binmez (D15) */
+    /* Dalga 1b düzeltme: gvConfirm ile aynı kök sebep/aynı çözüm — bkz yukarıdaki yorum. */
+    if(document.querySelector('.gv-modal-ov[data-gv-confirm]')) return;
     opts = opts || {};
     var K = CHAIN_ACT[opts.kind] || CHAIN_ACT.onayla;
-    var ov = document.createElement('div'); ov.className = 'gv-modal-ov';
+    var ov = document.createElement('div'); ov.className = 'gv-modal-ov'; ov.setAttribute('data-gv-confirm', '');
     var m = document.createElement('div');
     m.className = 'gv-modal has-note' + (K.tone ? ' ' + K.tone : '');
     m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
