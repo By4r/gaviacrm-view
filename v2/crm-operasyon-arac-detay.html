@@ -99,6 +99,26 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
 .bh-info b{display:block;font-size:13px;font-weight:700;color:var(--ink)}
 .bh-info span{font-size:12px;color:var(--muted)}
 .bh-km{flex:none;font-size:12.5px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums}
+
+/* §12 (Ek Revizyon Dalga 2B/T-F) — 6 yaşam-döngüsü durumu, hurda için demirbas.html
+   ile aynı ayırt edici koyu zemin (sayfa-lokal, ortak ui.css'e eklenmedi) */
+.gstat.hurda{background:var(--line);color:var(--ink-2)}
+.arc-bakimda-tag{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:10.5px;padding:3px 9px;font-weight:700;border-radius:7px;background:var(--warn-tint);color:var(--warn);width:max-content}
+
+/* evrak/kullanım özet listeleri — bakim-hist-row deseninin uyarlaması */
+.doc-mini-row{display:flex;align-items:center;gap:12px;padding:13px 22px;border-bottom:1px solid var(--line)}
+.doc-mini-row:last-child{border-bottom:none}
+.doc-mini-ico{width:34px;height:34px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:13px;background:var(--bg);color:var(--ink-2)}
+.doc-mini-info{flex:1;min-width:0}
+.doc-mini-info b{display:block;font-size:13px;font-weight:700;color:var(--ink)}
+.doc-mini-info span{font-size:11.5px;color:var(--muted)}
+
+.kul-mini-row{display:flex;align-items:center;gap:14px;padding:13px 22px;border-bottom:1px solid var(--line);font-size:12.5px}
+.kul-mini-row:last-child{border-bottom:none}
+.kul-mini-row b{color:var(--ink);font-weight:700}
+.kul-mini-row .kul-km{margin-left:auto;flex:none;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums}
+
+.tab-cta{padding:14px 22px;border-top:1px solid var(--line);text-align:right}
 </style>
 </head>
 <body data-sec="operasyon" data-screen="arac">
@@ -134,6 +154,8 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
         <h1 id="vhTitle">34 ABC 123 — Ford Ranger 4x4 Pikap (2023)</h1>
       </div>
       <div class="ph-actions">
+        <a class="btn btn-ghost btn-sm" id="lnkArsivle" href="crm-operasyon-arac-arsiv.html"><i class="fa-solid fa-box-archive"></i> Arşivle</a>
+        <a class="btn btn-ghost btn-sm" id="lnkDuzenle" href="crm-operasyon-arac-form.html"><i class="fa-solid fa-pen"></i> Düzenle</a>
         <a class="btn btn-ghost btn-sm" href="crm-operasyon-arac.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>
       </div>
     </div>
@@ -150,7 +172,7 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
           <!-- statik bake — DEFAULT (rol-agnostic) ARC-01 künye; JS yüklenince aynı mount
                innerHTML ile ezilir — D18-B2 (ek keşif: #vhMeta bayraklı listede yoktu ama
                JS'siz boş kalıyordu) -->
-          <dl class="veh-hero-meta" id="vhMeta"><div><dt>Şantiye</dt><dd>Vadi Konakları</dd></div><div><dt>Zimmetli</dt><dd>Hasan Demirci — Şantiye Şefi</dd></div><div><dt>Zimmet Kaydı</dt><dd><a href="crm-operasyon-demirbas-detay.html?zmt=044" style="color:var(--acc-ink)">ZMT-2026-044</a></dd></div><div><dt>Kasko Bitiş</dt><dd>15.01.2027</dd></div><div><dt>Trafik Sigortası Bitiş</dt><dd>15.01.2027</dd></div><div><dt>Güncel Kilometre</dt><dd>42.300 km</dd></div></dl>
+          <dl class="veh-hero-meta" id="vhMeta"><div><dt>Şantiye</dt><dd>Vadi Konakları</dd></div><div><dt>Zimmetli</dt><dd>Hasan Demirci — Şantiye Şefi</dd></div><div><dt>Zimmet Kaydı</dt><dd><a href="crm-operasyon-demirbas-detay.html?zmt=044" style="color:var(--acc-ink)">ZMT-2026-044</a></dd></div><div><dt>Araç Tipi</dt><dd>Kamyonet — Dizel</dd></div><div><dt>Ruhsat Sahibi</dt><dd>Yapıtaş İnşaat A.Ş.</dd></div><div><dt>Kasko Bitiş</dt><dd>15.01.2027</dd></div><div><dt>Trafik Sigortası Bitiş</dt><dd>15.01.2027</dd></div><div><dt>Güncel Kilometre</dt><dd>42.300 km</dd></div></dl>
         </div>
       </div>
       <!-- statik bake — DEFAULT (rol-agnostic) ARC-01 kaydı; JS yüklenince aynı mount'lar
@@ -164,6 +186,8 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
       <button class="gv-tab" data-tab="ceza" role="tab" aria-selected="false"><i class="fa-solid fa-gavel"></i> Trafik Cezaları</button>
       <button class="gv-tab" data-tab="kaza" role="tab" aria-selected="false"><i class="fa-solid fa-car-burst"></i> Kaza &amp; Hasar</button>
       <button class="gv-tab" data-tab="bakim" role="tab" aria-selected="false"><i class="fa-solid fa-screwdriver-wrench"></i> Bakım &amp; Muayene</button>
+      <button class="gv-tab" data-tab="evrak" role="tab" aria-selected="false"><i class="fa-solid fa-folder-open"></i> Evraklar</button>
+      <button class="gv-tab" data-tab="kullanim" role="tab" aria-selected="false"><i class="fa-solid fa-road-circle-check"></i> Kullanım Kayıtları</button>
     </div>
 
     <!-- ============ HGS GEÇİŞLERİ ============ -->
@@ -199,6 +223,25 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
       <div class="gv-card">
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> Geçmiş Bakımlar</div></div>
         <div id="bakimHistWrap"><div class="bakim-hist-row"><div class="bh-ico"><i class="fa-solid fa-wrench"></i></div><div class="bh-info"><b>Periyodik bakım — yağ, filtre, fren kontrolü</b><span>15.05.2026</span></div><div class="bh-km">40.000 km</div></div><div class="bakim-hist-row"><div class="bh-ico"><i class="fa-solid fa-wrench"></i></div><div class="bh-info"><b>Yağ + filtre değişimi, genel kontrol</b><span>12.11.2025</span></div><div class="bh-km">28.500 km</div></div></div>
+        <div class="tab-cta"><a class="gc-link" id="lnkBakimTam" href="crm-operasyon-arac-bakim.html?arac=ARC-01">Tüm bakım geçmişini gör / kayıt ekle <i class="fa-solid fa-arrow-right"></i></a></div>
+      </div>
+    </section>
+
+    <!-- ============ EVRAKLAR (özet) ============ -->
+    <section class="tab-panel" data-tab-panel="evrak" role="tabpanel" aria-label="Evraklar" hidden>
+      <div class="gv-card">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-folder-open"></i> Araç Evrakları</div></div>
+        <div id="evrakMiniWrap"></div>
+        <div class="tab-cta"><a class="gc-link" id="lnkEvrakTam" href="crm-operasyon-arac-evrak.html?arac=ARC-01">Tüm evrakları yönet / yeni evrak yükle <i class="fa-solid fa-arrow-right"></i></a></div>
+      </div>
+    </section>
+
+    <!-- ============ KULLANIM KAYITLARI (özet) ============ -->
+    <section class="tab-panel" data-tab-panel="kullanim" role="tabpanel" aria-label="Kullanım Kayıtları" hidden>
+      <div class="gv-card">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-road-circle-check"></i> Son Kullanım Kayıtları</div></div>
+        <div id="kullanimMiniWrap"></div>
+        <div class="tab-cta"><a class="gc-link" id="lnkKullanimTam" href="crm-operasyon-arac-kullanim.html?arac=ARC-01">Tüm kullanım kayıtlarını gör <i class="fa-solid fa-arrow-right"></i></a></div>
       </div>
     </section>
   </main>
@@ -221,13 +264,35 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
     merkez:{bg:'var(--warn-tint)', fg:'var(--warn)'},
     genelmerkez:{bg:'var(--bg)', fg:'var(--ink-2)'}
   };
+  /* "sekil" görsel ikon seçimi; "tip"/"yakit" §12 kanonik form değerleri (etiketler için) */
   var TIP = {
     pikap:{ic:'fa-truck-pickup', lbl:'Pikap'},
     servis:{ic:'fa-van-shuttle', lbl:'Servis Aracı'},
     panelvan:{ic:'fa-truck', lbl:'Panelvan'},
     sedan:{ic:'fa-car', lbl:'Sedan'},
-    kamyonet:{ic:'fa-truck', lbl:'Kamyonet'}
+    kamyonet:{ic:'fa-truck', lbl:'Kamyonet'},
+    kamyon:{ic:'fa-truck-moving', lbl:'Kamyon'}
   };
+  var TIP_LBL = {binek:'Binek Araç', kamyonet:'Kamyonet', kamyon:'Kamyon', ismakinesi:'İş Makinesi', servis:'Servis Aracı', forklift:'Forklift', vinc:'Vinç', diger:'Diğer'};
+  var YAKIT_LBL = {benzin:'Benzin', dizel:'Dizel', lpg:'LPG', elektrik:'Elektrik', hibrit:'Hibrit', diger:'Diğer'};
+  var DURUM_LBL = {
+    aktif:{cls:'ok', lbl:'Aktif'}, pasif:{cls:'off', lbl:'Pasif'},
+    arsivlendi:{cls:'off', lbl:'Arşivlendi'}, satildi:{cls:'off', lbl:'Satıldı'},
+    hurda:{cls:'hurda', lbl:'Hurdaya Ayrıldı'}, kiralamaBitti:{cls:'off', lbl:'Kiralama Bitti'}
+  };
+  var ARCHIVE_STATES = ['arsivlendi', 'satildi', 'hurda', 'kiralamaBitti'];
+  var BUGUN = new Date(2026, 6, 2); /* kanonik bugün: 2 Temmuz 2026, Perşembe */
+  function gunFarki(iso){
+    var d = iso.indexOf('.') !== -1 ? iso.split('.').reverse().join('-') : iso;
+    return Math.round((new Date(d + 'T00:00:00') - BUGUN) / 86400000);
+  }
+  function tarihRozet(iso){
+    if(!iso) return {cls:'ok', lbl:null, warn:false};
+    var g = gunFarki(iso);
+    if(g < 0) return {cls:'danger', lbl:(-g) + ' gün geçti', warn:true};
+    if(g <= 30) return {cls:'warn', lbl:g + ' gün kaldı', warn:true};
+    return {cls:'ok', lbl:null, warn:false};
+  }
 
   function tl(n){ return '₺' + n.toLocaleString('tr-TR'); }
   function km(n){ return n.toLocaleString('tr-TR') + ' km'; }
@@ -242,9 +307,9 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
 
   var VEHICLES = {
     'ARC-01':{
-      plaka:'34 ABC 123', model:'Ford Ranger 4x4 Pikap', yil:2023, tip:'pikap', santiye:'vadi',
+      plaka:'34 ABC 123', model:'Ford Ranger 4x4 Pikap', yil:2023, tip:'pikap', aracTipi:'kamyonet', yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'vadi',
       kisi:{name:'Hasan Demirci', title:'Şantiye Şefi'}, zimmetNo:'ZMT-2026-044',
-      muayene:'29.07.2026', muayeneGun:18, sonrakiBakimKm:50000, bakimSuan:42300,
+      muayene:'29.07.2026', sonrakiBakimKm:50000, bakimSuan:42300, bakimTarihi:'15.08.2026',
       sonBakim:{tarih:'15.05.2026', km:40000},
       bakimGecmis:[
         {tarih:'15.05.2026', km:40000, aciklama:'Periyodik bakım — yağ, filtre, fren kontrolü'},
@@ -258,47 +323,78 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
       ],
       kazalar:[
         {tarih:'18.06.2026', aciklama:'Şantiye giriş rampasına çarpma', hasar:18500, sigortaOran:80, sigortaTutar:14800, firmaPay:3700}
+      ],
+      evrak:[
+        {tur:'Ruhsat', gecerlilik:null, dosya:'ruhsat-34ABC123.pdf'},
+        {tur:'Sigorta Poliçesi', gecerlilik:'15.01.2027', dosya:'trafik-sigorta-ARC01-2026.pdf'},
+        {tur:'Kasko Poliçesi', gecerlilik:'15.01.2027', dosya:'kasko-ARC01-2026.pdf'},
+        {tur:'Muayene Raporu', gecerlilik:'29.07.2026', dosya:'muayene-ARC01-2024.pdf'}
+      ],
+      kullanim:[
+        {tarih:'01.07.2026', surucu:'Hasan Demirci', santiyeTxt:'Vadi Konakları', cikisKm:42180, donusKm:42300, amac:'Malzeme tedarik — nakliyeci depo'},
+        {tarih:'28.06.2026', surucu:'Hasan Demirci', santiyeTxt:'Vadi Konakları', cikisKm:41960, donusKm:42180, amac:'Şantiye içi malzeme taşıma'}
       ]
     },
     'ARC-02':{
-      plaka:'34 SRV 641', model:'Mercedes Sprinter 316 Servis', yil:2022, tip:'servis', santiye:'vadi',
+      plaka:'34 SRV 641', model:'Mercedes Sprinter 316 Servis', yil:2022, tip:'servis', aracTipi:'servis', yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'vadi',
       kisi:{name:'İbrahim Sönmez', title:'Servis Şoförü'}, zimmetNo:null,
-      muayene:'14.02.2027', muayeneGun:null, sonrakiBakimKm:70000, bakimSuan:61200,
+      muayene:'14.02.2027', sonrakiBakimKm:70000, bakimSuan:61200, bakimTarihi:'20.08.2026',
       sonBakim:{tarih:'20.05.2026', km:58000},
       bakimGecmis:[
         {tarih:'20.05.2026', km:58000, aciklama:'Periyodik bakım + fren balata değişimi'},
         {tarih:'02.12.2025', km:44100, aciklama:'Yağ + filtre değişimi'}
       ],
       aylikMaliyet:11280, kasko:'22.03.2027', trafik:'22.03.2027', durum:'aktif',
-      hgs:[], cezalar:[], kazalar:[], temizDosya:true
+      hgs:[], cezalar:[], kazalar:[], temizDosya:true,
+      evrak:[
+        {tur:'Ruhsat', gecerlilik:null, dosya:'ruhsat-34SRV641.pdf'},
+        {tur:'Sigorta Poliçesi', gecerlilik:'22.03.2027', dosya:'trafik-sigorta-ARC02-2026.pdf'}
+      ],
+      kullanim:[
+        {tarih:'30.06.2026', surucu:'İbrahim Sönmez', santiyeTxt:'Vadi Konakları', cikisKm:61050, donusKm:61200, amac:'Personel servis güzergâhı — sabah/akşam'}
+      ]
     },
     'ARC-03':{
-      plaka:'35 KLT 208', model:'Toyota Hilux Pikap', yil:2021, tip:'pikap', santiye:'liman',
+      plaka:'35 KLT 208', model:'Toyota Hilux Pikap', yil:2021, tip:'pikap', aracTipi:'kamyonet', yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'liman',
       kisi:{name:'Aylin Koç', title:'Şantiye Şefi'}, zimmetNo:null,
-      muayene:'03.11.2026', muayeneGun:null, sonrakiBakimKm:80000, bakimSuan:78450,
+      muayene:'03.11.2026', sonrakiBakimKm:80000, bakimSuan:78450, bakimTarihi:'01.09.2026',
       sonBakim:{tarih:'10.04.2026', km:74000},
       bakimGecmis:[
         {tarih:'10.04.2026', km:74000, aciklama:'Periyodik bakım — yağ, filtre, lastik rotasyonu'}
       ],
       aylikMaliyet:8120, kasko:'05.06.2027', trafik:'05.06.2027', durum:'aktif',
       hgs:hgsRows(['03.07.2026','10.07.2026','18.07.2026','25.07.2026'], ['İzmir Otoyolu (O-31) Menemen','Aliağa Bağlantı Yolu','İzmir Otoyolu (O-31) Menemen','Çeşme Otoyolu Urla'], [190,160,200,190]),
-      cezalar:[], kazalar:[]
+      cezalar:[], kazalar:[],
+      evrak:[
+        {tur:'Ruhsat', gecerlilik:null, dosya:'ruhsat-35KLT208.pdf'},
+        {tur:'Kasko Poliçesi', gecerlilik:'05.06.2027', dosya:'kasko-ARC03-2026.pdf'}
+      ],
+      kullanim:[
+        {tarih:'29.06.2026', surucu:'Aylin Koç', santiyeTxt:'Liman Lojistik Merkezi', cikisKm:78300, donusKm:78450, amac:'Liman gümrük evrak teslimi'}
+      ]
     },
     'ARC-04':{
-      plaka:'41 DBL 457', model:'Fiat Doblo Cargo Panelvan', yil:2020, tip:'panelvan', santiye:'merkez',
+      plaka:'41 DBL 457', model:'Fiat Doblo Cargo Panelvan', yil:2020, tip:'panelvan', aracTipi:'kamyonet', yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'merkez',
       kisi:{name:'Recep Yaman', title:'Depo Sorumlusu'}, zimmetNo:null,
-      muayene:'22.09.2026', muayeneGun:null, sonrakiBakimKm:85000, bakimSuan:87400, bakimAsildi:true,
+      muayene:'22.09.2026', sonrakiBakimKm:85000, bakimSuan:87400, bakimAsildi:true, bakimTarihi:'30.06.2026',
       sonBakim:{tarih:'02.02.2026', km:80000},
       bakimGecmis:[
         {tarih:'02.02.2026', km:80000, aciklama:'Periyodik bakım — yağ, filtre kontrolü'}
       ],
-      aylikMaliyet:6940, kasko:'11.11.2026', trafik:'11.11.2026', durum:'serviste', durumNot:'30 Haz’dan beri bakımda',
-      hgs:[], cezalar:[], kazalar:[]
+      aylikMaliyet:6940, kasko:'11.11.2026', trafik:'11.11.2026', durum:'aktif', bakimda:true, durumNot:'30 Haz’dan beri bakımda',
+      hgs:[], cezalar:[], kazalar:[],
+      evrak:[
+        {tur:'Ruhsat', gecerlilik:null, dosya:'ruhsat-41DBL457.pdf'},
+        {tur:'Bakım Fişi', gecerlilik:null, dosya:'bakim-fisi-ARC04-2026-06.pdf'}
+      ],
+      kullanim:[
+        {tarih:'29.06.2026', surucu:'Recep Yaman', santiyeTxt:'Merkez Şantiye', cikisKm:87250, donusKm:87400, amac:'Depo malzeme taşıma — servise giriş öncesi'}
+      ]
     },
     'ARC-05':{
-      plaka:'34 GNL 310', model:'Renault Megane Sedan', yil:2024, tip:'sedan', santiye:'genelmerkez',
+      plaka:'34 GNL 310', model:'Renault Megane Sedan', yil:2024, tip:'sedan', aracTipi:'binek', yakit:'benzin', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'genelmerkez',
       kisi:{name:'Elif Sarıkaya', title:'Teknik Müdür'}, zimmetNo:null,
-      muayene:'08.04.2027', muayeneGun:null, sonrakiBakimKm:30000, bakimSuan:18900,
+      muayene:'08.04.2027', sonrakiBakimKm:30000, bakimSuan:18900, bakimTarihi:'01.11.2026',
       sonBakim:{tarih:'02.02.2026', km:12000},
       bakimGecmis:[
         {tarih:'02.02.2026', km:12000, aciklama:'İlk periyodik bakım'}
@@ -307,19 +403,89 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
       hgs:hgsRows(['04.07.2026','09.07.2026','15.07.2026','22.07.2026','29.07.2026'],
         ['FSM Köprüsü','Kuzey Marmara O-7 Çekmeköy','15 Temmuz Şehitler Köprüsü','TEM Otoyolu Kavacık','FSM Köprüsü'],
         [195,210,180,215,220]),
-      cezalar:[], kazalar:[]
+      cezalar:[], kazalar:[],
+      evrak:[
+        {tur:'Ruhsat', gecerlilik:null, dosya:'ruhsat-34GNL310.pdf'},
+        {tur:'Sigorta Poliçesi', gecerlilik:'19.02.2027', dosya:'trafik-sigorta-ARC05-2026.pdf'}
+      ],
+      kullanim:[
+        {tarih:'30.06.2026', surucu:'Elif Sarıkaya', santiyeTxt:'Genel Merkez', cikisKm:18820, donusKm:18900, amac:'Şantiye ziyareti — teknik denetim (Merkez Şantiye)'}
+      ]
     },
     'ARC-06':{
-      plaka:'41 FTR 118', model:'Ford Transit 350L Kamyonet', yil:2019, tip:'kamyonet', santiye:'merkez',
+      plaka:'41 FTR 118', model:'Ford Transit 350L Kamyonet', yil:2019, tip:'kamyonet', aracTipi:'kamyonet', yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'merkez',
       kisi:null, zimmetNo:null,
-      muayene:'30.08.2026', muayeneGun:null, sonrakiBakimKm:135000, bakimSuan:132600,
+      muayene:'30.08.2026', sonrakiBakimKm:135000, bakimSuan:132600, bakimTarihi:'15.09.2026',
       sonBakim:{tarih:'18.03.2026', km:125000},
       bakimGecmis:[
         {tarih:'18.03.2026', km:125000, aciklama:'Periyodik bakım — yağ, filtre, fren kontrolü'}
       ],
       aylikMaliyet:8860, kasko:'30.08.2026', trafik:'30.08.2026', durum:'aktif',
       hgs:hgsRows(['03.07.2026','14.07.2026','25.07.2026'], ['TEM Otoyolu Gebze Gişeleri','TEM Otoyolu Gebze Gişeleri','TEM Otoyolu Dilovası'], [210,190,190]),
-      cezalar:[], kazalar:[]
+      cezalar:[], kazalar:[],
+      evrak:[
+        {tur:'Ruhsat', gecerlilik:null, dosya:'ruhsat-41FTR118.pdf'}
+      ],
+      kullanim:[
+        {tarih:'25.06.2026', surucu:'Sadık Öz', santiyeTxt:'Merkez Şantiye', cikisKm:132450, donusKm:132600, amac:'Depo havuz aracı — malzeme dağıtımı'}
+      ]
+    },
+    'ARC-07':{
+      plaka:'34 ESK 771', model:'Renault Kangoo Van', yil:2015, tip:'panelvan', aracTipi:'kamyonet', yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'merkez',
+      kisi:null, zimmetNo:null,
+      muayene:'15.03.2026', sonrakiBakimKm:170000, bakimSuan:168400, bakimTarihi:null,
+      sonBakim:{tarih:'10.01.2026', km:165000},
+      bakimGecmis:[{tarih:'10.01.2026', km:165000, aciklama:'Satış öncesi son periyodik bakım'}],
+      aylikMaliyet:0, kasko:'10.04.2026', trafik:'10.04.2026', durum:'satildi',
+      arsiv:{tarih:'15.05.2026', gerekce:'Yaşlanan filo aracı — bakım maliyeti ekonomik ömrünü aştı', belge:'satis-faturasi-SF-2026-0512.pdf'},
+      hgs:[], cezalar:[], kazalar:[],
+      evrak:[{tur:'Ruhsat', gecerlilik:null, dosya:'ruhsat-34ESK771.pdf'}],
+      kullanim:[]
+    },
+    'ARC-08':{
+      plaka:'34 PLK 552', model:'Volkswagen Transporter T6', yil:2021, tip:'servis', aracTipi:'servis', yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'genelmerkez',
+      kisi:{name:'Baran Yıldız', title:'Satın Alma Sorumlusu'}, zimmetNo:null,
+      muayene:'20.01.2027', sonrakiBakimKm:65000, bakimSuan:54200, bakimTarihi:'05.08.2026',
+      sonBakim:{tarih:'05.04.2026', km:50000},
+      bakimGecmis:[{tarih:'05.04.2026', km:50000, aciklama:'Periyodik bakım — yağ, filtre, fren kontrolü'}],
+      aylikMaliyet:9980, kasko:'05.01.2027', trafik:'10.07.2026', durum:'aktif',
+      hgs:[], cezalar:[], kazalar:[], temizDosya:true,
+      evrak:[
+        {tur:'Ruhsat', gecerlilik:null, dosya:'ruhsat-34PLK552.pdf'},
+        {tur:'Sigorta Poliçesi', gecerlilik:'10.07.2026', dosya:'trafik-sigorta-ARC08-2025.pdf'}
+      ],
+      kullanim:[
+        {tarih:'01.07.2026', surucu:'Baran Yıldız', santiyeTxt:'Genel Merkez', cikisKm:54080, donusKm:54200, amac:'Satın alma tedarikçi ziyareti'}
+      ]
+    },
+    'ARC-09':{
+      plaka:'34 KRL 090', model:'Fiat Egea Sedan', yil:2023, tip:'sedan', aracTipi:'binek', yakit:'benzin', ruhsat:'Aktif Kiralama A.Ş. (kiralık)', santiye:'liman',
+      kisi:{name:'Osman Polat', title:'Saha İşçisi'}, zimmetNo:null,
+      muayene:'10.05.2026', sonrakiBakimKm:40000, bakimSuan:32100, bakimTarihi:null,
+      sonBakim:{tarih:'15.01.2026', km:28000},
+      bakimGecmis:[{tarih:'15.01.2026', km:28000, aciklama:'Periyodik bakım (kiralama firması servis ağı)'}],
+      aylikMaliyet:0, kasko:'01.06.2026', trafik:'01.06.2026', durum:'kiralamaBitti',
+      arsiv:{tarih:'20.06.2026', gerekce:'Kiralama sözleşmesi süresi doldu — araç kiralama firmasına iade edildi', belge:'iade-tutanagi-KRL-090.pdf'},
+      hgs:[], cezalar:[], kazalar:[],
+      evrak:[{tur:'Kiralama Sözleşmesi', gecerlilik:'20.06.2026', dosya:'kiralama-sozlesmesi-KRL090.pdf'}],
+      kullanim:[]
+    },
+    'ARC-10':{
+      plaka:'41 HRD 233', model:'Ford Cargo 1826 Kamyon', yil:2010, tip:'kamyon', aracTipi:'kamyon', yakit:'dizel', ruhsat:'Yapıtaş İnşaat A.Ş.', santiye:'merkez',
+      kisi:null, zimmetNo:null,
+      muayene:'01.02.2026', sonrakiBakimKm:315000, bakimSuan:310500, bakimTarihi:null,
+      sonBakim:{tarih:'05.11.2025', km:305000},
+      bakimGecmis:[{tarih:'05.11.2025', km:305000, aciklama:'Periyodik bakım — kaza öncesi son bakım'}],
+      aylikMaliyet:0, kasko:'20.01.2026', trafik:'20.01.2026', durum:'hurda',
+      arsiv:{tarih:'02.03.2026', gerekce:'Ağır kaza sonrası onarım maliyeti araç değerini aştı — hurdaya ayrıldı', belge:'hasar-tutanagi-ARC-10.pdf'},
+      hgs:[], cezalar:[], kazalar:[
+        {tarih:'20.02.2026', aciklama:'Kavşakta ağır çarpışma — şase hasarı', hasar:210000, sigortaOran:70, sigortaTutar:147000, firmaPay:63000}
+      ],
+      evrak:[
+        {tur:'Ruhsat', gecerlilik:null, dosya:'ruhsat-41HRD233.pdf'},
+        {tur:'Hasar Tutanağı', gecerlilik:null, dosya:'hasar-tutanagi-ARC-10.pdf'}
+      ],
+      kullanim:[]
     }
   };
 
@@ -341,6 +507,9 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
   var tip = TIP[v.tip];
 
   function render(){
+    var archived = ARCHIVE_STATES.indexOf(v.durum) !== -1;
+    var muayeneR = tarihRozet(v.muayene);
+
     document.title = key + ' — Araç Dosyası — Gavia CRM';
     document.getElementById('crumbNo').textContent = key;
     document.getElementById('vhEyebrow').textContent = SANTIYE_ADI[v.santiye] + ' · Araç #' + key;
@@ -349,32 +518,75 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
     var mkEl = document.getElementById('vhMark');
     mkEl.style.background = mkTint.bg; mkEl.style.color = mkTint.fg;
     mkEl.innerHTML = '<i class="fa-solid ' + tip.ic + '"></i>';
-    document.getElementById('vhTipTag').textContent = tip.lbl;
+    document.getElementById('vhTipTag').textContent = TIP_LBL[v.aracTipi] + ' · ' + YAKIT_LBL[v.yakit];
     var db = document.getElementById('vhDurumBadge');
-    if(v.durum === 'serviste'){ db.className = 'gstat warn'; db.textContent = 'Serviste'; }
-    else { db.className = 'gstat ok'; db.textContent = 'Aktif'; }
+    var dLbl = DURUM_LBL[v.durum];
+    db.className = 'gstat ' + dLbl.cls; db.textContent = dLbl.lbl;
+
+    /* arşivlenmiş araçlarda Düzenle/Arşivle aksiyonları farklılaşır — kayıt canlı
+       filoda değilse doğrudan "Aktife Al" akışına yönlendirilir (arac-arsiv.html) */
+    document.getElementById('lnkDuzenle').href = 'crm-operasyon-arac-form.html?mod=duzenle&arac=' + key;
+    document.getElementById('lnkArsivle').href = 'crm-operasyon-arac-arsiv.html?arac=' + key;
+    if(archived){
+      document.getElementById('lnkArsivle').innerHTML = '<i class="fa-solid fa-rotate-left"></i> Aktife Al';
+    }
 
     var meta = '';
-    meta += '<div><dt>Şantiye</dt><dd>' + SANTIYE_ADI[v.santiye] + '</dd></div>';
+    meta += '<div><dt>Şantiye / Birim</dt><dd>' + SANTIYE_ADI[v.santiye] + '</dd></div>';
     meta += '<div><dt>Zimmetli</dt><dd>' + (v.kisi ? v.kisi.name + ' — ' + v.kisi.title : 'Zimmetsiz (depo havuz aracı)') + '</dd></div>';
     if(v.zimmetNo){
       meta += '<div><dt>Zimmet Kaydı</dt><dd><a href="crm-operasyon-demirbas-detay.html?zmt='+v.zimmetNo.replace('ZMT-2026-','')+'" style="color:var(--acc-ink)">'+v.zimmetNo+'</a></dd></div>';
     } else {
       meta += '<div><dt>Zimmet Kaydı</dt><dd class="muted" style="font-weight:600">Demirbaş modülünde ayrı kayıt yok</dd></div>';
     }
+    meta += '<div><dt>Ruhsat Sahibi</dt><dd>' + v.ruhsat + '</dd></div>';
     meta += '<div><dt>Kasko Bitiş</dt><dd>' + v.kasko + '</dd></div>';
     meta += '<div><dt>Trafik Sigortası Bitiş</dt><dd>' + v.trafik + '</dd></div>';
     meta += '<div><dt>Güncel Kilometre</dt><dd>' + km(v.bakimSuan) + '</dd></div>';
+    if(archived && v.arsiv){
+      meta += '<div><dt>Arşiv Gerekçesi</dt><dd style="font-size:12.5px;font-weight:600">' + v.arsiv.gerekce + ' (' + v.arsiv.tarih + ')</dd></div>';
+    }
     document.getElementById('vhMeta').innerHTML = meta;
 
     var stats = '';
-    stats += '<div class="vh-stat' + (v.muayeneGun ? ' warn' : '') + '"><div class="vh-stat-num">' + v.muayene + '</div><div class="vh-stat-lbl">Muayene' + (v.muayeneGun ? ' — ' + v.muayeneGun + ' gün kaldı' : '') + '</div></div>';
+    stats += '<div class="vh-stat' + (muayeneR.warn ? ' ' + muayeneR.cls : '') + '"><div class="vh-stat-num">' + v.muayene + '</div><div class="vh-stat-lbl">Muayene' + (muayeneR.warn ? ' — ' + muayeneR.lbl : '') + '</div></div>';
     var kalanKm = v.sonrakiBakimKm - v.bakimSuan;
     stats += '<div class="vh-stat' + (v.bakimAsildi ? ' danger' : '') + '"><div class="vh-stat-num">' + (v.bakimAsildi ? km(v.bakimSuan - v.sonrakiBakimKm) + ' aşıldı' : km(kalanKm) + ' kaldı') + '</div><div class="vh-stat-lbl">Sonraki bakım — hedef ' + km(v.sonrakiBakimKm) + '</div></div>';
-    stats += '<div class="vh-stat"><div class="vh-stat-num">' + tl(v.aylikMaliyet) + '</div><div class="vh-stat-lbl">Aylık maliyet</div></div>';
+    stats += '<div class="vh-stat"><div class="vh-stat-num">' + (v.aylikMaliyet ? tl(v.aylikMaliyet) : '—') + '</div><div class="vh-stat-lbl">Aylık maliyet</div></div>';
     var hgsToplam = v.hgs.reduce(function(s,r){ return s + r[2]; }, 0);
     stats += '<div class="vh-stat"><div class="vh-stat-num">' + (hgsToplam ? tl(hgsToplam) : '—') + '</div><div class="vh-stat-lbl">Temmuz HGS' + (v.hgs.length ? ' — ' + v.hgs.length + ' geçiş' : ' — geçiş yok') + '</div></div>';
     document.getElementById('vhStats').innerHTML = stats;
+
+    /* ---- Evraklar (özet) ---- */
+    var evrakWrap = document.getElementById('evrakMiniWrap');
+    document.getElementById('lnkEvrakTam').href = 'crm-operasyon-arac-evrak.html?arac=' + key;
+    if(v.evrak && v.evrak.length){
+      var ev = '';
+      v.evrak.forEach(function(e){
+        var r = e.gecerlilik ? tarihRozet(e.gecerlilik) : {warn:false};
+        ev += '<div class="doc-mini-row"><div class="doc-mini-ico"><i class="fa-solid fa-file-lines"></i></div>'
+          + '<div class="doc-mini-info"><b>' + e.tur + '</b><span>' + e.dosya + (e.gecerlilik ? ' · geçerlilik: ' + e.gecerlilik : '') + '</span></div>'
+          + (r.warn ? '<span class="gstat ' + r.cls + '" style="flex:none">' + r.lbl + '</span>' : (e.gecerlilik ? '<span class="gstat ok" style="flex:none">Geçerli</span>' : ''))
+          + '</div>';
+      });
+      evrakWrap.innerHTML = ev;
+    } else {
+      evrakWrap.innerHTML = '<div class="gv-empty"><div class="ge-ico"><i class="fa-solid fa-folder-open"></i></div><h4>Evrak kaydı yok</h4><p>Bu araç için henüz yüklenmiş bir evrak bulunmuyor.</p></div>';
+    }
+
+    /* ---- Kullanım Kayıtları (özet) ---- */
+    var kulWrap = document.getElementById('kullanimMiniWrap');
+    document.getElementById('lnkKullanimTam').href = 'crm-operasyon-arac-kullanim.html?arac=' + key;
+    if(v.kullanim && v.kullanim.length){
+      var ku = '';
+      v.kullanim.forEach(function(k){
+        ku += '<div class="kul-mini-row"><b>' + k.tarih + '</b><span>' + k.surucu + '</span><span>' + k.santiyeTxt + '</span><span class="kul-km">' + (k.donusKm - k.cikisKm) + ' km</span></div>';
+      });
+      kulWrap.innerHTML = ku;
+    } else {
+      kulWrap.innerHTML = '<div class="gv-empty"><div class="ge-ico"><i class="fa-solid fa-road-circle-check"></i></div><h4>Kullanım kaydı yok</h4><p>Bu araç için henüz kayıtlı bir kullanım/sefer bulunmuyor.</p></div>';
+    }
+    document.getElementById('lnkBakimTam').href = 'crm-operasyon-arac-bakim.html?arac=' + key;
 
     /* ---- HGS Geçişleri ---- */
     var hgsWrap = document.getElementById('hgsWrap');
@@ -422,10 +634,17 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
 
     /* ---- Bakım & Muayene ---- */
     var remind = '';
-    remind += '<div class="br-card' + (v.muayeneGun ? ' warn' : '') + '"><div class="br-ico"><i class="fa-solid fa-clipboard-check"></i></div>'
-      + '<div class="br-body"><b>Muayene — ' + v.muayene + '</b><span>' + (v.muayeneGun ? v.muayeneGun + ' gün kaldı, planlayın.' : 'Yaklaşan bir muayene uyarısı yok.') + '</span></div></div>';
+    remind += '<div class="br-card' + (muayeneR.warn ? ' ' + muayeneR.cls : '') + '"><div class="br-ico"><i class="fa-solid fa-clipboard-check"></i></div>'
+      + '<div class="br-body"><b>Muayene — ' + v.muayene + '</b><span>' + (muayeneR.warn ? muayeneR.lbl + ', planlayın.' : 'Yaklaşan bir muayene uyarısı yok.') + '</span></div></div>';
     remind += '<div class="br-card' + (v.bakimAsildi ? ' danger' : '') + '"><div class="br-ico"><i class="fa-solid fa-oil-can"></i></div>'
       + '<div class="br-body"><b>Sonraki Bakım — hedef ' + km(v.sonrakiBakimKm) + '</b><span>Güncel km ' + km(v.bakimSuan) + ' — ' + (v.bakimAsildi ? km(v.bakimSuan - v.sonrakiBakimKm) + ' hedef aşıldı, servise alın.' : km(v.sonrakiBakimKm - v.bakimSuan) + ' kaldı.') + '</span></div></div>';
+    if(v.bakimTarihi){
+      var bt = tarihRozet(v.bakimTarihi);
+      if(bt.warn){
+        remind += '<div class="br-card ' + bt.cls + '" style="grid-column:1/-1"><div class="br-ico"><i class="fa-solid fa-calendar-days"></i></div>'
+          + '<div class="br-body"><b>Planlı Bakım Tarihi — ' + v.bakimTarihi + '</b><span>' + bt.lbl + '.</span></div></div>';
+      }
+    }
     if(v.durumNot){
       remind += '<div class="br-card danger" style="grid-column:1/-1"><div class="br-ico"><i class="fa-solid fa-screwdriver-wrench"></i></div>'
         + '<div class="br-body"><b>Serviste</b><span>' + v.durumNot + '.</span></div></div>';
