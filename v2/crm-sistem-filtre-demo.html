@@ -2,6 +2,24 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<script>
+/* GUARD — sayfa-içi rol çözümü (gavia-panel.html ile AYNI desen, bkz. shell.js §
+   "GAVIA PLATFORM KONSOLU" yorumu): ?role → localStorage(gv_crm_role) → superadmin
+   DEĞİLSE gerçek 403 ekranına gider. En üstte, shell.js'ten ÖNCE çalışır — bu geliştirici
+   demo sayfası yalnız superadmin'e görünür olmalı (Dalga 5 devir notu, tasks/acik-kalemler.md).
+   shell.js'in kendi bölüm-seviyesi guard'ı (data-sec="ayarlar") zaten superadmin+sahip
+   DIŞINDAKİ rolleri 403'e düşürür; bu ek kontrol sahip'i de dışlayarak YALNIZ superadmin
+   bırakır — shell.js'e dokunmadan (Denetim-D dosya yetkisi dışı) tam kilitleme. */
+(function(){
+  try{
+    var q = new URLSearchParams(location.search);
+    var role = q.get('role');
+    if(role){ localStorage.setItem('gv_crm_role', role); }
+    else { role = localStorage.getItem('gv_crm_role'); }
+    if(role !== 'superadmin'){ location.replace('crm-sistem-403.html?hedef=' + encodeURIComponent('ayarlar/filtre-demo')); }
+  }catch(e){ location.replace('crm-sistem-403.html?hedef=ayarlar%2Ffiltre-demo'); }
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
 <title>Filtre &amp; Tarih Aralığı Bileşenleri — Gavia CRM</title>
@@ -32,7 +50,7 @@
 .col-durum{width:120px}
 </style>
 </head>
-<body data-sec="panel" data-screen="ozet">
+<body data-sec="ayarlar" data-screen="filtre-demo">
 <div class="gv-app">
   <aside class="gv-rail" id="gvRail"></aside>
   <nav class="gv-menu" id="gvMenu"></nav>
