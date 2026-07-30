@@ -140,6 +140,25 @@
 .gv-field-row .gv-field{flex:1;min-width:0}
 .ata-toggle-row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-2);margin-bottom:10px}
 .ata-toggle-row:last-child{margin-bottom:0}
+
+/* ---- T-E bulgusu düzeltmesi — Şantiyeye Ata modalının overlay'i ARTIK .gv-modal-ov
+   TAŞIMIYOR. ui.js gvConfirm()/gvChainAction() kendi modalını açmadan önce
+   document.querySelector('.gv-modal-ov') ile çakışma kontrolü yapıyor (D15 çift-tık
+   guard'ı); bu sayfada DAİMA DOM'da duran statik bir modal aynı sınıfı taşıdığı için
+   gvConfirm KALICI OLARAK bloklanıyordu (bu sayfadaki hiçbir onay diyaloğu açılmıyordu).
+   Overlay sınıfı .ata-modal-ov'a ayrıştırıldı, görsel dil ui.css .gv-modal-ov ile
+   BİREBİR kopyalandı (yalnız ortak dosyaya DOKUNULMADI — crm-operasyon-puantaj.html
+   .ck-modal-ov emsali). İç kutu (.gv-modal/.gv-modal-ico/.gv-modal-acts) DEĞİŞMEDİ —
+   o sınıflar guard'a dahil değil, ui.css'ten aynen beslenmeye devam eder; yalnız
+   .gv-modal-ov.open .gv-modal{transform:none} kuralı artık eski ata bağıyla eşleşmediği
+   için burada yeni ata ile yeniden tanımlandı. */
+.ata-modal-ov{
+  position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:22px;
+  background:rgba(2,8,55,.55);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
+  opacity:0;pointer-events:none;transition:opacity .2s var(--ease);
+}
+.ata-modal-ov.open{opacity:1;pointer-events:auto}
+.ata-modal-ov.open .gv-modal{transform:none}
 </style>
 </head>
 <body data-sec="personel" data-screen="liste">
@@ -642,7 +661,7 @@
 </div>
 
 <!-- ============ Madde 5.2 — Şantiyeye Personel Ata Modalı (10 alan) ============ -->
-<div class="gv-modal-ov" id="ataModalOv">
+<div class="ata-modal-ov" id="ataModalOv">
   <div class="gv-modal" style="width:min(520px,100%)" role="dialog" aria-modal="true" aria-labelledby="ataModalTitle">
     <div id="ataFormView">
       <h3 id="ataModalTitle">Şantiyeye Ata</h3>
