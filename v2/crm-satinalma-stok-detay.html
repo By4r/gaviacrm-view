@@ -59,6 +59,31 @@
 .warn-band b{color:var(--ink)}
 
 .gv-empty-mini{padding:26px 22px;text-align:center;color:var(--muted);font-size:13px}
+
+/* §17 aksiyon çubuğu */
+.gd-head .ph-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+/* belge ekleme — crm-operasyon-arac-arsiv.html deseni BİREBİR (§17 Dosya Ekle; bu
+   sayfada Belgeler bloğu YOKTU, yeni açıldı) */
+.doc-drop{border:1.5px dashed var(--line-2);border-radius:var(--r-md);padding:16px;text-align:center;transition:.18s var(--ease);margin-top:12px}
+.doc-drop.is-drag{border-color:var(--acc-ink);background:rgba(var(--acc-rgb),.06)}
+.doc-drop-btn{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:700;color:var(--acc-ink);cursor:pointer}
+.doc-drop-btn i{font-size:16px}
+.doc-hint{display:block;margin-top:7px;font-size:11.5px;color:var(--muted);font-weight:500}
+.doc-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.doc-item{display:flex;gap:12px;padding:12px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--bg)}
+.doc-thumb{width:42px;height:42px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:15px;color:#fff;background:var(--gv-night)}
+.doc-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;justify-content:center}
+.doc-info b{font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-meta{font-size:11.5px;color:var(--muted)}
+.doc-status{font-size:11.5px;font-weight:700;display:flex;align-items:center;gap:6px}
+.doc-status.st-hazir{color:var(--ok)}
+.doc-acts{display:flex;align-items:center;justify-content:center;flex:none}
+
+.ig-row{padding:11px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+.ig-row:last-child{border-bottom:none}
+
+@media print{ .gv-rail,.gv-menu,.gv-divider,.gv-top,.ph-actions,.gv-fpanel-ov{display:none!important} }
 </style>
 </head>
 <body data-sec="satinalma" data-screen="stok">
@@ -92,12 +117,18 @@
       <div>
         <div class="gd-eyebrow" id="gdEyebrow">—</div>
         <h1 id="gdTitle">—</h1>
-        <div class="gd-badges">
+        <div class="gd-badges" id="gdBadge">
           <span class="gtag" id="catTag" style="border-color:transparent"></span>
           <span class="gstat" id="durumBadge">—</span>
         </div>
       </div>
       <div class="ph-actions">
+        <a class="btn btn-ghost btn-sm" href="crm-satinalma-stok-form.html"><i class="fa-solid fa-pen"></i> Düzenle</a>
+        <button type="button" class="btn btn-ghost btn-sm" data-demo="Kayıt kopyalanarak yeni taslak oluşturuldu (demo)."><i class="fa-solid fa-copy"></i> Kopyala</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-pasife-detay><i class="fa-solid fa-eye-slash"></i> Pasife Al</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm data-arsivle-detay><i class="fa-solid fa-box-archive"></i> Arşivle</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm onclick="window.print()"><i class="fa-solid fa-print"></i> Çıktı Al</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm onclick="document.getElementById('islemGecmisi').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişi</button>
         <a class="btn btn-ghost btn-sm" href="crm-satinalma-stok.html"><i class="fa-solid fa-arrow-left"></i> Listeye Dön</a>
       </div>
     </div>
@@ -151,6 +182,24 @@
             <div class="gd-label">Not</div>
             <p style="font-size:12.5px;color:var(--ink-2);line-height:1.7" id="notText">—</p>
           </div>
+        </div>
+
+        <!-- §17 Dosya Ekle — bu sayfada yüklenebilir Belgeler bloğu YOKTU, yeni açıldı -->
+        <div class="gv-card">
+          <div class="gd-block">
+            <div class="gd-label">Belgeler</div>
+            <div class="doc-drop" id="docDrop"><input type="file" id="fBelgeDosya" accept=".pdf,.jpg,.jpeg,.png,.xlsx,.xls" multiple hidden>
+              <label for="fBelgeDosya" class="doc-drop-btn"><i class="fa-solid fa-cloud-arrow-up"></i> Dosya ekle</label>
+              <span class="doc-hint">PDF/JPG/PNG/XLSX ≤10 MB (demo sınırı) — sürükle bırak veya tıkla</span>
+            </div>
+            <div class="doc-list" id="docList"></div>
+          </div>
+        </div>
+
+        <div class="gv-card" id="islemGecmisi">
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişi</div></div>
+          <div class="gc-body" id="islemGecmisiBody" style="display:flex;flex-direction:column;gap:0"></div>
+          <div style="padding:0 22px 18px"><a href="crm-ayarlar-log.html" style="font-size:12.5px;font-weight:700;color:var(--acc-ink)"><i class="fa-solid fa-arrow-up-right-from-square"></i> Tüm İşlem Kayıtları'nda gör</a></div>
         </div>
       </div>
     </div>
@@ -308,6 +357,83 @@
   document.getElementById('belgeList').innerHTML = belgeHtml;
 
   document.getElementById('notText').innerHTML = item.not || ('Bu kalem ' + D.ad + ' envanterinde ' + K.lbl.toLocaleLowerCase('tr') + ' kategorisinde izlenir. Ayrıntılı hareket kaydı için Stok & Depo listesindeki Hareketler sekmesine bakın.');
+
+  /* ---- §17 İŞLEM GEÇMİŞİ — bu kartta onay zinciri yok; kaydın kendi Hareket
+     Geçmişi'nden (varsa) ilk 2 GERÇEK olay, yoksa depo sorumlusu bilgisinden tek
+     bir depo-kaydı satırı seed edilir (uydurma isim/tarih eklenmedi) ---- */
+  var ISLEM_GECMISI = (item.gecmis && item.gecmis.length)
+    ? item.gecmis.slice(0, 2).map(function(h){ return {kim: D.sorumlu, ne: TUR_LBL[h.tur] + ' — ' + h.no, tarih: h.tarih, detay: h.aciklama}; })
+    : [{kim: D.sorumlu, ne: 'Depo kaydını oluşturdu', tarih: '—', detay: D.ad + ' (' + D.kod + ') envanterine kaydedildi.'}];
+  function gvRenderHistory(){
+    var body = document.getElementById('islemGecmisiBody'); if(!body) return;
+    body.innerHTML = ISLEM_GECMISI.map(function(h){
+      return '<div class="ig-row"><b style="color:var(--ink)">' + h.kim + '</b> <span style="color:var(--ink-2)">' + h.ne + '</span>'
+        + (h.detay ? '<div style="color:var(--muted);margin-top:3px">' + h.detay + '</div>' : '')
+        + '<div style="color:var(--muted);margin-top:3px;font-size:11.5px">' + h.tarih + '</div></div>';
+    }).join('');
+  }
+  function gvAddHistory(ne, detay){
+    var me = (document.getElementById('gvName') || {}).textContent || 'Siz';
+    ISLEM_GECMISI.push({kim: me, ne: ne, tarih: 'şimdi', detay: detay});
+    gvRenderHistory();
+  }
+  gvRenderHistory();
+
+  /* ---- §17 PASİFE AL / ARŞİVLE — süregelen varlık kartı (madde 44): iki ayrı
+     durum-gizleme aksiyonu bilinçli olarak birlikte sunulur. data-no-confirm
+     ZORUNLU (kararlar.md madde 18). ---- */
+  var pasifBtn = document.querySelector('[data-pasife-detay]');
+  if(pasifBtn) pasifBtn.addEventListener('click', function(){
+    gvConfirm({
+      icon:'fa-eye-slash', ok:'Pasife Al', cancel:'Vazgeç',
+      title: item.ad + ' pasife alınsın mı?',
+      message:'Stok kalemi geçici olarak pasife alınır; envanterde kalır ama varsayılan listede görünmez. Dilediğinizde yeniden aktif edebilirsiniz.',
+      onConfirm:function(){
+        document.getElementById('gdBadge').insertAdjacentHTML('beforeend', '<span class="gtag"><i class="fa-solid fa-eye-slash"></i> Pasif</span>');
+        gvAddHistory('Pasife alındı', 'Kalem pasife alındı — listede varsayılan görünümde artık yer almıyor.');
+        gvToast('Kalem pasife alındı.', {type:'info'});
+      }
+    });
+  });
+  var arsivBtn = document.querySelector('[data-arsivle-detay]');
+  if(arsivBtn) arsivBtn.addEventListener('click', function(){
+    gvConfirm({
+      danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+      title: item.ad + ' arşivlensin mi?',
+      message:'Kayıt kalıcı silinmez; arşivlenir, Stok & Depo listesinde varsayılan görünümde artık yer almaz. İşlem kaydına yazılır.',
+      onConfirm:function(){
+        document.getElementById('gdBadge').insertAdjacentHTML('beforeend', '<span class="gtag"><i class="fa-solid fa-box-archive"></i> Arşivlendi</span>');
+        gvAddHistory('Arşivlendi', 'Kayıt arşive alındı — listede varsayılan görünümde artık yer almıyor.');
+        gvToast('Kayıt arşivlendi.', {type:'danger'});
+      }
+    });
+  });
+
+  /* ---- §17 DOSYA EKLE — gerçek File API akışı, crm-operasyon-arac-arsiv.html'in
+     addFile()/docDrop deseni BİREBİR uyarlandı ---- */
+  var docList = document.getElementById('docList');
+  var fBelgeDosya = document.getElementById('fBelgeDosya');
+  var docDrop = document.getElementById('docDrop');
+  function humanSize(bytes){ if(bytes > 1024*1024) return (bytes/1024/1024).toFixed(1) + ' MB'; return Math.max(1, Math.round(bytes/1024)) + ' KB'; }
+  function docIcon(name){ if(/\.pdf$/i.test(name)) return 'fa-file-pdf'; if(/\.(jpg|jpeg|png)$/i.test(name)) return 'fa-file-image'; if(/\.(xlsx|xls)$/i.test(name)) return 'fa-file-excel'; return 'fa-file-lines'; }
+  function addFile(file){
+    if(!/\.(pdf|jpe?g|png|xlsx|xls)$/i.test(file.name)){ gvToast(file.name + ' — desteklenmeyen dosya türü.', {type:'danger'}); return; }
+    if(file.size > 10*1024*1024){ gvToast(file.name + ' — 10 MB sınırını aşıyor (demo kısıtı).', {type:'danger'}); return; }
+    var el = document.createElement('div'); el.className = 'doc-item';
+    el.innerHTML = '<div class="doc-thumb"><i class="fa-solid ' + docIcon(file.name) + '"></i></div>'
+      + '<div class="doc-info"><b>' + file.name + '</b><span class="doc-meta">' + humanSize(file.size) + '</span><span class="doc-status st-hazir"><i class="fa-solid fa-circle-check"></i> Yüklendi</span></div>'
+      + '<div class="doc-acts"><button type="button" class="ia-btn danger" data-no-confirm data-tip="Kaldır" aria-label="Kaldır"><i class="fa-solid fa-trash"></i></button></div>';
+    docList.appendChild(el);
+    el.querySelector('[data-tip="Kaldır"]').addEventListener('click', function(){ el.remove(); });
+    gvAddHistory('Belge eklendi', file.name + ' yüklendi.');
+    gvToast(file.name + ' yüklendi.');
+  }
+  if(fBelgeDosya){
+    fBelgeDosya.addEventListener('change', function(){ Array.prototype.slice.call(fBelgeDosya.files).forEach(addFile); fBelgeDosya.value = ''; });
+    ['dragenter','dragover'].forEach(function(evt){ docDrop.addEventListener(evt, function(e){ e.preventDefault(); docDrop.classList.add('is-drag'); }); });
+    ['dragleave','drop'].forEach(function(evt){ docDrop.addEventListener(evt, function(e){ e.preventDefault(); docDrop.classList.remove('is-drag'); }); });
+    docDrop.addEventListener('drop', function(e){ var files = e.dataTransfer && e.dataTransfer.files; if(files && files.length) Array.prototype.forEach.call(files, addFile); });
+  }
 })();
 </script>
 </body>

@@ -85,6 +85,10 @@
   .km-info b{max-width:170px}
   .filter-row .frow-lbl{min-width:0;width:100%}
 }
+
+/* §17 arşiv — varsayılan listede gizli, "Arşivlenenleri Göster" ile açılır */
+#tblKalem tbody tr[data-arsiv="1"],#tblHareket tbody tr[data-arsiv="1"]{display:none}
+#tblKalem.gv-show-arsiv tbody tr[data-arsiv="1"],#tblHareket.gv-show-arsiv tbody tr[data-arsiv="1"]{display:table-row}
 </style>
 </head>
 <body data-sec="satinalma" data-screen="stok">
@@ -177,6 +181,9 @@
               <button class="chip" data-durum="altmin">Min-Stok Altı <span class="ch-cnt">3</span></button>
               <button class="chip" data-durum="yeterli">Yeterli</button>
             </div>
+            <label class="chip" style="cursor:pointer;display:inline-flex;align-items:center;gap:7px">
+              <input type="checkbox" id="chkArsivKalem" style="margin:0"> Arşivlenenleri Göster
+            </label>
           </div>
         </div>
         <div class="gc-body flush">
@@ -248,6 +255,9 @@
             <button class="chip" data-filter="fire">Fire <span class="ch-cnt">2</span></button>
             <button class="chip" data-filter="sayim">Sayım <span class="ch-cnt">1</span></button>
           </div>
+          <label class="chip" style="cursor:pointer;display:inline-flex;align-items:center;gap:7px;margin-top:10px">
+            <input type="checkbox" id="chkArsivHareket" style="margin:0"> Arşivlenenleri Göster
+          </label>
         </div>
         <div class="gc-body flush">
           <table class="gtable" id="tblHareket">
@@ -400,6 +410,7 @@
     kmHtml += '</tr>';
   });
   kmBody.innerHTML = kmHtml;
+  gvWireRowArchive('#tblKalem tbody tr');
 
   var toplamDeger = KALEM.reduce(function(s,k){ return s + k.toplam; }, 0);
   var minAltiSayi = KALEM.filter(function(k){ return k.altMin; }).length;
@@ -468,6 +479,7 @@
     hkHtml += '</tr>';
   });
   hkBody.innerHTML = hkHtml;
+  gvWireRowArchive('#tblHareket tbody tr');
 
   /* ---- Depolar sekmesi kartları ---- */
   var depoGrid = document.getElementById('depoGrid');
@@ -517,6 +529,42 @@
   var initial = (location.hash || '').replace('#', '');
   var valid = tabs.some(function(t){ return t.getAttribute('data-tab') === initial; });
   activate(valid ? initial : 'kalemler');
+
+  /* ---- §17 Sistem Genelinde Düzenleme/Arşivleme — basitleştirilmiş inline çip
+     (Kalemler + Hareketler sekmeleri; Depolar kart görünümü olduğu için dokunulmadı) ---- */
+  document.getElementById('chkArsivKalem').addEventListener('change', function(){
+    document.getElementById('tblKalem').classList.toggle('gv-show-arsiv', this.checked);
+  });
+  document.getElementById('chkArsivHareket').addEventListener('change', function(){
+    document.getElementById('tblHareket').classList.toggle('gv-show-arsiv', this.checked);
+  });
+  function gvWireRowArchive(rowSel){
+    document.querySelectorAll(rowSel).forEach(function(row){
+      var acts = row.querySelector('.row-acts');
+      if(!acts || acts.querySelector('[data-arsiv-btn]')) return;
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'ia-btn'; btn.setAttribute('data-no-confirm','');
+      btn.setAttribute('data-arsiv-btn',''); btn.setAttribute('data-tip','Arşivle'); btn.setAttribute('aria-label','Arşivle');
+      btn.innerHTML = '<i class="fa-solid fa-box-archive"></i>';
+      acts.appendChild(btn);
+    });
+  }
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-arsiv-btn]'); if(!btn) return;
+    var row = btn.closest('tr'); if(!row) return;
+    if(row.getAttribute('data-arsiv') === '1'){ gvToast('Bu kayıt zaten arşivde.', {type:'info'}); return; }
+    var labelEl = row.querySelector('b') || row.querySelector('.t-strong');
+    var label = labelEl ? labelEl.textContent.trim() : 'Kayıt';
+    gvConfirm({
+      danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+      title: label + ' arşivlensin mi?',
+      message: 'Kayıt kalıcı olarak silinmez; arşive alınır ve varsayılan listede görünmez olur. İşlem kaydına yazılır (İşlem Kayıtları\'ndan izlenebilir) ve "Arşivlenenleri Göster" filtresiyle ya da Ayarlar > Arşiv Merkezi\'nden tekrar görüntülenebilir.',
+      onConfirm:function(){
+        row.setAttribute('data-arsiv','1');
+        gvToast(label + ' arşivlendi — varsayılan listede artık görünmeyecek.', {type:'danger'});
+      }
+    });
+  });
 })();
 </script>
 </body>

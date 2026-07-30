@@ -76,14 +76,15 @@
     <div class="gv-crumb">
       <a href="crm-satinalma-stok.html">Stok &amp; Depo</a>
       <i class="fa-solid fa-chevron-right"></i>
-      <span>Yeni Hareket</span>
+      <span id="crumbLbl">Yeni Hareket</span>
     </div>
 
     <div class="gv-page-head">
       <div>
         <div class="ph-eyebrow">Tedarik</div>
-        <h1>Yeni Stok Hareketi</h1>
-        <div class="ph-sub">Hareket türünü seçin; alan seti seçime göre değişir. Kayıt onaylandığında Stok &amp; Depo listesine yansır (simülasyon).</div>
+        <h1 id="pageH1">Yeni Stok Hareketi</h1>
+        <div class="ph-sub" id="pageSub">Hareket türünü seçin; alan seti seçime göre değişir. Kayıt onaylandığında Stok &amp; Depo listesine yansır (simülasyon).</div>
+        <div class="gd-desc" id="revBanner" style="display:none;margin-top:10px;padding:12px 14px;background:var(--warn-tint);color:var(--warn);border-radius:var(--r-sm);font-size:12.5px;line-height:1.5"><i class="fa-solid fa-code-branch"></i> Bu form <b id="revBannerNo"></b> kaydının yeni bir revizyonunu (v2) oluşturuyor. Önceki hali işlem geçmişinde saklanır.</div>
       </div>
     </div>
 
@@ -136,6 +137,7 @@
         </div>
         <div class="form-foot">
           <a class="btn btn-ghost btn-sm" href="crm-satinalma-stok.html">Vazgeç</a>
+          <button type="button" class="btn btn-ghost btn-sm" id="btnDraft" data-no-confirm><i class="fa-solid fa-floppy-disk"></i> Taslak Olarak Kaydet</button>
           <button type="button" class="btn btn-acc btn-sm" data-no-confirm id="hareketSubmit"><i class="fa-solid fa-floppy-disk"></i> Hareketi Kaydet</button>
         </div>
       </div>
@@ -160,6 +162,20 @@
 <script>
 (function(){
   if(!window.GV) return;
+
+  /* ?revizyon=<hareketNo> — mevcut bir stok hareketinin yeni revizyonunu oluşturma modu
+     (crm-satinalma-talep-form.html'deki ?revizyon= deseninin birebir uyarlaması). */
+  var revParam = new URLSearchParams(location.search).get('revizyon');
+  var revMatch = revParam ? String(revParam).match(/(\d{3})\s*$/) : null;
+  var revNo = revMatch ? 'STK-2026-' + revMatch[1] : null;
+  if(revNo){
+    document.title = 'Hareket Revizyonu — ' + revNo + ' — Gavia CRM';
+    document.getElementById('crumbLbl').textContent = 'Revizyon';
+    document.getElementById('pageH1').textContent = 'Hareket Revizyonu — ' + revNo;
+    document.getElementById('revBannerNo').textContent = revNo;
+    document.getElementById('revBanner').style.display = '';
+    document.getElementById('hareketSubmit').innerHTML = '<i class="fa-solid fa-code-branch"></i> Revizyonu Kaydet';
+  }
 
   /* Kalem listesi — crm-satinalma-stok.html'deki 23 kalemle BİREBİR (yalnız ad+ölçü) */
   var KALEMLER = [
@@ -228,13 +244,21 @@
     renderDyn(e.target.value);
   });
 
+  document.getElementById('btnDraft').addEventListener('click', function(){
+    gvToast('Stok hareketi taslak olarak kaydedildi.', {type:'info'});
+  });
+
   document.getElementById('hareketSubmit').addEventListener('click', function(){
     var miktar = document.getElementById('fMiktar').value.trim();
     if(!miktar){ gvToast('Miktar girin.', {type:'danger'}); return; }
     var kalemAd = document.getElementById('fKalem').selectedOptions[0].textContent;
     var turEl = document.querySelector('input[name="tur"]:checked');
     var turLbl = turEl.nextElementSibling.querySelector('span').textContent;
-    gvToast(kalemAd + ' — ' + turLbl + ' hareketi kaydedildi.');
+    if(revNo){
+      gvToast(revNo + ' revizyonu (v2) kaydedildi.');
+    } else {
+      gvToast(kalemAd + ' — ' + turLbl + ' hareketi kaydedildi.');
+    }
     setTimeout(function(){ location.href = 'crm-satinalma-stok.html'; }, 900);
   });
 })();
