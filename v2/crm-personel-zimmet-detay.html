@@ -80,6 +80,24 @@
 .other-zmt-row a{font-size:13px;font-weight:700;color:var(--ink)}
 .other-zmt-row a:hover{color:var(--acc-ink)}
 .other-zmt-row span{display:block;font-size:11.5px;color:var(--muted)}
+
+/* §17 — Dosya Ekle: ekli evrak satırı (crm-operasyon-demirbas-detay.html idiyomunun
+   BİREBİR uyarlaması) */
+.dm-file-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.dm-file-row:last-child{border-bottom:none}
+.dm-file-row .dm-file-mark{width:34px;height:34px;flex:none;border-radius:var(--r-sm);background:var(--info-tint);color:var(--info);display:grid;place-items:center;font-size:12px}
+.dm-file-row .dm-file-info{min-width:0;line-height:1.35}
+.dm-file-row .dm-file-info b{display:block;font-size:12.5px;font-weight:700;color:var(--ink)}
+.dm-file-row .dm-file-info span{font-size:11px;color:var(--muted)}
+
+.kisisiz-note{color:var(--muted);font-style:italic;font-size:13px;line-height:1.6}
+
+/* ============ §17 — Çıktı Al (yazdırma) ============ */
+@media print{
+  .gv-rail,.gv-menu,.gv-divider,.gv-overlay,.gv-top,.ph-actions{display:none !important}
+  .gv-main{margin:0 !important;padding:0 !important}
+  .gv-app{display:block !important}
+}
 </style>
 </head>
 <body data-sec="personel" data-screen="ozluk">
@@ -119,6 +137,11 @@
         </div>
       </div>
       <div class="ph-actions">
+        <a class="btn btn-ghost btn-sm" href="crm-operasyon-demirbas-form.html?mod=duzenle&zmt=045" data-no-confirm><i class="fa-solid fa-pen"></i> Düzenle</a>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="btnZmtArch" hidden><i class="fa-solid fa-box-archive"></i> <span id="btnZmtArchLbl">Arşivle</span></button>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="btnZmtFile"><i class="fa-solid fa-paperclip"></i> Dosya Ekle</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="btnZmtPrint"><i class="fa-solid fa-print"></i> Çıktı Al</button>
+        <a class="btn btn-ghost btn-sm" href="crm-ayarlar-log.html?kayit=ZMT-2026-045"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişini Gör</a>
         <a class="btn btn-ghost btn-sm" href="crm-personel-detay.html"><i class="fa-solid fa-arrow-left"></i> Personel Kartına Dön</a>
       </div>
     </div>
@@ -147,6 +170,10 @@
             <div class="ctx-row"><span class="ctx-lbl">Fatura No</span><span class="ctx-val">FTR-2026-0031</span></div>
             <div class="ctx-row"><span class="ctx-lbl">Satın alma tarihi</span><span class="ctx-val">28 Ocak 2026</span></div>
             <div class="ctx-row"><span class="ctx-lbl">Garanti</span><span class="ctx-val">28 Ocak 2028'e kadar (üretici)</span></div>
+          </div>
+          <div class="gd-block">
+            <div class="gd-label">Zimmet Belgeleri</div>
+            <div id="zmtDosyaList"><p class="kisisiz-note" id="zmtDosyaEmpty">Henüz belge eklenmedi — zimmet tutanağı, teslim tutanağı gibi belgeler "Dosya Ekle" ile eklenebilir.</p></div>
           </div>
         </div>
 
@@ -216,7 +243,114 @@
       listHref: 'crm-personel-detay.html', listLbl: 'Personel kartına dön',
       defHref: 'crm-personel-zimmet-detay.html', defLbl: 'ZMT-2026-045 kaydını aç'
     });
+    return;
   }
+
+  /* ============ §17 — Düzenle · Dosya Ekle · Çıktı Al · İşlem Geçmişini Gör ·
+     zimmet kapandıysa (iade edildiyse) Arşivle/Pasife Al ============
+     crm-personel-zimmet-iade.html tamamlandığında localStorage'a (gv_zimmet_045_durum +
+     gv_zimmet_045_tarihce) yazar; bu sayfa açılışta okuyup Zimmet Geçmişi'ne (ml-timeline)
+     ve rozete işler — sayfalar arası basit senkron (kararlar.md'de belirtilen "localStorage
+     ile senkron edilebilir" notu). ---- */
+  var ZMT_DURUM_KEY = 'gv_zimmet_045_durum';
+  var ZMT_TARIHCE_KEY = 'gv_zimmet_045_tarihce';
+  var ZMT_ARSIV_KEY = 'gv_zimmet_045_arsiv';
+
+  function tlAppend(step){
+    var list = document.getElementById('tlList');
+    list.querySelectorAll('.ml-item').forEach(function(li){ li.classList.remove('active'); li.classList.add('done'); li.querySelector('.ml-dot').innerHTML = '<i class="fa-solid fa-check"></i>'; });
+    var li = document.createElement('li');
+    li.className = 'ml-item active';
+    li.innerHTML = '<span class="ml-dot"></span><div class="ml-body"><b>' + step.title + '</b><span>' + step.sub + '</span></div>';
+    list.appendChild(li);
+  }
+
+  var durum = localStorage.getItem(ZMT_DURUM_KEY) || 'zimmetli';
+  var btnArch = document.getElementById('btnZmtArch');
+
+  function paintZmtDurum(){
+    if(durum === 'iade'){
+      document.getElementById('durumBadge').className = 'gstat off';
+      document.getElementById('durumBadge').textContent = 'İade Edildi';
+      document.getElementById('kalemDurum').innerHTML = '<span class="gstat off">İade Edildi</span>';
+      var aksBox = document.getElementById('aksiyonButtons');
+      aksBox.innerHTML = '<p class="dm-acts-note" style="padding:0"><i class="fa-solid fa-circle-check"></i> Bu zimmet iade edilmiştir; ek bir iade işlemi tanımlı değil.</p>';
+      if(btnArch) btnArch.hidden = false;
+    } else if(btnArch){
+      btnArch.hidden = true;
+    }
+    /* önceki oturumda eklenmiş ek zimmet geçmişi adımları (iade süreci) varsa uygula */
+    try{
+      var extra = JSON.parse(localStorage.getItem(ZMT_TARIHCE_KEY) || '[]');
+      extra.forEach(function(step){ tlAppend(step); });
+    }catch(e){}
+  }
+  paintZmtDurum();
+
+  var arsivDurum = localStorage.getItem(ZMT_ARSIV_KEY) || 'aktif';
+  function paintArchBadge(){
+    var lbl = document.getElementById('btnZmtArchLbl');
+    var gb = document.querySelector('.gd-badges');
+    var old = gb.querySelector('.arsiv-rozet'); if(old) old.remove();
+    if(arsivDurum === 'arsivlendi'){
+      var span = document.createElement('span');
+      span.className = 'gstat hurda arsiv-rozet';
+      span.textContent = 'Arşivlendi';
+      gb.appendChild(span);
+      if(lbl) lbl.textContent = 'Arşivlendi';
+    } else if(lbl){
+      lbl.textContent = 'Arşivle';
+    }
+  }
+  paintArchBadge();
+
+  if(btnArch) btnArch.addEventListener('click', function(){
+    if(arsivDurum === 'arsivlendi'){ gvToast('Bu zimmet kaydı zaten arşivde.', {type:'info'}); return; }
+    gvConfirm({
+      danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+      title:'ZMT-2026-045 arşivlensin mi?',
+      message:'Zimmet iade edildiği için kayıt kapanmıştır; arşivlenmesi kalıcı silme DEĞİLDİR, yalnız personel kartındaki varsayılan zimmet görünümünden çıkarılır. İşlem kaydına yazılır.',
+      onConfirm:function(){
+        arsivDurum = 'arsivlendi';
+        try{ localStorage.setItem(ZMT_ARSIV_KEY, arsivDurum); }catch(e){}
+        paintArchBadge();
+        tlAppend({title:'Zimmet kaydı arşivlendi', sub:'2 Temmuz 2026'});
+        gvToast('ZMT-2026-045 arşivlendi.', {type:'danger'});
+      }
+    });
+  });
+
+  /* ---- Dosya Ekle — gerçek File API ---- */
+  var zmtFileInput = document.createElement('input');
+  zmtFileInput.type = 'file'; zmtFileInput.multiple = true; zmtFileInput.hidden = true;
+  zmtFileInput.accept = '.pdf,.jpg,.jpeg,.png';
+  document.body.appendChild(zmtFileInput);
+  var zmtDosyalar = [];
+  function renderZmtDosyalar(){
+    var wrap = document.getElementById('zmtDosyaList');
+    if(!zmtDosyalar.length){
+      wrap.innerHTML = '<p class="kisisiz-note" id="zmtDosyaEmpty">Henüz belge eklenmedi — zimmet tutanağı, teslim tutanağı gibi belgeler "Dosya Ekle" ile eklenebilir.</p>';
+      return;
+    }
+    wrap.innerHTML = zmtDosyalar.map(function(f){
+      return '<div class="dm-file-row"><div class="dm-file-mark"><i class="fa-solid fa-file-lines"></i></div>'
+        + '<div class="dm-file-info"><b>' + f.ad + '</b><span>' + f.meta + '</span></div></div>';
+    }).join('');
+  }
+  var btnFile = document.getElementById('btnZmtFile');
+  if(btnFile) btnFile.addEventListener('click', function(){ zmtFileInput.click(); });
+  zmtFileInput.addEventListener('change', function(){
+    Array.prototype.forEach.call(this.files, function(file){
+      zmtDosyalar.push({ad:file.name, meta: Math.max(1, Math.round(file.size/1024)) + ' KB · şimdi eklendi'});
+      tlAppend({title:'Belge eklendi: ' + file.name, sub:'2 Temmuz 2026'});
+      gvToast(file.name + ' eklendi — ZMT-2026-045 kaydına işlendi.');
+    });
+    this.value = '';
+    renderZmtDosyalar();
+  });
+
+  var btnPrint = document.getElementById('btnZmtPrint');
+  if(btnPrint) btnPrint.addEventListener('click', function(){ window.print(); });
 })();
 </script>
 </body>

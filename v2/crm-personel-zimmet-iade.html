@@ -58,6 +58,20 @@
 
 .gv-side-stack{display:flex;flex-direction:column;gap:16px}
 
+/* Teslim Tutanağı — gerçek File API ekleme (crm-operasyon-demirbas-form.html attach-zone
+   idiyomunun uyarlaması, ANCAK mock toast yerine gerçek dosya listesi tutulur) */
+.attach-zone{border:1.5px dashed var(--line);border-radius:var(--r-sm);padding:20px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;cursor:pointer;transition:.2s var(--ease);background:var(--bg)}
+.attach-zone:hover{border-color:var(--acc);background:rgba(var(--acc-rgb),.04)}
+.attach-zone i{font-size:20px;color:var(--acc-ink)}
+.attach-zone b{font-size:12.5px;color:var(--ink);font-weight:700}
+.attach-zone span{font-size:11.5px;color:var(--muted)}
+.dm-file-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.dm-file-row:last-child{border-bottom:none}
+.dm-file-row .dm-file-mark{width:34px;height:34px;flex:none;border-radius:var(--r-sm);background:var(--info-tint);color:var(--info);display:grid;place-items:center;font-size:12px}
+.dm-file-row .dm-file-info{min-width:0;line-height:1.35}
+.dm-file-row .dm-file-info b{display:block;font-size:12.5px;font-weight:700;color:var(--ink)}
+.dm-file-row .dm-file-info span{font-size:11px;color:var(--muted)}
+
 /* iade tamamlandı sonuç durumu */
 .iade-sonuc{display:none;text-align:center;padding:34px 20px}
 .iade-sonuc.is-on{display:block}
@@ -140,6 +154,16 @@
             </form>
           </div>
 
+          <div class="gd-block">
+            <div class="gd-label">Teslim Tutanağı <span class="gf-hint">(isteğe bağlı)</span></div>
+            <div class="attach-zone" id="iadeAttachZone" tabindex="0" role="button" aria-label="Dosya ekle">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <b>Dosya ekle</b>
+              <span>PDF, JPG, PNG — imzalı teslim tutanağını ekleyin</span>
+            </div>
+            <div id="iadeDosyaList"></div>
+          </div>
+
           <div class="form-foot" style="display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:18px 22px;border-top:1px solid var(--line)">
             <a class="btn btn-ghost btn-sm" href="crm-personel-zimmet-detay.html?zmt=045" data-no-confirm>Vazgeç</a>
             <button type="button" class="btn btn-acc btn-sm" id="btnSend" data-no-confirm><i class="fa-solid fa-rotate-left"></i> İadeyi Onayla</button>
@@ -203,6 +227,30 @@
     applyDurum(opt.getAttribute('data-t'));
   });
 
+  /* ---- §17 — Teslim Tutanağı ekleme, gerçek File API (mock toast DEĞİL) ---- */
+  var iadeFileInput = document.createElement('input');
+  iadeFileInput.type = 'file'; iadeFileInput.multiple = true; iadeFileInput.hidden = true;
+  iadeFileInput.accept = '.pdf,.jpg,.jpeg,.png';
+  document.body.appendChild(iadeFileInput);
+  var iadeDosyalar = [];
+  function renderIadeDosyalar(){
+    document.getElementById('iadeDosyaList').innerHTML = iadeDosyalar.map(function(f){
+      return '<div class="dm-file-row"><div class="dm-file-mark"><i class="fa-solid fa-file-lines"></i></div>'
+        + '<div class="dm-file-info"><b>' + f.ad + '</b><span>' + f.meta + '</span></div></div>';
+    }).join('');
+  }
+  var iadeZone = document.getElementById('iadeAttachZone');
+  iadeZone.addEventListener('click', function(){ iadeFileInput.click(); });
+  iadeZone.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); iadeFileInput.click(); } });
+  iadeFileInput.addEventListener('change', function(){
+    Array.prototype.forEach.call(this.files, function(file){
+      iadeDosyalar.push({ad:file.name, meta: Math.max(1, Math.round(file.size/1024)) + ' KB · şimdi eklendi'});
+      gvToast(file.name + ' eklendi.');
+    });
+    this.value = '';
+    renderIadeDosyalar();
+  });
+
   document.getElementById('btnSend').addEventListener('click', function(){
     var durum = durumGroup.querySelector('.tip-opt.is-on').getAttribute('data-t');
     if(durum !== 'iyi' && !hasarNot.value.trim()){
@@ -226,6 +274,19 @@
             : 'ZMT-2026-045 kayıp bildirildi; kayıt Satın Alma/Muhasebe\'ye değerlendirme için bildirildi.';
         document.getElementById('sonucMetin').textContent = metin;
         gvToast('Zimmet iadesi işlendi. [MOCK-SİM]');
+
+        /* ---- §17 — durum + Zimmet Geçmişi senkronu, crm-personel-zimmet-detay.html'in
+           okuduğu localStorage anahtarlarına yazılır (basit sayfalar-arası senkron). ---- */
+        try{
+          localStorage.setItem('gv_zimmet_045_durum', 'iade');
+          var tarihce = [];
+          try{ tarihce = JSON.parse(localStorage.getItem('gv_zimmet_045_tarihce') || '[]'); }catch(e){}
+          var sub = '2 Temmuz 2026 · Teslim alan: ' + teslimAlan.split(' — ')[0];
+          if(iadeDosyalar.length) sub += ' · Ek: ' + iadeDosyalar.map(function(f){ return f.ad; }).join(', ');
+          tarihce.push({title:'İade alındı (' + DURUM_LBL[durum] + ')', sub: sub});
+          if(durum !== 'iyi' && hasarNot.value.trim()) tarihce.push({title:'Hasar/kayıp notu eklendi', sub: hasarNot.value.trim()});
+          localStorage.setItem('gv_zimmet_045_tarihce', JSON.stringify(tarihce));
+        }catch(e){}
       }
     });
   });

@@ -68,14 +68,22 @@
     <div class="gv-crumb">
       <a href="crm-operasyon-demirbas.html">Demirbaş</a>
       <i class="fa-solid fa-chevron-right"></i>
-      <span>Yeni Demirbaş</span>
+      <span id="crumbLbl">Yeni Demirbaş</span>
     </div>
 
     <div class="gv-page-head">
       <div>
         <div class="ph-eyebrow">Günlük Kayıt</div>
-        <h1>Yeni Demirbaş</h1>
-        <div class="ph-sub">Envantere yeni bir demirbaş kalemi ekleyin; zimmet ataması kayıt oluştuktan sonra detay ekranından yapılır.</div>
+        <h1 id="pageTitle">Yeni Demirbaş</h1>
+        <div class="ph-sub" id="pageSub">Envantere yeni bir demirbaş kalemi ekleyin; zimmet ataması kayıt oluştuktan sonra detay ekranından yapılır.</div>
+      </div>
+    </div>
+
+    <!-- ============ §17 — Düzenle/Kopyala banner (mod=duzenle|kopya) ============ -->
+    <div class="gv-card" id="modBanner" hidden style="margin-bottom:18px;border-color:rgba(var(--acc-rgb),.35);background:rgba(var(--acc-rgb),.05)">
+      <div class="gc-body" style="display:flex;align-items:center;gap:12px;padding:16px 20px">
+        <i class="fa-solid fa-circle-info" style="color:var(--acc-ink);font-size:16px"></i>
+        <span id="modBannerTxt" style="font-size:12.5px;color:var(--ink-2);line-height:1.6"></span>
       </div>
     </div>
 
@@ -139,7 +147,7 @@
         </div>
         <div class="form-foot">
           <a class="btn btn-ghost btn-sm" href="crm-operasyon-demirbas.html">Vazgeç</a>
-          <button type="button" class="btn btn-acc btn-sm" data-no-confirm id="demirbasSubmit"><i class="fa-solid fa-floppy-disk"></i> Demirbaşı Kaydet</button>
+          <button type="button" class="btn btn-acc btn-sm" data-no-confirm id="demirbasSubmit"><i class="fa-solid fa-floppy-disk"></i> <span id="demirbasSubmitLbl">Demirbaşı Kaydet</span></button>
         </div>
       </div>
 
@@ -177,12 +185,66 @@
   zone.addEventListener('click', attachMock);
   zone.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); attachMock(); } });
 
+  var isEdit = false;
   document.getElementById('demirbasSubmit').addEventListener('click', function(){
     var ad = document.getElementById('fAd').value.trim();
     if(!ad){ gvToast('Demirbaş adı girin.', {type:'danger'}); return; }
-    gvToast(ad + ' envantere eklendi.');
+    gvToast(isEdit ? ad + ' kaydı güncellendi.' : ad + ' envantere eklendi.');
     setTimeout(function(){ location.href = 'crm-operasyon-demirbas.html'; }, 900);
   });
+
+  /* ============ §17 — Düzenle / Kopyala modları (?mod=duzenle|kopya&zmt=<no>) ============
+     crm-operasyon-demirbas-detay.html'deki "Düzenle" ve crm-personel-zimmet-detay.html'deki
+     (ZMT-2026-045, demirbaş modülünde tam dosyası olmayan tek kanonik personel-zimmet
+     kaydı) çapraz "Düzenle" bağlantıları buraya yönlendirir. zmt parametresi YOKSA
+     varsayılan kayıt 041 (İş Telefonu) kabul edilir — demirbas-detay.html'in editHref
+     üretimiyle BİREBİR uyumlu (041 için ?zmt= eklenmez). Alan seti kararlar.md temsili-
+     derinlik kuralınca yalnız bu formdaki alanlara (ad/kategori/seriNo/marka/şantiye/
+     durum) PREFILL edilir; kaynakta olmayan veri İCAT EDİLMEZ. */
+  var DUZENLE_PREFILL = {
+    '041':{ad:'İş Telefonu', kategori:'telefon', seriNo:'SN-A54-2K7719X', marka:'Samsung Galaxy A54, 64GB', santiye:'Vadi Konakları', durum:'zimmetli'},
+    '044':{ad:'Araç', kategori:'arac', seriNo:'NM0LS7EN6DT204471', marka:'Ford Ranger 4x4 Pikap (2023)', santiye:'Vadi Konakları', durum:'zimmetli'},
+    '047':{ad:'Kırıcı-Delici', kategori:'makine', seriNo:'SN-TE60-8842X', marka:'Hilti TE 60-A36', santiye:'Merkez depo', durum:'serviste'},
+    '045':{ad:'Tablet', kategori:'tablet', seriNo:'SN-TABA9-7K3841L', marka:'Samsung Galaxy Tab A9, 64GB', santiye:'Vadi Konakları', durum:'zimmetli'}
+  };
+
+  function wireModBanner(){
+    var q = new URLSearchParams(location.search);
+    var mod = q.get('mod');
+    if(!mod || (mod !== 'duzenle' && mod !== 'kopya')) return;
+    var zmt = q.get('zmt') || '041';
+    var rec = DUZENLE_PREFILL[zmt];
+    var banner = document.getElementById('modBanner');
+    var bannerTxt = document.getElementById('modBannerTxt');
+    var crumbLbl = document.getElementById('crumbLbl');
+    var pageTitle = document.getElementById('pageTitle');
+    var pageSub = document.getElementById('pageSub');
+    banner.hidden = false;
+    if(!rec){
+      bannerTxt.textContent = 'Kayıt bulunamadı — boş bir form açıldı, dilerseniz yeni kayıt olarak doldurup gönderebilirsiniz.';
+      return;
+    }
+    if(mod === 'duzenle'){
+      isEdit = true;
+      crumbLbl.textContent = 'Demirbaşı Düzenle';
+      pageTitle.textContent = rec.ad + ' — ZMT-2026-' + zmt + ' Düzenle';
+      pageSub.textContent = 'Bu kaydı düzenliyorsunuz. Değişiklikler kaydedildiğinde önceki hâli işlem kayıtlarında saklanır.';
+      bannerTxt.innerHTML = '<b>Düzenleme modu</b> — ZMT-2026-' + zmt + ' (' + rec.ad + ') kaydı üzerinde çalışıyorsunuz.';
+      document.getElementById('demirbasSubmitLbl').textContent = 'Değişiklikleri Kaydet';
+    } else {
+      crumbLbl.textContent = 'Kaydı Kopyala';
+      pageTitle.textContent = 'Yeni Demirbaş (Kopya — ' + rec.ad + ')';
+      pageSub.textContent = 'Seçtiğiniz kayıttan kopyalanan bilgilerle yeni bir demirbaş oluşturuluyor — kaynak kayıt DEĞİŞMEZ, yeni bir ZMT numarası alacaktır.';
+      bannerTxt.innerHTML = '<b>Kopyalama modu</b> — alanlar ZMT-2026-' + zmt + ' kaydından dolduruldu; bu tamamen yeni ve bağımsız bir demirbaş kaydı olacaktır.';
+    }
+    document.getElementById('fAd').value = rec.ad;
+    document.getElementById('fKategori').value = rec.kategori;
+    document.getElementById('fSeriNo').value = rec.seriNo;
+    document.getElementById('fMarka').value = rec.marka;
+    if(!(GV.role === 'sef')) santiyeSel.value = rec.santiye;
+    document.getElementById('fDurum').value = rec.durum;
+  }
+  wireModBanner();
 })();
 </script>
 </body>

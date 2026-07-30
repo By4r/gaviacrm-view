@@ -47,6 +47,12 @@
   .dm-info b{max-width:180px}
   .filter-row .frow-lbl{min-width:0;width:100%}
 }
+
+/* ---- §17 arşiv görünürlüğü — kalıcı silme YERİNE varsayılan listede gizleme
+   (crm-satinalma-siparisler.html deseni BİREBİR) — yalnız Hurda kararı verilmiş
+   veya oturum içinde elle arşivlenmiş kalemler bu bayrağı taşır. ---- */
+#tblDemirbas tbody tr[data-arsiv="1"]{display:none}
+#tblDemirbas.gv-show-arsiv tbody tr[data-arsiv="1"]{display:table-row}
 </style>
 </head>
 <body data-sec="operasyon" data-screen="demirbas">
@@ -109,9 +115,14 @@
 
     <div class="gv-card">
       <div class="filter-bar stack">
-        <div class="fb-search" style="max-width:360px">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="dmSearch" placeholder="Demirbaş adı, ZMT no veya kişi ara">
+        <div class="filter-row" style="justify-content:space-between">
+          <div class="fb-search" style="max-width:360px">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="dmSearch" placeholder="Demirbaş adı, ZMT no veya kişi ara">
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpDemirbas">
+            <i class="fa-solid fa-sliders"></i> Gelişmiş Filtre
+          </button>
         </div>
         <div class="filter-row">
           <span class="frow-lbl">Kategori</span>
@@ -137,6 +148,17 @@
           </div>
         </div>
       </div>
+      <div class="gv-achips-row" id="achipsDemirbas" hidden>
+        <div class="gv-achips"></div>
+        <div class="gv-achips-acts">
+          <button type="button" class="chip is-locked" data-demo="Filtre setlerini kaydetme Faz 2'de geliyor.">
+            <i class="fa-solid fa-lock"></i> Filtreleri Kaydet
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" data-fp-clear-all>
+            <i class="fa-solid fa-filter-circle-xmark"></i> Filtreleri Temizle
+          </button>
+        </div>
+      </div>
       <div class="gc-body flush">
         <table class="gtable" id="tblDemirbas">
           <thead>
@@ -150,7 +172,7 @@
               <th></th>
             </tr>
           </thead>
-          <tbody id="dmBody"><tr data-kat="telefon" data-durum="zimmetli" data-santiye="vadi"><td><div class="dm-cell"><div class="dm-mark" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-mobile-screen-button"></i></div><div class="dm-info"><b>İş Telefonu</b><span class="dm-no">ZMT-2026-041 — Samsung Galaxy A54, 64GB</span></div></div></td><td>Telefon &amp; İletişim</td><td>Hasan Demirci</td><td>Vadi Konakları</td><td>3 Oca 2026</td><td><span class="gstat ok">Zimmetli</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="elaleti" data-durum="zimmetli" data-santiye="vadi"><td><div class="dm-cell"><div class="dm-mark" style="background:var(--warn-tint);color:var(--warn)"><i class="fa-solid fa-screwdriver-wrench"></i></div><div class="dm-info"><b>El Aleti Seti</b><span class="dm-no">ZMT-2026-042 — Bosch GSB 18V-55, 18 parça</span></div></div></td><td>El Aleti</td><td>Hasan Demirci</td><td>Vadi Konakları</td><td>3 Oca 2026</td><td><span class="gstat ok">Zimmetli</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="guvenlik" data-durum="zimmetli" data-santiye="vadi"><td><div class="dm-cell"><div class="dm-mark" style="background:var(--danger-tint);color:var(--danger)"><i class="fa-solid fa-shield-halved"></i></div><div class="dm-info"><b>Güvenlik Ekipmanı</b><span class="dm-no">ZMT-2026-043 — baret + yelek + bot seti</span></div></div></td><td>Güvenlik Ekipmanı</td><td>Hasan Demirci</td><td>Vadi Konakları</td><td>3 Oca 2026</td><td><span class="gstat ok">Zimmetli</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="arac" data-durum="zimmetli" data-santiye="vadi"><td><div class="dm-cell"><div class="dm-mark" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-truck-pickup"></i></div><div class="dm-info"><b>Araç</b><span class="dm-no">ZMT-2026-044 — Ford Ranger pikap, 34 ABC 123</span><a href="crm-operasyon-arac-detay.html?arac=ARC-01" style="display:block;font-size:11px;font-weight:700;color:var(--acc-ink)">Araç dosyası: ARC-01</a></div></div></td><td>Araç</td><td>Hasan Demirci</td><td>Vadi Konakları</td><td>3 Oca 2026</td><td><span class="gstat ok">Zimmetli</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html?zmt=044" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="tablet" data-durum="zimmetli" data-santiye="liman"><td><div class="dm-cell"><div class="dm-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)"><i class="fa-solid fa-tablet-screen-button"></i></div><div class="dm-info"><b>Tablet</b><span class="dm-no">ZMT-2026-045 — Samsung Galaxy Tab A9, 64GB</span></div></div></td><td>Tablet</td><td>Aylin Koç</td><td>Liman Lojistik Merkezi</td><td>15 Şub 2026</td><td><span class="gstat ok">Zimmetli</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="elaleti" data-durum="zimmetli" data-santiye="merkez"><td><div class="dm-cell"><div class="dm-mark" style="background:var(--warn-tint);color:var(--warn)"><i class="fa-solid fa-screwdriver-wrench"></i></div><div class="dm-info"><b>Lazer Metre</b><span class="dm-no">ZMT-2026-046 — Bosch GLM 50 C</span></div></div></td><td>El Aleti</td><td>Ömer Taşkın</td><td>Merkez Şantiye</td><td>20 Oca 2026</td><td><span class="gstat ok">Zimmetli</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="makine" data-durum="serviste" data-santiye="depo"><td><div class="dm-cell"><div class="dm-mark" style="background:var(--bg);color:var(--ink-2)"><i class="fa-solid fa-gears"></i></div><div class="dm-info"><b>Kırıcı-Delici</b><span class="dm-no">ZMT-2026-047 — Hilti TE 60-A36</span></div></div></td><td>Makine-Ekipman</td><td><span class="dm-kisisiz">(kişisiz)</span></td><td>Merkez depo</td><td><span class="muted" style="font-size:11.5px">gönderim:</span> 25 Haz 2026</td><td><span class="gstat warn">Serviste</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html?zmt=047" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="telefon" data-durum="depoda" data-santiye="depo"><td><div class="dm-cell"><div class="dm-mark" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-mobile-screen-button"></i></div><div class="dm-info"><b>El Telsizi Seti</b><span class="dm-no">ZMT-2026-048 — Motorola CP040, 4 adet</span></div></div></td><td>Telefon &amp; İletişim</td><td><span class="dm-kisisiz">(kişisiz)</span></td><td>Merkez depo</td><td>—</td><td><span class="gstat info">Depoda</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="telefon" data-durum="iade" data-santiye=""><td><div class="dm-cell"><div class="dm-mark" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-mobile-screen-button"></i></div><div class="dm-info"><b>El Telsizi</b><span class="dm-no">ZMT-2025-017 — Motorola CP040 — iade: 3 Oca 2026</span></div></div></td><td>Telefon &amp; İletişim</td><td>Hasan Demirci</td><td><span class="dm-kisisiz">—</span></td><td>10 Mar 2025</td><td><span class="gstat off">İade Edildi</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="makine" data-durum="hurda" data-santiye=""><td><div class="dm-cell"><div class="dm-mark" style="background:var(--bg);color:var(--ink-2)"><i class="fa-solid fa-gears"></i></div><div class="dm-info"><b>Jeneratör</b><span class="dm-no">ZMT-2025-009 — Honda EU22i — hurda kararı: 12 May 2026</span></div></div></td><td>Makine-Ekipman</td><td><span class="dm-kisisiz">(kişisiz)</span></td><td><span class="dm-kisisiz">—</span></td><td>8 Nis 2025</td><td><span class="gstat hurda">Hurda</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr></tbody>
+          <tbody id="dmBody"><tr data-kat="telefon" data-durum="zimmetli" data-santiye="vadi"><td><div class="dm-cell"><div class="dm-mark" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-mobile-screen-button"></i></div><div class="dm-info"><b>İş Telefonu</b><span class="dm-no">ZMT-2026-041 — Samsung Galaxy A54, 64GB</span></div></div></td><td>Telefon &amp; İletişim</td><td>Hasan Demirci</td><td>Vadi Konakları</td><td>3 Oca 2026</td><td><span class="gstat ok">Zimmetli</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="elaleti" data-durum="zimmetli" data-santiye="vadi"><td><div class="dm-cell"><div class="dm-mark" style="background:var(--warn-tint);color:var(--warn)"><i class="fa-solid fa-screwdriver-wrench"></i></div><div class="dm-info"><b>El Aleti Seti</b><span class="dm-no">ZMT-2026-042 — Bosch GSB 18V-55, 18 parça</span></div></div></td><td>El Aleti</td><td>Hasan Demirci</td><td>Vadi Konakları</td><td>3 Oca 2026</td><td><span class="gstat ok">Zimmetli</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="guvenlik" data-durum="zimmetli" data-santiye="vadi"><td><div class="dm-cell"><div class="dm-mark" style="background:var(--danger-tint);color:var(--danger)"><i class="fa-solid fa-shield-halved"></i></div><div class="dm-info"><b>Güvenlik Ekipmanı</b><span class="dm-no">ZMT-2026-043 — baret + yelek + bot seti</span></div></div></td><td>Güvenlik Ekipmanı</td><td>Hasan Demirci</td><td>Vadi Konakları</td><td>3 Oca 2026</td><td><span class="gstat ok">Zimmetli</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="arac" data-durum="zimmetli" data-santiye="vadi"><td><div class="dm-cell"><div class="dm-mark" style="background:var(--ok-tint);color:var(--ok)"><i class="fa-solid fa-truck-pickup"></i></div><div class="dm-info"><b>Araç</b><span class="dm-no">ZMT-2026-044 — Ford Ranger pikap, 34 ABC 123</span><a href="crm-operasyon-arac-detay.html?arac=ARC-01" style="display:block;font-size:11px;font-weight:700;color:var(--acc-ink)">Araç dosyası: ARC-01</a></div></div></td><td>Araç</td><td>Hasan Demirci</td><td>Vadi Konakları</td><td>3 Oca 2026</td><td><span class="gstat ok">Zimmetli</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html?zmt=044" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="tablet" data-durum="zimmetli" data-santiye="liman"><td><div class="dm-cell"><div class="dm-mark" style="background:rgba(var(--acc-rgb),.12);color:var(--acc-ink)"><i class="fa-solid fa-tablet-screen-button"></i></div><div class="dm-info"><b>Tablet</b><span class="dm-no">ZMT-2026-045 — Samsung Galaxy Tab A9, 64GB</span></div></div></td><td>Tablet</td><td>Aylin Koç</td><td>Liman Lojistik Merkezi</td><td>15 Şub 2026</td><td><span class="gstat ok">Zimmetli</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="elaleti" data-durum="zimmetli" data-santiye="merkez"><td><div class="dm-cell"><div class="dm-mark" style="background:var(--warn-tint);color:var(--warn)"><i class="fa-solid fa-screwdriver-wrench"></i></div><div class="dm-info"><b>Lazer Metre</b><span class="dm-no">ZMT-2026-046 — Bosch GLM 50 C</span></div></div></td><td>El Aleti</td><td>Ömer Taşkın</td><td>Merkez Şantiye</td><td>20 Oca 2026</td><td><span class="gstat ok">Zimmetli</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="makine" data-durum="serviste" data-santiye="depo"><td><div class="dm-cell"><div class="dm-mark" style="background:var(--bg);color:var(--ink-2)"><i class="fa-solid fa-gears"></i></div><div class="dm-info"><b>Kırıcı-Delici</b><span class="dm-no">ZMT-2026-047 — Hilti TE 60-A36</span></div></div></td><td>Makine-Ekipman</td><td><span class="dm-kisisiz">(kişisiz)</span></td><td>Merkez depo</td><td><span class="muted" style="font-size:11.5px">gönderim:</span> 25 Haz 2026</td><td><span class="gstat warn">Serviste</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html?zmt=047" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="telefon" data-durum="depoda" data-santiye="depo"><td><div class="dm-cell"><div class="dm-mark" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-mobile-screen-button"></i></div><div class="dm-info"><b>El Telsizi Seti</b><span class="dm-no">ZMT-2026-048 — Motorola CP040, 4 adet</span></div></div></td><td>Telefon &amp; İletişim</td><td><span class="dm-kisisiz">(kişisiz)</span></td><td>Merkez depo</td><td>—</td><td><span class="gstat info">Depoda</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="telefon" data-durum="iade" data-santiye=""><td><div class="dm-cell"><div class="dm-mark" style="background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-mobile-screen-button"></i></div><div class="dm-info"><b>El Telsizi</b><span class="dm-no">ZMT-2025-017 — Motorola CP040 — iade: 3 Oca 2026</span></div></div></td><td>Telefon &amp; İletişim</td><td>Hasan Demirci</td><td><span class="dm-kisisiz">—</span></td><td>10 Mar 2025</td><td><span class="gstat off">İade Edildi</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td></tr><tr data-kat="makine" data-durum="hurda" data-santiye="" data-arsiv="1"><td><div class="dm-cell"><div class="dm-mark" style="background:var(--bg);color:var(--ink-2)"><i class="fa-solid fa-gears"></i></div><div class="dm-info"><b>Jeneratör</b><span class="dm-no">ZMT-2025-009 — Honda EU22i — hurda kararı: 12 May 2026</span></div></div></td><td>Makine-Ekipman</td><td><span class="dm-kisisiz">(kişisiz)</span></td><td><span class="dm-kisisiz">—</span></td><td>8 Nis 2025</td><td><span class="gstat hurda">Hurda</span></td><td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html" data-no-confirm="" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a><button type="button" class="ia-btn" data-no-confirm data-arsiv-btn data-tip="Arşivle" aria-label="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td></tr></tbody>
         </table>
         <div class="gv-empty" id="dmEmpty" hidden>
           <div class="ge-ico"><i class="fa-solid fa-toolbox"></i></div>
@@ -161,6 +183,70 @@
       <div class="gc-foot"><span id="dmFoot">—</span></div>
     </div>
   </main>
+
+  <div class="gv-fpanel-ov" id="fpDemirbasOv">
+    <aside class="gv-fpanel" id="fpDemirbas" role="dialog" aria-modal="true" aria-label="Gelişmiş Filtre">
+      <div class="gv-fpanel-head">
+        <h3><i class="fa-solid fa-sliders"></i> Gelişmiş Filtre</h3>
+        <button type="button" class="gv-fpanel-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="gv-fpanel-body">
+        <div class="gfield">
+          <label>Durum</label>
+          <select data-fp-key="fdurum" data-fp-label="Durum">
+            <option value="">Tümü</option>
+            <option value="zimmetli">Zimmetli</option>
+            <option value="depoda">Depoda</option>
+            <option value="serviste">Serviste</option>
+            <option value="hurda">Hurda</option>
+            <option value="iade">İade Edildi</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>Şantiye / Birim</label>
+          <select data-fp-key="fsantiye" data-fp-label="Şantiye">
+            <option value="">Tümü</option>
+            <option value="vadi">Vadi Konakları</option>
+            <option value="liman">Liman Lojistik Merkezi</option>
+            <option value="merkez">Merkez Şantiye</option>
+            <option value="depo">Merkez depo</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>Zimmetli Kişi</label>
+          <select data-fp-key="fkisi" data-fp-label="Zimmetli Kişi">
+            <option value="">Tümü</option>
+            <option value="Hasan Demirci">Hasan Demirci</option>
+            <option value="Aylin Koç">Aylin Koç</option>
+            <option value="Ömer Taşkın">Ömer Taşkın</option>
+            <option value="_kisisiz">(kişisiz)</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label>Demirbaş Türü</label>
+          <select data-fp-key="fkategori" data-fp-label="Demirbaş Türü">
+            <option value="">Tümü</option>
+            <option value="telefon">Telefon &amp; İletişim</option>
+            <option value="tablet">Tablet</option>
+            <option value="elaleti">El Aleti</option>
+            <option value="guvenlik">Güvenlik Ekipmanı</option>
+            <option value="arac">Araç</option>
+            <option value="makine">Makine-Ekipman</option>
+          </select>
+        </div>
+        <div class="gfield">
+          <label style="display:flex;align-items:center;gap:9px;cursor:pointer;font-weight:600">
+            <input type="checkbox" data-fp-key="arsivgoster" data-fp-label="Arşivlenenleri Göster">
+            Arşivlenenleri Göster
+          </label>
+        </div>
+      </div>
+      <div class="gv-fpanel-foot">
+        <button type="button" class="btn btn-ghost" data-fp-clear>Temizle</button>
+        <button type="button" class="btn btn-acc" data-fp-apply>Uygula</button>
+      </div>
+    </aside>
+  </div>
 </div>
 
 <script src="assets/js/shell.js"></script>
@@ -207,7 +293,10 @@
   DEMIRBAS.forEach(function(d){
     var K = KATEGORI[d.kat];
     var D = DURUM[d.durum];
-    html += '<tr data-kat="'+d.kat+'" data-durum="'+d.durum+'" data-santiye="'+(d.santiye||'')+'">';
+    /* §17 — hurdaya ayrılan (arşivlenen) kalemler varsayılan listede gizli; kanonik
+       envanterde şu an yalnız ZMT-2025-009 (Jeneratör) hurda kararlı, kalıcı silinmez */
+    var arsiv = d.durum === 'hurda' ? '1' : '0';
+    html += '<tr data-kat="'+d.kat+'" data-durum="'+d.durum+'" data-santiye="'+(d.santiye||'')+'" data-kisi="'+(d.kisi||'_kisisiz')+'" data-arsiv="'+arsiv+'">';
     html += '<td><div class="dm-cell"><div class="dm-mark" style="background:'+K.bg+';color:'+K.fg+'"><i class="fa-solid '+K.ic+'"></i></div>'
           + '<div class="dm-info"><b>'+d.ad+'</b><span class="dm-no">'+d.no+' — '+d.alt+'</span>'
           + (d.arac ? '<a href="crm-operasyon-arac-detay.html?arac='+d.arac+'" style="display:block;font-size:11px;font-weight:700;color:var(--acc-ink)">Araç dosyası: '+d.arac+'</a>' : '')
@@ -217,7 +306,8 @@
     html += '<td>'+(d.santiye ? SANTIYE_ADI[d.santiye] : '<span class="dm-kisisiz">—</span>')+'</td>';
     html += '<td>'+(d.tarihNot ? '<span class="muted" style="font-size:11.5px">'+d.tarihNot+':</span> ' : '')+d.tarih+'</td>';
     html += '<td><span class="gstat '+D.cls+'">'+D.lbl+'</span></td>';
-    html += '<td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html'+(d.zmt ? '?zmt='+d.zmt : '')+'" data-no-confirm aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></td>';
+    html += '<td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html'+(d.zmt ? '?zmt='+d.zmt : '')+'" data-no-confirm aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>'
+          + '<button type="button" class="ia-btn" data-no-confirm data-arsiv-btn data-tip="Arşivle" aria-label="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>';
     html += '</tr>';
   });
   body.innerHTML = html;
@@ -253,21 +343,35 @@
   var counts0 = refreshCounts();
   document.getElementById('dmSub').textContent = counts0.hepsi + ' kalem · ' + (counts0.zimmetli||0) + ' aktif zimmet · 2 Temmuz 2026, Perşembe';
 
-  /* iki boyutlu filtre — kategori chip + durum chip + serbest metin AND'lenir */
+  /* iki boyutlu hızlı filtre (kategori chip + durum chip + serbest metin) + §9
+     Gelişmiş Filtre panelinden gelen fpState AND'lenir. Bu sayfa kendi karmaşık
+     filtre motorunu kullandığı için gvFilterPanel'e opts.table VERİLMEDİ — spec-
+     filtre-tarih.md §3 "sayfa-lokal motor" durumu; panel yalnız UI/çip/badge yönetir,
+     eşleşme burada yapılır. */
   var curKat = 'hepsi', curDurum = 'hepsi';
+  var fpState = {fdurum:'', fsantiye:'', fkisi:'', fkategori:''};
   function applyFilter(){
     var term = document.getElementById('dmSearch').value.trim().toLocaleLowerCase('tr');
-    var shown = 0;
+    var showArsiv = document.getElementById('tblDemirbas').classList.contains('gv-show-arsiv');
+    var shown = 0, shownArsiv = 0;
     document.querySelectorAll('#tblDemirbas tbody tr').forEach(function(tr){
       var okKat = curKat === 'hepsi' || tr.getAttribute('data-kat') === curKat;
       var okDurum = curDurum === 'hepsi' || tr.getAttribute('data-durum') === curDurum;
       var okTerm = !term || tr.textContent.toLocaleLowerCase('tr').indexOf(term) !== -1;
-      var show = okKat && okDurum && okTerm;
+      var okFDurum = !fpState.fdurum || tr.getAttribute('data-durum') === fpState.fdurum;
+      var okFSantiye = !fpState.fsantiye || tr.getAttribute('data-santiye') === fpState.fsantiye;
+      var okFKisi = !fpState.fkisi || tr.getAttribute('data-kisi') === fpState.fkisi;
+      var okFKategori = !fpState.fkategori || tr.getAttribute('data-kat') === fpState.fkategori;
+      var show = okKat && okDurum && okTerm && okFDurum && okFSantiye && okFKisi && okFKategori;
+      var isArsiv = tr.getAttribute('data-arsiv') === '1';
+      if(isArsiv){ if(show) shownArsiv++; if(!showArsiv) show = false; }
       tr.hidden = !show;
       if(show) shown++;
     });
     document.getElementById('dmEmpty').hidden = shown !== 0;
-    document.getElementById('dmFoot').textContent = shown + ' kalem gösteriliyor · toplam ' + DEMIRBAS.length + ' kayıt';
+    var footTxt = shown + ' kalem gösteriliyor · toplam ' + DEMIRBAS.length + ' kayıt';
+    if(!showArsiv && shownArsiv) footTxt += ' · ' + shownArsiv + ' arşivlenmiş kalem gizli';
+    document.getElementById('dmFoot').textContent = footTxt;
   }
   document.getElementById('dmSearch').addEventListener('input', applyFilter);
   document.getElementById('dmKatChips').addEventListener('click', function(e){
@@ -286,6 +390,50 @@
   });
 
   applyFilter();
+
+  /* ============ §9 — Gelişmiş Filtre paneli (Durum, Şantiye/Birim, Zimmetli Kişi,
+     Demirbaş Türü) + §17 Arşivlenenleri Göster ============ */
+  if(window.gvFilterPanel){
+    window.gvFilterPanel.init('#fpDemirbas', {
+      activeRow: '#achipsDemirbas',
+      onApply: function(state){
+        fpState.fdurum = (state.fdurum && state.fdurum.value) || '';
+        fpState.fsantiye = (state.fsantiye && state.fsantiye.value) || '';
+        fpState.fkisi = (state.fkisi && state.fkisi.value) || '';
+        fpState.fkategori = (state.fkategori && state.fkategori.value) || '';
+        var tbl = document.getElementById('tblDemirbas');
+        if(tbl) tbl.classList.toggle('gv-show-arsiv', !!(state.arsivgoster));
+        applyFilter();
+      },
+      onClear: function(){
+        fpState = {fdurum:'', fsantiye:'', fkisi:'', fkategori:''};
+        var tbl = document.getElementById('tblDemirbas');
+        if(tbl) tbl.classList.remove('gv-show-arsiv');
+        applyFilter();
+      }
+    });
+  }
+
+  /* ---- satır arşivleme aksiyonu — kalıcı silme YERİNE (§17); crm-satinalma-
+     siparisler.html deseni. Hurda kararlı kalem (ZMT-2025-009) zaten data-arsiv="1"
+     ile doğuyor; diğer kalemler oturum içinde elle arşivlenebilir. ---- */
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-arsiv-btn]'); if(!btn) return;
+    var row = btn.closest('tr'); if(!row) return;
+    if(row.getAttribute('data-arsiv') === '1'){ gvToast('Bu kalem zaten arşivde.', {type:'info'}); return; }
+    var labelEl = row.querySelector('.dm-info b, b');
+    var label = labelEl ? labelEl.textContent.trim() : 'Demirbaş';
+    gvConfirm({
+      danger:true, icon:'fa-box-archive', ok:'Arşivle', cancel:'Vazgeç',
+      title: label + ' arşivlensin mi?',
+      message: 'Kayıt kalıcı olarak silinmez; arşive alınır (hurdaya ayrılmış kabul edilir) ve varsayılan listede görünmez olur. İşlem kaydına yazılır ve "Arşivlenenleri Göster" filtresiyle tekrar görüntülenebilir.',
+      onConfirm:function(){
+        row.setAttribute('data-arsiv', '1');
+        applyFilter();
+        gvToast(label + ' arşivlendi — varsayılan listede artık görünmeyecek.', {type:'danger'});
+      }
+    });
+  });
 })();
 </script>
 </body>
