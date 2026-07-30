@@ -88,14 +88,15 @@
     <div class="gv-crumb">
       <a href="crm-satinalma-talepler.html">Malzeme Talepleri</a>
       <i class="fa-solid fa-chevron-right"></i>
-      <span>Yeni Talep</span>
+      <span id="crumbLbl">Yeni Talep</span>
     </div>
 
     <div class="gv-page-head">
       <div>
         <div class="ph-eyebrow">Tedarik</div>
-        <h1>Yeni Malzeme Talebi</h1>
-        <div class="ph-sub">İhtiyaç duyulan malzemeleri kalem kalem girin, Satın Alma onayına gönderin.</div>
+        <h1 id="pageH1">Yeni Malzeme Talebi</h1>
+        <div class="ph-sub" id="pageSub">İhtiyaç duyulan malzemeleri kalem kalem girin, Satın Alma onayına gönderin.</div>
+        <div class="gd-desc" id="revBanner" style="display:none;margin-top:10px;padding:12px 14px;background:var(--warn-tint);color:var(--warn);border-radius:var(--r-sm);font-size:12.5px;line-height:1.5"><i class="fa-solid fa-code-branch"></i> Bu form <b id="revBannerNo"></b> kaydının yeni bir revizyonunu (v2) oluşturuyor. Önceki hali işlem geçmişinde saklanır.</div>
       </div>
     </div>
 
@@ -196,6 +197,21 @@
 (function(){
   if(!window.GV) return;
 
+  /* ?revizyon=<mlz> — mevcut bir talebin yeni revizyonunu oluşturma modu.
+     crm-satinalma-talep-detay.html'deki ?mlz= normalize deseniyle aynı: 3 haneli
+     kayıt kodu sondan yakalanır (ör. ?revizyon=046 veya ?revizyon=MLZ-2026-046). */
+  var revParam = new URLSearchParams(location.search).get('revizyon');
+  var revMatch = revParam ? String(revParam).match(/(\d{3})\s*$/) : null;
+  var revNo = revMatch ? 'MLZ-2026-' + revMatch[1] : null;
+  if(revNo){
+    document.title = 'Talep Revizyonu — ' + revNo + ' — Gavia CRM';
+    document.getElementById('crumbLbl').textContent = 'Revizyon';
+    document.getElementById('pageH1').textContent = 'Talep Revizyonu — ' + revNo;
+    document.getElementById('revBannerNo').textContent = revNo;
+    document.getElementById('revBanner').style.display = '';
+    document.getElementById('btnSend').innerHTML = '<i class="fa-solid fa-code-branch"></i> Revizyonu Gönder';
+  }
+
   /* şantiye ön-seçimi: sef ise kendi sahasına sabitlenir (öncelikli — ?s= onu ezmez);
      değilse URL'deki ?s=vadi|liman|merkez parametresi seçiciyi ön-seçer. */
   var santiyeSel = document.getElementById('fSantiye');
@@ -241,6 +257,11 @@
   document.getElementById('btnSend').addEventListener('click', function(){
     var anyName = Array.prototype.some.call(wrap.querySelectorAll('.kal-row input[type="text"]'), function(i){ return i.value.trim(); });
     if(!anyName){ gvToast('En az bir malzeme adı girin.', {type:'danger'}); return; }
+    if(revNo){
+      gvToast('Revizyon (v2) onaya gönderildi.');
+      setTimeout(function(){ location.href = 'crm-satinalma-talep-detay.html?mlz=' + revMatch[1]; }, 900);
+      return;
+    }
     gvToast('Talep onaya gönderildi. Satın Alma Sorumlusu onayı bekleniyor.');
     setTimeout(function(){ location.href = 'crm-satinalma-talepler.html'; }, 900);
   });
