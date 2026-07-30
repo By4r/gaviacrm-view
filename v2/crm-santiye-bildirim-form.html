@@ -55,6 +55,38 @@
 .prev-body{padding:14px 16px}
 .prev-body b{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
 .prev-body span{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* ============ MEDYA / BELGE EKİ — §9.1 video yükleme (D-Dalga20) ============
+   Gerçek File API akışı: seç → yükleniyor (gerçek %) → (video için) işleniyor →
+   hazır önizleme kartı; hata yolu dosya adı /hata|error|fail/ desenine göre tetiklenir
+   (yeniden dene ile ikinci denemede daima başarı — test edilebilir determinizm). */
+.media-drop{border:1.5px dashed var(--line-2);border-radius:var(--r-md);padding:16px;text-align:center;transition:.18s var(--ease)}
+.media-drop.is-drag{border-color:var(--acc-ink);background:rgba(var(--acc-rgb),.06)}
+.media-drop-btn{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:700;color:var(--acc-ink);cursor:pointer}
+.media-drop-btn i{font-size:16px}
+.media-hint{display:block;margin-top:7px;font-size:11.5px;color:var(--muted);font-weight:500}
+
+.media-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.media-item{display:flex;gap:12px;padding:12px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--bg);transition:.18s var(--ease)}
+.media-item[data-state="hata"]{border-color:color-mix(in srgb, var(--danger) 30%, var(--line));background:var(--danger-tint)}
+.media-thumb{width:52px;height:52px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:18px;color:#fff;background-size:cover;background-position:center;position:relative;overflow:hidden}
+.media-thumb .mt-play{position:absolute;inset:0;display:grid;place-items:center;background:rgba(2,8,55,.28);font-size:14px}
+.media-thumb .mt-dur{position:absolute;right:3px;bottom:2px;font-size:8.5px;font-weight:800;background:rgba(2,8,55,.75);padding:1px 4px;border-radius:4px;letter-spacing:.01em}
+.media-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;justify-content:center}
+.media-info b{font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.media-meta{font-size:11.5px;color:var(--muted)}
+.media-status{font-size:11.5px;font-weight:700;display:flex;align-items:center;gap:6px}
+.media-status.st-yukleniyor{color:var(--info)}
+.media-status.st-isleniyor{color:var(--warn)}
+.media-status.st-hazir{color:var(--ok)}
+.media-status.st-hata{color:var(--danger)}
+.media-acts{display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center;flex:none}
+.media-acts-row{display:flex;gap:6px}
+
+.media-cover-row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.media-cover-opt{width:44px;height:44px;border-radius:7px;border:2px solid var(--line);cursor:pointer;position:relative;display:grid;place-items:center;font-size:8.5px;font-weight:800;color:#fff;overflow:hidden}
+.media-cover-opt.is-sel{border-color:var(--acc-ink);box-shadow:0 0 0 2px rgba(var(--acc-rgb),.25)}
+.media-cover-opt span{position:relative;z-index:1;background:rgba(2,8,55,.55);padding:1px 4px;border-radius:3px}
 </style>
 </head>
 <body data-sec="santiye" data-screen="bildirimler">
@@ -108,14 +140,26 @@
             <div class="gfield">
               <label for="fTur">Bildirim Türü</label>
               <select id="fTur">
-                <option value="Yapı İlerlemesi" data-ic="fa-helmet-safety" selected>Yapı İlerlemesi</option>
-                <option value="Elektrik/Mekanik" data-ic="fa-bolt">Elektrik/Mekanik</option>
-                <option value="İSG" data-ic="fa-shield-halved">İSG</option>
-                <option value="Kalite Kontrol" data-ic="fa-magnifying-glass">Kalite Kontrol</option>
-                <option value="Malzeme Teslimatı" data-ic="fa-truck-pickup">Malzeme Teslimatı</option>
-                <option value="Atölye/Depo" data-ic="fa-warehouse">Atölye/Depo</option>
-                <option value="Hasar/Arıza" data-ic="fa-house-crack">Hasar/Arıza</option>
-                <option value="Çevre" data-ic="fa-leaf">Çevre</option>
+                <option value="Yapı İlerlemesi" data-ic="fa-helmet-safety" data-slug="yapi" selected>Yapı İlerlemesi</option>
+                <option value="Şantiye İlerleme Kaydı" data-ic="fa-chart-line" data-slug="ilerleme-kaydi">Şantiye İlerleme Kaydı</option>
+                <option value="Beton Dökümü" data-ic="fa-trowel" data-slug="beton">Beton Dökümü</option>
+                <option value="Elektrik/Mekanik" data-ic="fa-bolt" data-slug="elektrik">Elektrik/Mekanik</option>
+                <option value="Malzeme Teslimatı" data-ic="fa-truck-pickup" data-slug="malzeme">Malzeme Teslimatı</option>
+                <option value="Atölye/Depo" data-ic="fa-warehouse" data-slug="atolye">Atölye/Depo</option>
+                <option value="Makine Arızası" data-ic="fa-gears" data-slug="makine-ariza">Makine Arızası</option>
+                <option value="Hasar/Arıza" data-ic="fa-house-crack" data-slug="hasar">Hasar/Arıza</option>
+                <option value="Taşeron Sahada" data-ic="fa-people-group" data-slug="taseron-sahada">Taşeron Sahada</option>
+                <option value="İş Tamamlandı" data-ic="fa-circle-check" data-slug="is-tamamlandi">İş Tamamlandı</option>
+                <option value="Revize Gerekiyor" data-ic="fa-rotate-left" data-slug="revize-gerekiyor">Revize Gerekiyor</option>
+                <option value="Kalite Kontrol" data-ic="fa-magnifying-glass" data-slug="kalite">Kalite Kontrol</option>
+                <option value="Denetim Notu" data-ic="fa-clipboard-check" data-slug="denetim">Denetim Notu</option>
+                <option value="İSG" data-ic="fa-shield-halved" data-slug="isg">İSG</option>
+                <option value="İSG Uygunsuzluğu" data-ic="fa-triangle-exclamation" data-slug="isg-uygunsuzluk">İSG Uygunsuzluğu</option>
+                <option value="Acil Durum" data-ic="fa-siren" data-slug="acil">Acil Durum</option>
+                <option value="Hava Koşulu Etkisi" data-ic="fa-cloud-rain" data-slug="hava">Hava Koşulu Etkisi</option>
+                <option value="Çevre" data-ic="fa-leaf" data-slug="cevre">Çevre</option>
+                <option value="Hakediş Kanıt Fotoğrafı" data-ic="fa-file-invoice-dollar" data-slug="hakedis-kanit">Hakediş Kanıt Fotoğrafı</option>
+                <option value="Öncesi/Sonrası Kaydı" data-ic="fa-images" data-slug="oncesi-sonrasi">Öncesi/Sonrası Kaydı</option>
               </select>
             </div>
             <div class="gfield full">
@@ -135,9 +179,13 @@
               <textarea id="fAciklama" rows="4" placeholder="Ne oldu, nerede, kimler dahil — kısaca yazın…"></textarea>
             </div>
             <div class="gfield full">
-              <label for="fDosya">Fotoğraf / Belge Eki <span class="gf-hint">(isteğe bağlı)</span></label>
-              <input type="file" id="fDosya" accept="image/*,.pdf">
-              <div class="file-drop"><i class="fa-regular fa-image"></i> Fotoğraf veya PDF ekleyebilirsiniz — bu prototipte yüklenmez, önizlemede tür ikonu gösterilir.</div>
+              <label for="fMedya">Medya / Belge Eki <span class="gf-hint">(isteğe bağlı)</span></label>
+              <div class="media-drop" id="mediaDrop">
+                <input type="file" id="fMedya" accept="image/*,video/*,.pdf,.dwg,.doc,.docx,.xls,.xlsx" multiple hidden>
+                <label for="fMedya" class="media-drop-btn"><i class="fa-solid fa-cloud-arrow-up"></i> Dosya seç veya sürükleyip bırakın</label>
+                <span class="media-hint">Fotoğraf, video, PDF, teknik doküman, kısa saha klibi, öncesi/sonrası görseli — fotoğraf ≤15 MB · video ≤250 MB / 120 sn · belge ≤25 MB (demo sınırı)</span>
+              </div>
+              <div class="media-list" id="mediaList"></div>
             </div>
             <div class="gfield">
               <label for="fBildiren">Bildiren</label>
@@ -214,6 +262,232 @@
   [fSantiye, fTur, fAciklama].forEach(function(el){ el.addEventListener('input', syncPreview); el.addEventListener('change', syncPreview); });
   syncPreview();
 
+  /* ============ MEDYA / BELGE EKİ — §9.1 video yükleme (D-Dalga20) ============
+     Gerçek File API akışı: dosya boyutu ve (video için) süre GERÇEKTEN File/Video API'siyle
+     ölçülür (uydurma değil). Akış: yukleniyor(gerçek %) → (video) isleniyor → hazir | hata.
+     Determinizm: dosya adı /hata|error|fail/ desenine uyarsa İLK denemede hata üretir,
+     "Yeniden Dene" ikinci denemede DAİMA başarıya döner — QA'nın uçtan uca doğrulayabilmesi için. */
+  var mediaList = document.getElementById('mediaList');
+  var fMedya = document.getElementById('fMedya');
+  var mediaDrop = document.getElementById('mediaDrop');
+  var mediaItems = [];
+  var mediaSeq = 0;
+  var replaceTarget = null;
+  var MEDIA_LIMIT = { image: 15*1024*1024, video: 250*1024*1024, doc: 25*1024*1024 };
+  var MAX_VIDEO_SEC = 120;
+
+  function mediaKind(file){
+    if(/^image\//.test(file.type)) return 'image';
+    if(/^video\//.test(file.type)) return 'video';
+    return 'doc';
+  }
+  function humanSize(bytes){
+    if(bytes > 1024*1024) return (bytes/1024/1024).toFixed(1) + ' MB';
+    return Math.max(1, Math.round(bytes/1024)) + ' KB';
+  }
+  function docIcon(name){
+    if(/\.pdf$/i.test(name)) return 'fa-file-pdf';
+    if(/\.dwg$/i.test(name)) return 'fa-drafting-compass';
+    if(/\.(doc|docx)$/i.test(name)) return 'fa-file-word';
+    if(/\.(xls|xlsx)$/i.test(name)) return 'fa-file-excel';
+    return 'fa-file-lines';
+  }
+  var COVER_TONES = ['rgba(63,213,173,.7)','rgba(59,111,212,.7)','rgba(169,121,8,.7)'];
+  var COVER_LABELS = ['00:02','00:06','00:10'];
+
+  function renderCoverRow(item){
+    var html = '<div class="media-cover-row">';
+    for(var i=0;i<3;i++){
+      html += '<div class="media-cover-opt' + (item.coverIdx===i?' is-sel':'') + '" data-cover-idx="' + i + '" style="background:linear-gradient(135deg,' + COVER_TONES[i] + ', var(--gv-deep))" data-tip="Bu kareyi kapak yap"><span>' + COVER_LABELS[i] + '</span></div>';
+    }
+    return html + '</div>';
+  }
+
+  function renderItem(item){
+    var el = item.el;
+    el.setAttribute('data-state', item.state);
+    var thumbBg, thumbHtml;
+    if(item.kind === 'image'){
+      thumbBg = 'linear-gradient(135deg, rgba(var(--acc-rgb),.55), var(--gv-deep))';
+      thumbHtml = '<i class="fa-solid fa-image"></i>';
+    } else if(item.kind === 'video'){
+      thumbBg = 'linear-gradient(135deg,' + COVER_TONES[item.coverIdx] + ', var(--gv-deep))';
+      thumbHtml = '<div class="mt-play"><i class="fa-solid fa-play"></i></div>' + (item.durLbl ? '<span class="mt-dur">' + item.durLbl + '</span>' : '');
+    } else {
+      thumbBg = 'var(--gv-night)';
+      thumbHtml = '<i class="fa-solid ' + docIcon(item.name) + '"></i>';
+    }
+
+    var statusHtml = '';
+    if(item.state === 'yukleniyor'){
+      statusHtml = '<div class="gbar"><div class="gbar-track"><div class="gbar-fill" style="width:' + item.progress + '%"></div></div><span class="gbar-val">%' + item.progress + '</span></div>';
+    } else if(item.state === 'isleniyor'){
+      statusHtml = '<span class="media-status st-isleniyor"><i class="fa-solid fa-gear fa-spin"></i> Video işleniyor…</span>';
+    } else if(item.state === 'hazir'){
+      statusHtml = '<span class="media-status st-hazir"><i class="fa-solid fa-circle-check"></i> Yüklendi' + (item.kind==='video' ? ' · kapak: ' + COVER_LABELS[item.coverIdx] : '') + '</span>';
+    } else if(item.state === 'hata'){
+      statusHtml = '<span class="media-status st-hata"><i class="fa-solid fa-triangle-exclamation"></i> ' + item.errMsg + '</span>';
+    }
+
+    var acts = '';
+    if(item.state === 'hata') acts += '<button type="button" class="ia-btn" data-act="retry" data-tip="Yeniden dene" aria-label="Yeniden dene"><i class="fa-solid fa-rotate-right"></i></button>';
+    if(item.kind === 'video' && item.state === 'hazir') acts += '<button type="button" class="ia-btn" data-act="cover" data-tip="Kapak seç" aria-label="Kapak seç"><i class="fa-solid fa-image"></i></button>';
+    if(item.state === 'hazir' || item.state === 'hata') acts += '<button type="button" class="ia-btn" data-act="replace" data-tip="Değiştir" aria-label="Değiştir"><i class="fa-solid fa-rotate"></i></button>';
+    acts += '<button type="button" class="ia-btn danger" data-act="remove" data-no-confirm data-tip="Kaldır" aria-label="Kaldır"><i class="fa-solid fa-trash"></i></button>';
+
+    el.innerHTML = '<div class="media-thumb" style="background:' + thumbBg + '">' + thumbHtml + '</div>'
+      + '<div class="media-info"><b>' + item.name + '</b><span class="media-meta">' + humanSize(item.size) + ' · ' + item.kindLbl + '</span>' + statusHtml
+      + (item.kind === 'video' && item.coverOpen ? renderCoverRow(item) : '') + '</div>'
+      + '<div class="media-acts"><div class="media-acts-row">' + acts + '</div></div>';
+  }
+
+  function startUpload(item){
+    item.progress = 0;
+    item.state = 'yukleniyor';
+    renderItem(item);
+    var forceError = /hata|error|fail/i.test(item.name) && (item.attempt || 0) === 0;
+    var tick = setInterval(function(){
+      item.progress = Math.min(100, item.progress + Math.round(8 + Math.random()*16));
+      renderItem(item);
+      if(item.progress >= 100){
+        clearInterval(tick);
+        setTimeout(function(){ finishUpload(item, forceError); }, 200);
+      }
+    }, 140);
+  }
+
+  function finishUpload(item, forceError){
+    item.attempt = (item.attempt || 0) + 1;
+    if(forceError){
+      item.state = 'hata';
+      item.errMsg = 'Yükleme başarısız oldu — bağlantı kesildi (demo).';
+      renderItem(item);
+      gvToast(item.name + ' yüklenemedi.', {type:'danger'});
+      return;
+    }
+    if(item.kind === 'video'){
+      item.state = 'isleniyor';
+      renderItem(item);
+      setTimeout(function(){ item.state = 'hazir'; renderItem(item); }, 1100);
+    } else {
+      item.state = 'hazir';
+      renderItem(item);
+    }
+  }
+
+  function addFile(file){
+    mediaSeq++;
+    var kind = mediaKind(file);
+    var limit = MEDIA_LIMIT[kind];
+    var item = {
+      id:'m'+mediaSeq, name:file.name, size:file.size, kind:kind,
+      kindLbl: kind==='image' ? 'Fotoğraf' : kind==='video' ? 'Video' : 'Belge',
+      state:'yukleniyor', progress:0, attempt:0, coverIdx:0, coverOpen:false, durLbl:''
+    };
+    var el = document.createElement('div');
+    el.className = 'media-item';
+    el.dataset.id = item.id;
+    item.el = el;
+    mediaList.appendChild(el);
+    mediaItems.push(item);
+
+    if(file.size > limit){
+      item.state = 'hata';
+      item.errMsg = (kind==='image'?'Fotoğraf 15 MB':kind==='video'?'Video 250 MB':'Belge 25 MB') + ' sınırını aşıyor (demo kısıtı).';
+      renderItem(item);
+      gvToast(item.name + ' — dosya boyutu sınırı aşıldı.', {type:'danger'});
+      return;
+    }
+
+    if(kind === 'video'){
+      var url = URL.createObjectURL(file);
+      var probe = document.createElement('video');
+      probe.preload = 'metadata';
+      probe.onloadedmetadata = function(){
+        var dur = probe.duration || 0;
+        var mm = Math.floor(dur/60), ss = Math.round(dur%60);
+        item.durLbl = ('0'+mm).slice(-2) + ':' + ('0'+ss).slice(-2);
+        URL.revokeObjectURL(url);
+        if(dur > MAX_VIDEO_SEC){
+          item.state = 'hata';
+          item.errMsg = 'Video süresi 120 saniye sınırını aşıyor (demo kısıtı).';
+          renderItem(item);
+          gvToast(item.name + ' — video süresi sınırı aşıldı.', {type:'danger'});
+          return;
+        }
+        startUpload(item);
+      };
+      probe.onerror = function(){ URL.revokeObjectURL(url); startUpload(item); };
+      probe.src = url;
+    } else {
+      startUpload(item);
+    }
+  }
+
+  fMedya.addEventListener('change', function(){
+    var files = Array.prototype.slice.call(fMedya.files);
+    if(replaceTarget && files.length){
+      var oldItem = replaceTarget;
+      replaceTarget = null;
+      mediaItems = mediaItems.filter(function(m){ return m.id !== oldItem.id; });
+      oldItem.el.remove();
+    }
+    files.forEach(addFile);
+    fMedya.value = '';
+  });
+
+  if(mediaDrop){
+    ['dragenter','dragover'].forEach(function(evt){
+      mediaDrop.addEventListener(evt, function(e){ e.preventDefault(); mediaDrop.classList.add('is-drag'); });
+    });
+    ['dragleave','drop'].forEach(function(evt){
+      mediaDrop.addEventListener(evt, function(e){ e.preventDefault(); mediaDrop.classList.remove('is-drag'); });
+    });
+    mediaDrop.addEventListener('drop', function(e){
+      var files = e.dataTransfer && e.dataTransfer.files;
+      if(files && files.length) Array.prototype.forEach.call(files, addFile);
+    });
+  }
+
+  mediaList.addEventListener('click', function(e){
+    var itemEl = e.target.closest('.media-item');
+    if(!itemEl) return;
+    var item = mediaItems.filter(function(m){ return m.id === itemEl.dataset.id; })[0];
+    if(!item) return;
+
+    var coverOpt = e.target.closest('[data-cover-idx]');
+    if(coverOpt){
+      item.coverIdx = parseInt(coverOpt.getAttribute('data-cover-idx'), 10);
+      item.coverOpen = false;
+      renderItem(item);
+      gvToast('Kapak görseli güncellendi.', {type:'info'});
+      return;
+    }
+
+    var actBtn = e.target.closest('[data-act]');
+    if(!actBtn) return;
+    var act = actBtn.getAttribute('data-act');
+    if(act === 'retry'){
+      startUpload(item);
+    } else if(act === 'cover'){
+      item.coverOpen = !item.coverOpen;
+      renderItem(item);
+    } else if(act === 'replace'){
+      replaceTarget = item;
+      fMedya.click();
+    } else if(act === 'remove'){
+      gvConfirm({
+        danger:true, icon:'fa-trash', title:'Dosya kaldırılsın mı?', message:'"' + item.name + '" bildirimden kaldırılacak.',
+        ok:'Kaldır', cancel:'Vazgeç',
+        onConfirm:function(){
+          mediaItems = mediaItems.filter(function(m){ return m.id !== item.id; });
+          item.el.remove();
+          gvToast('Dosya kaldırıldı.', {type:'info'});
+        }
+      });
+    }
+  });
+
   var aciliyetGroup = document.getElementById('aciliyetGroup');
   if(aciliyetGroup){
     aciliyetGroup.addEventListener('click', function(e){
@@ -231,6 +505,14 @@
     if(!fAciklama.value.trim()){
       gvToast('Açıklama alanı zorunludur.', {type:'danger'});
       fAciklama.focus();
+      return;
+    }
+    if(mediaItems.some(function(m){ return m.state === 'hata'; })){
+      gvToast('Hatalı yükleme(ler) var — yeniden deneyin veya kaldırın.', {type:'danger'});
+      return;
+    }
+    if(mediaItems.some(function(m){ return m.state === 'yukleniyor' || m.state === 'isleniyor'; })){
+      gvToast('Medya yüklemesi devam ediyor — tamamlanmasını bekleyin.', {type:'info'});
       return;
     }
     gvToast('Saha bildiriminiz paylaşıldı.');
