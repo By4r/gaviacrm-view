@@ -1020,6 +1020,9 @@
       {ic:'fa-gauge-high', lbl:'Ana Panel', href:'crm-panel.html', screen:'panel'},
       {seclbl:'Gündem'},
       {ic:'fa-sun',            lbl:'Günlük Özet',      href:'crm-panel-ozet.html',        screen:'ozet'},
+      /* [Dalga 6A] menu-revizyonu.md §1 "EKLE" — kiosk ekranı diskte vardı, menüden hiç
+         linklenmiyordu (yörüngesiz kalem). scr.panel'e de tüm kısıtlı rollere eklendi. */
+      {ic:'fa-tv',             lbl:'Operasyon Ekranı', href:'crm-panel-operasyon.html',   screen:'operasyon-kiosk'},
       {ic:'fa-calendar-week',  lbl:'Ajanda',           href:'crm-panel-ajanda.html',      screen:'ajanda'},
       {ic:'fa-list-check',     lbl:'Görevlerim',       href:'crm-gorev.html?f=bana'},
       {ic:'fa-stamp',          lbl:'Bekleyen Onaylar', href:'crm-panel-onaylar.html',     screen:'onaylar', cnt:'12'},
@@ -1142,35 +1145,40 @@
        superadmin+sahip+yonetim'de — bu 4 rolün görünen panel seti DEĞİŞMEDİ */
     teknik:    { name:'Elif Sarıkaya',    role:'Teknik Müdür',              ini:'ES',
                  secs:['panel','santiye','gorev','operasyon','satinalma','finans','satis'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar','duyurular'],
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar','duyurular','operasyon-kiosk'],
                        satis:['talepler'], satinalma:['stok'],
                        finans:['kurum','taseron','sozlesmeler','butce','maliyet','taseronlar','sozlesme-revizyon','hakedis-onay-gecmisi'] } },
     sef:       { name:'Hasan Demirci',    role:'Şantiye Şefi — Vadi Konakları', ini:'HD',
                  secs:['panel','santiye','gorev','personel','operasyon','satinalma','finans'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar','duyurular'],
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar','duyurular','operasyon-kiosk'],
                        satinalma:['talepler','formlar','siparisler','termin','irsaliye','stok'],
-                       finans:['taseronlar'] } },
+                       /* [Dalga 6A] 'taseron' EKLENDİ — crm-finans-hakedis-detay.html'in kendi
+                          VADI_TH/VADI_HKD budama mantığı sef için zaten yazılmıştı ama
+                          data-screen="taseron" (Taşeron Hakedişleri, TEKİL) burada yalnız
+                          "taseronlar" (Taşeron Kartları, ÇOĞUL) tanımlıydı — isim uyuşmazlığı
+                          sef'i kendi şantiyesinin TH kaydına bile sokmuyordu (bkz. karar dosyası) */
+                       finans:['taseron','taseronlar'] } },
     muhasebe:  { name:'Nesrin Aydın',     role:'Muhasebe',                  ini:'NA',
                  secs:['panel','operasyon','satinalma','cari','finans','personel'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar','duyurular'],
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar','duyurular','operasyon-kiosk'],
                        satinalma:['siparisler','irsaliye','stok','tedarikciler'] } },
     satinalma: { name:'Baran Yıldız',     role:'Satın Alma Sorumlusu',      ini:'BY',
                  secs:['panel','satinalma','cari','gorev'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','duyurular'] } },
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','duyurular','operasyon-kiosk'] } },
     ik:        { name:'Seda Karaca',      role:'İK Uzmanı',                 ini:'SK',
                  secs:['panel','personel','gorev','operasyon'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar','duyurular'],
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar','duyurular','operasyon-kiosk'],
                        operasyon:['kasa','pluxee','puantaj','demirbas','arac'] } },
     personel:  { name:'Ali Vural',        role:'Saha Personeli',            ini:'AV',
                  secs:['panel','gorev'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','duyurular'] } },
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','duyurular','operasyon-kiosk'] } },
     /* [D11] satış personaları (9→11) — indirim zinciri: %0–3 temsilci · %3–7 müdür · %7+ GM */
     satistemsilci:{ name:'Selin Acar',    role:'Satış Temsilcisi',          ini:'SA',
                  secs:['panel','gorev','satis'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','duyurular'] } },
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','duyurular','operasyon-kiosk'] } },
     satismudur:{ name:'Okan Eren',        role:'Satış Müdürü',              ini:'OE',
                  secs:['panel','gorev','satis','cari'], land:'crm-panel.html',
-                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','duyurular'] } }
+                 scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','duyurular','operasyon-kiosk'] } }
   };
   /* scr = ekran-seviyesi budama (4C): bölüm İÇİNDE rolün görebildiği data-screen
      listesi. Tanımsızsa bölümün tamamı görünür (bölüm-seviyesi RBAC aynen).
