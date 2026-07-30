@@ -69,10 +69,26 @@
 /* ---- IBAN / yetkili satırları ---- */
 .iban-row{display:flex;align-items:center;gap:13px;padding:13px 22px;border-bottom:1px solid var(--line)}
 .iban-row:last-child{border-bottom:none}
+.iban-row[data-aktif="0"]{opacity:.6}
 .iban-ico{width:36px;height:36px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:13px;background:var(--info-tint);color:var(--info)}
 .iban-info{flex:1;min-width:0;line-height:1.4}
 .iban-info b{display:block;font-size:13px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.01em}
 .iban-info span{font-size:12px;color:var(--muted)}
+.iban-badge{flex:none}
+.iban-row .row-acts{flex:none;margin-left:4px}
+
+/* ---- bankacılık son işlemler mini akış ---- */
+.bk-log{display:flex;flex-direction:column;padding:4px 22px}
+.bk-log-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.bk-log-row:last-child{border-bottom:none}
+.bk-log-ico{width:26px;height:26px;flex:none;border-radius:8px;display:grid;place-items:center;font-size:11px;background:rgba(var(--acc-rgb),.1);color:var(--acc-ink);margin-top:1px}
+.bk-log-body{flex:1;min-width:0;line-height:1.4}
+.bk-log-line{font-size:12px;color:var(--ink-2)}
+.bk-log-line b{color:var(--ink);font-weight:700}
+.bk-log-meta{margin-top:2px;font-size:10.5px;color:var(--muted);display:flex;gap:7px;flex-wrap:wrap}
+.bk-log-meta a{color:var(--acc-ink);font-weight:700}
+.bk-log-meta a:hover{text-decoration:underline}
+.bk-log-empty{font-size:12px;color:var(--muted);padding:2px 0 8px}
 
 .auth-row{display:flex;align-items:center;gap:13px;padding:14px 22px;border-bottom:1px solid var(--line)}
 .auth-row:last-child{border-bottom:none}
@@ -174,13 +190,17 @@
             </div>
           </div>
           <div class="gv-card">
-            <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-palette"></i> Marka Rengi</div></div>
+            <div class="gc-head">
+              <div class="gc-title"><i class="fa-solid fa-palette"></i> Marka Renkleri</div>
+              <a class="gc-link" href="crm-ayarlar-marka-renkleri.html">Yönet <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
             <div class="gc-body">
               <div class="brand-swatch">
                 <span class="sw" aria-hidden="true"></span>
-                <div class="sw-info"><b>Gavia Mint</b><span>#3FD5AD · vurgu rengi</span></div>
+                <div class="sw-info"><b>Ana Marka Rengi</b><span>#3FD5AD · birincil buton, bağlantı</span></div>
               </div>
-              <p style="margin-top:13px;font-size:12px;color:var(--muted);line-height:1.5">Vurgu rengi bu pakette platform temasıyla sabittir; firmaya özel renk seçimi Enterprise pakette sunulur.</p>
+              <p style="margin-top:13px;font-size:12px;color:var(--muted);line-height:1.5">En fazla 3 renk tanımlanabilir (Ana · Yardımcı · Vurgu/Aksiyon); Ana Marka Rengi zorunludur. HEX kodu veya renk seçiciyle düzenlenir, kaydedilmeden uygulanmaz.</p>
+              <a class="btn btn-ghost btn-sm" href="crm-ayarlar-marka-renkleri.html" style="margin-top:13px"><i class="fa-solid fa-swatchbook"></i> Marka Renklerini Yönet</a>
             </div>
           </div>
         </div>
@@ -272,25 +292,43 @@
           <div class="gv-card">
             <div class="gc-head">
               <div class="gc-title"><i class="fa-solid fa-building-columns"></i> Banka Hesapları (IBAN)</div>
-              <button class="btn btn-ghost btn-sm" data-no-confirm onclick="gvToast('Yeni IBAN ekleme bu demo ortamında simüle edilir.',{type:'info'})"><i class="fa-solid fa-plus"></i> Ekle</button>
+              <a class="btn btn-ghost btn-sm" href="crm-ayarlar-banka-form.html?mod=ekle"><i class="fa-solid fa-plus"></i> Yeni Banka Hesabı Ekle</a>
             </div>
-            <div class="gc-body flush">
-              <div class="iban-row">
+            <div class="gc-body flush" id="ibanList">
+              <div class="iban-row" data-hesap="1" data-aktif="1" data-varsayilan="1">
                 <div class="iban-ico"><i class="fa-solid fa-building-columns"></i></div>
-                <div class="iban-info"><b>TR12 0006 2000 4560 0006 2988 91</b><span>Garanti BBVA · Ana hesap</span></div>
-                <span class="gstat ok">Varsayılan</span>
+                <div class="iban-info"><b>TR12 0006 2000 4560 0006 2988 91</b><span>Garanti BBVA · Ümraniye Şubesi · Ana Hesap · Vadesiz · ₺ TRY</span></div>
+                <span class="gstat ok iban-badge">Varsayılan</span>
+                <div class="row-acts">
+                  <a class="ia-btn" aria-label="Düzenle" title="Düzenle" href="crm-ayarlar-banka-form.html?mod=duzenle&amp;hesap=1"><i class="fa-solid fa-pen"></i></a>
+                  <button type="button" class="ia-btn" aria-label="Arşivle" title="Arşivle" data-no-confirm onclick="ibanConfirmArchive('1')"><i class="fa-solid fa-box-archive"></i></button>
+                </div>
               </div>
-              <div class="iban-row">
+              <div class="iban-row" data-hesap="2" data-aktif="1" data-varsayilan="0">
                 <div class="iban-ico"><i class="fa-solid fa-building-columns"></i></div>
-                <div class="iban-info"><b>TR44 0004 6000 3288 8000 1594 07</b><span>Akbank · Hakediş tahsilat</span></div>
+                <div class="iban-info"><b>TR44 0004 6000 3288 8000 1594 07</b><span>Akbank · Ataşehir Şubesi · Hakediş Tahsilat Hesabı · Vadesiz · ₺ TRY</span></div>
+                <span class="gstat off iban-badge" hidden>Varsayılan</span>
+                <div class="row-acts">
+                  <a class="ia-btn" aria-label="Düzenle" title="Düzenle" href="crm-ayarlar-banka-form.html?mod=duzenle&amp;hesap=2"><i class="fa-solid fa-pen"></i></a>
+                  <button type="button" class="ia-btn" aria-label="Varsayılan yap" title="Varsayılan yap" data-no-confirm onclick="ibanSetDefault('2')"><i class="fa-solid fa-star"></i></button>
+                  <button type="button" class="ia-btn" aria-label="Arşivle" title="Arşivle" data-no-confirm onclick="ibanConfirmArchive('2')"><i class="fa-solid fa-box-archive"></i></button>
+                </div>
               </div>
-              <div class="iban-row">
+              <div class="iban-row" data-hesap="3" data-aktif="0" data-varsayilan="0">
                 <div class="iban-ico"><i class="fa-solid fa-building-columns"></i></div>
-                <div class="iban-info"><b>TR73 0001 0002 3812 3456 7850 02</b><span>Ziraat · Maaş ödeme</span></div>
+                <div class="iban-info"><b>TR73 0001 0002 3812 3456 7850 02</b><span>Ziraat Bankası · Gebze Şubesi · Maaş Ödeme Hesabı — şube birleşmesi sonrası kullanım dışı</span></div>
+                <span class="gstat off iban-badge">Pasif</span>
+                <div class="row-acts">
+                  <a class="ia-btn" aria-label="Düzenle" title="Düzenle" href="crm-ayarlar-banka-form.html?mod=duzenle&amp;hesap=3"><i class="fa-solid fa-pen"></i></a>
+                  <button type="button" class="ia-btn" aria-label="Aktif et" title="Aktif et" data-no-confirm onclick="ibanActivate('3')"><i class="fa-solid fa-rotate-left"></i></button>
+                </div>
               </div>
+            </div>
+            <div class="bk-log" id="bkLog">
+              <div class="bk-log-empty" id="bkLogEmpty">Bu oturumda henüz banka hesabı işlemi yapılmadı.</div>
             </div>
             <div class="gc-foot">
-              <span class="inv-note"><i class="fa-solid fa-circle-info"></i> IBAN'lar hakediş ve tahsilat evraklarında görünür; tüm değerler kurgusaldır.</span>
+              <span class="inv-note"><i class="fa-solid fa-circle-info"></i> IBAN'lar hakediş, fatura ve tahsilat evraklarında görünür; tüm değerler kurgusaldır. Hesaplar silinemez — kullanım dışı bırakılan hesap arşive (Pasif) alınır.</span>
             </div>
           </div>
 
@@ -571,6 +609,97 @@
   var initial = (location.hash || '').replace('#', '');
   var valid = tabs.some(function(t){ return t.getAttribute('data-tab') === initial; });
   activate(valid ? initial : 'kimlik');
+})();
+
+/* ============ Banka Hesapları (§2.2) — Varsayılan Yap / Arşivle / Aktif Et ============
+   Silme yerine arşivleme (kalıcı silme yok); en az bir hesap her zaman varsayılan
+   kalır (varsayılan hesap doğrudan arşivlenemez, önce başka hesap varsayılan yapılmalı).
+   Her aksiyon toast + "Son İşlemler" mini akışına (işlem kaydı simülasyonu) yazılır. */
+(function(){
+  var list = document.getElementById('ibanList');
+  if(!list) return;
+  var logWrap = document.getElementById('bkLog');
+  var logEmpty = document.getElementById('bkLogEmpty');
+  var logSeq = 844; /* crm-ayarlar-marka-renkleri.html oturumu 0841-0843 aralığını kullanır
+                        (bkz. tasks/devir-TC-log.md) — banka hesabı işlemleri 0844'ten başlar. */
+
+  function row(id){ return list.querySelector('.iban-row[data-hesap="' + id + '"]'); }
+  function bankaAdi(r){ return (r.querySelector('.iban-info b') || {}).textContent || 'Hesap'; }
+
+  function addBkLog(lineHtml){
+    logSeq++;
+    if(logEmpty) logEmpty.remove();
+    var d = document.createElement('div');
+    d.className = 'bk-log-row';
+    var now = new Date();
+    var saat = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    d.innerHTML = '<div class="bk-log-ico"><i class="fa-solid fa-building-columns"></i></div>'
+      + '<div class="bk-log-body"><div class="bk-log-line">' + lineHtml + '</div>'
+      + '<div class="bk-log-meta"><span>LOG-2026-' + logSeq + '</span><span>· ' + saat + '</span><a href="crm-ayarlar-log.html">İşlem kayıtlarında görüntüle</a></div></div>';
+    logWrap.insertBefore(d, logWrap.firstChild);
+  }
+
+  function rebuildActiveActs(r, id, isDefault){
+    var acts = r.querySelector('.row-acts');
+    var duzenleHref = acts.querySelector('a.ia-btn').getAttribute('href');
+    acts.innerHTML = '<a class="ia-btn" aria-label="Düzenle" title="Düzenle" href="' + duzenleHref + '"><i class="fa-solid fa-pen"></i></a>'
+      + (isDefault ? '' : '<button type="button" class="ia-btn" aria-label="Varsayılan yap" title="Varsayılan yap" data-no-confirm onclick="ibanSetDefault(\'' + id + '\')"><i class="fa-solid fa-star"></i></button>')
+      + '<button type="button" class="ia-btn" aria-label="Arşivle" title="Arşivle" data-no-confirm onclick="ibanConfirmArchive(\'' + id + '\')"><i class="fa-solid fa-box-archive"></i></button>';
+  }
+
+  window.ibanSetDefault = function(id){
+    var target = row(id); if(!target) return;
+    Array.prototype.forEach.call(list.querySelectorAll('.iban-row'), function(r){
+      var isTarget = r === target;
+      var isActive = r.getAttribute('data-aktif') === '1';
+      r.setAttribute('data-varsayilan', isTarget ? '1' : '0');
+      var badge = r.querySelector('.iban-badge');
+      if(isTarget){
+        badge.hidden = false; badge.textContent = 'Varsayılan'; badge.className = 'gstat ok iban-badge';
+      } else if(isActive){
+        badge.hidden = true;
+      }
+      if(isActive) rebuildActiveActs(r, r.getAttribute('data-hesap'), isTarget);
+    });
+    addBkLog('<b>' + bankaAdi(target) + '</b> varsayılan banka hesabı yapıldı');
+    gvToast(bankaAdi(target) + ' varsayılan hesap yapıldı ve işlem kaydına yazıldı.');
+  };
+
+  window.ibanConfirmArchive = function(id){
+    var target = row(id); if(!target) return;
+    if(target.getAttribute('data-varsayilan') === '1'){
+      gvToast('Varsayılan hesap arşivlenemez — önce başka bir hesabı varsayılan yapın.', {type:'danger'});
+      return;
+    }
+    gvConfirm({
+      danger:true, icon:'fa-box-archive', title:'Arşivlensin mi?',
+      message:'“' + bankaAdi(target) + '” arşive alınacak — çıktı ekranlarında listelenmez, kayıt kalıcı olarak silinmez.',
+      ok:'Arşivle', cancel:'Vazgeç',
+      onConfirm:function(){ ibanArchive(id); }
+    });
+  };
+  window.ibanArchive = function(id){
+    var target = row(id); if(!target) return;
+    target.setAttribute('data-aktif', '0');
+    target.setAttribute('data-varsayilan', '0');
+    var badge = target.querySelector('.iban-badge');
+    badge.hidden = false; badge.textContent = 'Pasif'; badge.className = 'gstat off iban-badge';
+    var acts = target.querySelector('.row-acts');
+    acts.innerHTML = acts.querySelector('a.ia-btn').outerHTML
+      + '<button type="button" class="ia-btn" aria-label="Aktif et" title="Aktif et" data-no-confirm onclick="ibanActivate(\'' + id + '\')"><i class="fa-solid fa-rotate-left"></i></button>';
+    addBkLog('<b>' + bankaAdi(target) + '</b> arşivlendi');
+    gvToast(bankaAdi(target) + ' arşivlendi ve işlem kaydına yazıldı.', {type:'danger'});
+  };
+  window.ibanActivate = function(id){
+    var target = row(id); if(!target) return;
+    target.setAttribute('data-aktif', '1');
+    target.setAttribute('data-varsayilan', '0');
+    var badge = target.querySelector('.iban-badge');
+    badge.hidden = true; badge.className = 'gstat ok iban-badge';
+    rebuildActiveActs(target, id, false);
+    addBkLog('<b>' + bankaAdi(target) + '</b> yeniden aktif edildi');
+    gvToast(bankaAdi(target) + ' aktif edildi ve işlem kaydına yazıldı.');
+  };
 })();
 
 /* modül toggle simülasyonu — sayaç + toast */
