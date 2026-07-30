@@ -142,6 +142,7 @@
 .gform-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
 @media(max-width:640px){.gform-2col{grid-template-columns:1fr}}
 .frm-acts{display:flex;gap:10px;flex-wrap:wrap;padding-top:4px}
+
 </style>
 </head>
 <body data-sec="finans" data-screen="taseronlar">
@@ -400,7 +401,7 @@
     <div class="gv-modal" role="dialog" aria-modal="true" aria-labelledby="personelModalTitle">
       <h3 id="personelModalTitle">Taşeron Personeli Ekle</h3>
       <p class="gd-desc" style="margin-bottom:14px"><i class="fa-solid fa-circle-info" style="color:var(--acc-ink);margin-right:6px"></i>Bu kayıt kanonik 24 kişilik taşeron kadrosuna kalıcı eklenmez — bu prototipte sayfa-lokal "beklemede" bir kayıt olarak listelenir.</p>
-      <form class="gform" id="personelForm" onsubmit="return false">
+      <form id="personelForm" onsubmit="return false">
         <div class="gform-2col">
           <div class="gfield"><label for="fpFirma">Taşeron Firma</label><input id="fpFirma" type="text" disabled></div>
           <div class="gfield"><label for="fpAd">Personel Adı</label><input id="fpAd" type="text" placeholder="Ad Soyad"></div>
