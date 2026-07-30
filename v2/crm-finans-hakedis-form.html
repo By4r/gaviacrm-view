@@ -144,6 +144,14 @@
       </div>
     </div>
 
+    <!-- ============ §17 — Kopyala kaynağı banner'ı (?kaynak=) ============ -->
+    <div class="gv-card" id="kaynakBanner" hidden style="margin-bottom:18px;border-color:rgba(var(--acc-rgb),.35);background:rgba(var(--acc-rgb),.05)">
+      <div class="gc-body" style="display:flex;align-items:center;gap:12px;padding:16px 20px">
+        <i class="fa-solid fa-copy" style="color:var(--acc-ink);font-size:16px"></i>
+        <span id="kaynakBannerTxt" style="font-size:12.5px;color:var(--ink-2);line-height:1.6"></span>
+      </div>
+    </div>
+
     <div class="frm-grid">
       <!-- ============ SOL: form ============ -->
       <div class="gv-card">
@@ -269,6 +277,7 @@
           </div>
           <div class="gd-block frm-acts">
             <button type="button" class="btn btn-acc btn-sm" id="btnSend"><i class="fa-solid fa-paper-plane"></i> Hakedişi Oluştur</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btnDraft" data-no-confirm><i class="fa-solid fa-floppy-disk"></i> Taslak Olarak Kaydet</button>
             <a class="btn btn-ghost btn-sm" href="crm-finans-taseron.html" id="btnCancel" data-no-confirm>Vazgeç</a>
           </div>
         </div>
@@ -453,6 +462,23 @@
     gvToast('Hakediş oluşturuldu ve onay sürecine gönderildi.');
     setTimeout(function(){ location.href = target; }, 900);
   });
+
+  /* §17 — Taslak Olarak Kaydet: gerçek durum geçişi (Taslak), onay akışına GİRMEZ */
+  document.getElementById('btnDraft').addEventListener('click', function(){
+    var anyName = Array.prototype.some.call(wrap.querySelectorAll('.kal-row input[type="text"]'), function(i){ return i.value.trim(); });
+    if(!anyName){ gvToast('En az bir imalat kalemi girin.', {type:'danger'}); return; }
+    gvToast('Hakediş taslak olarak kaydedildi — onaya göndermeden dilediğiniz zaman düzenleyebilirsiniz.', {type:'info'});
+  });
+
+  /* §17 — Kopyala kaynağı (?kaynak=TH-2026-014 gibi) — hakedis-detay.html "Kopyala"
+     aksiyonundan gelir. Kaynak kayıt yalnız BİLGİ amaçlı gösterilir, alanlar bu
+     formda yeniden İCAT EDİLMEZ (kaynak sayfada zaten görüntülenebilir). */
+  var kaynakParam = new URLSearchParams(location.search).get('kaynak');
+  if(kaynakParam){
+    var kb = document.getElementById('kaynakBanner');
+    kb.hidden = false;
+    document.getElementById('kaynakBannerTxt').innerHTML = '<b>' + kaynakParam + '</b> kaydından kopyalanıyor — bu tamamen yeni ve bağımsız bir hakediş olarak oluşturulacak, kaynak kayıt DEĞİŞMEYECEK.';
+  }
 
   recalc();
 
