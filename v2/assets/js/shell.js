@@ -1219,6 +1219,10 @@
       {ic:'fa-puzzle-piece',   lbl:'Modüller',         href:'crm-ayarlar-moduller.html',     screen:'moduller'},
       {ic:'fa-plug',           lbl:'Entegrasyonlar',   href:'crm-ayarlar-entegrasyonlar.html', screen:'entegrasyonlar'},
       {ic:'fa-clock-rotate-left', lbl:'İşlem Kayıtları', href:'crm-ayarlar-log.html',        screen:'log'},
+      /* [Dalga 5] §17 arşiv merkezi — sistem geneli arşivlenen kayıtların tek merkezi;
+         crm-ayarlar-firma.html marka renkleri/banka/yetkili/imza gibi bir alt-akış DEĞİL,
+         hiçbir ayarlar ekranından linklenmediği için kendi menü satırını gerektirir. */
+      {ic:'fa-box-archive',    lbl:'Arşiv',            href:'crm-ayarlar-arsiv.html',        screen:'arsiv'},
       {seclbl:'Genişleme Modülleri'},
       /* [Dalga 6A / K-13] Faz 2 kilitli önizleme + Faz 3 planlı — ölü sayfa yasağı gereği
          gerçek hedeflere gider (crm-ayarlar-coklu-firma/cok-dil.html, d5-kilitli; AI Asistan
