@@ -189,6 +189,12 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
 .lyr input:checked + .lyr-box{background:var(--evc,var(--acc-ink));color:#fff}
 .lyr input:focus-visible + .lyr-box{outline:2px solid var(--acc);outline-offset:2px}
 .lyr-div{height:1px;background:var(--line);margin:6px 2px}
+/* ---- Dalga 20 — "Katmanları Yönet" çapraz link (gv_katmanlar CRUD sahibi
+   crm-santiye-ajanda-katman.html'e gider; bu sayfa yalnız OKUR, YAZMAZ) ---- */
+.lyr-manage{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid var(--line);font-size:12px;font-weight:700;color:var(--acc-ink);text-decoration:none;transition:.15s var(--ease)}
+.lyr-manage:hover{background:var(--bg)}
+.lyr-manage i:last-child{margin-left:auto;font-size:10px;transition:.2s var(--ease)}
+.lyr-manage:hover i:last-child{transform:translateX(3px)}
 
 /* ---- responsive ---- */
 @media(max-width:1100px){
@@ -313,15 +319,20 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
           <button type="button" class="ajd-sidehead" id="lyrToggle" data-no-confirm aria-expanded="false">
             <i class="fa-solid fa-layer-group"></i> Katmanlar <i class="fa-solid fa-chevron-down lyr-chev"></i>
           </button>
+          <!-- statik bake — DALGA 20 kanonik 5 katman (beton/denetim/hakedis/isg/toplanti),
+               JS yüklenince gv_katmanlar'dan (H4, crm-santiye-ajanda-katman.html sahipliğinde)
+               dinamik olarak ezilir — D18-B2 idiyomu. JS-off ortamda bu 5 filtre çalışır durumda
+               kalır (kanonik olay verisiyle 1:1 örtüşüyor). -->
           <div class="lyr-list" id="lyrList">
-            <label class="lyr" style="--evc:var(--acc-ink)"><input type="checkbox" data-lyr="ALL" checked><span class="lyr-box"><i class="fa-solid fa-check"></i></span>Tümü</label>
+            <label class="lyr" style="--evc:var(--acc-ink)"><input type="checkbox" data-lyr="ALL"><span class="lyr-box"><i class="fa-solid fa-check"></i></span>Tümü</label>
             <div class="lyr-div"></div>
-            <label class="lyr" style="--evc:var(--info)"><input type="checkbox" data-lyr="beton" checked><span class="lyr-box"><i class="fa-solid fa-check"></i></span>Beton Dökümü</label>
-            <label class="lyr" style="--evc:var(--warn)"><input type="checkbox" data-lyr="denetim" checked><span class="lyr-box"><i class="fa-solid fa-check"></i></span>Denetim</label>
-            <label class="lyr" style="--evc:var(--ok)"><input type="checkbox" data-lyr="hakedis" checked><span class="lyr-box"><i class="fa-solid fa-check"></i></span>Hakediş</label>
-            <label class="lyr" style="--evc:var(--acc-ink)"><input type="checkbox" data-lyr="isg" checked><span class="lyr-box"><i class="fa-solid fa-check"></i></span>İSG Eğitimi</label>
-            <label class="lyr" style="--evc:var(--ink-2)"><input type="checkbox" data-lyr="toplanti" checked><span class="lyr-box"><i class="fa-solid fa-check"></i></span>Toplantı</label>
+            <label class="lyr" style="--evc:var(--acc-deep)"><input type="checkbox" data-lyr="beton" checked><span class="lyr-box"><i class="fa-solid fa-check"></i></span>Beton Dökümü</label>
+            <label class="lyr" style="--evc:color-mix(in srgb, var(--ink-2) 60%, var(--muted) 40%)"><input type="checkbox" data-lyr="denetim"><span class="lyr-box"><i class="fa-solid fa-check"></i></span>Denetim</label>
+            <label class="lyr" style="--evc:var(--acc-ink)"><input type="checkbox" data-lyr="hakedis" checked><span class="lyr-box"><i class="fa-solid fa-check"></i></span>Hakediş</label>
+            <label class="lyr" style="--evc:var(--danger)"><input type="checkbox" data-lyr="isg" checked><span class="lyr-box"><i class="fa-solid fa-check"></i></span>İSG</label>
+            <label class="lyr" style="--evc:color-mix(in srgb, var(--info) 70%, var(--ink) 30%)"><input type="checkbox" data-lyr="toplanti" checked><span class="lyr-box"><i class="fa-solid fa-check"></i></span>Toplantı</label>
           </div>
+          <a class="lyr-manage" href="crm-santiye-ajanda-katman.html"><i class="fa-solid fa-sliders"></i> Katmanları Yönet <i class="fa-solid fa-arrow-right"></i></a>
         </div>
       </aside>
     </div>
@@ -334,25 +345,52 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
 (function(){
   if(!window.GV) return;
 
-  /* ---- mock hafta programı — kanonik şantiye/kişi adları (shell.js üst yorum bloğu).
-     TÜR renkleri accent'ten bağımsız semantik token'lar: beton=info, denetim=warn,
-     hakediş=ok, İSG eğitimi=acc-ink (kurumsal/eğitim), toplantı=ink-2 (nötr) —
-     panel-ajanda'nın 6'lı tür setiyle KARIŞTIRILMAZ. ---- */
-  var TIP = {
-    beton:   {ic:'fa-trowel-bricks',   lbl:'Beton Dökümü'},
-    denetim: {ic:'fa-clipboard-check', lbl:'Denetim'},
-    hakedis: {ic:'fa-file-invoice-dollar', lbl:'Hakediş'},
-    isg:     {ic:'fa-shield-halved',   lbl:'İSG Eğitimi'},
-    toplanti:{ic:'fa-people-arrows',   lbl:'Toplantı'}
-  };
-  /* tür → [kenar rengi, tint zemin] */
-  var TIPC = {
-    beton:   ['var(--info)','var(--info-tint)'],
-    denetim: ['var(--warn)','var(--warn-tint)'],
-    hakedis: ['var(--ok)','var(--ok-tint)'],
-    isg:     ['var(--acc-ink)','rgba(var(--acc-rgb),.13)'],
-    toplanti:['var(--ink-2)','color-mix(in srgb,var(--ink-2) 9%,var(--paper))']
-  };
+  /* ============ Dalga 20 — paylaşılan katman deposu (gv_katmanlar, H4) ============
+     BU SAYFA YALNIZ OKUR — CRUD sahibi crm-santiye-ajanda-katman.html'dir (T-ISPROGRAMI
+     tek sahiplik). Depo boşsa (ilk ziyaret bu sayfadan başlarsa) AYNI 14 kanonik katmanla
+     bootstrap eder — üç sayfa da aynı tohum veriyi kullanır, sıra bağımlılığı yok.
+     TIP/TIPC bu depodan TÜRETİLİR: kanonik olay verisindeki 5 tip (beton/denetim/hakedis/
+     isg/toplanti) katman yönetimindeki renk/ikon değişikliğini ANINDA yansıtır — "katman
+     yönetiminde yapılan değişiklik takvimlere yansısın" hükmü BURADA gerçekleşir. */
+  var KATMAN_KEY = 'gv_katmanlar';
+  var KATMAN_SEED = [
+    {id:'ktm-01', key:'beton',      ad:'Beton Dökümü',          tur:'insaat',   renk:'var(--acc-deep)', ikon:'fa-trowel-bricks',        santiye:null, departman:'Şantiye Ekibi', gorunurluk:'herkes',  roller:['superadmin','sahip','yonetim','teknik','sef'], varsayilanAcik:true,  durum:'aktif'},
+    {id:'ktm-02', key:'kalip',      ad:'Kalıp İşleri',          tur:'insaat',   renk:'var(--ink-2)', ikon:'fa-cubes-stacked',           santiye:null, departman:'Şantiye Ekibi', gorunurluk:'herkes',  roller:['superadmin','sahip','yonetim','teknik','sef'], varsayilanAcik:true,  durum:'aktif'},
+    {id:'ktm-03', key:'demir',      ad:'Demir İşleri',          tur:'insaat',   renk:'var(--muted)', ikon:'fa-grip-lines',              santiye:null, departman:'Şantiye Ekibi', gorunurluk:'herkes',  roller:['superadmin','sahip','yonetim','teknik','sef'], varsayilanAcik:true,  durum:'aktif'},
+    {id:'ktm-04', key:'mekanik',    ad:'Mekanik',               tur:'insaat',   renk:'var(--info)', ikon:'fa-gears',                    santiye:null, departman:'Şantiye Ekibi', gorunurluk:'herkes',  roller:['superadmin','sahip','yonetim','teknik','sef'], varsayilanAcik:true,  durum:'aktif'},
+    {id:'ktm-05', key:'elektrik',   ad:'Elektrik',              tur:'insaat',   renk:'color-mix(in srgb, var(--info) 55%, var(--acc) 45%)', ikon:'fa-bolt', santiye:null, departman:'Şantiye Ekibi', gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], varsayilanAcik:true, durum:'aktif'},
+    {id:'ktm-06', key:'isg',        ad:'İSG',                   tur:'guvenlik', renk:'var(--danger)', ikon:'fa-shield-halved',           santiye:null, departman:'İSG Ekibi',     gorunurluk:'herkes',  roller:['superadmin','sahip','yonetim','teknik','sef'], varsayilanAcik:true,  durum:'aktif'},
+    {id:'ktm-07', key:'denetim',    ad:'Denetim',               tur:'guvenlik', renk:'color-mix(in srgb, var(--ink-2) 60%, var(--muted) 40%)', ikon:'fa-clipboard-check', santiye:null, departman:'Teknik Ofis', gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], varsayilanAcik:false, durum:'aktif'},
+    {id:'ktm-08', key:'malzeme',    ad:'Malzeme Teslimatı',     tur:'tedarik',  renk:'var(--ok)', ikon:'fa-truck-ramp-box',              santiye:null, departman:'Depo/Lojistik', gorunurluk:'herkes',  roller:['superadmin','sahip','yonetim','teknik','sef'], varsayilanAcik:true,  durum:'aktif'},
+    {id:'ktm-09', key:'hakedis',    ad:'Hakediş',               tur:'finans',   renk:'var(--acc-ink)', ikon:'fa-file-invoice-dollar',    santiye:null, departman:'Muhasebe Departmanı', gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], varsayilanAcik:true, durum:'aktif'},
+    {id:'ktm-10', key:'toplanti',   ad:'Toplantı',              tur:'toplanti', renk:'color-mix(in srgb, var(--info) 70%, var(--ink) 30%)', ikon:'fa-people-arrows', santiye:null, departman:null, gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], varsayilanAcik:true, durum:'aktif'},
+    {id:'ktm-11', key:'musteri',    ad:'Müşteri Ziyareti',      tur:'toplanti', renk:'color-mix(in srgb, var(--acc) 60%, var(--ink-2) 40%)', ikon:'fa-handshake', santiye:null, departman:'Yönetim', gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], varsayilanAcik:false, durum:'aktif'},
+    {id:'ktm-12', key:'taseronmob', ad:'Taşeron Mobilizasyonu', tur:'tedarik',  renk:'color-mix(in srgb, var(--muted) 70%, var(--danger) 30%)', ikon:'fa-people-group', santiye:null, departman:'Taşeron Havuzu', gorunurluk:'herkes', roller:['superadmin','sahip','yonetim','teknik','sef'], varsayilanAcik:true, durum:'aktif'},
+    {id:'ktm-13', key:'kritik',     ad:'Kritik İş',             tur:'guvenlik', renk:'color-mix(in srgb, var(--danger) 70%, var(--ink) 30%)', ikon:'fa-triangle-exclamation', santiye:null, departman:'Yönetim', gorunurluk:'yetkili', roller:['superadmin','sahip','yonetim','teknik'], varsayilanAcik:true, durum:'aktif'},
+    {id:'ktm-14', key:'resmi',      ad:'Resmi İşlem',           tur:'finans',   renk:'var(--ink)', ikon:'fa-file-signature',              santiye:null, departman:'Yönetim', gorunurluk:'yetkili', roller:['superadmin','sahip','yonetim'], varsayilanAcik:false, durum:'aktif'}
+  ];
+  function loadKatmanlar(){
+    try{
+      var raw = JSON.parse(localStorage.getItem(KATMAN_KEY));
+      if(Array.isArray(raw) && raw.length) return raw;
+    }catch(e){}
+    localStorage.setItem(KATMAN_KEY, JSON.stringify(KATMAN_SEED));
+    return KATMAN_SEED.slice();
+  }
+  /* rol görünürlüğü (yalnız yetkili katmanlar) + durum (yalnız aktif) budaması —
+     santiye secs'i olan 5 rolden hangisi giriş yaptıysa o role göre budanır */
+  var KATMANLAR = loadKatmanlar().filter(function(k){
+    if(k.durum !== 'aktif') return false;
+    return k.gorunurluk !== 'yetkili' || k.roller.indexOf(GV.role) !== -1;
+  });
+  /* TIP/TIPC dinamik türetim — kanonik olay verisi (aşağıdaki GUNLER_*) hâlâ
+     'beton'/'denetim'/'hakedis'/'isg'/'toplanti' string anahtarlarını kullanır;
+     bu anahtarların renk/ikon/etiketi artık KATMANLAR'dan gelir (statik değil). */
+  var TIP = {}, TIPC = {};
+  KATMANLAR.forEach(function(k){
+    TIP[k.key] = {ic:k.ikon, lbl:k.ad};
+    TIPC[k.key] = [k.renk, 'color-mix(in srgb, ' + k.renk + ' 12%, var(--paper))'];
+  });
 
   /* ---- href eşleme (Dalga 5A) — SADECE içeriği gerçekten karşılayan sayfalara
      bağlanır; crm-santiye-detay.html sabit "Vadi Konakları" kartıdır (parametre almaz),
@@ -460,11 +498,13 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
     return o.santiye === 'Vadi Konakları';
   }
 
-  /* ---- tür katman filtreleri (Tümü + 5 tür) — tüm görünümlerde çalışır;
-     hafta değişince filtre RESET (panel-ajanda davranışı) ---- */
-  var LAYER_KEYS = Object.keys(TIP);
+  /* ---- katman filtreleri — artık KATMANLAR'dan (gv_katmanlar, role-budanmış)
+     türetilir; her katmanın "varsayılan açık/kapalı" alanı başlangıç durumunu belirler
+     (Denetim/Müşteri Ziyareti/Resmi İşlem varsayılan kapalı — DALGA 20 kanonik).
+     Hafta değişince filtre RESET (panel-ajanda davranışı, AYNEN korunur) ---- */
+  var LAYER_KEYS = KATMANLAR.map(function(k){ return k.key; });
   var layers = {};
-  LAYER_KEYS.forEach(function(k){ layers[k] = true; });
+  KATMANLAR.forEach(function(k){ layers[k.key] = !!k.varsayilanAcik; });
   function layersAllOn(){ return LAYER_KEYS.every(function(k){ return layers[k]; }); }
   function layersOnCount(){ return LAYER_KEYS.filter(function(k){ return layers[k]; }).length; }
   function setAllLayers(v){ LAYER_KEYS.forEach(function(k){ layers[k] = v; }); syncLayerBoxes(); }
@@ -474,6 +514,35 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
       inp.checked = (k === 'ALL') ? layersAllOn() : !!layers[k];
     });
   }
+  /* katman listesini DİNAMİK bas — statik bake (5 kanonik) JS yüklenince bu ile
+     ezilir (D18-B2); renk/ikon/etiket KATMANLAR'dan (dolayısıyla Katman Yönetimi'nden) gelir */
+  (function renderLyrList(){
+    var h = '<label class="lyr" style="--evc:var(--acc-ink)"><input type="checkbox" data-lyr="ALL"'+(layersAllOn()?' checked':'')+'><span class="lyr-box"><i class="fa-solid fa-check"></i></span>Tümü</label><div class="lyr-div"></div>';
+    KATMANLAR.forEach(function(k){
+      h += '<label class="lyr" style="--evc:'+k.renk+'"><input type="checkbox" data-lyr="'+k.key+'"'+(layers[k.key]?' checked':'')+'><span class="lyr-box"><i class="fa-solid fa-check"></i></span>'+esc(k.ad)+'</label>';
+    });
+    document.getElementById('lyrList').innerHTML = h;
+  })();
+  /* checkbox olayları — liste dinamik üretildiği için delegasyonla bağlanır (statik
+     forEach yerine; santiye-ajanda-katman.html'deki satır kebab desenindeki delegasyon
+     mantığının aynısı) */
+  document.getElementById('lyrList').addEventListener('change', function(e){
+    var inp = e.target.closest('input[data-lyr]'); if(!inp) return;
+    var k = inp.getAttribute('data-lyr');
+    if(k === 'ALL') setAllLayers(inp.checked);
+    else { layers[k] = inp.checked; syncLayerBoxes(); }
+    renderAll();
+  });
+  /* ?katman=<key> — çapraz link (panel-ajanda "İş Programı Katmanları" mini listesinden
+     gelir) yalnız o katmanı işaretli bırakır, gerçek çalışan bir ön-filtre uygular */
+  (function applyKatmanQuery(){
+    var m = /[?&]katman=([^&]+)/.exec(location.search);
+    if(!m) return;
+    var key = decodeURIComponent(m[1]);
+    if(LAYER_KEYS.indexOf(key) === -1) return;
+    LAYER_KEYS.forEach(function(k){ layers[k] = (k === key); });
+    syncLayerBoxes();
+  })();
 
   /* günün görünür olayları — {ad:[tüm gün], tm:[zamanlı]} (bu sayfanın havuzunda
      tüm-gün olay yok; şerit veri gelirse kendiliğinden açılır) */
@@ -693,7 +762,7 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
             : view === 'gun' ? (function(){ var g = WEEKS[String(weekIdx)][dayIdx]; return g.d + ' ' + (AY_FULL[g.ay] || g.ay) + ' 2026'; })()
             : 'Temmuz 2026';
     var scope = GV.role === 'sef' ? ' · Vadi Konakları' : '';
-    var lyr = layersAllOn() ? '' : ' · ' + layersOnCount() + '/5 katman';
+    var lyr = layersAllOn() ? '' : ' · ' + layersOnCount() + '/' + LAYER_KEYS.length + ' katman';
     document.getElementById('ajdSub').textContent = shownCount + ' etkinlik' + scope + lyr + ' · ' + rng;
   }
 
@@ -745,15 +814,8 @@ a.mn-bar:hover{box-shadow:var(--sh-sm)}
     b.addEventListener('click', function(){ view = b.getAttribute('data-view'); renderAll(); });
   });
 
-  /* katman checkbox'ları */
-  document.querySelectorAll('#lyrList input[data-lyr]').forEach(function(inp){
-    inp.addEventListener('change', function(){
-      var k = inp.getAttribute('data-lyr');
-      if(k === 'ALL') setAllLayers(inp.checked);
-      else { layers[k] = inp.checked; syncLayerBoxes(); }
-      renderAll();
-    });
-  });
+  /* katman checkbox olayları artık yukarıda #lyrList'e DELEGE edilir (renderLyrList
+     ile aynı yerde bağlandı) — liste dinamik üretildiği için burada tekrar bağlanmaz. */
   /* ≤640: katman kartı katlanır */
   document.getElementById('lyrToggle').addEventListener('click', function(){
     var card = document.getElementById('lyrCard');
