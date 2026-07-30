@@ -43,6 +43,19 @@
 
 .gf-hint-auto{display:flex;align-items:center;gap:6px;color:var(--acc-ink)}
 .gf-hint-auto i{font-size:11px}
+
+/* §15 — Şantiye Türü alanı: tip-group ile AYNI bileşen dili (nitelik seçici ile
+   karıştırılmaması için ayrı bir gfield'de, "zorunlu alan" ayarı kanıtlanabilir bir
+   toggle ile — form ayarı olarak zorunlu/opsiyonel belirlenebilir kabul kriteri). */
+.field-req-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.field-req-row label{margin-bottom:0}
+.req-toggle{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;color:var(--muted);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.req-toggle input{position:absolute;opacity:0;width:1px;height:1px}
+.req-toggle .rt-box{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--line-2);display:grid;place-items:center;flex:none;transition:.15s var(--ease)}
+.req-toggle .rt-box i{font-size:9.5px;color:#fff;opacity:0}
+.req-toggle input:checked + .rt-box{background:var(--acc-ink);border-color:var(--acc-ink)}
+.req-toggle input:checked + .rt-box i{opacity:1}
+.gfield label .req-star{color:var(--danger);margin-left:2px}
 </style>
 </head>
 <body data-sec="santiye" data-screen="liste">
@@ -90,13 +103,30 @@
               <input type="text" id="fAd" placeholder="örn. Vadi Konakları 3. Etap">
             </div>
             <div class="gfield full">
-              <label>Şantiye Tipi</label>
+              <label>Proje Niteliği</label>
               <div class="tip-group" id="tipGroup">
                 <label class="tip-opt is-on" data-t="konut"><input type="radio" name="tip" value="konut" checked> Konut</label>
                 <label class="tip-opt" data-t="ticari"><input type="radio" name="tip" value="ticari"> Ticari</label>
                 <label class="tip-opt" data-t="depo"><input type="radio" name="tip" value="depo"> Depo + Atölye</label>
                 <label class="tip-opt" data-t="ofis"><input type="radio" name="tip" value="ofis"> Ofis</label>
               </div>
+              <span class="gf-hint">Fiziksel proje niteliği — aşağıdaki Şantiye Türü'nden (ticari model) bağımsızdır.</span>
+            </div>
+            <div class="gfield full">
+              <div class="field-req-row">
+                <label for="fTur">Şantiye Türü<span class="req-star" id="turReqStar">*</span></label>
+                <label class="req-toggle" data-tip="Bu alanı kayıt formunda zorunlu tutup tutmayacağınızı belirler">
+                  <input type="checkbox" id="turRequiredToggle" checked>
+                  <span class="rt-box"><i class="fa-solid fa-check"></i></span>
+                  Zorunlu alan
+                </label>
+              </div>
+              <select id="fTur">
+                <option value="yapsat">Yapsat</option>
+                <option value="kamu">Kamu</option>
+                <option value="taahhut">Taahhüt</option>
+              </select>
+              <span class="gf-hint">Ticari model sınıflandırması — hakediş, raporlama ve şantiye listesi filtresinde kullanılır.</span>
             </div>
             <div class="gfield full">
               <label>Adres</label>
@@ -129,8 +159,9 @@
               <input type="date" id="fBasla" value="2026-09-01">
             </div>
             <div class="gfield">
-              <label for="fHedef">Hedef Teslim Tarihi</label>
+              <label for="fHedef">Sözleşmeye Göre İş Bitiş Tarihi</label>
               <input type="date" id="fHedef" value="2027-12-31">
+              <span class="gf-hint">Hedef teslim tarihi başlangıçta bu tarihe eşittir; süre uzatımı onaylanırsa Şantiye Kartı'nda ayrıca güncellenir.</span>
             </div>
             <div class="gfield full">
               <label for="fSozlesme">Sözleşme Bağlantısı <span class="gf-hint">(isteğe bağlı)</span></label>
@@ -195,11 +226,24 @@
     opt.classList.add('is-on');
   });
 
+  /* §15 kabul kriteri — "zorunlu veya opsiyonel olarak belirlenebilir": bu toggle
+     admin'in Şantiye Türü alanını formda zorunlu tutup tutmayacağını canlı belirler. */
+  var fTur = document.getElementById('fTur');
+  var turReqToggle = document.getElementById('turRequiredToggle');
+  var turReqStar = document.getElementById('turReqStar');
+  function turIsRequired(){ return turReqToggle.checked; }
+  turReqToggle.addEventListener('change', function(){
+    turReqStar.hidden = !turIsRequired();
+    fTur.closest('.gfield').classList.toggle('is-optional', !turIsRequired());
+  });
+
   document.getElementById('santiyeSubmit').addEventListener('click', function(){
     if(this.disabled) return;
     var ad = document.getElementById('fAd').value.trim();
     if(!ad){ gvToast('Şantiye adını girin.', {type:'danger'}); return; }
-    gvToast('"' + ad + '" şantiye kaydı oluşturuldu — Planlama durumunda listeye eklendi.');
+    if(turIsRequired() && !fTur.value){ gvToast('Şantiye türünü seçin.', {type:'danger'}); fTur.focus(); return; }
+    var turLbl = fTur.options[fTur.selectedIndex].textContent;
+    gvToast('"' + ad + '" şantiye kaydı oluşturuldu (' + turLbl + ') — Planlama durumunda listeye eklendi.');
     setTimeout(function(){ location.href = 'crm-santiye.html'; }, 900);
   });
 })();
