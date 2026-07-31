@@ -119,6 +119,23 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
 .kul-mini-row .kul-km{margin-left:auto;flex:none;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums}
 
 .tab-cta{padding:14px 22px;border-top:1px solid var(--line);text-align:right}
+
+/* ============ §1.3 (11 sekme) — Genel/Muayene/Kasko/Trafik/Zimmet/İşlem yeni
+   sekmelerinin ortak key-value ızgarası (hasar-grid/hasar-cell desenin genellenmiş
+   hali) + poliçe belgesi mini-satırı (doc-mini-row'un salt-okunur kullanımı). ============ */
+.kv-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:20px 22px}
+@media(max-width:900px){.kv-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.kv-grid{grid-template-columns:1fr}}
+.kv-grid > div dt{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.kv-grid > div dd{font-size:13.5px;font-weight:700;color:var(--ink)}
+.kv-grid > div.full{grid-column:1/-1}
+
+.zimmet-row{display:flex;align-items:flex-start;gap:14px;padding:16px 22px;border-bottom:1px solid var(--line)}
+.zimmet-row:last-child{border-bottom:none}
+.zr-ico{width:38px;height:38px;flex:none;border-radius:var(--r-sm);display:grid;place-items:center;font-size:14px;background:var(--bg);color:var(--ink-2)}
+.zr-info{flex:1;min-width:0}
+.zr-info b{display:block;font-size:13.5px;font-weight:700;color:var(--ink)}
+.zr-info span{font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body data-sec="operasyon" data-screen="arac">
@@ -180,55 +197,124 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
       <div class="veh-hero-stats" id="vhStats"><div class="vh-stat warn"><div class="vh-stat-num">29.07.2026</div><div class="vh-stat-lbl">Muayene — 27 gün kaldı</div></div><div class="vh-stat"><div class="vh-stat-num">7.700 km kaldı</div><div class="vh-stat-lbl">Sonraki bakım — hedef 50.000 km</div></div><div class="vh-stat"><div class="vh-stat-num">₺9.640</div><div class="vh-stat-lbl">Aylık maliyet</div></div><div class="vh-stat"><div class="vh-stat-num">₺1.840</div><div class="vh-stat-lbl">Temmuz HGS — 22 geçiş</div></div></div>
     </div>
 
-    <!-- ============ SEKMELER ============ -->
+    <!-- ============ SEKMELER (§1.3, 11 sekme) ============ -->
     <div class="gv-tabs" role="tablist" aria-label="Araç detay sekmeleri">
-      <button class="gv-tab is-active" data-tab="hgs" role="tab" aria-selected="true"><i class="fa-solid fa-road"></i> HGS Geçişleri</button>
-      <button class="gv-tab" data-tab="ceza" role="tab" aria-selected="false"><i class="fa-solid fa-gavel"></i> Trafik Cezaları</button>
-      <button class="gv-tab" data-tab="kaza" role="tab" aria-selected="false"><i class="fa-solid fa-car-burst"></i> Kaza &amp; Hasar</button>
-      <button class="gv-tab" data-tab="bakim" role="tab" aria-selected="false"><i class="fa-solid fa-screwdriver-wrench"></i> Bakım &amp; Muayene</button>
-      <button class="gv-tab" data-tab="evrak" role="tab" aria-selected="false"><i class="fa-solid fa-folder-open"></i> Evraklar</button>
-      <button class="gv-tab" data-tab="kullanim" role="tab" aria-selected="false"><i class="fa-solid fa-road-circle-check"></i> Kullanım Kayıtları</button>
+      <button class="gv-tab is-active" data-tab="genel" role="tab" aria-selected="true"><i class="fa-solid fa-circle-info"></i> Genel Bilgiler</button>
+      <button class="gv-tab" data-tab="muayene" role="tab" aria-selected="false"><i class="fa-solid fa-clipboard-check"></i> Muayene</button>
+      <button class="gv-tab" data-tab="kasko" role="tab" aria-selected="false"><i class="fa-solid fa-shield-halved"></i> Kasko</button>
+      <button class="gv-tab" data-tab="trafik" role="tab" aria-selected="false"><i class="fa-solid fa-file-shield"></i> Trafik Sigortası</button>
+      <button class="gv-tab" data-tab="yakit" role="tab" aria-selected="false"><i class="fa-solid fa-gas-pump"></i> Yakıt Hareketleri</button>
+      <button class="gv-tab" data-tab="bakim" role="tab" aria-selected="false"><i class="fa-solid fa-screwdriver-wrench"></i> Bakım Geçmişi</button>
+      <button class="gv-tab" data-tab="gider" role="tab" aria-selected="false"><i class="fa-solid fa-sack-dollar"></i> Gider Geçmişi</button>
+      <button class="gv-tab" data-tab="hasarkaza" role="tab" aria-selected="false"><i class="fa-solid fa-car-burst"></i> Hasar &amp; Kaza Kayıtları</button>
+      <button class="gv-tab" data-tab="evrak" role="tab" aria-selected="false"><i class="fa-solid fa-folder-open"></i> Belgeler</button>
+      <button class="gv-tab" data-tab="zimmet" role="tab" aria-selected="false"><i class="fa-solid fa-user-shield"></i> Zimmet Geçmişi</button>
+      <button class="gv-tab" data-tab="islem" role="tab" aria-selected="false"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Kayıtları</button>
     </div>
 
-    <!-- ============ HGS GEÇİŞLERİ ============ -->
-    <section class="tab-panel" data-tab-panel="hgs" role="tabpanel" aria-label="HGS Geçişleri">
+    <!-- ============ 1. GENEL BİLGİLER (YENİ) ============ -->
+    <section class="tab-panel" data-tab-panel="genel" role="tabpanel" aria-label="Genel Bilgiler">
       <div class="gv-card">
-        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-road"></i> HGS Geçişleri — Temmuz 2026</div></div>
-        <div class="gc-body flush" id="hgsWrap"><table class="gtable" id="tblHgs"><thead><tr><th>Tarih</th><th>Gişe</th><th class="num">Tutar</th></tr></thead><tbody><tr><td>01.07.2026</td><td>Kuzey Marmara O-7 Çekmeköy</td><td class="num">₺85</td></tr><tr><td>02.07.2026</td><td>FSM Köprüsü</td><td class="num">₺95</td></tr><tr><td>03.07.2026</td><td>TEM Otoyolu Ümraniye</td><td class="num">₺80</td></tr><tr><td>04.07.2026</td><td>15 Temmuz Şehitler Köprüsü</td><td class="num">₺90</td></tr><tr><td>05.07.2026</td><td>Kuzey Marmara O-7 Çekmeköy</td><td class="num">₺85</td></tr><tr><td>07.07.2026</td><td>FSM Köprüsü</td><td class="num">₺75</td></tr><tr><td>08.07.2026</td><td>TEM Otoyolu Ümraniye</td><td class="num">₺95</td></tr><tr><td>09.07.2026</td><td>15 Temmuz Şehitler Köprüsü</td><td class="num">₺80</td></tr><tr><td>10.07.2026</td><td>Kuzey Marmara O-7 Çekmeköy</td><td class="num">₺85</td></tr><tr><td>11.07.2026</td><td>FSM Köprüsü</td><td class="num">₺90</td></tr><tr><td>14.07.2026</td><td>TEM Otoyolu Ümraniye</td><td class="num">₺75</td></tr><tr><td>15.07.2026</td><td>15 Temmuz Şehitler Köprüsü</td><td class="num">₺85</td></tr><tr><td>16.07.2026</td><td>Kuzey Marmara O-7 Çekmeköy</td><td class="num">₺95</td></tr><tr><td>17.07.2026</td><td>FSM Köprüsü</td><td class="num">₺80</td></tr><tr><td>18.07.2026</td><td>TEM Otoyolu Ümraniye</td><td class="num">₺85</td></tr><tr><td>19.07.2026</td><td>15 Temmuz Şehitler Köprüsü</td><td class="num">₺90</td></tr><tr><td>21.07.2026</td><td>Kuzey Marmara O-7 Çekmeköy</td><td class="num">₺75</td></tr><tr><td>22.07.2026</td><td>FSM Köprüsü</td><td class="num">₺85</td></tr><tr><td>23.07.2026</td><td>TEM Otoyolu Ümraniye</td><td class="num">₺95</td></tr><tr><td>24.07.2026</td><td>15 Temmuz Şehitler Köprüsü</td><td class="num">₺80</td></tr><tr><td>25.07.2026</td><td>Kuzey Marmara O-7 Çekmeköy</td><td class="num">₺85</td></tr><tr><td>28.07.2026</td><td>FSM Köprüsü</td><td class="num">₺50</td></tr><tr class="hgs-total"><td colspan="2">Temmuz Toplamı</td><td class="num">₺1.840</td></tr></tbody></table></div>
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-circle-info"></i> Genel Bilgiler</div></div>
+        <dl class="kv-grid" id="genelKvWrap"></dl>
       </div>
     </section>
 
-    <!-- ============ TRAFİK CEZALARI ============ -->
-    <section class="tab-panel" data-tab-panel="ceza" role="tabpanel" aria-label="Trafik Cezaları" hidden>
+    <!-- ============ 2. MUAYENE (YENİ) ============ -->
+    <section class="tab-panel" data-tab-panel="muayene" role="tabpanel" aria-label="Muayene" hidden>
+      <div class="gv-card" style="margin-bottom:16px">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clipboard-check"></i> Muayene Bilgileri</div></div>
+        <dl class="kv-grid" id="muayeneKvWrap"></dl>
+      </div>
       <div class="gv-card">
-        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-gavel"></i> Trafik Cezaları</div></div>
-        <div id="cezaWrap"><div class="ceza-row"><div class="ceza-ico" style="background:var(--warn-tint,var(--bg));color:var(--warn)"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="ceza-info"><b>Hız İhlali</b><span>12.05.2026 · <span class="gstat warn" style="margin-left:2px">Personel kesintisi — onay sürecinde</span></span></div><div class="ceza-amt"><b>₺2.167</b></div></div><div class="ceza-row"><div class="ceza-ico" style="background:var(--ok-tint,var(--bg));color:var(--ok)"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="ceza-info"><b>Park İhlali</b><span>03.04.2026 · <span class="gstat ok" style="margin-left:2px">Firma ödedi</span></span></div><div class="ceza-amt"><b>₺993</b></div></div></div>
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-circle-check"></i> Muayene Raporu</div></div>
+        <div id="muayeneDocWrap"></div>
       </div>
     </section>
 
-    <!-- ============ KAZA & HASAR ============ -->
-    <section class="tab-panel" data-tab-panel="kaza" role="tabpanel" aria-label="Kaza ve Hasar" hidden>
+    <!-- ============ 3. KASKO (YENİ) ============ -->
+    <section class="tab-panel" data-tab-panel="kasko" role="tabpanel" aria-label="Kasko" hidden>
+      <div class="gv-card" style="margin-bottom:16px">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-shield-halved"></i> Kasko Bilgileri</div></div>
+        <dl class="kv-grid" id="kaskoKvWrap"></dl>
+      </div>
       <div class="gv-card">
-        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-car-burst"></i> Kaza &amp; Hasar</div></div>
-        <div id="kazaWrap"><div class="gd-block" style="padding:20px 22px"><b style="display:block;font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:4px">Şantiye giriş rampasına çarpma</b><span style="font-size:12px;color:var(--muted)">18.06.2026</span><div class="hasar-grid"><div class="hasar-cell"><dt>Hasar Bedeli</dt><dd>₺18.500</dd></div><div class="hasar-cell"><dt>Sigorta Karşılığı (%80)</dt><dd style="color:var(--ok)">₺14.800</dd></div><div class="hasar-cell"><dt>Firma Payı</dt><dd style="color:var(--danger)">₺3.700</dd></div></div></div></div>
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-shield"></i> Kasko Poliçesi</div></div>
+        <div id="kaskoDocWrap"></div>
       </div>
     </section>
 
-    <!-- ============ BAKIM & MUAYENE ============ -->
-    <section class="tab-panel" data-tab-panel="bakim" role="tabpanel" aria-label="Bakım ve Muayene" hidden>
+    <!-- ============ 4. TRAFİK SİGORTASI (YENİ) ============ -->
+    <section class="tab-panel" data-tab-panel="trafik" role="tabpanel" aria-label="Trafik Sigortası" hidden>
+      <div class="gv-card" style="margin-bottom:16px">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-shield"></i> Trafik Sigortası Bilgileri</div></div>
+        <dl class="kv-grid" id="trafikKvWrap"></dl>
+      </div>
+      <div class="gv-card">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-file-shield"></i> Trafik Sigortası Poliçesi</div></div>
+        <div id="trafikDocWrap"></div>
+      </div>
+    </section>
+
+    <!-- ============ 5. YAKIT HAREKETLERİ (mevcut "Kullanım Kayıtları" içeriği
+         buraya taşındı — kararlar.md madde 115, veri kaybı yok, regresyon KORUNUR) ============ -->
+    <section class="tab-panel" data-tab-panel="yakit" role="tabpanel" aria-label="Yakıt Hareketleri" hidden>
+      <div class="gv-card">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-gas-pump"></i> Yakıt Hareketleri — Kullanım Kayıtlarından</div></div>
+        <div id="kullanimMiniWrap"></div>
+        <div class="tab-cta"><a class="gc-link" id="lnkKullanimTam" href="crm-operasyon-arac-kullanim.html?arac=ARC-01">Tüm kullanım kayıtlarını gör <i class="fa-solid fa-arrow-right"></i></a></div>
+      </div>
+      <div class="gv-card" style="margin-top:16px">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-chart-line"></i> Yakıt Gideri Özeti</div></div>
+        <div id="yakitOzetWrap"></div>
+        <div class="tab-cta"><a class="gc-link" id="lnkYakitTam" href="crm-operasyon-arac-yakit.html?arac=ARC-01">Tüm yakıt hareketlerini yönet <i class="fa-solid fa-arrow-right"></i></a></div>
+      </div>
+    </section>
+
+    <!-- ============ 6. BAKIM GEÇMİŞİ (mevcut "Bakım & Muayene" sekmesinden
+         muayene alt-bloğu ayrıştırıldı, bakım kısmı KORUNUR) ============ -->
+    <section class="tab-panel" data-tab-panel="bakim" role="tabpanel" aria-label="Bakım Geçmişi" hidden>
       <div class="gv-card" style="margin-bottom:16px">
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-bell"></i> Hatırlatmalar</div></div>
-        <div class="bakim-remind" id="bakimRemindWrap"><div class="br-card warn"><div class="br-ico"><i class="fa-solid fa-clipboard-check"></i></div><div class="br-body"><b>Muayene — 29.07.2026</b><span>27 gün kaldı, planlayın.</span></div></div><div class="br-card"><div class="br-ico"><i class="fa-solid fa-oil-can"></i></div><div class="br-body"><b>Sonraki Bakım — hedef 50.000 km</b><span>Güncel km 42.300 km — 7.700 km kaldı.</span></div></div></div>
+        <div class="bakim-remind" id="bakimRemindWrap"></div>
       </div>
       <div class="gv-card">
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> Geçmiş Bakımlar</div></div>
-        <div id="bakimHistWrap"><div class="bakim-hist-row"><div class="bh-ico"><i class="fa-solid fa-wrench"></i></div><div class="bh-info"><b>Periyodik bakım — yağ, filtre, fren kontrolü</b><span>15.05.2026</span></div><div class="bh-km">40.000 km</div></div><div class="bakim-hist-row"><div class="bh-ico"><i class="fa-solid fa-wrench"></i></div><div class="bh-info"><b>Yağ + filtre değişimi, genel kontrol</b><span>12.11.2025</span></div><div class="bh-km">28.500 km</div></div></div>
+        <div id="bakimHistWrap"></div>
         <div class="tab-cta"><a class="gc-link" id="lnkBakimTam" href="crm-operasyon-arac-bakim.html?arac=ARC-01">Tüm bakım geçmişini gör / kayıt ekle <i class="fa-solid fa-arrow-right"></i></a></div>
       </div>
     </section>
 
-    <!-- ============ EVRAKLAR (özet) ============ -->
-    <section class="tab-panel" data-tab-panel="evrak" role="tabpanel" aria-label="Evraklar" hidden>
+    <!-- ============ 7. GİDER GEÇMİŞİ (mevcut "HGS Geçişleri" sekmesi buraya
+         taşındı, ZATEN VAR veri KORUNUR + diğer gider kategorileri alt-bloğu YENİ) ============ -->
+    <section class="tab-panel" data-tab-panel="gider" role="tabpanel" aria-label="Gider Geçmişi" hidden>
+      <div class="gv-card" style="margin-bottom:16px">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-road"></i> HGS Geçişleri — Temmuz 2026</div></div>
+        <div class="gc-body flush" id="hgsWrap"></div>
+      </div>
+      <div class="gv-card">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-sack-dollar"></i> Diğer Gider Kalemleri</div></div>
+        <div id="giderDigerWrap"></div>
+        <div class="tab-cta"><a class="gc-link" id="lnkGiderTam" href="crm-operasyon-arac-gider.html?arac=ARC-01">MTV / OGS / lastik / servis vb. giderleri yönet <i class="fa-solid fa-arrow-right"></i></a></div>
+      </div>
+    </section>
+
+    <!-- ============ 8. HASAR & KAZA KAYITLARI (mevcut "Trafik Cezaları" +
+         "Kaza & Hasar" sekmeleri BİRLEŞTİRİLDİ — kararlar.md madde 115) ============ -->
+    <section class="tab-panel" data-tab-panel="hasarkaza" role="tabpanel" aria-label="Hasar ve Kaza Kayıtları" hidden>
+      <div class="gv-card" style="margin-bottom:16px">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-gavel"></i> Trafik Cezaları</div></div>
+        <div id="cezaWrap"></div>
+      </div>
+      <div class="gv-card">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-car-burst"></i> Kaza &amp; Hasar</div></div>
+        <div id="kazaWrap"></div>
+      </div>
+    </section>
+
+    <!-- ============ 9. BELGELER (ZATEN VAR — "Evraklar" adı "Belgeler" olarak
+         güncellendi, içerik/link KORUNUR) ============ -->
+    <section class="tab-panel" data-tab-panel="evrak" role="tabpanel" aria-label="Belgeler" hidden>
       <div class="gv-card">
         <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-folder-open"></i> Araç Evrakları</div></div>
         <div id="evrakMiniWrap"></div>
@@ -236,12 +322,25 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
       </div>
     </section>
 
-    <!-- ============ KULLANIM KAYITLARI (özet) ============ -->
-    <section class="tab-panel" data-tab-panel="kullanim" role="tabpanel" aria-label="Kullanım Kayıtları" hidden>
+    <!-- ============ 10. ZİMMET GEÇMİŞİ (YENİ) ============ -->
+    <section class="tab-panel" data-tab-panel="zimmet" role="tabpanel" aria-label="Zimmet Geçmişi" hidden>
       <div class="gv-card">
-        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-road-circle-check"></i> Son Kullanım Kayıtları</div></div>
-        <div id="kullanimMiniWrap"></div>
-        <div class="tab-cta"><a class="gc-link" id="lnkKullanimTam" href="crm-operasyon-arac-kullanim.html?arac=ARC-01">Tüm kullanım kayıtlarını gör <i class="fa-solid fa-arrow-right"></i></a></div>
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-user-shield"></i> Zimmet Geçmişi</div></div>
+        <div id="zimmetGecmisWrap"></div>
+      </div>
+    </section>
+
+    <!-- ============ 11. İŞLEM KAYITLARI (YENİ — link kurulur, veri Dalga 3'te
+         T-LOG tarafından crm-ayarlar-log.html'e eklenir) ============ -->
+    <section class="tab-panel" data-tab-panel="islem" role="tabpanel" aria-label="İşlem Kayıtları" hidden>
+      <div class="gv-card">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Kayıtları</div></div>
+        <div class="gv-empty" style="padding:40px 24px">
+          <div class="ge-ico"><i class="fa-solid fa-list-check"></i></div>
+          <h4 id="islemBaslik">Bu aracın işlem geçmişi</h4>
+          <p>Ekleme, düzenleme, arşivleme gibi tüm işlemler merkezi İşlem Kayıtları ekranında bu araca filtrelenmiş biçimde listelenir.</p>
+        </div>
+        <div class="tab-cta"><a class="gc-link" id="lnkIslemTam" href="crm-ayarlar-log.html?kayit=ARC-01">İşlem Kayıtlarında Filtrele <i class="fa-solid fa-arrow-right"></i></a></div>
       </div>
     </section>
   </main>
@@ -489,6 +588,95 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
     }
   };
 
+  /* ============ §1.3 (11 sekme) — Genel/Muayene/Kasko/Trafik metaveri türetimi.
+     crm-operasyon-arac-form.html ile BİREBİR aynı deterministik fonksiyon (plaka
+     tabanlı seed) — iki dosya aynı ARC kaydı için aynı türetilmiş değerleri
+     üretir (kararlar.md madde 115). Yalnız muayene/kasko/trafik BİTİŞ tarihleri
+     kanoniktir (VEHICLES içinde zaten var); geri kalan idari metaveri türetilir. ============ */
+  var SIGORTA_SIRKETLERI = ['Allianz Sigorta','Anadolu Sigorta','Ray Sigorta','HDI Sigorta','Axa Sigorta','Türkiye Sigorta','Sompo Sigorta'];
+  var ACENTELER = ['Marmara Sigorta Acenteliği','Ege Sigorta Acenteliği','Anadolu Acente Ltd. Şti.','Boğaziçi Sigorta Acenteliği','Kuzey Acente A.Ş.'];
+  var YETKILILER = ['Serkan Aydemir','Buse Kartal','Emre Solak','Derya Yıldırım','Kaan Bozkurt','Gizem Aksoy'];
+  var MUAYENE_ISTASYONLARI = ['TÜVTÜRK Ümraniye','TÜVTÜRK Aliağa','TÜVTÜRK Gebze','TÜVTÜRK Kartal','TÜVTÜRK Bornova'];
+  var VITES_SECENEKLERI = ['manuel', 'otomatik', 'yariotomatik'];
+  var VITES_LBL = {manuel:'Manuel', otomatik:'Otomatik', yariotomatik:'Yarı Otomatik'};
+  var MULKIYET_LBL = {sirket:'Şirkete ait', kiralik:'Kiralık', leasing:'Leasing', personel:'Personel aracı', taseron:'Taşeron aracı'};
+  var RENKLER = ['Beyaz', 'Gri', 'Füme', 'Lacivert', 'Kırmızı', 'Gümüş'];
+
+  function seedS(str){ var h = 0; for(var i = 0; i < str.length; i++){ h = (h * 31 + str.charCodeAt(i)) >>> 0; } return h; }
+  function pickS(arr, s){ var i = ((s % arr.length) + arr.length) % arr.length; return arr[i]; }
+  function addYearsIsoFromDmy(dmy, n){ if(!dmy) return ''; var p = dmy.split('.'); var d = new Date(p[2] + '-' + p[1] + '-' + p[0] + 'T00:00:00'); d.setFullYear(d.getFullYear() + n); return ('0'+d.getDate()).slice(-2) + '.' + ('0'+(d.getMonth()+1)).slice(-2) + '.' + d.getFullYear(); }
+  function padNoS(n, len){ return String(Math.abs(n)).padStart(len, '0'); }
+  function iso2dmy(iso){ if(!iso) return ''; var p = iso.split('-'); return p[2] + '.' + p[1] + '.' + p[0]; }
+
+  function deriveDetayD(rec, plaka){
+    var s = seedS(plaka);
+    var emailDomain = pickS(ACENTELER, s >> 2).split(' ')[0].toLowerCase().replace(/[^a-zçğıöşü]/g, '');
+    var kaskoBedel = 6000 + (s % 40) * 420;
+    var trafikBedel = 2200 + (s % 20) * 180;
+    var marka = rec.model.split(' ')[0];
+    return {
+      sasi: 'NM0' + marka.slice(0,2).toUpperCase() + padNoS(s % 99999999, 8),
+      motor: marka.slice(0,3).toUpperCase() + '-' + padNoS((s >> 3) % 999999, 6),
+      ruhsatSeri: pickS(['AE','BF','CT','DK'], s) + ' ' + padNoS((s >> 1) % 999999, 6),
+      renk: pickS(RENKLER, s >> 1),
+      vites: pickS(VITES_SECENEKLERI, s >> 2),
+      hacim: rec.tip === 'kamyon' ? 6700 + (s % 5) * 200 : (1600 + (s % 12) * 100),
+      ilkTescil: '1' + (s % 8) + '.0' + (1 + (s % 8)) + '.' + rec.yil,
+      girisTarihi: '0' + (1 + (s % 8)) + '.0' + (2 + (s % 7)) + '.' + rec.yil,
+      satinAlmaBedeli: rec.tip === 'kamyon' ? 1800000 + (s % 9) * 60000 : 900000 + (s % 20) * 45000,
+      satinAlmaBilgi: rec.durum === 'kiralamaBitti' ? 'Aktif Kiralama A.Ş. — aylık kiralama sözleşmesi' : pickS(['Doğuş Otomotiv Yetkili Bayi', 'Borusan Oto', 'Otokoç Filo Satış'], s),
+      kmTarihi: '0' + (1 + (s % 8)) + '.07.2026',
+      mulkiyet: rec.durum === 'kiralamaBitti' ? 'kiralik' : 'sirket',
+      aracSorumlusu: pickS(['Elif Sarıkaya', 'Baran Yıldız'], s),
+      sonMuayeneTarihi: addYearsIsoFromDmy(rec.muayene, -1),
+      muayeneIstasyon: pickS(MUAYENE_ISTASYONLARI, s),
+      muayeneRaporNo: 'TM-' + (2024 + (s % 3)) + '-' + padNoS(100000 + (s % 89999), 6),
+      muayeneSonuc: 'Geçti',
+      muayeneUcret: 900 + (s % 6) * 35,
+      sonrakiMuayene: rec.muayene,
+      kaskoSirket: pickS(SIGORTA_SIRKETLERI, s),
+      kaskoAcente: pickS(ACENTELER, s >> 2),
+      kaskoPoliceNo: 'KSK-' + (2025 + (s % 2)) + '-' + padNoS(400000 + (s % 89999), 6),
+      kaskoTuru: pickS(['Dar kasko', 'Kasko', 'Genişletilmiş kasko', 'Tam kasko', 'Filo kaskosu'], s >> 1),
+      kaskoBaslangic: addYearsIsoFromDmy(rec.kasko, -1),
+      kaskoBedel: kaskoBedel,
+      kaskoTeminat: kaskoBedel * (12 + (s % 10)),
+      kaskoOdeme: (s % 3 === 0) ? 'Peşin' : 'Taksitli',
+      kaskoTaksit: (s % 3 === 0) ? 1 : pickS([3, 6, 9, 12], s),
+      kaskoHasarsizlik: pickS([0, 10, 20, 30, 40, 50, 60], s >> 2),
+      kaskoKapsam: 'Standart kapsam + cam/lastik/ferdi kaza teminatı',
+      kaskoYetkili: pickS(YETKILILER, s >> 1),
+      kaskoTelefon: '0 5' + (30 + s % 9) + ' ' + padNoS((s % 899) + 100, 3) + ' ' + padNoS((s % 8999) + 1000, 4),
+      kaskoEposta: pickS(YETKILILER, s >> 1).split(' ')[0].toLowerCase() + '@' + emailDomain + '.com.tr',
+      trafikSirket: pickS(SIGORTA_SIRKETLERI, s >> 3),
+      trafikAcente: pickS(ACENTELER, s >> 1),
+      trafikPoliceNo: 'TRF-' + (2025 + (s % 2)) + '-' + padNoS(200000 + (s % 89999), 6),
+      trafikBaslangic: addYearsIsoFromDmy(rec.trafik, -1),
+      trafikBedel: trafikBedel,
+      trafikTeminat: trafikBedel * 60,
+      trafikOdeme: (s % 2 === 0) ? 'Peşin' : 'Taksitli',
+      trafikTaksit: (s % 2 === 0) ? 1 : pickS([2, 4, 6], s),
+      trafikYetkili: pickS(YETKILILER, s >> 3),
+      trafikTelefon: '0 5' + (30 + s % 9) + ' ' + padNoS(((s >> 1) % 899) + 100, 3) + ' ' + padNoS(((s >> 1) % 8999) + 1000, 4),
+      trafikEposta: pickS(YETKILILER, s >> 3).split(' ')[0].toLowerCase() + '@' + pickS(ACENTELER, s >> 1).split(' ')[0].toLowerCase().replace(/[^a-zçğıöşü]/g, '') + '.com.tr'
+    };
+  }
+  Object.keys(VEHICLES).forEach(function(k){
+    var rec = VEHICLES[k];
+    var d = deriveDetayD(rec, rec.plaka);
+    Object.keys(d).forEach(function(f){ if(rec[f] === undefined) rec[f] = d[f]; });
+  });
+  /* ARC-01 zengin senaryo — form.html'deki elle netleştirilmiş alanlarla BİREBİR
+     hizalı (aynı kayıt, iki ekran, uydurma sapma yok) */
+  VEHICLES['ARC-01'].muayeneIstasyon = 'TÜVTÜRK Ümraniye';
+  VEHICLES['ARC-01'].sasi = 'NM0FR2023HD44120';
+  VEHICLES['ARC-01'].motor = 'FRD-224511';
+  VEHICLES['ARC-01'].ruhsatSeri = 'AE 402215';
+  VEHICLES['ARC-01'].renk = 'Beyaz';
+  VEHICLES['ARC-01'].paket = 'XLT 4x4';
+  VEHICLES['ARC-01'].mulkiyet = 'sirket';
+  VEHICLES['ARC-01'].aracSorumlusu = 'Elif Sarıkaya';
+
   var q = new URLSearchParams(location.search);
   var rawArac = q.get('arac');
   var key = rawArac;
@@ -632,16 +820,14 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
       kazaWrap.innerHTML = '<div class="gv-empty"><div class="ge-ico"><i class="fa-solid fa-car-burst"></i></div><h4>Kaza/hasar kaydı yok</h4><p>Bu araç için kayıtlı bir kaza veya hasar bulunmuyor.</p></div>';
     }
 
-    /* ---- Bakım & Muayene ---- */
+    /* ---- Bakım Geçmişi (muayene hatırlatması artık ayrı "Muayene" sekmesinde) ---- */
     var remind = '';
-    remind += '<div class="br-card' + (muayeneR.warn ? ' ' + muayeneR.cls : '') + '"><div class="br-ico"><i class="fa-solid fa-clipboard-check"></i></div>'
-      + '<div class="br-body"><b>Muayene — ' + v.muayene + '</b><span>' + (muayeneR.warn ? muayeneR.lbl + ', planlayın.' : 'Yaklaşan bir muayene uyarısı yok.') + '</span></div></div>';
     remind += '<div class="br-card' + (v.bakimAsildi ? ' danger' : '') + '"><div class="br-ico"><i class="fa-solid fa-oil-can"></i></div>'
       + '<div class="br-body"><b>Sonraki Bakım — hedef ' + km(v.sonrakiBakimKm) + '</b><span>Güncel km ' + km(v.bakimSuan) + ' — ' + (v.bakimAsildi ? km(v.bakimSuan - v.sonrakiBakimKm) + ' hedef aşıldı, servise alın.' : km(v.sonrakiBakimKm - v.bakimSuan) + ' kaldı.') + '</span></div></div>';
     if(v.bakimTarihi){
       var bt = tarihRozet(v.bakimTarihi);
       if(bt.warn){
-        remind += '<div class="br-card ' + bt.cls + '" style="grid-column:1/-1"><div class="br-ico"><i class="fa-solid fa-calendar-days"></i></div>'
+        remind += '<div class="br-card ' + bt.cls + '"><div class="br-ico"><i class="fa-solid fa-calendar-days"></i></div>'
           + '<div class="br-body"><b>Planlı Bakım Tarihi — ' + v.bakimTarihi + '</b><span>' + bt.lbl + '.</span></div></div>';
       }
     }
@@ -658,6 +844,121 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
         + '<div class="bh-km">' + km(b.km) + '</div></div>';
     });
     document.getElementById('bakimHistWrap').innerHTML = hist;
+
+    /* ---- 1. Genel Bilgiler (YENİ) ---- */
+    function kv(label, val, full){ return '<div' + (full ? ' class="full"' : '') + '><dt>' + label + '</dt><dd>' + val + '</dd></div>'; }
+    var genelHtml = '';
+    genelHtml += kv('Araç Kodu', key);
+    genelHtml += kv('Plaka', v.plaka);
+    genelHtml += kv('Araç Tipi', TIP_LBL[v.aracTipi]);
+    genelHtml += kv('Model Yılı', v.yil);
+    genelHtml += kv('Paket / Versiyon', v.paket || '—');
+    genelHtml += kv('Renk', v.renk);
+    genelHtml += kv('Şasi No', v.sasi);
+    genelHtml += kv('Motor No', v.motor);
+    genelHtml += kv('Ruhsat Seri No', v.ruhsatSeri);
+    genelHtml += kv('Yakıt Tipi', YAKIT_LBL[v.yakit]);
+    genelHtml += kv('Vites Türü', VITES_LBL[v.vites]);
+    genelHtml += kv('Motor Hacmi', v.hacim + ' cc');
+    genelHtml += kv('İlk Tescil Tarihi', v.ilkTescil);
+    genelHtml += kv('Şirkete Giriş Tarihi', v.girisTarihi);
+    genelHtml += kv('Mülkiyet Türü', MULKIYET_LBL[v.mulkiyet]);
+    genelHtml += kv('Satın Alma / Kiralama Bilgisi', v.satinAlmaBilgi);
+    genelHtml += kv('Satın Alma Bedeli', tl(v.satinAlmaBedeli));
+    genelHtml += kv('Güncel Kilometre', km(v.bakimSuan));
+    genelHtml += kv('Km Son Güncelleme', v.kmTarihi);
+    genelHtml += kv('Bağlı Firma', 'Yapıtaş İnşaat A.Ş.');
+    genelHtml += kv('Bağlı Şantiye / Birim', SANTIYE_ADI[v.santiye] + ' (bu prototipte proje=şantiye)');
+    genelHtml += kv('Araç Sorumlusu', v.aracSorumlusu || 'Atanmadı');
+    genelHtml += kv('Zimmetli Personel', v.kisi ? v.kisi.name : 'Zimmetsiz — depo havuz aracı');
+    if(v.aciklama) genelHtml += kv('Açıklama', v.aciklama, true);
+    document.getElementById('genelKvWrap').innerHTML = genelHtml;
+
+    /* ---- 2. Muayene (YENİ) ---- */
+    var muayeneHtml = '';
+    muayeneHtml += kv('Son Muayene Tarihi', v.sonMuayeneTarihi);
+    muayeneHtml += kv('Geçerlilik Bitiş Tarihi', v.muayene);
+    muayeneHtml += kv('Durum', muayeneR.warn ? '<span class="gstat ' + muayeneR.cls + '">' + muayeneR.lbl + '</span>' : '<span class="gstat ok">Geçerli</span>');
+    muayeneHtml += kv('İstasyon', v.muayeneIstasyon);
+    muayeneHtml += kv('Rapor No', v.muayeneRaporNo);
+    muayeneHtml += kv('Sonuç', v.muayeneSonuc);
+    muayeneHtml += kv('Ücret', tl(v.muayeneUcret));
+    muayeneHtml += kv('Sonraki Muayene Tarihi', v.sonrakiMuayene);
+    document.getElementById('muayeneKvWrap').innerHTML = muayeneHtml;
+    var muayeneDoc = (v.evrak || []).filter(function(e){ return /muayene/i.test(e.tur); })[0];
+    document.getElementById('muayeneDocWrap').innerHTML = muayeneDoc
+      ? '<div class="doc-mini-row"><div class="doc-mini-ico"><i class="fa-solid fa-file-circle-check"></i></div><div class="doc-mini-info"><b>' + muayeneDoc.dosya + '</b><span>Geçerlilik: ' + (muayeneDoc.gecerlilik || '—') + '</span></div></div>'
+      : '<div class="gv-empty" style="padding:28px 24px"><div class="ge-ico"><i class="fa-solid fa-file-circle-check"></i></div><h4>Muayene raporu yüklenmedi</h4><p>Belge, Araç Düzenle formunun Muayene sekmesinden yüklenebilir.</p></div>';
+
+    /* ---- 3. Kasko (YENİ) ---- */
+    var kaskoHtml = '';
+    kaskoHtml += kv('Sigorta Şirketi', v.kaskoSirket);
+    kaskoHtml += kv('Acente', v.kaskoAcente);
+    kaskoHtml += kv('Poliçe No', v.kaskoPoliceNo);
+    kaskoHtml += kv('Kasko Türü', v.kaskoTuru);
+    kaskoHtml += kv('Başlangıç Tarihi', v.kaskoBaslangic);
+    kaskoHtml += kv('Bitiş Tarihi', v.kasko);
+    kaskoHtml += kv('Poliçe Bedeli', tl(v.kaskoBedel));
+    kaskoHtml += kv('Teminat Tutarı', tl(v.kaskoTeminat));
+    kaskoHtml += kv('Ödeme Şekli', v.kaskoOdeme + (v.kaskoOdeme === 'Taksitli' ? ' (' + v.kaskoTaksit + ' taksit)' : ''));
+    kaskoHtml += kv('Hasarsızlık Oranı', '%' + v.kaskoHasarsizlik);
+    kaskoHtml += kv('Kapsam', v.kaskoKapsam, true);
+    kaskoHtml += kv('Acente Yetkilisi', v.kaskoYetkili + ' — ' + v.kaskoTelefon);
+    kaskoHtml += kv('Yetkili E-posta', v.kaskoEposta);
+    document.getElementById('kaskoKvWrap').innerHTML = kaskoHtml;
+    var kaskoDoc = (v.evrak || []).filter(function(e){ return /kasko/i.test(e.tur); })[0];
+    document.getElementById('kaskoDocWrap').innerHTML = kaskoDoc
+      ? '<div class="doc-mini-row"><div class="doc-mini-ico"><i class="fa-solid fa-file-shield"></i></div><div class="doc-mini-info"><b>' + kaskoDoc.dosya + '</b><span>Geçerlilik: ' + (kaskoDoc.gecerlilik || '—') + '</span></div></div>'
+      : '<div class="gv-empty" style="padding:28px 24px"><div class="ge-ico"><i class="fa-solid fa-file-shield"></i></div><h4>Kasko poliçesi yüklenmedi</h4><p>Belge, Araç Düzenle formunun Kasko sekmesinden yüklenebilir.</p></div>';
+
+    /* ---- 4. Trafik Sigortası (YENİ) ---- */
+    var trafikHtml = '';
+    trafikHtml += kv('Sigorta Şirketi', v.trafikSirket);
+    trafikHtml += kv('Acente', v.trafikAcente);
+    trafikHtml += kv('Poliçe No', v.trafikPoliceNo);
+    trafikHtml += kv('Başlangıç Tarihi', v.trafikBaslangic);
+    trafikHtml += kv('Bitiş Tarihi', v.trafik);
+    trafikHtml += kv('Poliçe Bedeli', tl(v.trafikBedel));
+    trafikHtml += kv('Teminat Tutarı', tl(v.trafikTeminat));
+    trafikHtml += kv('Ödeme Şekli', v.trafikOdeme + (v.trafikOdeme === 'Taksitli' ? ' (' + v.trafikTaksit + ' taksit)' : ''));
+    trafikHtml += kv('Acente Yetkilisi', v.trafikYetkili + ' — ' + v.trafikTelefon, true);
+    trafikHtml += kv('Yetkili E-posta', v.trafikEposta);
+    document.getElementById('trafikKvWrap').innerHTML = trafikHtml;
+    var trafikDoc = (v.evrak || []).filter(function(e){ return /sigorta/i.test(e.tur) && !/kasko/i.test(e.tur); })[0];
+    document.getElementById('trafikDocWrap').innerHTML = trafikDoc
+      ? '<div class="doc-mini-row"><div class="doc-mini-ico"><i class="fa-solid fa-file-shield"></i></div><div class="doc-mini-info"><b>' + trafikDoc.dosya + '</b><span>Geçerlilik: ' + (trafikDoc.gecerlilik || '—') + '</span></div></div>'
+      : '<div class="gv-empty" style="padding:28px 24px"><div class="ge-ico"><i class="fa-solid fa-file-shield"></i></div><h4>Trafik sigortası poliçesi yüklenmedi</h4><p>Belge, Araç Düzenle formunun Trafik Sigortası sekmesinden yüklenebilir.</p></div>';
+
+    /* ---- 5. Yakıt Hareketleri — özet (arac-yakit.html T-ARC3 tarafından bu
+       dalgada ayrıca üretiliyor; veri tamamlanınca hizalanır) ---- */
+    document.getElementById('lnkYakitTam').href = 'crm-operasyon-arac-yakit.html?arac=' + key;
+    var yakitToplam = (v.kullanim || []).length;
+    document.getElementById('yakitOzetWrap').innerHTML = yakitToplam
+      ? '<div class="gv-empty" style="padding:24px"><div class="ge-ico"><i class="fa-solid fa-gas-pump"></i></div><h4>Ayrı yakıt kaydı henüz yok</h4><p>' + key + ' için km-bazlı yakıt bilgisi şimdilik yukarıdaki kullanım kayıtlarında tutuluyor; ayrı yakıt hareketleri ekranı devreye girince aylık gider burada özetlenecek.</p></div>'
+      : '<div class="gv-empty" style="padding:24px"><div class="ge-ico"><i class="fa-solid fa-gas-pump"></i></div><h4>Kayıt yok</h4><p>Bu araç için henüz kullanım/yakıt kaydı bulunmuyor.</p></div>';
+
+    /* ---- 7. Gider Geçmişi — diğer gider kalemleri (arac-gider.html T-ARC3
+       tarafından bu dalgada ayrıca üretiliyor) ---- */
+    document.getElementById('lnkGiderTam').href = 'crm-operasyon-arac-gider.html?arac=' + key;
+    document.getElementById('giderDigerWrap').innerHTML = '<div class="gv-empty" style="padding:24px"><div class="ge-ico"><i class="fa-solid fa-sack-dollar"></i></div><h4>MTV / OGS / lastik / servis kaydı henüz yok</h4><p>Bu kalemler ayrı bir gider ekranında tutulacak; yukarıdaki HGS geçmişi bu araç için zaten izleniyor.</p></div>';
+
+    /* ---- 10. Zimmet Geçmişi (YENİ) ---- */
+    var zimmetHtml = '';
+    if(v.zimmetNo){
+      zimmetHtml += '<div class="zimmet-row"><div class="zr-ico"><i class="fa-solid fa-user-check"></i></div><div class="zr-info"><b>' + v.kisi.name + ' — ' + v.kisi.title + '</b><span>Zimmetlendi · <a href="crm-operasyon-demirbas-detay.html?zmt=' + v.zimmetNo.replace('ZMT-2026-','') + '" style="color:var(--acc-ink);font-weight:700">' + v.zimmetNo + '</a> demirbaş kaydında izlenir</span></div></div>';
+      zimmetHtml += '<div class="tab-cta"><a class="gc-link" href="crm-operasyon-demirbas-detay.html?zmt=' + v.zimmetNo.replace('ZMT-2026-','') + '">Demirbaş kaydındaki tam zimmet geçmişini gör <i class="fa-solid fa-arrow-right"></i></a></div>';
+    } else if(v.kisi){
+      zimmetHtml += '<div class="zimmet-row"><div class="zr-ico"><i class="fa-solid fa-user"></i></div><div class="zr-info"><b>' + v.kisi.name + ' — ' + v.kisi.title + '</b><span>Bu araç kişiye zimmetlidir; ayrı bir demirbaş kaydı bulunmuyor.</span></div></div>';
+    } else if(archived && v.arsiv){
+      zimmetHtml += '<div class="gv-empty" style="padding:28px 24px"><div class="ge-ico"><i class="fa-solid fa-box-archive"></i></div><h4>Zimmet kaydı yok</h4><p>Araç arşivlenmeden önce zimmetsizdi — ' + v.arsiv.gerekce + ' (' + v.arsiv.tarih + ').</p></div>';
+    } else {
+      zimmetHtml += '<div class="gv-empty" style="padding:28px 24px"><div class="ge-ico"><i class="fa-solid fa-user-slash"></i></div><h4>Zimmetsiz — depo havuz aracı</h4><p>Bu araç şu anda kimseye zimmetli değil.</p></div>';
+    }
+    document.getElementById('zimmetGecmisWrap').innerHTML = zimmetHtml;
+
+    /* ---- 11. İşlem Kayıtları (YENİ) — link kurulur, veri Dalga 3'te T-LOG'da ---- */
+    document.getElementById('islemBaslik').textContent = key + ' için işlem geçmişi';
+    document.getElementById('lnkIslemTam').href = 'crm-ayarlar-log.html?kayit=' + key;
   }
 
   render();
@@ -683,7 +984,7 @@ tr.hgs-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line
     });
     var initial = (location.hash || '').replace('#', '');
     var valid = tabs.some(function(t){ return t.getAttribute('data-tab') === initial; });
-    activate(valid ? initial : 'hgs');
+    activate(valid ? initial : 'genel');
   })();
 })();
 </script>
