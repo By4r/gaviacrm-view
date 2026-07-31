@@ -220,6 +220,15 @@ tr.is-checked{background:rgba(var(--acc-rgb),.05)}
       <div class="dm-bulk-bar" id="dmBulkBar" hidden>
         <span class="bb-count"><span id="bbCount">0</span> demirbaş seçildi</span>
         <div class="bb-acts">
+          <select id="bbZimmetSelect" class="btn btn-ghost btn-sm" style="cursor:pointer" aria-label="Toplu zimmetle">
+            <option value="">Zimmetle…</option>
+            <option value="Hasan Demirci">Hasan Demirci — Şantiye Şefi</option>
+            <option value="Aylin Koç">Aylin Koç — Şantiye Şefi</option>
+            <option value="Ömer Taşkın">Ömer Taşkın — Şantiye Şefi</option>
+            <option value="İbrahim Sönmez">İbrahim Sönmez — Formen</option>
+            <option value="Recep Yaman">Recep Yaman — Formen</option>
+            <option value="Baran Yıldız">Baran Yıldız — Satın Alma Sorumlusu</option>
+          </select>
           <select id="bbDurumSelect" class="btn btn-ghost btn-sm" style="cursor:pointer" aria-label="Toplu durum güncelle">
             <option value="">Durumu Güncelle…</option>
             <option value="zimmetli">Zimmetli Yap</option>
@@ -234,6 +243,7 @@ tr.is-checked{background:rgba(var(--acc-rgb),.05)}
             <option value="depo">Merkez depo</option>
           </select>
           <button type="button" class="btn btn-ghost btn-sm" id="bbBarkodBtn" data-no-confirm><i class="fa-solid fa-barcode"></i> Barkod Oluştur</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="bbEtiketBtn" data-no-confirm><i class="fa-solid fa-qrcode"></i> Toplu Etiket Yazdır</button>
           <button type="button" class="btn btn-ghost btn-sm" id="bbArsivBtn" data-no-confirm><i class="fa-solid fa-box-archive"></i> Toplu Arşivle</button>
           <button type="button" class="btn btn-ghost btn-sm" id="bbExportBtn" data-export="Seçili demirbaşlar" data-no-confirm><i class="fa-solid fa-download"></i> Seçilenleri Dışa Aktar</button>
           <button type="button" class="btn btn-ghost btn-sm" id="bbClearBtn" data-no-confirm><i class="fa-solid fa-xmark"></i> Seçimi Temizle</button>
@@ -517,6 +527,7 @@ tr.is-checked{background:rgba(var(--acc-rgb),.05)}
     h += '<td><span class="gstat '+D.cls+'">'+D.lbl+'</span></td>';
     h += '<td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html'+(d.zmt ? '?zmt='+d.zmt : '')+'" data-no-confirm data-tip="Detay" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>'
       + '<a class="ia-btn" href="crm-operasyon-demirbas-form.html?mod=duzenle'+(d.zmt && d.zmt !== '041' ? '&zmt='+d.zmt : '')+'" data-no-confirm data-tip="Düzenle" aria-label="Düzenle"><i class="fa-solid fa-pen"></i></a>'
+      + '<a class="ia-btn" href="crm-operasyon-demirbas-etiket.html?zmt='+(d.zmt || d.no.split('-').pop())+'" data-no-confirm data-tip="Etiket Yazdır" aria-label="Etiket yazdır"><i class="fa-solid fa-qrcode"></i></a>'
       + '<button type="button" class="ia-btn" data-no-confirm data-arsiv-btn data-tip="Arşivle" aria-label="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>';
     h += '</tr>';
     return h;
@@ -756,6 +767,35 @@ tr.is-checked{background:rgba(var(--acc-rgb),.05)}
   }
   function rebuildAll(){ renderList(); refreshCounts(); applyFilter(); }
   document.getElementById('bbClearBtn').addEventListener('click', function(){ selectedNos = {}; syncChkUI(); });
+  /* §2.8 — Toplu Zimmetleme (durum güncellemeden AYRI: gerçekten bir kişiye atar) */
+  document.getElementById('bbZimmetSelect').addEventListener('change', function(e){
+    var val = e.target.value; if(!val) return;
+    var nos = Object.keys(selectedNos);
+    e.target.value = '';
+    if(!nos.length){ gvToast('Önce en az bir demirbaş seçin.', {type:'info'}); return; }
+    var aracVarMi = nos.some(function(no){ return DEMIRBAS_BY_NO[no] && DEMIRBAS_BY_NO[no].kat === 'arac'; });
+    gvConfirm({
+      icon:'fa-user-check', ok:'Zimmetle', cancel:'Vazgeç',
+      title: nos.length + ' demirbaş ' + val + '\'a zimmetlensin mi?',
+      message: nos.join(', ') + ' kalemleri ' + val + ' üzerine toplu olarak zimmetlenecek, durum "Zimmetli" yapılacak.'
+        + (aracVarMi ? ' (Araç kaydı için yalnız zimmet köprüsü güncellenir, araç modülü ayrıca değiştirilmez.)' : ''),
+      onConfirm:function(){
+        nos.forEach(function(no){
+          var d = DEMIRBAS_BY_NO[no];
+          if(d){ d.kisi = val; d.durum = 'zimmetli'; d.tarih = '2 Tem 2026'; d.tarihNot = null; }
+        });
+        gvToast(nos.length + ' demirbaş ' + val + '\'a zimmetlendi.');
+        selectedNos = {};
+        rebuildAll();
+      }
+    });
+  });
+  document.getElementById('bbEtiketBtn').addEventListener('click', function(){
+    var nos = Object.keys(selectedNos);
+    if(!nos.length){ gvToast('Önce en az bir demirbaş seçin.', {type:'info'}); return; }
+    var shortNos = nos.map(function(no){ var d = DEMIRBAS_BY_NO[no]; return d.zmt || d.no.split('-').pop(); });
+    location.href = 'crm-operasyon-demirbas-etiket.html?zmt=' + shortNos.join(',');
+  });
   document.getElementById('bbDurumSelect').addEventListener('change', function(e){
     var val = e.target.value; if(!val) return;
     var nos = Object.keys(selectedNos);
@@ -814,9 +854,11 @@ tr.is-checked{background:rgba(var(--acc-rgb),.05)}
   /* ============ §2.2/§2.8 — Toplu Barkod Oluştur (kararlar madde 109: gerçek
      taranabilir kod ÜRETİLEMEZ — buildless/no-npm kısıtı; DMR kodundan deterministik
      türetilmiş, her kayıt için GERÇEKTEN farklı/benzersiz, indirilebilir bir görsel
-     desen üretilir). Tam etiket/yazdırma ekranı T-DMR4'ün crm-operasyon-demirbas-
-     etiket.html'inde — burada YALNIZ "toplu barkod oluştur" bulk-aksiyonu, ayrı bir
-     sayfaya link VERİLMEZ (o dosya henüz yok, kırık link riski). ============ */
+     desen üretilir). Bu blok yalnız "toplu barkod oluştur" bulk-aksiyonunun ÖNİZLEME
+     modalıdır; tekli "Etiket Yazdır" satır aksiyonu artık her satırın row-acts'inde
+     `crm-operasyon-demirbas-etiket.html?zmt=<no>`'ye gerçek `<a href>` ile linklidir
+     (Dalga 5/Denetim-2 kapatması — bkz. tasks/kararlar.md, dosya artık diskte var).
+     ============ */
   function hashCode(str){ var h = 0; for(var i=0;i<str.length;i++){ h = ((h<<5)-h+str.charCodeAt(i))|0; } return h; }
   function genBars(code, n){
     var h = hashCode(code), bars = [];

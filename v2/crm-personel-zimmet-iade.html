@@ -155,6 +155,10 @@
                 <textarea id="fHasarNot" rows="3" placeholder="Hasarın niteliği ve olası kesinti/tazmin notu"></textarea>
               </div>
               <div class="gfield full">
+                <label for="fEksikParca">Eksik Parça <span class="gf-hint">(varsa belirtin)</span></label>
+                <input type="text" id="fEksikParca" placeholder="ör. şarj kablosu eksik — yoksa boş bırakın">
+              </div>
+              <div class="gfield full">
                 <label for="fNot">Notlar <span class="gf-hint">(isteğe bağlı)</span></label>
                 <textarea id="fNot" rows="3" placeholder="ör. yeniden depoya alındı, ekipman temizlendi"></textarea>
               </div>
@@ -312,11 +316,12 @@
     }
     var teslimEden = document.getElementById('fTeslimEden').value;
     var teslimAlan = document.getElementById('fTeslimAlan').value;
+    var eksikParca = document.getElementById('fEksikParca').value.trim();
     var DURUM_LBL = {iyi:'iyi durumda', hasarli:'hasarlı olarak', kayip:'kayıp bildirimiyle'};
     gvConfirm({
       icon:'fa-rotate-left', ok:'İadeyi Onayla', cancel:'Vazgeç',
       title:'Zimmet İadesi Onaylansın mı?',
-      message:'ZMT-2026-045, ' + teslimEden + ' tarafından teslim edilip ' + DURUM_LBL[durum] + ' iade alınacak ve ' + teslimAlan.split(' — ')[0] + ' tarafından teslim alınmış olarak işlenecek. [MOCK-SİM]',
+      message:'ZMT-2026-045, ' + teslimEden + ' tarafından teslim edilip ' + DURUM_LBL[durum] + ' iade alınacak ve ' + teslimAlan.split(' — ')[0] + ' tarafından teslim alınmış olarak işlenecek.' + (eksikParca ? ' Eksik parça: ' + eksikParca + '.' : '') + ' [MOCK-SİM]',
       onConfirm:function(){
         document.getElementById('frmWrap').classList.add('is-off');
         var sonuc = document.getElementById('iadeSonuc');
@@ -338,6 +343,7 @@
           var sub = '2 Temmuz 2026 · Teslim eden: ' + teslimEden + ' · Teslim alan: ' + teslimAlan.split(' — ')[0] + ' · İmzalı';
           if(iadeDosyalar.length) sub += ' · Ek: ' + iadeDosyalar.map(function(f){ return f.ad; }).join(', ');
           tarihce.push({title:'İade alındı (' + DURUM_LBL[durum] + ')', sub: sub});
+          if(eksikParca) tarihce.push({title:'Eksik parça bildirildi', sub: eksikParca});
           if(durum !== 'iyi' && hasarNot.value.trim()) tarihce.push({title:'Hasar/kayıp notu eklendi', sub: hasarNot.value.trim()});
           localStorage.setItem('gv_zimmet_045_tarihce', JSON.stringify(tarihce));
         }catch(e){}

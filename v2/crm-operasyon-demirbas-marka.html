@@ -56,6 +56,7 @@
 .mdl-acts .ia-btn{width:26px;height:26px;font-size:11px}
 
 .mrk-foot-add{padding-top:6px}
+.mrk-aciklama{font-size:12px;color:var(--ink-2);line-height:1.6;margin:0 0 12px}
 
 @media(max-width:640px){
   .mrk-body{padding-left:22px}
@@ -157,54 +158,54 @@
      marka ("tanımlı, 0 demirbaşta kullanılıyor" — katalog genişliği göstermek için
      gerçek bir SaaS/demo idiyomu, kayıt sayısı doğru: 0, plan §Dalga2/T-DMR1 birebir). */
   var MARKA = [
-    {id:'samsung', ad:'Samsung', kod:'SAMSU', pasif:false, model:[
+    {id:'samsung', ad:'Samsung', kod:'SAMSU', pasif:false, aciklama:'Güney Kore merkezli, mobil cihaz ve tüketici elektroniği üreticisi.', model:[
       {ad:'Galaxy A54, 64GB', kod:'GA54-64', kategori:'Cep Telefonu', zmt:['ZMT-2026-041']},
       {ad:'Galaxy Tab A9, 64GB', kod:'GTA9-64', kategori:'Tablet', zmt:['ZMT-2026-045']}
     ]},
-    {id:'bosch', ad:'Bosch', kod:'BOSCH', pasif:false, model:[
+    {id:'bosch', ad:'Bosch', kod:'BOSCH', pasif:false, aciklama:'Almanya merkezli, elektrikli el aletleri ve ölçüm cihazları üreticisi.', model:[
       {ad:'GSB 18V-55, 18 parça', kod:'GSB1855', kategori:'Şarjlı Matkap', zmt:['ZMT-2026-042']},
       {ad:'GLM 50 C', kod:'GLM50C', kategori:'Lazer Metre', zmt:['ZMT-2026-046']}
     ]},
-    {id:'hilti', ad:'Hilti', kod:'HILTI', pasif:false, model:[
+    {id:'hilti', ad:'Hilti', kod:'HILTI', pasif:false, aciklama:'Lihtenştayn merkezli, profesyonel inşaat ve maden ekipmanları üreticisi.', model:[
       {ad:'TE 60-A36', kod:'TE60A36', kategori:'Kırıcı ve Deliciler', zmt:['ZMT-2026-047']}
     ]},
-    {id:'motorola', ad:'Motorola', kod:'MOTOR', pasif:false, model:[
+    {id:'motorola', ad:'Motorola', kod:'MOTOR', pasif:false, aciklama:'ABD merkezli, telsiz ve telekomünikasyon cihazları üreticisi.', model:[
       {ad:'CP040', kod:'CP040', kategori:'Telsiz/İletişim', zmt:['ZMT-2026-048 (4 adet)','ZMT-2025-017']}
     ]},
-    {id:'honda', ad:'Honda', kod:'HONDA', pasif:false, model:[
+    {id:'honda', ad:'Honda', kod:'HONDA', pasif:false, aciklama:'Japonya merkezli, jeneratör ve motorlu ekipman üreticisi.', model:[
       {ad:'EU22i', kod:'EU22I', kategori:'Jeneratör', zmt:['ZMT-2025-009']}
     ]},
-    {id:'3m', ad:'3M', kod:'3M', pasif:false, model:[
+    {id:'3m', ad:'3M', kod:'3M', pasif:false, aciklama:'ABD merkezli, iş sağlığı ve güvenliği ekipmanları üreticisi.', model:[
       {ad:'Baret + Yelek + Bot Seti', kod:'ISGSET', kategori:'Kişisel Koruyucu Donanım Seti', zmt:['ZMT-2026-043']}
     ]},
-    {id:'makita', ad:'Makita', kod:'MAKIT', pasif:false, model:[
+    {id:'makita', ad:'Makita', kod:'MAKIT', pasif:false, aciklama:'Japonya merkezli, şarjlı ve kablolu el aletleri üreticisi.', model:[
       {ad:'HR2470 Kırıcı-Delici', kod:'HR2470', kategori:'Kırıcı ve Deliciler', zmt:[]}
     ]},
-    {id:'dewalt', ad:'DeWalt', kod:'DEWLT', pasif:false, model:[
+    {id:'dewalt', ad:'DeWalt', kod:'DEWLT', pasif:false, aciklama:'ABD merkezli, profesyonel elektrikli el aletleri üreticisi.', model:[
       {ad:'DCD796 Şarjlı Matkap', kod:'DCD796', kategori:'Şarjlı Matkap', zmt:[]}
     ]},
-    {id:'milwaukee', ad:'Milwaukee', kod:'MILW', pasif:false, model:[
+    {id:'milwaukee', ad:'Milwaukee', kod:'MILW', pasif:false, aciklama:'ABD merkezli, endüstriyel şarjlı el aletleri üreticisi.', model:[
       {ad:'M18 FUEL Taşlama', kod:'M18FUEL', kategori:'Taşlama Makineleri', zmt:[]}
     ]},
-    {id:'metabo', ad:'Metabo', kod:'METAB', pasif:false, model:[
+    {id:'metabo', ad:'Metabo', kod:'METAB', pasif:false, aciklama:'Almanya merkezli, elektrikli el aletleri üreticisi.', model:[
       {ad:'KGS 254 M Kesme Makinesi', kod:'KGS254M', kategori:'Kesme Makineleri', zmt:[]}
     ]},
-    {id:'stanley', ad:'Stanley', kod:'STANL', pasif:false, model:[
+    {id:'stanley', ad:'Stanley', kod:'STANL', pasif:false, aciklama:'ABD merkezli, el aletleri ve şantiye ekipmanları üreticisi.', model:[
       {ad:'FatMax El Arabası', kod:'FATMAX', kategori:'El Arabası', zmt:[]}
     ]},
-    {id:'leica', ad:'Leica', kod:'LEICA', pasif:false, model:[
+    {id:'leica', ad:'Leica', kod:'LEICA', pasif:false, aciklama:'İsviçre merkezli, ölçüm ve nirengi cihazları üreticisi.', model:[
       {ad:'DISTO D2 Lazer Metre', kod:'DISTOD2', kategori:'Lazer Metre', zmt:[]}
     ]},
-    {id:'topcon', ad:'Topcon', kod:'TOPCN', pasif:false, model:[
+    {id:'topcon', ad:'Topcon', kod:'TOPCN', pasif:false, aciklama:'Japonya merkezli, ölçüm ve pozisyonlama cihazları üreticisi.', model:[
       {ad:'GM-52 Total Station', kod:'GM52', kategori:'Total Station', zmt:[]}
     ]},
-    {id:'dell', ad:'Dell', kod:'DELL', pasif:false, model:[
+    {id:'dell', ad:'Dell', kod:'DELL', pasif:false, aciklama:'ABD merkezli, bilgisayar ve kurumsal bilişim donanımı üreticisi.', model:[
       {ad:'Latitude 5440 Dizüstü Bilgisayar', kod:'LAT5440', kategori:'Dizüstü Bilgisayar', zmt:[]}
     ]},
-    {id:'hp', ad:'HP', kod:'HP', pasif:false, model:[
+    {id:'hp', ad:'HP', kod:'HP', pasif:false, aciklama:'ABD merkezli, bilgisayar ve baskı çözümleri üreticisi.', model:[
       {ad:'LaserJet Pro Yazıcı', kod:'LJPRO', kategori:'Yazıcı', zmt:[]}
     ]},
-    {id:'lenovo', ad:'Lenovo', kod:'LENOV', pasif:false, model:[
+    {id:'lenovo', ad:'Lenovo', kod:'LENOV', pasif:false, aciklama:'Çin merkezli, bilgisayar ve kurumsal bilişim donanımı üreticisi.', model:[
       {ad:'ThinkPad T14 Dizüstü Bilgisayar', kod:'TPT14', kategori:'Dizüstü Bilgisayar', zmt:[]}
     ]}
   ];
@@ -243,6 +244,7 @@
         + '<i class="fa-solid fa-chevron-right chev"></i>'
       + '</div>'
       + '<div class="mrk-body">'
+        + '<p class="mrk-aciklama">'+(m.aciklama ? m.aciklama : '<span style="color:var(--muted);font-style:italic">Açıklama girilmemiş.</span>')+'</p>'
         + modelHtml
         + '<div class="mrk-foot-add"><button type="button" class="btn btn-ghost btn-sm" data-mdl-ekle data-no-confirm><i class="fa-solid fa-plus"></i> Model Ekle</button></div>'
       + '</div>'
@@ -292,7 +294,13 @@
       var card = editBtn.closest('.mrk-card');
       var m = MARKA.find(function(x){ return x.id === card.getAttribute('data-marka'); });
       var yeni = prompt('Marka adı:', m.ad);
-      if(yeni && yeni.trim()){ m.ad = yeni.trim(); renderAll(); gvToast('Marka güncellendi.'); }
+      if(yeni && yeni.trim()){
+        m.ad = yeni.trim();
+        var yeniAciklama = prompt('Açıklama (isteğe bağlı):', m.aciklama || '');
+        if(yeniAciklama !== null) m.aciklama = yeniAciklama.trim();
+        renderAll();
+        gvToast('Marka güncellendi.');
+      }
       return;
     }
     var pasifBtn = e.target.closest('[data-mrk-pasif]');
@@ -388,8 +396,9 @@
   document.getElementById('btnMrkEkle').addEventListener('click', function(){
     var ad = prompt('Yeni marka adı:');
     if(!ad || !ad.trim()) return;
+    var aciklama = prompt('Açıklama (isteğe bağlı):', '') || '';
     var id = 'marka_' + Date.now();
-    MARKA.push({id:id, ad:ad.trim(), kod:ad.trim().toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5), pasif:false, model:[]});
+    MARKA.push({id:id, ad:ad.trim(), kod:ad.trim().toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5), pasif:false, aciklama:aciklama.trim(), model:[]});
     openIds[id] = true;
     renderAll();
     gvToast(ad.trim() + ' markası eklendi.');

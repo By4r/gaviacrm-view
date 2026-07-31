@@ -306,8 +306,14 @@
   var q = new URLSearchParams(location.search);
   var pre = q.get('zmt');
   if(pre){
-    var norm = /^\d{1,3}$/.test(pre) ? ('00' + pre).slice(-3) : pre;
-    ITEMS.forEach(function(it){ if(it.no === norm && !it.disabled) selected[it.no] = true; });
+    /* §2.8 toplu etiket yazdırma — demirbas.html'in "Toplu Etiket Yazdır" bulk-aksiyonu
+       virgülle ayrılmış birden çok ?zmt= değeri gönderebilir (ör. ?zmt=041,042,046);
+       tekli link (?zmt=046) de aynı yolla çalışmaya devam eder. */
+    pre.split(',').forEach(function(raw){
+      raw = raw.trim(); if(!raw) return;
+      var norm = /^\d{1,3}$/.test(raw) ? ('00' + raw).slice(-3) : raw;
+      ITEMS.forEach(function(it){ if(it.no === norm && !it.disabled) selected[it.no] = true; });
+    });
   }
 
   function listRowHtml(it){

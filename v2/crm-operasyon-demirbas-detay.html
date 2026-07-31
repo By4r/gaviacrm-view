@@ -217,6 +217,11 @@ tr.maliyet-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--
           <div class="ctx-row"><span class="ctx-lbl">Marka / Model</span><span class="ctx-val" id="kalemMarka">—</span></div>
           <div class="ctx-row"><span class="ctx-lbl">Bağlı Firma</span><span class="ctx-val">Yapıtaş İnşaat A.Ş.</span></div>
           <div class="ctx-row"><span class="ctx-lbl">Durum</span><span class="ctx-val" id="kalemDurum">—</span></div>
+          <!-- §2.9 "üst alanda gösterilmeli" listesinin Mevcut Konum/Zimmetli Personel
+               kalemleri — Zimmet Bilgileri sekmesi bunu ayrıntılandırır, burada özet
+               olarak tek tıksız görünür kılınır -->
+          <div class="ctx-row"><span class="ctx-lbl">Mevcut Konum</span><span class="ctx-val" id="kalemKonum">—</span></div>
+          <div class="ctx-row"><span class="ctx-lbl">Zimmetli Personel</span><span class="ctx-val" id="kalemZimmetli">—</span></div>
         </div>
         <div class="gd-block">
           <div class="gd-label">Açıklama</div>
@@ -998,6 +1003,11 @@ tr.maliyet-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--
     document.getElementById('kalemSeriLbl').textContent = item.seriLbl;
     document.getElementById('kalemSeri').textContent = item.seri;
     document.getElementById('kalemMarka').textContent = item.marka;
+    document.getElementById('kalemKonum').innerHTML = item.santiye.href
+      ? '<a href="'+item.santiye.href+'" style="color:var(--acc-ink);font-weight:700">'+item.santiye.lbl+'</a>' : item.santiye.lbl;
+    document.getElementById('kalemZimmetli').innerHTML = item.kisi
+      ? '<a href="'+item.kisi.href+'" style="color:var(--acc-ink);font-weight:700">'+item.kisi.name+'</a>'
+      : '<span style="color:var(--muted)">(kişisiz)</span>';
 
     renderSatinAlma();
     renderTeknik();
