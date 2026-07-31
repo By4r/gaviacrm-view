@@ -158,7 +158,7 @@
           <tbody id="takvimBody"></tbody>
         </table>
       </div>
-      <div class="rep-src"><i class="fa-solid fa-circle-info"></i> <span><b>Bilinen tutarsızlık:</b> ZMT-2026-046'nın garanti bitiş tarihi crm-operasyon-demirbas.html'de 20.01.2027 olarak kayıtlı, ancak crm-operasyon-demirbas-bildirim.html'in DMB-002 bildirimi aynı kalem için 15.07.2026 sona eriş tarihi kullanıyor. Bu dashboard "yaklaşan" hesaplarında bildirim ekranının tarihini esas alır (kaynak-mutabakatı için); tutarsızlık <code>tasks/acik-kalemler.md</code>'ye T-DMR1/T-DMR4 için not düşülmüştür — bu dosyanın sahipliği dışındadır, burada düzeltilmemiştir.</span></div>
+      <div class="rep-src"><i class="fa-solid fa-circle-info"></i> <span>ZMT-2026-046'nın garanti bitiş tarihi (20.01.2027, crm-operasyon-demirbas.html/-detay.html/-form.html'in üçü de birleşiyor — kararlar.md madde 146) kanonik bugüne (2 Temmuz 2026) göre ~202 gün uzakta, dolayısıyla "garanti yaklaşan" listesinde GÖRÜNMEZ; yalnız kalibrasyon kontrolü (20.07.2026, zimmet tarihinden 6 aylık periyot) 30 gün eşiği içindedir.</span></div>
       <div class="cross-link">
         <i class="fa-solid fa-bell lead"></i>
         <span>Bildirim geçmişi ve eşik ayarları için:</span>
@@ -205,11 +205,13 @@
   /* crm-operasyon-demirbas-marka.html MARKA[] kullanım sayıları — BİREBİR (16 tanımlı marka: 6 kullanımda + 10 katalogda/0 kullanım) */
   var MARKA_KATALOG_SIFIR = ['Makita', 'DeWalt', 'Milwaukee', 'Metabo', 'Stanley', 'Leica', 'Topcon', 'Dell', 'HP', 'Lenovo'];
 
-  /* crm-operasyon-demirbas-bildirim.html BILDIRIMLER — garanti/kalibrasyon "yaklaşan" hesabı
-     bu ekranın türettiği tarihlerle BİREBİR alınır (demirbas.html'deki 046 garanti alanıyla
-     tutarsızlık var — bkz. sayfadaki uyarı notu, T-DMR1/T-DMR4'e bildirildi). */
-  var GARANTI_YAKLASAN_TARIH = '2026-07-15'; /* DMB-002, ZMT-2026-046 */
-  var KALIBRASYON_YAKLASAN_TARIH = '2026-07-20'; /* DMB-003, ZMT-2026-046 */
+  /* Garanti/kalibrasyon "yaklaşan" hesabı DEMIRBAS[] kaydının kendi garanti/kalibrasyon
+     alanından DOĞRUDAN okunur — ayrı bir sabit/override TAŞINMAZ (kararlar.md madde 146:
+     ZMT-2026-046 garanti çelişkisi otoriter kaynağa (crm-operasyon-demirbas-detay.html/
+     -form.html, 20.01.2027) göre çözüldü; demirbas-bildirim.html'in eski 15.07.2026'lı
+     DMB-002 kaydı T-UX tarafından kaldırıldı — bu dashboard artık yalnız DEMIRBAS[]'in
+     kendi `garanti`/`kalibrasyon` alanlarını okur, ikinci bir "doğru tarih" kaynağı yok). */
+  var ESIK_GUN = 30;
 
   function kpiCard(ico, tone, lbl, val, delta, deltaIco){
     return '<div class="kpi-card' + (tone ? ' ' + tone : '') + '"><div class="kpi-ico"><i class="fa-solid ' + ico + '"></i></div>'
@@ -235,6 +237,15 @@
     var serviste = DEMIRBAS.filter(function(d){ return d.durum==='serviste'; });
     var degerToplam = DEMIRBAS.reduce(function(s,d){ return s + (d.bedel||0); }, 0);
 
+    /* Garanti/kalibrasyon "yaklaşan" — DEMIRBAS[] kaydının kendi alanından, ESIK_GUN
+       (30 gün) içinde veya süresi geçmiş olanlar sayılır. Sabit bir ZMT/tarih YAZILMAZ. */
+    var garantiler = DEMIRBAS.filter(function(d){ return d.garanti; });
+    var garantiYaklasan = garantiler.filter(function(d){ return gunFarki(d.garanti) <= ESIK_GUN; });
+    var enYakinGaranti = garantiler.slice().sort(function(a,b){ return gunFarki(a.garanti) - gunFarki(b.garanti); })[0];
+
+    var kalibrasyonlar = DEMIRBAS.filter(function(d){ return d.kalibrasyon; });
+    var kalibrasyonYaklasan = kalibrasyonlar.filter(function(d){ return gunFarki(d.kalibrasyon) <= ESIK_GUN; });
+
     document.getElementById('kpiGrid').innerHTML =
         kpiCard('fa-boxes-stacked', '', 'Toplam Demirbaş', String(toplam), '10 kanonik ZMT kaydı', 'fa-list')
       + kpiCard('fa-user-check', 'info', 'Kullanımdaki', String(zimmetli.length), 'Zimmetli kalemlerle aynı küme', 'fa-id-badge')
@@ -242,8 +253,13 @@
       + kpiCard('fa-id-badge', 'ok', 'Zimmetli', String(zimmetli.length), '6 kişiye tahsisli kalem', 'fa-user')
       + kpiCard('fa-screwdriver-wrench', serviste.length ? 'warn' : '', 'Bakımdaki', String(serviste.length), serviste.length ? serviste[0].no + ' · gövde çatlağı onarımı' : 'Serviste kalem yok', 'fa-wrench')
       + kpiCard('fa-triangle-exclamation', '', 'Arızalı', '0', 'Bu envaride arızalı işaretli kalem yok', 'fa-check')
-      + kpiCard('fa-file-shield', 'danger', 'Garanti Yaklaşan', '1', 'ZMT-2026-046 · ' + durumMetni(gunFarki(GARANTI_YAKLASAN_TARIH)), 'fa-triangle-exclamation')
-      + kpiCard('fa-ruler-combined', 'warn', 'Kalibrasyonu Yaklaşan', '1', 'ZMT-2026-046 · ' + durumMetni(gunFarki(KALIBRASYON_YAKLASAN_TARIH)), 'fa-triangle-exclamation')
+      + kpiCard('fa-file-shield', garantiYaklasan.length ? 'danger' : '', 'Garanti Yaklaşan', String(garantiYaklasan.length),
+          garantiYaklasan.length ? garantiYaklasan.map(function(d){return d.no;}).join(', ') + ' · ≤30 gün'
+            : (enYakinGaranti ? '30 gün içinde yok · en yakını ' + enYakinGaranti.no + ' (' + durumMetni(gunFarki(enYakinGaranti.garanti)) + ')' : '30 gün içinde yok'),
+          'fa-triangle-exclamation')
+      + kpiCard('fa-ruler-combined', kalibrasyonYaklasan.length ? 'warn' : '', 'Kalibrasyonu Yaklaşan', String(kalibrasyonYaklasan.length),
+          kalibrasyonYaklasan.length ? kalibrasyonYaklasan.map(function(d){return d.no + ' · ' + durumMetni(gunFarki(d.kalibrasyon));}).join(', ') : '30 gün içinde yok',
+          'fa-triangle-exclamation')
       + kpiCard('fa-magnifying-glass', '', 'Kayıp', '0', 'Bu envaride kayıp işaretli kalem yok', 'fa-check')
       + kpiCard('fa-sack-dollar', 'info', 'Toplam Demirbaş Değeri', tl(degerToplam), '9 kayıt · araç (ZMT-044) hariç', 'fa-calculator');
 
@@ -291,7 +307,7 @@
     /* ---- Garanti ve Kalibrasyon Takvimi ---- */
     var takvim = [];
     DEMIRBAS.forEach(function(d){
-      if(d.garanti) takvim.push({no:d.no, ad:d.ad, tur:'Garanti Bitiş', tarih: d.no==='ZMT-2026-046' ? GARANTI_YAKLASAN_TARIH : d.garanti});
+      if(d.garanti) takvim.push({no:d.no, ad:d.ad, tur:'Garanti Bitiş', tarih:d.garanti});
       if(d.kalibrasyon) takvim.push({no:d.no, ad:d.ad, tur:'Kalibrasyon Kontrolü', tarih:d.kalibrasyon});
     });
     takvim.sort(function(x,y){ return gunFarki(x.tarih) - gunFarki(y.tarih); });
