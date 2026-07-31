@@ -28,7 +28,7 @@
 .vm-info span{font-size:12px;color:var(--muted)}
 .vm-badges{margin-left:auto}
 
-#tblKullanim{min-width:960px}
+#tblKullanim{min-width:1080px}
 #tblKullanim .num{text-align:right;white-space:nowrap}
 
 .ekle-card{display:none;margin-bottom:16px}
@@ -105,6 +105,7 @@
             </select>
           </div>
           <div class="gfield"><label for="fYakitL">Yakıt (L) <span class="gf-hint">(isteğe bağlı)</span></label><input type="number" id="fYakitL" min="0" placeholder="ör. 45"></div>
+          <div class="gfield"><label for="fYakitFiyat">Yakıt Birim Fiyatı (₺/L) <span class="gf-hint">(isteğe bağlı)</span></label><input type="number" id="fYakitFiyat" min="0" step="0.1" placeholder="ör. 44.80"></div>
           <div class="gfield"><label for="fCikisKm">Çıkış Km</label><input type="number" id="fCikisKm" min="0" placeholder="ör. 42180"></div>
           <div class="gfield"><label for="fDonusKm">Dönüş Km</label><input type="number" id="fDonusKm" min="0" placeholder="ör. 42300"></div>
           <div class="gfield full"><label for="fAmac">Amaç</label><input type="text" id="fAmac" placeholder="ör. Malzeme tedarik — nakliyeci depo"></div>
@@ -131,7 +132,7 @@
       </div>
       <div class="gc-body flush">
         <table class="gtable" id="tblKullanim">
-          <thead><tr><th>Tarih</th><th>Sürücü</th><th>Şantiye</th><th class="num">Çıkış Km</th><th class="num">Dönüş Km</th><th class="num">Yapılan Km</th><th class="num">Yakıt</th><th>Amaç</th><th>Notlar</th></tr></thead>
+          <thead><tr><th>Tarih</th><th>Sürücü</th><th>Şantiye</th><th class="num">Çıkış Km</th><th class="num">Dönüş Km</th><th class="num">Yapılan Km</th><th class="num">Yakıt</th><th class="num">Yakıt Tutarı</th><th>Amaç</th><th>Notlar</th></tr></thead>
           <tbody id="kulBody"></tbody>
         </table>
         <div class="gv-empty" id="kulEmpty" hidden>
@@ -153,45 +154,48 @@
 
   var SANTIYE_ADI = {vadi:'Vadi Konakları', liman:'Liman Lojistik Merkezi', merkez:'Merkez Şantiye', genelmerkez:'Genel Merkez'};
   function ddmmyyyy(iso){ var p = iso.split('-'); return p[2] + '.' + p[1] + '.' + p[0]; }
+  function tl(n){ return '₺' + n.toLocaleString('tr-TR', {maximumFractionDigits:0}); }
 
   /* ---- §12 araç + kullanım kaydı verisi — crm-operasyon-arac-detay.html "kullanim"
      özet dizisiyle tarih/km alanlarında SENKRON (o dosyada yalnız en yeni 1-2 kayıt
-     özetlenir, burada tam liste). ---- */
+     özetlenir, burada tam liste). "fiyat" — T-ARC3 spec-arac-yakit.md kapsamında EKLENEN
+     yakıt birim fiyatı — yakit.html'in aylık toplam hesabına bu ekran da katkı sağlar
+     (bkz. Motorin/Benzin dönemsel fiyat bandı, yakit.html ile SENKRON). ---- */
   var ARAC = {
     'ARC-01':{plaka:'34 ABC 123', model:'Ford Ranger 4x4 Pikap', santiye:'vadi', guncelKm:42300,
       kayitlar:[
-        {tarih:'2026-07-01', surucu:'Hasan Demirci', santiye:'vadi', cikisKm:42180, donusKm:42300, yakit:38, amac:'Malzeme tedarik — nakliyeci depo'},
-        {tarih:'2026-06-28', surucu:'Hasan Demirci', santiye:'vadi', cikisKm:41960, donusKm:42180, yakit:0, amac:'Şantiye içi malzeme taşıma'},
-        {tarih:'2026-06-20', surucu:'Ali Vural', santiye:'vadi', cikisKm:41700, donusKm:41960, yakit:35, amac:'Beton santrali sipariş takibi'},
-        {tarih:'2026-06-10', surucu:'Hasan Demirci', santiye:'vadi', cikisKm:41520, donusKm:41700, yakit:0, amac:'Belediye imar müdürlüğü evrak teslimi'}
+        {tarih:'2026-07-01', surucu:'Hasan Demirci', santiye:'vadi', cikisKm:42180, donusKm:42300, yakit:38, fiyat:44.80, amac:'Malzeme tedarik — nakliyeci depo'},
+        {tarih:'2026-06-28', surucu:'Hasan Demirci', santiye:'vadi', cikisKm:41960, donusKm:42180, yakit:0, fiyat:0, amac:'Şantiye içi malzeme taşıma'},
+        {tarih:'2026-06-20', surucu:'Ali Vural', santiye:'vadi', cikisKm:41700, donusKm:41960, yakit:35, fiyat:44.10, amac:'Beton santrali sipariş takibi'},
+        {tarih:'2026-06-10', surucu:'Hasan Demirci', santiye:'vadi', cikisKm:41520, donusKm:41700, yakit:0, fiyat:0, amac:'Belediye imar müdürlüğü evrak teslimi'}
       ]},
     'ARC-02':{plaka:'34 SRV 641', model:'Mercedes Sprinter 316 Servis', santiye:'vadi', guncelKm:61200,
       kayitlar:[
-        {tarih:'2026-06-30', surucu:'İbrahim Sönmez', santiye:'vadi', cikisKm:61050, donusKm:61200, yakit:52, amac:'Personel servis güzergâhı — sabah/akşam'},
-        {tarih:'2026-06-23', surucu:'İbrahim Sönmez', santiye:'vadi', cikisKm:60890, donusKm:61050, yakit:48, amac:'Personel servis güzergâhı — sabah/akşam'}
+        {tarih:'2026-06-30', surucu:'İbrahim Sönmez', santiye:'vadi', cikisKm:61050, donusKm:61200, yakit:52, fiyat:44.10, amac:'Personel servis güzergâhı — sabah/akşam'},
+        {tarih:'2026-06-23', surucu:'İbrahim Sönmez', santiye:'vadi', cikisKm:60890, donusKm:61050, yakit:48, fiyat:44.10, amac:'Personel servis güzergâhı — sabah/akşam'}
       ]},
     'ARC-03':{plaka:'35 KLT 208', model:'Toyota Hilux Pikap', santiye:'liman', guncelKm:78450,
       kayitlar:[
-        {tarih:'2026-06-29', surucu:'Aylin Koç', santiye:'liman', cikisKm:78300, donusKm:78450, yakit:30, amac:'Liman gümrük evrak teslimi'},
-        {tarih:'2026-06-15', surucu:'Şükrü Aslan', santiye:'liman', cikisKm:78100, donusKm:78300, yakit:32, amac:'Malzeme depo transferi'}
+        {tarih:'2026-06-29', surucu:'Aylin Koç', santiye:'liman', cikisKm:78300, donusKm:78450, yakit:30, fiyat:44.10, amac:'Liman gümrük evrak teslimi'},
+        {tarih:'2026-06-15', surucu:'Şükrü Aslan', santiye:'liman', cikisKm:78100, donusKm:78300, yakit:32, fiyat:44.10, amac:'Malzeme depo transferi'}
       ]},
     'ARC-04':{plaka:'41 DBL 457', model:'Fiat Doblo Cargo Panelvan', santiye:'merkez', guncelKm:87400,
       kayitlar:[
-        {tarih:'2026-06-29', surucu:'Recep Yaman', santiye:'merkez', cikisKm:87250, donusKm:87400, yakit:22, amac:'Depo malzeme taşıma — servise giriş öncesi'}
+        {tarih:'2026-06-29', surucu:'Recep Yaman', santiye:'merkez', cikisKm:87250, donusKm:87400, yakit:22, fiyat:44.10, amac:'Depo malzeme taşıma — servise giriş öncesi'}
       ]},
     'ARC-05':{plaka:'34 GNL 310', model:'Renault Megane Sedan', santiye:'genelmerkez', guncelKm:18900,
       kayitlar:[
-        {tarih:'2026-06-30', surucu:'Elif Sarıkaya', santiye:'genelmerkez', cikisKm:18820, donusKm:18900, yakit:6, amac:'Şantiye ziyareti — teknik denetim (Merkez Şantiye)'},
-        {tarih:'2026-06-18', surucu:'Elif Sarıkaya', santiye:'genelmerkez', cikisKm:18720, donusKm:18820, yakit:7, amac:'Belediye toplantısı'}
+        {tarih:'2026-06-30', surucu:'Elif Sarıkaya', santiye:'genelmerkez', cikisKm:18820, donusKm:18900, yakit:6, fiyat:48.40, amac:'Şantiye ziyareti — teknik denetim (Merkez Şantiye)'},
+        {tarih:'2026-06-18', surucu:'Elif Sarıkaya', santiye:'genelmerkez', cikisKm:18720, donusKm:18820, yakit:7, fiyat:48.40, amac:'Belediye toplantısı'}
       ]},
     'ARC-06':{plaka:'41 FTR 118', model:'Ford Transit 350L Kamyonet', santiye:'merkez', guncelKm:132600,
       kayitlar:[
-        {tarih:'2026-06-25', surucu:'Sadık Öz', santiye:'merkez', cikisKm:132450, donusKm:132600, yakit:40, amac:'Depo havuz aracı — malzeme dağıtımı'}
+        {tarih:'2026-06-25', surucu:'Sadık Öz', santiye:'merkez', cikisKm:132450, donusKm:132600, yakit:40, fiyat:44.10, amac:'Depo havuz aracı — malzeme dağıtımı'}
       ]},
     'ARC-07':{plaka:'34 ESK 771', model:'Renault Kangoo Van', santiye:'merkez', guncelKm:168400, kayitlar:[]},
     'ARC-08':{plaka:'34 PLK 552', model:'Volkswagen Transporter T6', santiye:'genelmerkez', guncelKm:54200,
       kayitlar:[
-        {tarih:'2026-07-01', surucu:'Baran Yıldız', santiye:'genelmerkez', cikisKm:54080, donusKm:54200, yakit:28, amac:'Satın alma tedarikçi ziyareti'}
+        {tarih:'2026-07-01', surucu:'Baran Yıldız', santiye:'genelmerkez', cikisKm:54080, donusKm:54200, yakit:28, fiyat:44.80, amac:'Satın alma tedarikçi ziyareti'}
       ]},
     'ARC-09':{plaka:'34 KRL 090', model:'Fiat Egea Sedan', santiye:'liman', guncelKm:32100, kayitlar:[]},
     'ARC-10':{plaka:'41 HRD 233', model:'Ford Cargo 1826 Kamyon', santiye:'merkez', guncelKm:310500, kayitlar:[]}
@@ -245,11 +249,13 @@
         + '<td class="num">' + k.donusKm.toLocaleString('tr-TR') + '</td>'
         + '<td class="num">' + (k.donusKm - k.cikisKm).toLocaleString('tr-TR') + ' km</td>'
         + '<td class="num">' + (k.yakit ? k.yakit + ' L' : '—') + '</td>'
+        + '<td class="num">' + (k.yakit && k.fiyat ? tl(Math.round(k.yakit * k.fiyat)) : '—') + '</td>'
         + '<td style="font-size:12.5px;color:var(--ink-2);max-width:220px">' + k.amac + '</td>'
         + '<td style="font-size:12.5px;color:var(--muted);max-width:180px">' + (k.notlar || '—') + '</td>'
         + '</tr>';
     }).join('');
-    document.getElementById('kulFoot').textContent = rows.length + ' kayıt gösteriliyor · toplam ' + v.kayitlar.length + ' kayıt';
+    var yakitToplam = rows.reduce(function(s,k){ return s + (k.yakit && k.fiyat ? Math.round(k.yakit * k.fiyat) : 0); }, 0);
+    document.getElementById('kulFoot').textContent = rows.length + ' kayıt gösteriliyor · toplam ' + v.kayitlar.length + ' kayıt · gösterilen yakıt tutarı ' + tl(yakitToplam);
   }
   renderTable();
   document.getElementById('kulSearch').addEventListener('input', renderTable);
@@ -277,6 +283,7 @@
     v.kayitlar.push({
       tarih: tarih, surucu: surucu, santiye: document.getElementById('fSantiyeSec').value,
       cikisKm: cikis, donusKm: donus, yakit: parseInt(document.getElementById('fYakitL').value, 10) || 0,
+      fiyat: parseFloat(document.getElementById('fYakitFiyat').value) || 0,
       amac: amac, notlar: document.getElementById('fNotlar').value.trim()
     });
     if(donus > v.guncelKm) v.guncelKm = donus;
