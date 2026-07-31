@@ -237,7 +237,7 @@ tr.yk-detail-row td{background:var(--bg);padding:14px 22px;border-top:none}
 
   var SANTIYE_ADI = {vadi:'Vadi Konakları', liman:'Liman Lojistik Merkezi', merkez:'Merkez Şantiye', genelmerkez:'Genel Merkez'};
   var FUEL_LBL = {motorin:'Motorin', benzin:'Benzin', lpg:'LPG', elektrik:'Elektrik', hibrit:'Hibrit', adblue:'AdBlue', diger:'Diğer'};
-  var ARCHIVE_STATES = ['pasif', 'arsivlendi', 'satildi', 'hurda', 'kiralamaBitti'];
+  var ARCHIVE_STATES = ['arsivlendi', 'satildi', 'hurda', 'kiralamaBitti'];
   function ddmmyyyy(iso){ var p = iso.split('-'); return p[2] + '.' + p[1] + '.' + p[0]; }
   function tl(n){ return '₺' + Math.round(n).toLocaleString('tr-TR'); }
   function ay(iso){ return iso.slice(0,7); }  /* 'YYYY-MM' */

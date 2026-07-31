@@ -26,7 +26,7 @@
 .gv-crumb a:hover{color:var(--acc-deep)}
 .gv-crumb i{font-size:9px;color:var(--line-2)}
 
-.frm-grid{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+.frm-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
 @media(max-width:980px){.frm-grid{grid-template-columns:minmax(0,1fr)}}
 
 .gd-block{padding:22px}
@@ -112,7 +112,7 @@
       <div>
         <div class="ph-eyebrow">İnsan Kaynağı</div>
         <h1>Zimmet İade</h1>
-        <div class="ph-sub">ZMT-2026-045 — Tablet, Samsung Galaxy Tab A9 · Hasan Demirci'den iade alınıyor</div>
+        <div class="ph-sub">ZMT-2026-045 — Tablet, Samsung Galaxy Tab A9 · Aylin Koç'tan iade alınıyor</div>
       </div>
     </div>
 
@@ -137,6 +137,13 @@
                 <input type="date" id="fTarih" value="2026-07-30">
               </div>
               <div class="gfield">
+                <label for="fTeslimEden">Teslim Eden</label>
+                <select id="fTeslimEden">
+                  <option value="Aylin Koç">Aylin Koç — Şantiye Şefi (kendisi)</option>
+                  <option value="Liman Lojistik Merkezi saha ekibi (vekaleten)">Liman saha ekibi — vekaleten</option>
+                </select>
+              </div>
+              <div class="gfield">
                 <label for="fTeslimAlan">Teslim Alan</label>
                 <select id="fTeslimAlan">
                   <option>Seda Karaca — İK Uzmanı</option>
@@ -146,6 +153,10 @@
               <div class="gfield full" id="hasarWrap" hidden>
                 <label for="fHasarNot">Hasar / Kayıp Açıklaması <span class="gf-hint">(zorunlu)</span></label>
                 <textarea id="fHasarNot" rows="3" placeholder="Hasarın niteliği ve olası kesinti/tazmin notu"></textarea>
+              </div>
+              <div class="gfield full">
+                <label for="fEksikParca">Eksik Parça <span class="gf-hint">(varsa belirtin)</span></label>
+                <input type="text" id="fEksikParca" placeholder="ör. şarj kablosu eksik — yoksa boş bırakın">
               </div>
               <div class="gfield full">
                 <label for="fNot">Notlar <span class="gf-hint">(isteğe bağlı)</span></label>
@@ -164,6 +175,15 @@
             <div id="iadeDosyaList"></div>
           </div>
 
+          <div class="gd-block">
+            <div class="gd-label">Teslim Eden İmzası <span class="gf-hint">(zorunlu)</span></div>
+            <p class="kisisiz-note" id="sigIadeNote" style="margin-bottom:8px">İadeyi teslim eden kişi aşağıya imza atmalıdır.</p>
+            <canvas id="sigPadIade" width="360" height="130" style="width:100%;max-width:360px;height:130px;border:1.5px dashed var(--line-2);border-radius:var(--r-sm);background:var(--bg);touch-action:none;cursor:crosshair;display:block"></canvas>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
+              <button type="button" class="btn btn-ghost btn-sm" id="sigClearIade" data-no-confirm><i class="fa-solid fa-eraser"></i> Temizle</button>
+            </div>
+          </div>
+
           <div class="form-foot" style="display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:18px 22px;border-top:1px solid var(--line)">
             <a class="btn btn-ghost btn-sm" href="crm-personel-zimmet-detay.html?zmt=045" data-no-confirm>Vazgeç</a>
             <button type="button" class="btn btn-acc btn-sm" id="btnSend" data-no-confirm><i class="fa-solid fa-rotate-left"></i> İadeyi Onayla</button>
@@ -173,10 +193,10 @@
         <div class="iade-sonuc" id="iadeSonuc">
           <div class="is-ico"><i class="fa-solid fa-check"></i></div>
           <h3>İade işlemi tamamlandı</h3>
-          <p id="sonucMetin">ZMT-2026-045, Hasan Demirci'den iade alınıp merkez depoya işlendi.</p>
+          <p id="sonucMetin">ZMT-2026-045, Aylin Koç'tan iade alınıp merkez depoya işlendi.</p>
           <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
             <a class="btn btn-ghost btn-sm" href="crm-personel-zimmet-detay.html?zmt=045" data-no-confirm>Zimmet Kaydına Dön</a>
-            <a class="btn btn-acc btn-sm" href="crm-personel-detay.html" data-no-confirm>Personel Kartına Dön</a>
+            <a class="btn btn-acc btn-sm" href="crm-personel-detay.html?per=005" data-no-confirm>Personel Kartına Dön</a>
           </div>
         </div>
       </div>
@@ -186,7 +206,7 @@
         <div class="gv-card">
           <div class="gd-block">
             <div class="gd-label">İade Edilen Kalem</div>
-            <div class="ctx-link"><div class="who-mark" style="background:var(--info-tint);color:var(--info)">HD</div><div><a href="crm-personel-detay.html" style="color:inherit">Hasan Demirci</a><span>Şantiye Şefi · Vadi Konakları</span></div></div>
+            <div class="ctx-link"><div class="who-mark" style="background:var(--info-tint);color:var(--info)">AK</div><div><a href="crm-personel-detay.html?per=005" style="color:inherit">Aylin Koç</a><span>Şantiye Şefi · Liman Lojistik Merkezi</span></div></div>
           </div>
           <div class="gd-block">
             <div class="ctx-row"><span class="ctx-lbl">Zimmet No</span><span class="ctx-val">ZMT-2026-045</span></div>
@@ -251,24 +271,63 @@
     renderIadeDosyalar();
   });
 
+  /* ============ §2.10 — Teslim Eden İmza Pedi (T-DMR4 YENİ, gerçek çizim yakalama,
+     kütüphane YOK) — crm-personel-zimmet-detay.html'deki AYNI komponentin bağımsız
+     kopyası (iki dosya da bu track'in sahipliğinde, kod tekrarı serbest). ============ */
+  var sigCanvasIade = document.getElementById('sigPadIade');
+  var sigIadeHas = false;
+  (function(){
+    var ctx = sigCanvasIade.getContext('2d');
+    ctx.strokeStyle = '#141533'; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    var drawing = false;
+    function pos(e){
+      var rect = sigCanvasIade.getBoundingClientRect();
+      var sx = sigCanvasIade.width / rect.width, sy = sigCanvasIade.height / rect.height;
+      return {x:(e.clientX - rect.left) * sx, y:(e.clientY - rect.top) * sy};
+    }
+    sigCanvasIade.addEventListener('pointerdown', function(e){
+      drawing = true; sigIadeHas = true;
+      var p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+      try{ sigCanvasIade.setPointerCapture(e.pointerId); }catch(err){}
+    });
+    sigCanvasIade.addEventListener('pointermove', function(e){
+      if(!drawing) return;
+      var p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+    });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function(ev){
+      sigCanvasIade.addEventListener(ev, function(){ drawing = false; });
+    });
+    document.getElementById('sigClearIade').addEventListener('click', function(){
+      ctx.clearRect(0, 0, sigCanvasIade.width, sigCanvasIade.height);
+      sigIadeHas = false;
+      gvToast('İmza temizlendi.', {type:'info'});
+    });
+  })();
+
   document.getElementById('btnSend').addEventListener('click', function(){
     var durum = durumGroup.querySelector('.tip-opt.is-on').getAttribute('data-t');
     if(durum !== 'iyi' && !hasarNot.value.trim()){
       gvToast('Hasar/kayıp açıklaması girin.', {type:'danger'});
       return;
     }
+    if(!sigIadeHas){
+      gvToast('Teslim eden imzası olmadan iade onaylanamaz.', {type:'danger'});
+      return;
+    }
+    var teslimEden = document.getElementById('fTeslimEden').value;
     var teslimAlan = document.getElementById('fTeslimAlan').value;
+    var eksikParca = document.getElementById('fEksikParca').value.trim();
     var DURUM_LBL = {iyi:'iyi durumda', hasarli:'hasarlı olarak', kayip:'kayıp bildirimiyle'};
     gvConfirm({
       icon:'fa-rotate-left', ok:'İadeyi Onayla', cancel:'Vazgeç',
       title:'Zimmet İadesi Onaylansın mı?',
-      message:'ZMT-2026-045, Hasan Demirci\'den ' + DURUM_LBL[durum] + ' iade alınacak ve ' + teslimAlan.split(' — ')[0] + ' tarafından teslim alınmış olarak işlenecek. [MOCK-SİM]',
+      message:'ZMT-2026-045, ' + teslimEden + ' tarafından teslim edilip ' + DURUM_LBL[durum] + ' iade alınacak ve ' + teslimAlan.split(' — ')[0] + ' tarafından teslim alınmış olarak işlenecek.' + (eksikParca ? ' Eksik parça: ' + eksikParca + '.' : '') + ' [MOCK-SİM]',
       onConfirm:function(){
         document.getElementById('frmWrap').classList.add('is-off');
         var sonuc = document.getElementById('iadeSonuc');
         sonuc.classList.add('is-on');
         var metin = durum === 'iyi'
-          ? 'ZMT-2026-045, Hasan Demirci\'den iyi durumda iade alınıp merkez depoya işlendi.'
+          ? 'ZMT-2026-045, Aylin Koç\'tan iyi durumda iade alınıp merkez depoya işlendi.'
           : durum === 'hasarli'
             ? 'ZMT-2026-045, hasarlı olarak iade alındı; kayıt Satın Alma/Muhasebe\'ye borç/ceza değerlendirmesi için bildirildi.'
             : 'ZMT-2026-045 kayıp bildirildi; kayıt Satın Alma/Muhasebe\'ye değerlendirme için bildirildi.';
@@ -281,9 +340,10 @@
           localStorage.setItem('gv_zimmet_045_durum', 'iade');
           var tarihce = [];
           try{ tarihce = JSON.parse(localStorage.getItem('gv_zimmet_045_tarihce') || '[]'); }catch(e){}
-          var sub = '2 Temmuz 2026 · Teslim alan: ' + teslimAlan.split(' — ')[0];
+          var sub = '2 Temmuz 2026 · Teslim eden: ' + teslimEden + ' · Teslim alan: ' + teslimAlan.split(' — ')[0] + ' · İmzalı';
           if(iadeDosyalar.length) sub += ' · Ek: ' + iadeDosyalar.map(function(f){ return f.ad; }).join(', ');
           tarihce.push({title:'İade alındı (' + DURUM_LBL[durum] + ')', sub: sub});
+          if(eksikParca) tarihce.push({title:'Eksik parça bildirildi', sub: eksikParca});
           if(durum !== 'iyi' && hasarNot.value.trim()) tarihce.push({title:'Hasar/kayıp notu eklendi', sub: hasarNot.value.trim()});
           localStorage.setItem('gv_zimmet_045_tarihce', JSON.stringify(tarihce));
         }catch(e){}

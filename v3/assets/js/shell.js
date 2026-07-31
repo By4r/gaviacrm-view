@@ -1175,6 +1175,18 @@
       {ic:'fa-truck-pickup',   lbl:'Makine Puantajı',  href:'crm-operasyon-makine.html',    screen:'makine'},
       {ic:'fa-utensils',       lbl:'Yemekhane',        href:'crm-operasyon-yemekhane.html', screen:'yemekhane'},
       {ic:'fa-toolbox',        lbl:'Demirbaş',         href:'crm-operasyon-demirbas.html',  screen:'demirbas'},
+      /* [Dalga 4 / Araç-Demirbaş] Demirbaş Etiketleri (barkod/QR yazdırma) — disk taraması
+         `crm-operasyon-demirbas.html`/`-demirbas-detay.html`'de hiçbir gerçek href linki
+         bulunmadığını gösterdi (yalnız düz metin "Demirbaş Etiketleri ekranı kullanılır"
+         notu + `crm-ayarlar-log.html`'in 2 geçmiş-kayıt linki — bunlar tasarlanmış
+         navigasyon değil, arşiv-kaydı tesadüfü). Madde 83'ün (`crm-ayarlar-arsiv.html`)
+         AYNI kriteri: "hiçbir sayfadan link verilmiyor" → kendi menü satırı gerekir.
+         Diğer 8 yeni ekran (arac-bildirim/arac-yakit/arac-gider/arac-dashboard,
+         demirbas-kategori/demirbas-marka/demirbas-bildirim/demirbas-dashboard) zaten
+         arac.html/arac-detay.html/arac-form.html/demirbas.html üzerinde GERÇEK üst-aksiyon
+         veya sekme linkine sahip — bu yüzden alt-akış olarak menüsüz KALDI (bkz.
+         tasks/kararlar.md madde 149). */
+      {ic:'fa-tags',           lbl:'Demirbaş Etiketleri', href:'crm-operasyon-demirbas-etiket.html', screen:'demirbas-etiket'},
       {ic:'fa-car-side',       lbl:'Araçlar',          href:'crm-operasyon-arac.html',      screen:'arac'}
     ]},
     /* [D12] sipariş zinciri + stok & depo + tedarikçi — 8 dosya diskte, unlock dalga sonunda */
@@ -1297,9 +1309,17 @@
                     'arac'/'puantaj' temel ekranlarının aksine KENDİ benzersiz data-screen
                     kimliğini kullanıyor (demirbaş-form/detay gibi ana ekranı MİRASLAMIYOR) —
                     bu yüzden ik'nin zaten sahip olduğu arac/puantaj görünürlüğü BURADA
-                    açıkça tekrarlanmazsa scrOk bu alt-ekranları 403'e düşürür. */
+                    açıkça tekrarlanmazsa scrOk bu alt-ekranları 403'e düşürür.
+                    [Dalga 4 / Araç-Demirbaş] AYNI sebepten 9 yeni ekran EKLENDİ —
+                    arac-bildirim/arac-yakit/arac-gider/arac-dashboard ve demirbas-kategori/
+                    demirbas-marka/demirbas-etiket/demirbas-bildirim/demirbas-dashboard hepsi
+                    KENDİ benzersiz data-screen kimliğini taşıyor (ana ekranı miraslamıyor),
+                    ik zaten operasyon bölümünde araç/demirbaş görüyor — eklenmezse bu 9
+                    ekranın hepsinde 403'e düşerdi. */
                  scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','raporlar','duyurular','operasyon-kiosk'],
-                       operasyon:['kasa','pluxee','puantaj','puantaj-form','demirbas','arac','arac-form','arac-arsiv','arac-bakim','arac-evrak','arac-kullanim'] } },
+                       operasyon:['kasa','pluxee','puantaj','puantaj-form','demirbas','arac','arac-form','arac-arsiv','arac-bakim','arac-evrak','arac-kullanim',
+                                  'arac-bildirim','arac-yakit','arac-gider','arac-dashboard',
+                                  'demirbas-kategori','demirbas-marka','demirbas-etiket','demirbas-bildirim','demirbas-dashboard'] } },
     personel:  { name:'Ali Vural',        role:'Saha Personeli',            ini:'AV',
                  secs:['panel','gorev'], land:'crm-panel.html',
                  scr:{ panel:['panel','ozet','ajanda','onaylar','bildirimler','duyurular','operasyon-kiosk'] } },

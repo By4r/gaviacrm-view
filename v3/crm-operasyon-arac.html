@@ -20,9 +20,10 @@
 /* T-ARC1 (§12 revizyon) — +Kod/+Firma/+Yakıt Gideri kolonları + seçim kolonu
    eklendiği için tablo genişledi (1120→1620); Liste/Kart toggle bunun mobil/dar
    ekran telafisidir (kart görünümünde yatay kaydırma gerekmez). */
-#tblArac{min-width:1620px}
+#tblArac{min-width:1712px}
 .col-chk{width:34px}
 .col-kod{width:78px}
+.col-km{width:92px}
 .col-firma{width:132px}
 .col-santiye{width:130px}
 .col-zimmet{width:150px}
@@ -50,10 +51,14 @@
 .arc-muayene{font-weight:700;color:var(--ink);font-size:13px;white-space:nowrap}
 .arc-muayene .mu-warn{display:block;font-size:10.5px;font-weight:700;color:var(--warn);margin-top:2px}
 .arc-muayene .mu-warn.danger{color:var(--danger)}
+.arc-muayene .mu-warn.ok{color:var(--ok)}
 .arc-sigorta{display:block;font-size:10.5px;font-weight:700;color:var(--warn);margin-top:3px}
 .arc-sigorta i{margin-right:3px}
 .arc-sigorta.missing{color:var(--muted);font-weight:600}
+.arc-sigorta.ok{color:var(--ok)}
 
+.arc-km{font-weight:700;color:var(--ink);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bk-son{font-size:10.5px;font-weight:600;color:var(--muted);margin-bottom:2px;white-space:nowrap}
 .arc-bakim{font-weight:700;color:var(--ink);font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums}
 .arc-bakim .bk-sub{display:block;font-size:10.5px;font-weight:600;color:var(--muted);margin-top:2px}
 .arc-bakim.danger{color:var(--danger)}
@@ -162,11 +167,15 @@
       <div>
         <div class="ph-eyebrow">Günlük Kayıt</div>
         <h1>Araçlar</h1>
-        <!-- statik bake — DEFAULT (rol-agnostic) 6 araçlık kanonik filo; JS yüklenince
-             aynı mount innerHTML ile ezilir (bu dosyanın ARAC dizisi) — D18-B2 -->
-        <div class="ph-sub" id="arSub">6 araç · 1 serviste · 2 Temmuz 2026, Perşembe</div>
+        <!-- statik bake — DEFAULT (rol-agnostic) 10 araçlık kanonik filo; JS yüklenince
+             aynı mount innerHTML ile ezilir (bu dosyanın ARAC dizisi) — D18-B2. Denetim-1
+             (2026-07-31): bu metin ARC-07..10 eklendikten sonra 6 araçlık ESKİ filoda
+             kalmıştı (JS canlı değeri "10 araç · 7 aktif filoda · 3 arşivde" iken statik
+             bake hâlâ "6 araç · 1 serviste" diyordu) — güncel filoya hizalandı. -->
+        <div class="ph-sub" id="arSub">10 araç · 7 aktif filoda · 3 arşivde · 2 Temmuz 2026, Perşembe</div>
       </div>
       <div class="ph-actions">
+        <a class="btn btn-ghost btn-sm" href="crm-operasyon-arac-dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
         <a class="btn btn-ghost btn-sm" href="crm-operasyon-arac-bildirim.html"><i class="fa-regular fa-bell"></i> Bildirim Merkezi <span class="gtag" id="arBilRozet" style="margin-left:4px"></span></a>
         <a class="btn btn-ghost btn-sm" href="#" data-export="Araç filosu"><i class="fa-solid fa-download"></i> Dışa Aktar</a>
         <a class="btn btn-acc btn-sm" href="crm-operasyon-arac-form.html"><i class="fa-solid fa-plus"></i> Yeni Araç Ekle</a>
@@ -205,11 +214,11 @@
         <div class="filter-row">
           <span class="frow-lbl">Şantiye</span>
           <div class="chips" id="arSantiyeChips">
-            <button class="chip is-on" data-santiye="hepsi">Tümü <span class="ch-cnt">6</span></button>
+            <button class="chip is-on" data-santiye="hepsi">Tümü <span class="ch-cnt">10</span></button>
             <button class="chip" data-santiye="vadi">Vadi <span class="ch-cnt">2</span></button>
-            <button class="chip" data-santiye="liman">Liman <span class="ch-cnt">1</span></button>
-            <button class="chip" data-santiye="merkez">Merkez <span class="ch-cnt">2</span></button>
-            <button class="chip" data-santiye="genelmerkez">Genel Merkez <span class="ch-cnt">1</span></button>
+            <button class="chip" data-santiye="liman">Liman <span class="ch-cnt">2</span></button>
+            <button class="chip" data-santiye="merkez">Merkez <span class="ch-cnt">4</span></button>
+            <button class="chip" data-santiye="genelmerkez">Genel Merkez <span class="ch-cnt">2</span></button>
           </div>
         </div>
         <div class="filter-row">
@@ -220,7 +229,7 @@
             <button class="chip" data-durum="bakimda">Bakımda</button>
             <button class="chip" data-durum="arizali">Arızalı</button>
             <button class="chip" data-durum="beklemede">Beklemede</button>
-            <button class="chip" data-durum="arsivli">Arşivli <span class="ch-cnt">0</span></button>
+            <button class="chip" data-durum="arsivli">Arşivli <span class="ch-cnt">3</span></button>
           </div>
           <button type="button" class="btn btn-ghost btn-sm gv-fp-open" data-fpanel="#fpArac" style="margin-left:auto">
             <i class="fa-solid fa-sliders"></i> Gelişmiş Filtre
@@ -265,11 +274,12 @@
               <th class="col-chk"><label class="row-chk" id="arChkAllWrap"><input type="checkbox" id="arChkAll" aria-label="Görünen tüm araçları seç"><span class="chk-box"><i class="fa-solid fa-check"></i></span></label></th>
               <th class="col-kod">Kod</th>
               <th>Araç</th>
+              <th class="col-km num">Km</th>
               <th class="col-firma">Bağlı Firma</th>
               <th class="col-santiye">Şantiye</th>
               <th class="col-zimmet">Zimmetli</th>
               <th class="col-muayene">Muayene</th>
-              <th class="col-bakim">Sonraki Bakım</th>
+              <th class="col-bakim">Bakım</th>
               <th class="col-maliyet num">Aylık Maliyet</th>
               <th class="col-yakit num">Aylık Yakıt Gideri</th>
               <th class="col-durum">Durum</th>
@@ -533,19 +543,21 @@
       + '</div></div>';
   }
   /* sigorta/kasko alt-satırı — değer YOKSA (null) her zaman gri "Bilgi girilmemiş" notu
-     basar (uyarı eşiğinden BAĞIMSIZ); değer VARSA yalnız yaklaşan/geçmiş tarihlerde
-     (tarihRozet().warn) gösterilir — §12 kabul kriteri "Gri Bilgi girilmemiş durumu". */
+     basar (uyarı eşiğinden BAĞIMSIZ); değer VARSA yaklaşan/geçmiş tarihlerde
+     (tarihRozet().warn) sarı/kırmızı uyarı, aksi halde yeşil "Geçerli" rozeti gösterilir
+     — §1.1 kabul kriterinin 4 durumu (Yeşil/Sarı/Kırmızı/Gri) TAMAMI görünür olsun diye
+     (denetim düzeltmesi — önceden "geçerli" durumu hiçbir rozet basmıyordu). */
   function sigortaSatiri(lbl, iso, icon, skip){
     if(skip) return '';
     if(iso == null) return '<div class="arc-sigorta missing"><i class="fa-solid '+icon+'"></i>'+lbl+': <span class="gv-missing">Bilgi girilmemiş</span></div>';
     var r = tarihRozet(iso);
-    if(!r.warn) return '';
+    if(!r.warn) return '<div class="arc-sigorta ok"><i class="fa-solid '+icon+'"></i>'+lbl+': Geçerli</div>';
     return '<div class="arc-sigorta"><i class="fa-solid '+icon+'"></i>'+lbl+': '+r.lbl+'</div>';
   }
   function muayeneCell(a){
     if(ARCHIVE_STATES.indexOf(a.durum) !== -1) return '<span class="muted" style="font-size:12px;font-style:italic">Araç '+DURUM_LBL[a.durum].lbl.toLocaleLowerCase('tr')+'</span>';
     var m = tarihRozet(a.muayene);
-    var html = '<div class="arc-muayene">'+ddmmyyyy(a.muayene)+(m.warn ? '<span class="mu-warn '+m.cls+'"><i class="fa-solid fa-triangle-exclamation"></i> '+m.lbl+'</span>' : '')+'</div>';
+    var html = '<div class="arc-muayene">'+ddmmyyyy(a.muayene)+(m.warn ? '<span class="mu-warn '+m.cls+'"><i class="fa-solid fa-triangle-exclamation"></i> '+m.lbl+'</span>' : '<span class="mu-warn ok"><i class="fa-solid fa-check"></i> Geçerli</span>')+'</div>';
     html += sigortaSatiri('Sigorta', a.sigorta, 'fa-file-shield', false);
     html += sigortaSatiri('Kasko', a.kasko, 'fa-file-contract', a.kasko != null && a.kasko === a.sigorta);
     return html;
@@ -553,7 +565,8 @@
   function bakimCell(a){
     if(ARCHIVE_STATES.indexOf(a.durum) !== -1) return '<span class="muted" style="font-size:12px">—</span>';
     var asildi = a.bakimKmSuan > a.bakimKmHedef;
-    var html = '<div class="arc-bakim'+(asildi ? ' danger' : '')+'">'+a.bakimKmSuan.toLocaleString('tr-TR')+' / '+a.bakimKmHedef.toLocaleString('tr-TR')+' km'
+    var html = '<div class="bk-son">Son bakım: '+ddmmyyyy(a.sonBakim)+'</div>';
+    html += '<div class="arc-bakim'+(asildi ? ' danger' : '')+'">'+a.bakimKmSuan.toLocaleString('tr-TR')+' / '+a.bakimKmHedef.toLocaleString('tr-TR')+' km'
       + (asildi ? '<span class="bk-sub"><i class="fa-solid fa-triangle-exclamation"></i> hedef aşıldı</span>' : '')+'</div>';
     if(a.bakimTarihi){
       var b = tarihRozet(a.bakimTarihi);
@@ -601,6 +614,7 @@
       html += '<td>'+chkHtml(a.no)+'</td>';
       html += '<td><span class="arc-kod-badge">'+a.no+'</span></td>';
       html += '<td>'+aracCell(a)+'</td>';
+      html += '<td class="num arc-km">'+a.km.toLocaleString('tr-TR')+' km</td>';
       html += '<td><span class="arc-firma" title="'+FIRMA_ADI+'">'+FIRMA_ADI+'</span></td>';
       html += '<td>'+SANTIYE_ADI[a.santiye]+'</td>';
       html += '<td>'+zimmetCell(a)+'</td>';
@@ -627,12 +641,14 @@
       +   '<div class="arc-card-body"><span class="arc-kod-badge">'+a.no+'</span><b>'+a.plaka+'</b><span>'+a.marka+' '+a.model+' ('+a.yil+')</span></div>'
       + '</div>'
       + '<div class="arc-card-grid">'
+      +   acgItem('Kilometre', a.km.toLocaleString('tr-TR')+' km')
       +   acgItem('Bağlı Firma', '<span class="arc-firma" style="max-width:none;font-size:12.5px;font-weight:700;color:var(--ink)">'+FIRMA_ADI+'</span>')
       +   acgItem('Şantiye', SANTIYE_ADI[a.santiye])
       +   acgItem('Zimmetli', zimmetCell(a))
       +   acgItem('Aylık Maliyet', a.maliyet ? tl(a.maliyet) : '—')
       +   acgItem('Yakıt Gideri (Haziran)', a.yakitAy ? tl(a.yakitAy) : '—')
       +   acgItem('Muayene', ARCHIVE_STATES.indexOf(a.durum) === -1 ? ddmmyyyy(a.muayene) : '—')
+      +   acgItem('Son Bakım', ARCHIVE_STATES.indexOf(a.durum) === -1 ? ddmmyyyy(a.sonBakim) : '—')
       + '</div>'
       + '<div class="arc-card-foot"><div style="display:flex;flex-direction:column;gap:3px;min-width:0">'+durumCell(a)+'</div>'+rowActsHtml(a)+'</div>'
       + '</div>';
@@ -875,11 +891,11 @@
   function aracExportAoa(list){
     var aoa = [
       ['Araç Filosu — Gavia CRM'],
-      ['Kod','Plaka','Marka/Model','Bağlı Firma','Şantiye','Zimmetli','Muayene','Aylık Maliyet','Aylık Yakıt Gideri (Haziran)','Durum']
+      ['Kod','Plaka','Marka/Model','Kilometre','Bağlı Firma','Şantiye','Zimmetli','Muayene','Son Bakım','Aylık Maliyet','Aylık Yakıt Gideri (Haziran)','Durum']
     ];
     list.forEach(function(a){
-      aoa.push([a.no, a.plaka, a.marka + ' ' + a.model, FIRMA_ADI, SANTIYE_ADI[a.santiye],
-        a.zimmet || ('(' + (a.zimmetNot || 'zimmetsiz') + ')'), ddmmyyyy(a.muayene),
+      aoa.push([a.no, a.plaka, a.marka + ' ' + a.model, a.km, FIRMA_ADI, SANTIYE_ADI[a.santiye],
+        a.zimmet || ('(' + (a.zimmetNot || 'zimmetsiz') + ')'), ddmmyyyy(a.muayene), ddmmyyyy(a.sonBakim),
         a.maliyet || 0, a.yakitAy || 0, DURUM_LBL[a.durum].lbl]);
     });
     return aoa;
@@ -887,12 +903,12 @@
   window.GV_EXPORTERS = window.GV_EXPORTERS || {};
   window.GV_EXPORTERS['Araç filosu'] = function(){
     var visible = ARAC.filter(passesFilters);
-    return {file:'arac-filosu', sheet:'Araçlar', cols:[8,12,26,20,16,16,12,14,18,14], aoa:aracExportAoa(visible)};
+    return {file:'arac-filosu', sheet:'Araçlar', cols:[8,12,26,12,20,16,16,12,12,14,18,14], aoa:aracExportAoa(visible)};
   };
   window.GV_EXPORTERS['Seçili araçlar'] = function(){
     var nos = Object.keys(selectedNos);
     var list = ARAC.filter(function(a){ return nos.indexOf(a.no) !== -1; });
-    return {file:'arac-secili-' + nos.length, sheet:'Araçlar', cols:[8,12,26,20,16,16,12,14,18,14], aoa:aracExportAoa(list)};
+    return {file:'arac-secili-' + nos.length, sheet:'Araçlar', cols:[8,12,26,12,20,16,16,12,12,14,18,14], aoa:aracExportAoa(list)};
   };
 
   setView(getView());
