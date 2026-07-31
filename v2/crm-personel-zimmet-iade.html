@@ -137,6 +137,13 @@
                 <input type="date" id="fTarih" value="2026-07-30">
               </div>
               <div class="gfield">
+                <label for="fTeslimEden">Teslim Eden</label>
+                <select id="fTeslimEden">
+                  <option value="Aylin Koç">Aylin Koç — Şantiye Şefi (kendisi)</option>
+                  <option value="Liman Lojistik Merkezi saha ekibi (vekaleten)">Liman saha ekibi — vekaleten</option>
+                </select>
+              </div>
+              <div class="gfield">
                 <label for="fTeslimAlan">Teslim Alan</label>
                 <select id="fTeslimAlan">
                   <option>Seda Karaca — İK Uzmanı</option>
@@ -162,6 +169,15 @@
               <span>PDF, JPG, PNG — imzalı teslim tutanağını ekleyin</span>
             </div>
             <div id="iadeDosyaList"></div>
+          </div>
+
+          <div class="gd-block">
+            <div class="gd-label">Teslim Eden İmzası <span class="gf-hint">(zorunlu)</span></div>
+            <p class="kisisiz-note" id="sigIadeNote" style="margin-bottom:8px">İadeyi teslim eden kişi aşağıya imza atmalıdır.</p>
+            <canvas id="sigPadIade" width="360" height="130" style="width:100%;max-width:360px;height:130px;border:1.5px dashed var(--line-2);border-radius:var(--r-sm);background:var(--bg);touch-action:none;cursor:crosshair;display:block"></canvas>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
+              <button type="button" class="btn btn-ghost btn-sm" id="sigClearIade" data-no-confirm><i class="fa-solid fa-eraser"></i> Temizle</button>
+            </div>
           </div>
 
           <div class="form-foot" style="display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:18px 22px;border-top:1px solid var(--line)">
@@ -251,18 +267,56 @@
     renderIadeDosyalar();
   });
 
+  /* ============ §2.10 — Teslim Eden İmza Pedi (T-DMR4 YENİ, gerçek çizim yakalama,
+     kütüphane YOK) — crm-personel-zimmet-detay.html'deki AYNI komponentin bağımsız
+     kopyası (iki dosya da bu track'in sahipliğinde, kod tekrarı serbest). ============ */
+  var sigCanvasIade = document.getElementById('sigPadIade');
+  var sigIadeHas = false;
+  (function(){
+    var ctx = sigCanvasIade.getContext('2d');
+    ctx.strokeStyle = '#141533'; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    var drawing = false;
+    function pos(e){
+      var rect = sigCanvasIade.getBoundingClientRect();
+      var sx = sigCanvasIade.width / rect.width, sy = sigCanvasIade.height / rect.height;
+      return {x:(e.clientX - rect.left) * sx, y:(e.clientY - rect.top) * sy};
+    }
+    sigCanvasIade.addEventListener('pointerdown', function(e){
+      drawing = true; sigIadeHas = true;
+      var p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+      try{ sigCanvasIade.setPointerCapture(e.pointerId); }catch(err){}
+    });
+    sigCanvasIade.addEventListener('pointermove', function(e){
+      if(!drawing) return;
+      var p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+    });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function(ev){
+      sigCanvasIade.addEventListener(ev, function(){ drawing = false; });
+    });
+    document.getElementById('sigClearIade').addEventListener('click', function(){
+      ctx.clearRect(0, 0, sigCanvasIade.width, sigCanvasIade.height);
+      sigIadeHas = false;
+      gvToast('İmza temizlendi.', {type:'info'});
+    });
+  })();
+
   document.getElementById('btnSend').addEventListener('click', function(){
     var durum = durumGroup.querySelector('.tip-opt.is-on').getAttribute('data-t');
     if(durum !== 'iyi' && !hasarNot.value.trim()){
       gvToast('Hasar/kayıp açıklaması girin.', {type:'danger'});
       return;
     }
+    if(!sigIadeHas){
+      gvToast('Teslim eden imzası olmadan iade onaylanamaz.', {type:'danger'});
+      return;
+    }
+    var teslimEden = document.getElementById('fTeslimEden').value;
     var teslimAlan = document.getElementById('fTeslimAlan').value;
     var DURUM_LBL = {iyi:'iyi durumda', hasarli:'hasarlı olarak', kayip:'kayıp bildirimiyle'};
     gvConfirm({
       icon:'fa-rotate-left', ok:'İadeyi Onayla', cancel:'Vazgeç',
       title:'Zimmet İadesi Onaylansın mı?',
-      message:'ZMT-2026-045, Aylin Koç\'tan ' + DURUM_LBL[durum] + ' iade alınacak ve ' + teslimAlan.split(' — ')[0] + ' tarafından teslim alınmış olarak işlenecek. [MOCK-SİM]',
+      message:'ZMT-2026-045, ' + teslimEden + ' tarafından teslim edilip ' + DURUM_LBL[durum] + ' iade alınacak ve ' + teslimAlan.split(' — ')[0] + ' tarafından teslim alınmış olarak işlenecek. [MOCK-SİM]',
       onConfirm:function(){
         document.getElementById('frmWrap').classList.add('is-off');
         var sonuc = document.getElementById('iadeSonuc');
@@ -281,7 +335,7 @@
           localStorage.setItem('gv_zimmet_045_durum', 'iade');
           var tarihce = [];
           try{ tarihce = JSON.parse(localStorage.getItem('gv_zimmet_045_tarihce') || '[]'); }catch(e){}
-          var sub = '2 Temmuz 2026 · Teslim alan: ' + teslimAlan.split(' — ')[0];
+          var sub = '2 Temmuz 2026 · Teslim eden: ' + teslimEden + ' · Teslim alan: ' + teslimAlan.split(' — ')[0] + ' · İmzalı';
           if(iadeDosyalar.length) sub += ' · Ek: ' + iadeDosyalar.map(function(f){ return f.ad; }).join(', ');
           tarihce.push({title:'İade alındı (' + DURUM_LBL[durum] + ')', sub: sub});
           if(durum !== 'iyi' && hasarNot.value.trim()) tarihce.push({title:'Hasar/kayıp notu eklendi', sub: hasarNot.value.trim()});

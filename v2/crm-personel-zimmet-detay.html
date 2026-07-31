@@ -179,10 +179,31 @@
         </div>
 
         <div class="gv-card">
+          <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-signature"></i> Teslim Bilgisi</div>
+            <span class="gtag"><i class="fa-solid fa-circle-info"></i> §2.10</span>
+          </div>
+          <div class="gd-block">
+            <div class="ctx-row"><span class="ctx-lbl">Teslim Eden</span><span class="ctx-val">Baran Yıldız — Satın Alma / Depo Sorumlusu</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Kondisyon (teslim anında)</span><span class="ctx-val">Yeni, sıfır ambalaj</span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Eksik Parça</span><span class="ctx-val">Yok</span></div>
+          </div>
+          <div class="gd-block">
+            <div class="gd-label">Dijital İmza (Zimmetli Kişi)</div>
+            <p class="kisisiz-note" id="sigNote">Bu zimmet kaydı için arşivde dijital imza bulunmuyor — aşağıdaki alandan Aylin Koç adına imza alınıp kayda eklenebilir.</p>
+            <canvas id="sigPad" width="360" height="130" style="width:100%;max-width:360px;height:130px;border:1.5px dashed var(--line-2);border-radius:var(--r-sm);background:var(--bg);touch-action:none;cursor:crosshair;display:block"></canvas>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap">
+              <button type="button" class="btn btn-ghost btn-sm" id="sigClear" data-no-confirm><i class="fa-solid fa-eraser"></i> Temizle</button>
+              <button type="button" class="btn btn-acc btn-sm" id="sigSave" data-no-confirm><i class="fa-solid fa-signature"></i> İmzayı Kaydet</button>
+              <span id="sigSavedNote" class="kisisiz-note" style="margin:0" hidden><i class="fa-solid fa-circle-check" style="color:var(--ok)"></i> Kaydedildi</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="gv-card">
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> Zimmet Geçmişi</div></div>
           <ol class="ml-timeline" id="tlList">
             <li class="ml-item done"><span class="ml-dot"><i class="fa-solid fa-check"></i></span><div class="ml-body"><b>Depoya giriş</b><span>20 Ocak 2026 · Merkez depo</span></div></li>
-            <li class="ml-item active"><span class="ml-dot"></span><div class="ml-body"><b>Aylin Koç'a zimmet verildi</b><span>15 Şubat 2026 · Liman Lojistik Merkezi</span></div></li>
+            <li class="ml-item active"><span class="ml-dot"></span><div class="ml-body"><b>Aylin Koç'a zimmet verildi</b><span>15 Şubat 2026 · Liman Lojistik Merkezi · Teslim eden: Baran Yıldız — Satın Alma / Depo Sorumlusu</span></div></li>
           </ol>
         </div>
 
@@ -352,6 +373,62 @@
   var btnPrint = document.getElementById('btnZmtPrint');
   if(btnPrint) btnPrint.addEventListener('click', function(){ window.print(); });
 
+  /* ============ §2.10 — Dijital İmza Pedi (T-DMR4 YENİ) ============
+     Gerçek <canvas> çizim yakalama, vanilla pointerdown/pointermove — kütüphane YOK
+     (plan §T-DMR4 kabul kriteri). ZMT-2026-045'e özel localStorage anahtarıyla kalıcı;
+     zimmet-iade.html'deki AYNI komponentin bağımsız bir kopyasıdır (iki dosya da bu
+     track'in sahipliğinde olduğu için kod tekrarı serbesttir, plan §T-DMR4 notu). ---- */
+  var SIG_KEY = 'gv_zimmet_045_imza';
+  var sigCanvas = document.getElementById('sigPad');
+  if(sigCanvas){
+    var sigCtx = sigCanvas.getContext('2d');
+    sigCtx.strokeStyle = '#141533'; sigCtx.lineWidth = 2.2; sigCtx.lineCap = 'round'; sigCtx.lineJoin = 'round';
+    var sigDrawing = false, sigHas = false;
+    function sigPos(e){
+      var rect = sigCanvas.getBoundingClientRect();
+      var sx = sigCanvas.width / rect.width, sy = sigCanvas.height / rect.height;
+      return {x:(e.clientX - rect.left) * sx, y:(e.clientY - rect.top) * sy};
+    }
+    sigCanvas.addEventListener('pointerdown', function(e){
+      sigDrawing = true; sigHas = true;
+      var p = sigPos(e); sigCtx.beginPath(); sigCtx.moveTo(p.x, p.y);
+      try{ sigCanvas.setPointerCapture(e.pointerId); }catch(err){}
+    });
+    sigCanvas.addEventListener('pointermove', function(e){
+      if(!sigDrawing) return;
+      var p = sigPos(e); sigCtx.lineTo(p.x, p.y); sigCtx.stroke();
+    });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function(ev){
+      sigCanvas.addEventListener(ev, function(){ sigDrawing = false; });
+    });
+    document.getElementById('sigClear').addEventListener('click', function(){
+      sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+      sigHas = false;
+      try{ localStorage.removeItem(SIG_KEY); }catch(e){}
+      document.getElementById('sigNote').hidden = false;
+      document.getElementById('sigSavedNote').hidden = true;
+      gvToast('İmza temizlendi.', {type:'info'});
+    });
+    document.getElementById('sigSave').addEventListener('click', function(){
+      if(!sigHas){ gvToast('Kaydetmeden önce imza alanına çizin.', {type:'danger'}); return; }
+      try{ localStorage.setItem(SIG_KEY, sigCanvas.toDataURL('image/png')); }catch(e){}
+      document.getElementById('sigNote').hidden = true;
+      document.getElementById('sigSavedNote').hidden = false;
+      tlAppend({title:'Dijital imza alındı (Aylin Koç)', sub:'2 Temmuz 2026 · Teslim eden: Baran Yıldız'});
+      gvToast('İmza kaydedildi ve zimmet geçmişine işlendi.');
+    });
+    /* önceki oturumda kaydedilmiş imza varsa geri yükle */
+    try{
+      var savedSig = localStorage.getItem(SIG_KEY);
+      if(savedSig){
+        var img = new Image();
+        img.onload = function(){ sigCtx.drawImage(img, 0, 0); sigHas = true; };
+        img.src = savedSig;
+        document.getElementById('sigNote').hidden = true;
+        document.getElementById('sigSavedNote').hidden = false;
+      }
+    }catch(e){}
+  }
 })();
 </script>
 </body>
