@@ -998,7 +998,8 @@
 
   /* ============================================================================
      SEKME MOTORU — crm-operasyon-arac-form.html ile BİREBİR aynı .gv-tab/data-tab-panel
-     hash-tabanlı olmayan tık-tabanlı deseni (kaynak-transfer, motor tekrar icat edilmedi). */
+     hash-tabanlı deseni (kaynak-transfer, motor tekrar icat edilmedi — T-UX §6 denetimi:
+     önceki halde hash-routing eksikti, arac-form.html ile uyumsuzdu, burada tamamlandı). */
   (function(){
     var tabs = Array.prototype.slice.call(document.querySelectorAll('.gv-tab'));
     var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
@@ -1011,9 +1012,14 @@
       panels.forEach(function(p){ p.hidden = p.getAttribute('data-tab-panel') !== id; });
     }
     tabs.forEach(function(t){
-      t.addEventListener('click', function(){ activate(t.getAttribute('data-tab')); });
+      t.addEventListener('click', function(){
+        activate(t.getAttribute('data-tab'));
+        history.replaceState(null, '', location.pathname + location.search + '#' + t.getAttribute('data-tab'));
+      });
     });
-    activate('siniflandirma');
+    var initial = (location.hash || '').replace('#', '');
+    var valid = tabs.some(function(t){ return t.getAttribute('data-tab') === initial; });
+    activate(valid ? initial : 'siniflandirma');
   })();
 
   /* ============================================================================

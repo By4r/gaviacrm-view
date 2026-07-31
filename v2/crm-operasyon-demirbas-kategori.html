@@ -172,9 +172,12 @@
      10 kayıttan (crm-operasyon-demirbas.html DEMIRBAS_ALL) GERÇEKTEN türetilmiştir —
      uydurma yok; 8 alt kategori kullanımda (>=1), geri kalanı doküman genişliğini
      göstermek için tanımlı ama "0 demirbaşta kullanılıyor" (kararlar.md'deki marka
-     seed idiyomunun aynısı). Dinamik teknik özellik şeması (§2.6) burada TANIMLANIR,
-     crm-operasyon-demirbas-form.html (T-DMR2 kapsamı) tarafından TÜKETİLİR — bkz.
-     tasks/spec-demirbas-kategori.md. */
+     seed idiyomunun aynısı). Dinamik teknik özellik şeması (§2.6) — OTORİTE
+     crm-operasyon-demirbas-form.html'in TEKNIK_SEMA'sıdır (gerçek kullanımdaki form
+     alanları); bu dosya salt-okunur önizleme amaçlı BİREBİR aynı alan/etiket/birim
+     setini (machine `key` dahil) Türkçe alt kategori adıyla anahtarlanmış olarak
+     TEKRARLAR (T-UX §6 denetimi, kararlar madde 132/138 uzlaştırması — iki dosya
+     arasında runtime paylaşım yok, buildless kısıt; senkron elle korunur). */
   var KULLANIM = {
     'Cep Telefonu': ['ZMT-2026-041'],
     'Şarjlı Matkap': ['ZMT-2026-042'],
@@ -187,39 +190,66 @@
   };
   var TEKNIK_SEMA = {
     'Cep Telefonu': [
-      {ad:'RAM', tip:'birim', birim:'GB'}, {ad:'Depolama', tip:'birim', birim:'GB'},
-      {ad:'İşletim Sistemi', tip:'secim', secenekler:['Android','iOS']}, {ad:'IMEI', tip:'metin'}
-    ],
-    'Şarjlı Matkap': [
-      {ad:'Voltaj', tip:'birim', birim:'V'}, {ad:'Akü Kapasitesi', tip:'birim', birim:'Ah'},
-      {ad:'Tork', tip:'birim', birim:'Nm'}, {ad:'Devir', tip:'birim', birim:'dev/dk'},
-      {ad:'Mandren Çapı', tip:'birim', birim:'mm'}, {ad:'Akü Adedi', tip:'sayi'}
-    ],
-    'Kişisel Koruyucu Donanım Seti': [
-      {ad:'Baret Standardı', tip:'metin'}, {ad:'Yelek Sınıfı', tip:'secim', secenekler:['Sınıf 1','Sınıf 2','Sınıf 3']},
-      {ad:'Bot Numarası', tip:'sayi'}, {ad:'Set İçeriği', tip:'coklu', secenekler:['Baret','Yelek','Bot','Eldiven']}
+      {key:'imei', ad:'IMEI', tip:'metin'},
+      {key:'ram', ad:'RAM', tip:'secim', secenekler:['4GB','6GB','8GB','12GB']},
+      {key:'depolama', ad:'Depolama', tip:'secim', secenekler:['64GB','128GB','256GB','512GB']},
+      {key:'os', ad:'İşletim Sistemi', tip:'secim', secenekler:['Android 14','Android 13','iOS 18','iOS 17']},
+      {key:'ekranBoyutu', ad:'Ekran Boyutu', tip:'birimli', birim:'inç'},
+      {key:'simOperator', ad:'SIM Operatörü', tip:'metin'}
     ],
     'Tablet': [
-      {ad:'Ekran Boyutu', tip:'birim', birim:'inç'}, {ad:'Depolama', tip:'birim', birim:'GB'},
-      {ad:'RAM', tip:'birim', birim:'GB'}, {ad:'Bağlantı', tip:'secim', secenekler:['Wi-Fi','Wi-Fi + Hücresel']}
+      {key:'imei', ad:'IMEI / Seri', tip:'metin'},
+      {key:'ram', ad:'RAM', tip:'secim', secenekler:['3GB','4GB','6GB','8GB']},
+      {key:'depolama', ad:'Depolama', tip:'secim', secenekler:['64GB','128GB','256GB']},
+      {key:'ekranBoyutu', ad:'Ekran Boyutu', tip:'birimli', birim:'inç'},
+      {key:'baglanti', ad:'Bağlantı Türü', tip:'secim', secenekler:['Wi-Fi','Wi-Fi + Hücresel']},
+      {key:'os', ad:'İşletim Sistemi', tip:'secim', secenekler:['Android 14','Android 13','iPadOS']}
+    ],
+    'Şarjlı Matkap': [
+      {key:'voltaj', ad:'Voltaj', tip:'birimli', birim:'V'},
+      {key:'akuKapasitesi', ad:'Akü Kapasitesi', tip:'birimli', birim:'Ah'},
+      {key:'tork', ad:'Tork', tip:'birimli', birim:'Nm'},
+      {key:'devir', ad:'Devir', tip:'birimli', birim:'rpm'},
+      {key:'mandrenCapi', ad:'Mandren Çapı', tip:'ondalik', birim:'mm'},
+      {key:'akuAdedi', ad:'Akü Adedi', tip:'sayi'},
+      {key:'cantaDahil', ad:'Çanta Dahil mi', tip:'evethayir'}
+    ],
+    'Kişisel Koruyucu Donanım Seti': [
+      {key:'beden', ad:'Beden', tip:'secim', secenekler:['S','M','L','XL','XXL']},
+      {key:'setIcerigi', ad:'Set İçeriği', tip:'coklu', secenekler:['Baret','Yelek','Bot','Eldiven','Gözlük']},
+      {key:'standart', ad:'Standart / Sertifika', tip:'metin'},
+      {key:'sonKontrolTarihi', ad:'Son Kontrol Tarihi', tip:'tarih'}
     ],
     'Lazer Metre': [
-      {ad:'Ölçüm Menzili', tip:'birim', birim:'m'}, {ad:'Hassasiyet', tip:'birim', birim:'mm'},
-      {ad:'Lazer Sınıfı', tip:'secim', secenekler:['Class 2','Class 3R']}, {ad:'Su Geçirmezlik (IP)', tip:'metin'}
+      {key:'olcumMenzili', ad:'Ölçüm Menzili', tip:'birimli', birim:'m'},
+      {key:'hassasiyet', ad:'Hassasiyet', tip:'ondalik', birim:'mm'},
+      {key:'lazerSinifi', ad:'Lazer Sınıfı', tip:'secim', secenekler:['Class 1','Class 2','Class 3R']},
+      {key:'suGecirmezlik', ad:'Su Geçirmezlik', tip:'secim', secenekler:['Yok','IP54','IP65']},
+      {key:'bluetooth', ad:'Bluetooth Bağlantısı', tip:'evethayir'},
+      {key:'kalibrasyonSertifikasi', ad:'Kalibrasyon Sertifikası', tip:'dosya'}
     ],
     'Kırıcı ve Deliciler': [
-      {ad:'Darbe Enerjisi', tip:'birim', birim:'J'}, {ad:'Darbe Hızı', tip:'birim', birim:'bpm'},
-      {ad:'Ağırlık', tip:'birim', birim:'kg'}, {ad:'Güç', tip:'birim', birim:'W'},
-      {ad:'Uç Tipi', tip:'secim', secenekler:['SDS-Max','SDS-Plus']}
+      {key:'darbeEnerjisi', ad:'Darbe Enerjisi', tip:'birimli', birim:'J'},
+      {key:'gucKaynagi', ad:'Güç Kaynağı', tip:'secim', secenekler:['Şebeke','Akü','Benzin']},
+      {key:'agirlik', ad:'Ağırlık', tip:'ondalik', birim:'kg'},
+      {key:'ucTipi', ad:'Uç Tipi', tip:'secim', secenekler:['SDS-Plus','SDS-Max','Altıgen']},
+      {key:'titresimAzaltma', ad:'Titreşim Azaltma', tip:'evethayir'}
     ],
     'Telsiz/İletişim': [
-      {ad:'Frekans Bandı', tip:'secim', secenekler:['PMR446','UHF','VHF']}, {ad:'Menzil', tip:'birim', birim:'km'},
-      {ad:'Kanal Sayısı', tip:'sayi'}, {ad:'Pil Ömrü', tip:'birim', birim:'saat'}
+      {key:'frekansBandi', ad:'Frekans Bandı', tip:'secim', secenekler:['VHF','UHF']},
+      {key:'kanalSayisi', ad:'Kanal Sayısı', tip:'sayi'},
+      {key:'menzil', ad:'Menzil', tip:'birimli', birim:'km'},
+      {key:'bataryaOmru', ad:'Batarya Ömrü', tip:'birimli', birim:'saat'},
+      {key:'suTozDayanimi', ad:'Su / Toz Dayanımı', tip:'secim', secenekler:['Yok','IP54','IP67']}
     ],
     'Jeneratör': [
-      {ad:'Güç Çıkışı', tip:'birim', birim:'kVA'}, {ad:'Yakıt Türü', tip:'secim', secenekler:['Benzin','Dizel']},
-      {ad:'Depo Kapasitesi', tip:'birim', birim:'L'}, {ad:'Çalışma Süresi', tip:'birim', birim:'saat'},
-      {ad:'Gürültü Seviyesi', tip:'birim', birim:'dB'}
+      {key:'gucCikisi', ad:'Güç Çıkışı', tip:'birimli', birim:'kVA'},
+      {key:'yakitTuru', ad:'Yakıt Türü', tip:'secim', secenekler:['Benzin','Dizel','LPG']},
+      {key:'depoKapasitesi', ad:'Depo Kapasitesi', tip:'birimli', birim:'L'},
+      {key:'calismaSuresi', ad:'Çalışma Süresi', tip:'birimli', birim:'saat'},
+      {key:'gurultu', ad:'Gürültü Seviyesi', tip:'birimli', birim:'dB'},
+      {key:'inverterMi', ad:'İnverter mi', tip:'evethayir'},
+      {key:'kullanimKilavuzu', ad:'Kullanım Kılavuzu', tip:'dosya'}
     ]
   };
   function altKullanim(ad){ return KULLANIM[ad] || []; }
