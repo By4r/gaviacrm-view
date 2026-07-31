@@ -240,11 +240,16 @@
      baslik:'ZMT-2026-047 (Kırıcı-Delici, Hilti TE 60-A36) serviste — arıza kaydı açık',
      aciklama:'Merkez depo · kişisiz demirbaş — 25 Haziran 2026\'da servise gönderildi, tahmini dönüş bilgisi girilmedi; arıza kaydı hâlâ açık.',
      kanallar:['sistem','eposta','sorumlu']},
-    {id:'DMB-002', tur:'garanti', zmt:'ZMT-2026-046', santiye:'merkez', okundu:false,
-     tarih:'2026-07-15',
-     baslik:'ZMT-2026-046 (Lazer Metre, Bosch GLM 50 C) garanti süresi doluyor',
-     aciklama:'Ömer Taşkın · Merkez Şantiye — üretici garantisi ' + ddmmyyyy('2026-07-15') + ' tarihinde sona eriyor.',
-     kanallar:['sistem','eposta','yonetici']},
+    /* DMB-002 (garanti/ZMT-2026-046) T-UX §6 denetiminde KALDIRILDI — bu kayıt daha önce
+       "2026-07-15'te garanti doluyor" diyordu, ama otoriter kaynaklar (demirbas-detay.html
+       ITEMS['046'].satinAlma.garanti + demirbas-form.html DUZENLE_PREFILL['046'].garantiBitis,
+       T-DMR2/T-DMR3'ün dosyaları) ikisi de 20 Ocak 2027'yi taşıyor — 2026-07-15 uydurma bir
+       tarihti. 2027-01-20 kanonik bugüne (2 Temmuz 2026) 60/30/15/7 günlük hiçbir presetle
+       "yaklaşıyor" sayılamayacak kadar uzak (kararlar madde 132'nin zaten belgelediği, 10
+       kayıttan hiçbirinin garanti tarihinin yakın olmadığı gerçeğiyle tutarlı) — sahte bir
+       "yaklaşan garanti" örneği UYDURMAK yerine bu tür için dürüst boş sonuç bırakıldı (bkz.
+       tasks/kararlar.md). "Garanti Süresi" filtre seçeneği listede kalır, filtre GERÇEK ve
+       fonksiyonel kalır, yalnızca o an eşleşen kayıt yoktur. */
     {id:'DMB-003', tur:'kalibrasyon', zmt:'ZMT-2026-046', santiye:'merkez', okundu:false,
      tarih:'2026-07-20',
      baslik:'ZMT-2026-046 (Lazer Metre) kalibrasyon kontrolü yaklaşıyor',
