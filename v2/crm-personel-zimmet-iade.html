@@ -112,7 +112,7 @@
       <div>
         <div class="ph-eyebrow">İnsan Kaynağı</div>
         <h1>Zimmet İade</h1>
-        <div class="ph-sub">ZMT-2026-045 — Tablet, Samsung Galaxy Tab A9 · Hasan Demirci'den iade alınıyor</div>
+        <div class="ph-sub">ZMT-2026-045 — Tablet, Samsung Galaxy Tab A9 · Aylin Koç'tan iade alınıyor</div>
       </div>
     </div>
 
@@ -173,10 +173,10 @@
         <div class="iade-sonuc" id="iadeSonuc">
           <div class="is-ico"><i class="fa-solid fa-check"></i></div>
           <h3>İade işlemi tamamlandı</h3>
-          <p id="sonucMetin">ZMT-2026-045, Hasan Demirci'den iade alınıp merkez depoya işlendi.</p>
+          <p id="sonucMetin">ZMT-2026-045, Aylin Koç'tan iade alınıp merkez depoya işlendi.</p>
           <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
             <a class="btn btn-ghost btn-sm" href="crm-personel-zimmet-detay.html?zmt=045" data-no-confirm>Zimmet Kaydına Dön</a>
-            <a class="btn btn-acc btn-sm" href="crm-personel-detay.html" data-no-confirm>Personel Kartına Dön</a>
+            <a class="btn btn-acc btn-sm" href="crm-personel-detay.html?per=005" data-no-confirm>Personel Kartına Dön</a>
           </div>
         </div>
       </div>
@@ -186,7 +186,7 @@
         <div class="gv-card">
           <div class="gd-block">
             <div class="gd-label">İade Edilen Kalem</div>
-            <div class="ctx-link"><div class="who-mark" style="background:var(--info-tint);color:var(--info)">HD</div><div><a href="crm-personel-detay.html" style="color:inherit">Hasan Demirci</a><span>Şantiye Şefi · Vadi Konakları</span></div></div>
+            <div class="ctx-link"><div class="who-mark" style="background:var(--info-tint);color:var(--info)">AK</div><div><a href="crm-personel-detay.html?per=005" style="color:inherit">Aylin Koç</a><span>Şantiye Şefi · Liman Lojistik Merkezi</span></div></div>
           </div>
           <div class="gd-block">
             <div class="ctx-row"><span class="ctx-lbl">Zimmet No</span><span class="ctx-val">ZMT-2026-045</span></div>
@@ -262,13 +262,13 @@
     gvConfirm({
       icon:'fa-rotate-left', ok:'İadeyi Onayla', cancel:'Vazgeç',
       title:'Zimmet İadesi Onaylansın mı?',
-      message:'ZMT-2026-045, Hasan Demirci\'den ' + DURUM_LBL[durum] + ' iade alınacak ve ' + teslimAlan.split(' — ')[0] + ' tarafından teslim alınmış olarak işlenecek. [MOCK-SİM]',
+      message:'ZMT-2026-045, Aylin Koç\'tan ' + DURUM_LBL[durum] + ' iade alınacak ve ' + teslimAlan.split(' — ')[0] + ' tarafından teslim alınmış olarak işlenecek. [MOCK-SİM]',
       onConfirm:function(){
         document.getElementById('frmWrap').classList.add('is-off');
         var sonuc = document.getElementById('iadeSonuc');
         sonuc.classList.add('is-on');
         var metin = durum === 'iyi'
-          ? 'ZMT-2026-045, Hasan Demirci\'den iyi durumda iade alınıp merkez depoya işlendi.'
+          ? 'ZMT-2026-045, Aylin Koç\'tan iyi durumda iade alınıp merkez depoya işlendi.'
           : durum === 'hasarli'
             ? 'ZMT-2026-045, hasarlı olarak iade alındı; kayıt Satın Alma/Muhasebe\'ye borç/ceza değerlendirmesi için bildirildi.'
             : 'ZMT-2026-045 kayıp bildirildi; kayıt Satın Alma/Muhasebe\'ye değerlendirme için bildirildi.';

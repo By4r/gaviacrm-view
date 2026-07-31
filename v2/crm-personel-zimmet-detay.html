@@ -18,11 +18,12 @@
 <style>
 /* ============ SAYFAYA ÖZEL — Personel Zimmet Detayı (§13, Dalga 4/Personel) ============
    crm-operasyon-demirbas-detay.html'in gd-head/gd-grid/ctx-row/ml-timeline/dm-acts dilini
-   devralır (o dosya READ-ONLY referans, YAZILMADI). ZMT-2026-045 (Hasan Demirci, Tablet),
-   crm-personel-detay.html'in Zimmet sekmesindeki tek kanonik kayıttır (o dosya da READ-ONLY
-   — kod/kalem/tarih/durum BİREBİR); demirbaş modülünde (041/044/047) karşılığı YOK, o yüzden
-   burada TAM detay üretildi. 041/044 (Hasan Demirci'nin demirbaş modülündeki diğer zimmetleri)
-   yalnız çapraz link — o kayıtlar orada zaten tam, burada tekrar edilmez. */
+   devralır (o dosya READ-ONLY referans, YAZILMADI). ZMT-2026-045 (Aylin Koç, Tablet — shell.js
+   kanoniği, T-DMR4 kanonik sapma düzeltmesi 2026-07-31), crm-personel-detay.html'in Zimmet
+   sekmesindeki tek kanonik kayıttır (o dosya da READ-ONLY — kod/kalem/tarih/durum BİREBİR);
+   demirbaş modülünde ayrı bir ZMT-045 dosyası YOK, o yüzden burada TAM detay üretildi. Aylin
+   Koç'un demirbaş modülünde başka zimmet kaydı yoktur (kanonik envanterde yalnız bu tek kayıt
+   ona bağlı). */
 .gv-crumb{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:14px}
 .gv-crumb a{color:var(--acc-ink);font-weight:700}
 .gv-crumb a:hover{color:var(--acc-deep)}
@@ -122,14 +123,14 @@
 
   <main class="gv-main">
     <div class="gv-crumb">
-      <a href="crm-personel-detay.html">Hasan Demirci</a>
+      <a href="crm-personel-detay.html?per=005">Aylin Koç</a>
       <i class="fa-solid fa-chevron-right"></i>
       <span>ZMT-2026-045</span>
     </div>
 
     <div class="gd-head">
       <div>
-        <div class="gd-eyebrow">Hasan Demirci · Vadi Konakları · Personel Zimmeti #ZMT-2026-045</div>
+        <div class="gd-eyebrow">Aylin Koç · Liman Lojistik Merkezi · Personel Zimmeti #ZMT-2026-045</div>
         <h1>Tablet — Samsung Galaxy Tab A9, 64GB</h1>
         <div class="gd-badges">
           <span class="gtag" style="border-color:transparent;background:var(--info-tint);color:var(--info)"><i class="fa-solid fa-tablet-screen-button"></i> Bilgi İşlem Ekipmanı</span>
@@ -142,7 +143,7 @@
         <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="btnZmtFile"><i class="fa-solid fa-paperclip"></i> Dosya Ekle</button>
         <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="btnZmtPrint"><i class="fa-solid fa-print"></i> Çıktı Al</button>
         <a class="btn btn-ghost btn-sm" href="crm-ayarlar-log.html?kayit=ZMT-2026-045"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Geçmişini Gör</a>
-        <a class="btn btn-ghost btn-sm" href="crm-personel-detay.html"><i class="fa-solid fa-arrow-left"></i> Personel Kartına Dön</a>
+        <a class="btn btn-ghost btn-sm" href="crm-personel-detay.html?per=005"><i class="fa-solid fa-arrow-left"></i> Personel Kartına Dön</a>
       </div>
     </div>
 
@@ -181,7 +182,7 @@
           <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> Zimmet Geçmişi</div></div>
           <ol class="ml-timeline" id="tlList">
             <li class="ml-item done"><span class="ml-dot"><i class="fa-solid fa-check"></i></span><div class="ml-body"><b>Depoya giriş</b><span>20 Ocak 2026 · Merkez depo</span></div></li>
-            <li class="ml-item active"><span class="ml-dot"></span><div class="ml-body"><b>Hasan Demirci'ye zimmet verildi</b><span>15 Şubat 2026 · Vadi Konakları</span></div></li>
+            <li class="ml-item active"><span class="ml-dot"></span><div class="ml-body"><b>Aylin Koç'a zimmet verildi</b><span>15 Şubat 2026 · Liman Lojistik Merkezi</span></div></li>
           </ol>
         </div>
 
@@ -199,9 +200,9 @@
       <!-- ============ SAĞ: bağlam ============ -->
       <div class="gv-side-stack">
         <div class="gv-card">
-          <div class="gd-block"><div class="gd-label">Zimmetli Kişi</div><div class="ctx-link"><div class="who-mark" style="background:var(--info-tint);color:var(--info)">HD</div><div><a href="crm-personel-detay.html">Hasan Demirci</a><span>Şantiye Şefi · Vadi Konakları</span></div></div></div>
+          <div class="gd-block"><div class="gd-label">Zimmetli Kişi</div><div class="ctx-link"><div class="who-mark" style="background:var(--info-tint);color:var(--info)">AK</div><div><a href="crm-personel-detay.html?per=005">Aylin Koç</a><span>Şantiye Şefi · Liman Lojistik Merkezi</span></div></div></div>
           <div class="gd-block">
-            <div class="ctx-row"><span class="ctx-lbl">Şantiye</span><span class="ctx-val"><a href="crm-santiye-detay.html" style="color:var(--acc-ink)">Vadi Konakları</a></span></div>
+            <div class="ctx-row"><span class="ctx-lbl">Şantiye</span><span class="ctx-val"><a href="crm-santiye-detay.html?santiye=liman" style="color:var(--acc-ink)">Liman Lojistik Merkezi</a></span></div>
             <div class="ctx-row"><span class="ctx-lbl">Zimmet tarihi</span><span class="ctx-val">15 Şubat 2026</span></div>
             <div class="ctx-row"><span class="ctx-lbl">Kayıt türü</span><span class="ctx-val">Aktif zimmet</span></div>
           </div>
@@ -210,15 +211,14 @@
         <div class="gv-card">
           <div class="gd-block">
             <div class="gd-label">Bu Personelin Diğer Zimmetleri</div>
-            <div class="other-zmt-row"><i class="fa-solid fa-mobile-screen-button"></i><div><a href="crm-operasyon-demirbas-detay.html?zmt=041">ZMT-2026-041 — İş Telefonu</a><span>Samsung Galaxy A54, 64GB · Demirbaş modülünde tam dosya</span></div></div>
-            <div class="other-zmt-row"><i class="fa-solid fa-truck-pickup"></i><div><a href="crm-operasyon-demirbas-detay.html?zmt=044">ZMT-2026-044 — Araç</a><span>Ford Ranger 4x4 Pikap · Demirbaş modülünde tam dosya</span></div></div>
+            <p class="kisisiz-note">Aylin Koç'a bağlı başka aktif zimmet kaydı yok — kanonik demirbaş envanterinde yalnız bu tek kayıt ona zimmetlidir.</p>
           </div>
         </div>
 
         <div class="gv-card">
           <div class="gd-block">
             <div class="gd-label">Not</div>
-            <p style="font-size:12.5px;color:var(--ink-2);line-height:1.7">Bu kalem, Vadi Konakları şantiye şefinin saha raporlama ve dijital puantaj onayı için kullandığı iş tabletidir. Personel kartındaki Zimmet sekmesiyle birebir eşleşir.</p>
+            <p style="font-size:12.5px;color:var(--ink-2);line-height:1.7">Bu kalem, Liman Lojistik Merkezi şantiye şefinin saha raporlama ve dijital puantaj onayı için kullandığı iş tabletidir. Personel kartındaki Zimmet sekmesiyle birebir eşleşir.</p>
           </div>
         </div>
       </div>
@@ -351,6 +351,7 @@
 
   var btnPrint = document.getElementById('btnZmtPrint');
   if(btnPrint) btnPrint.addEventListener('click', function(){ window.print(); });
+
 })();
 </script>
 </body>
