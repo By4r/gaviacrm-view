@@ -48,9 +48,11 @@
 #tblDeger{min-width:520px}
 #tblDeger .num{text-align:right;white-space:nowrap}
 #tblDeger tr.bm-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--line-2)}
+@media(max-width:640px){#tblDeger{min-width:0}}
 
 #tblTakvim{min-width:700px}
 #tblTakvim .num{text-align:right;white-space:nowrap}
+@media(max-width:640px){#tblTakvim{min-width:0}.tv-item{max-width:120px}}
 .tv-item{display:flex;flex-direction:column;line-height:1.35}
 .tv-item b{font-size:13px;font-weight:700;color:var(--ink)}
 .tv-item span{font-size:11.5px;color:var(--muted)}
@@ -114,8 +116,9 @@
         <div class="gc-body flush" id="durumWrap"></div>
       </div>
       <div class="gv-card">
-        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-map-location-dot"></i> Konum Dağılımı</div></div>
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-map-location-dot"></i> Firma ve Proje Bazında Dağılım</div><span class="ph-sub" style="margin:0">Şantiye = proje</span></div>
         <div class="gc-body flush" id="konumWrap"></div>
+        <div class="rep-src"><i class="fa-solid fa-circle-info"></i> <span>Bağlı Firma tek-tenant mock'ta sabittir (Yapıtaş İnşaat A.Ş., kararlar madde 114) — bu yüzden ayrı bir firma dağılımı grafiği anlamlı çeşitlilik göstermez; proje kırılımı (şantiye) bu kartta yukarıda gösterilir.</span></div>
       </div>
     </div>
 

@@ -54,6 +54,7 @@
 
 #tblTakvim{min-width:760px}
 #tblTakvim .num{text-align:right;white-space:nowrap}
+@media(max-width:640px){#tblTakvim{min-width:0}.tv-arac{max-width:120px}}
 .tv-arac{display:flex;flex-direction:column;line-height:1.35}
 .tv-arac b{font-size:13px;font-weight:700;color:var(--ink)}
 .tv-arac span{font-size:11.5px;color:var(--muted)}
@@ -131,6 +132,19 @@
       <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-gas-pump"></i> Araç Bazında Yakıt Gideri</div><span class="ph-sub" style="margin:0" id="ykSub">—</span></div>
       <div class="gc-body flush" id="yakitRankWrap"></div>
       <div class="gc-foot"><span id="ykFoot">—</span></div>
+    </div>
+
+    <div class="dash-cols">
+      <div class="gv-card">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-chart-column"></i> Aylık Filo Gideri (Yakıt + Diğer Giderler)</div><span class="ph-sub" style="margin:0">Haziran – Temmuz 2026</span></div>
+        <div class="gc-body flush" id="aylikWrap"></div>
+        <div class="rep-src" style="padding:0 22px 18px"><i class="fa-solid fa-circle-info"></i> <span>Temmuz sütunu yalnız 1-2 Temmuz'a ait kısmi veriyi taşır (kanonik bugün 2 Temmuz) — iki ay birebir ölçekte kıyaslanamaz, ayrı okunmalıdır. Mayıs 2026 filo geneli için crm-operasyon-arac-yakit.html'de araç bazlı karşılaştırma var, ancak tüm filo için yeterli Mayıs kaydı bulunmadığından (bazı araçlarda &lt;2 dolum) fleet-geneli üçüncü ay burada gösterilmez.</span></div>
+      </div>
+      <div class="gv-card">
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-scale-balanced"></i> Araç Başına Toplam Maliyet</div><span class="ph-sub" style="margin:0">Bakım + diğer giderler · tüm zamanlar</span></div>
+        <div class="gc-body flush" id="toplamMaliyetWrap"></div>
+        <div class="rep-src" style="padding:0 22px 18px"><i class="fa-solid fa-circle-info"></i> <span>Yakıt gideri bu toplama dahil DEĞİLDİR — yakıt yalnız aylık (Haziran/Temmuz) izlenir, filo-ömrü toplamı crm-operasyon-arac-yakit.html'de tutulmaz; bu kart yalnız tüm-zamanlar verisi olan bakım + diğer gider kalemlerini toplar.</span></div>
+      </div>
     </div>
 
     <div class="dash-cols">
@@ -303,6 +317,18 @@
     var yakitRows = ARAC.map(function(a){ return {name:a.no, sub:a.plaka, val:a.yakit[donem]}; }).sort(function(x,y){ return y.val-x.val; });
     renderRankList('yakitRankWrap', yakitRows, Math.max.apply(null, yakitRows.map(function(r){return r.val;}).concat([1])), false);
     document.getElementById('ykFoot').textContent = (donem==='haziran' ? '5 araçta dolum kaydı yok (ARC-03/04/07/09/10 hariç ARC-03/04 Haziran\'da dolum yaptı — kayıtsız olan yalnız ARC-07/09/10)' : 'Yalnız ARC-01 ve ARC-08\'in Temmuz\'da (1 Temmuz) dolum kaydı var — diğerleri henüz Temmuz\'da dolum yapmadı');
+
+    /* ---- Aylık Filo Gideri (Haziran/Temmuz karşılaştırması, yakıt+diğer gider birlikte) ---- */
+    var haziranFiloToplam = ARAC.reduce(function(s,a){ return s + a.yakit.haziran + a.gider.haziran; }, 0);
+    var temmuzFiloToplam = ARAC.reduce(function(s,a){ return s + a.yakit.temmuz + a.gider.temmuz; }, 0);
+    renderRankList('aylikWrap', [
+      {name:'Haziran 2026', sub:'tam ay', val:haziranFiloToplam},
+      {name:'Temmuz 2026', sub:'bugüne kadar (1-2 Tem)', val:temmuzFiloToplam}
+    ], Math.max(haziranFiloToplam, temmuzFiloToplam, 1), false);
+
+    /* ---- Araç Başına Toplam Maliyet (bakım + diğer gider, tüm zamanlar — yakıt hariç, madde bkz. kart altı not) ---- */
+    var toplamMaliyetRows = ARAC.map(function(a){ return {name:a.no, sub:a.plaka, val:a.gider.tumZaman + a.bakim}; }).sort(function(x,y){ return y.val-x.val; });
+    renderRankList('toplamMaliyetWrap', toplamMaliyetRows, Math.max.apply(null, toplamMaliyetRows.map(function(r){return r.val;}).concat([1])), false);
 
     /* ---- Diğer Giderler — Kategori Kırılımı (tüm zamanlar) ---- */
     var maxKat = Math.max.apply(null, GIDER_KAT.map(function(k){ return k.val; }));
