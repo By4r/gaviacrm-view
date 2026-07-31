@@ -82,6 +82,8 @@
   .gv-rail,.gv-menu,.gv-divider,.gv-overlay,.gv-top,.ph-actions{display:none !important}
   .gv-main{margin:0 !important;padding:0 !important}
   .gv-app{display:block !important}
+  #zimmetTbl{min-width:0}
+  @page{size:A4;margin:15mm}
 }
 
 /* ============ §2.9 (12 sekme — bkz. tasks/kararlar.md madde 126) ============
@@ -168,6 +170,7 @@ tr.maliyet-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--
       </div>
       <div class="ph-actions">
         <a class="btn btn-ghost btn-sm" id="btnDmEdit" href="crm-operasyon-demirbas-form.html?mod=duzenle" data-no-confirm><i class="fa-solid fa-pen"></i> Düzenle</a>
+        <a class="btn btn-ghost btn-sm" id="btnDmCopy" href="crm-operasyon-demirbas-form.html?mod=kopya" data-no-confirm><i class="fa-solid fa-copy"></i> Kopyala</a>
         <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="btnDmPasif"><i class="fa-solid fa-power-off"></i> <span id="btnDmPasifLbl">Pasife Al</span></button>
         <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="btnDmArch"><i class="fa-solid fa-box-archive"></i> Arşivle / Hurdaya Ayır</button>
         <button type="button" class="btn btn-ghost btn-sm" data-no-confirm id="btnDmBakim"><i class="fa-solid fa-screwdriver-wrench"></i> Bakım Kaydı Ekle</button>
@@ -193,7 +196,7 @@ tr.maliyet-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--
       <button class="gv-tab" data-tab="kalibrasyon" role="tab" aria-selected="false"><i class="fa-solid fa-gauge-high"></i> Kalibrasyon ve Kontrol</button>
       <button class="gv-tab" data-tab="evrak" role="tab" aria-selected="false"><i class="fa-solid fa-folder-open"></i> Belgeler</button>
       <button class="gv-tab" data-tab="maliyet" role="tab" aria-selected="false"><i class="fa-solid fa-sack-dollar"></i> Maliyet Geçmişi</button>
-      <button class="gv-tab" data-tab="islem" role="tab" aria-selected="false"><i class="fa-solid fa-list-check"></i> İşlem Kayıtları</button>
+      <button class="gv-tab" data-tab="islem" role="tab" aria-selected="false"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Kayıtları</button>
     </div>
 
     <!-- ============ 1. GENEL BİLGİLER (mevcut Fotoğraf + Kalem Bilgileri kartı KORUNUR) ============ -->
@@ -346,7 +349,7 @@ tr.maliyet-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--
          T-LOG tarafından crm-ayarlar-log.html'e eklenir) ============ -->
     <section class="tab-panel" data-tab-panel="islem" role="tabpanel" aria-label="İşlem Kayıtları" hidden>
       <div class="gv-card">
-        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-list-check"></i> İşlem Kayıtları</div></div>
+        <div class="gc-head"><div class="gc-title"><i class="fa-solid fa-clock-rotate-left"></i> İşlem Kayıtları</div></div>
         <div class="gv-empty" style="padding:40px 24px">
           <div class="ge-ico"><i class="fa-solid fa-list-check"></i></div>
           <h4 id="islemBaslik">Bu kalemin işlem geçmişi</h4>
@@ -974,6 +977,11 @@ tr.maliyet-total td{font-weight:800;color:var(--ink);border-top:2px solid var(--
     /* §17 aksiyon çubuğu — Düzenle/İşlem Geçmişi bağlantıları kayda göre parametrelenir */
     var editHref = 'crm-operasyon-demirbas-form.html?mod=duzenle' + (key !== '041' ? '&zmt=' + key : '');
     document.getElementById('btnDmEdit').setAttribute('href', editHref);
+    /* Kopyala — "Araç" geçiş-kategorisi kaydı (044) için gizlenir, form.html'in kendi
+       notuyla tutarlı: "kopya kayıt açılmaz" (item.dmrKod===null bu tek durumda true) */
+    var btnCopy = document.getElementById('btnDmCopy');
+    if(item.dmrKod === null){ btnCopy.hidden = true; }
+    else { btnCopy.hidden = false; btnCopy.setAttribute('href', 'crm-operasyon-demirbas-form.html?mod=kopya' + (key !== '041' ? '&zmt=' + key : '')); }
     document.getElementById('btnDmLog').setAttribute('href', 'crm-ayarlar-log.html?kayit=' + item.no);
     document.getElementById('lnkIslemTam').setAttribute('href', 'crm-ayarlar-log.html?kayit=' + item.no);
     document.getElementById('islemBaslik').textContent = item.no + ' için işlem geçmişi';

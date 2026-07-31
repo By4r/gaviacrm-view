@@ -48,6 +48,14 @@
   .filter-row .frow-lbl{min-width:0;width:100%}
 }
 
+/* T-UX §6 denetimi — 5. ph-actions butonu (Bildirim Merkezi) eklendiğince 641-980px
+   arası (ui.css'in ortak .ph-actions sarma kuralı yalnız ≤640px'te devreye giriyor,
+   assets/* KİLİTLİ olduğundan burada sayfa-lokal genişletildi) doc-level yatay taşma
+   oluşuyordu — 5+ aksiyonlu bu sayfa için sarma eşiği genişletildi (kararlar madde 143 emsali). */
+@media(max-width:980px){
+  .gv-page-head .ph-actions{flex-wrap:wrap;width:100%}
+}
+
 /* ---- §17 arşiv görünürlüğü — kalıcı silme YERİNE varsayılan listede gizleme
    (crm-satinalma-siparisler.html deseni BİREBİR) — yalnız Hurda kararı verilmiş
    veya oturum içinde elle arşivlenmiş kalemler bu bayrağı taşır. ---- */
@@ -126,6 +134,8 @@ tr.is-checked{background:rgba(var(--acc-rgb),.05)}
         <div class="ph-sub" id="dmSub">10 kalem · 6 aktif zimmet · 2 Temmuz 2026, Perşembe</div>
       </div>
       <div class="ph-actions">
+        <a class="btn btn-ghost btn-sm" href="crm-operasyon-demirbas-dashboard.html"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a class="btn btn-ghost btn-sm" href="crm-operasyon-demirbas-bildirim.html"><i class="fa-regular fa-bell"></i> Bildirim Merkezi <span class="gtag" id="dmBilRozet" style="margin-left:4px"></span></a>
         <a class="btn btn-ghost btn-sm" href="crm-operasyon-demirbas-kategori.html"><i class="fa-solid fa-sitemap"></i> Kategori Yönetimi</a>
         <a class="btn btn-ghost btn-sm" href="crm-operasyon-demirbas-marka.html"><i class="fa-solid fa-tags"></i> Marka &amp; Model</a>
         <a class="btn btn-ghost btn-sm" href="crm-operasyon-arac.html"><i class="fa-solid fa-car-side"></i> Araç Filosu (10)</a>
@@ -505,7 +515,8 @@ tr.is-checked{background:rgba(var(--acc-rgb),.05)}
     h += '<td class="col-opt-firma">'+FIRMA_ADI+'</td>';
     h += '<td class="col-opt-barkod">'+(d.dmrKod ? '<span class="dm-barkod">'+d.dmrKod+'</span>' : '<span class="dm-yok">'+d.dmrNot+'</span>')+'</td>';
     h += '<td><span class="gstat '+D.cls+'">'+D.lbl+'</span></td>';
-    h += '<td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html'+(d.zmt ? '?zmt='+d.zmt : '')+'" data-no-confirm aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>'
+    h += '<td><div class="row-acts"><a class="ia-btn" href="crm-operasyon-demirbas-detay.html'+(d.zmt ? '?zmt='+d.zmt : '')+'" data-no-confirm data-tip="Detay" aria-label="Demirbaş detayı"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>'
+      + '<a class="ia-btn" href="crm-operasyon-demirbas-form.html?mod=duzenle'+(d.zmt && d.zmt !== '041' ? '&zmt='+d.zmt : '')+'" data-no-confirm data-tip="Düzenle" aria-label="Düzenle"><i class="fa-solid fa-pen"></i></a>'
       + '<button type="button" class="ia-btn" data-no-confirm data-arsiv-btn data-tip="Arşivle" aria-label="Arşivle"><i class="fa-solid fa-box-archive"></i></button></div></td>';
     h += '</tr>';
     return h;
@@ -530,6 +541,13 @@ tr.is-checked{background:rgba(var(--acc-rgb),.05)}
     document.getElementById('kpiZimmetli').textContent = byDurum.zimmetli || 0;
     document.getElementById('kpiDepoda').textContent = byDurum.depoda || 0;
     document.getElementById('kpiServiste').textContent = byDurum.serviste || 0;
+    var bilRozet = document.getElementById('dmBilRozet');
+    if(bilRozet){
+      var dikkatSayisi = byDurum.serviste || 0;
+      bilRozet.hidden = dikkatSayisi === 0;
+      bilRozet.textContent = dikkatSayisi || '';
+      bilRozet.style.background = 'var(--warn-tint)'; bilRozet.style.color = 'var(--warn)'; bilRozet.style.borderColor = 'transparent';
+    }
     return byDurum;
   }
   var counts0 = refreshCounts();
