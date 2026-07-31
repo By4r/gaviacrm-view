@@ -199,7 +199,12 @@
     arsivlendi:{cls:'off', lbl:'Arşivlendi'}, satildi:{cls:'off', lbl:'Satıldı'},
     hurda:{cls:'hurda', lbl:'Hurdaya Ayrıldı'}, kiralamaBitti:{cls:'off', lbl:'Kiralama Bitti'}
   };
-  var ARCHIVE_STATES = ['pasif', 'arsivlendi', 'satildi', 'hurda', 'kiralamaBitti'];
+  /* T-ARC1 (§12 revizyon) — 'pasif' bu listeden ÇIKARILDI: crm-operasyon-arac.html'in
+     4-durumlu ARCHIVE_STATES'iyle hizalandı (karar: pasif = geçici/operasyonel durum,
+     arşiv listesine GİRMEZ — bkz. tasks/kararlar.md). arac-bakim.html hâlâ eski
+     5-durumlu listeyi kullanıyor (T-ARC3 sahipliğinde, bu dosyadan DEĞİŞTİRİLMEDİ,
+     bkz. tasks/acik-kalemler.md). */
+  var ARCHIVE_STATES = ['arsivlendi', 'satildi', 'hurda', 'kiralamaBitti'];
   var ARAC = [
     {no:'ARC-01', plaka:'34 ABC 123', model:'Ford Ranger 4x4 Pikap', santiye:'vadi', durum:'aktif'},
     {no:'ARC-02', plaka:'34 SRV 641', model:'Mercedes Sprinter 316 Servis', santiye:'vadi', durum:'aktif'},
